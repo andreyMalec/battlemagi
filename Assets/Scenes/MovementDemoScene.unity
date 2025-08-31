@@ -472,6 +472,9 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5793509697026975924, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
+      insertIndex: 6
+      addedObject: {fileID: 1458474877}
+    - targetCorrespondingSourceObject: {fileID: 5793509697026975924, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1458474876}
   m_SourcePrefab: {fileID: 100100000, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
@@ -4744,6 +4747,18 @@ MonoBehaviour:
   wallLayers:
     serializedVersion: 2
     m_Bits: 0
+--- !u!114 &1458474877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1458474868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2382bdbec0054bd2b17e3c11d2d63c9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShowCursor
 --- !u!4 &1546061418 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2512040927989131945, guid: b7a46b8c2431e884db0c07139efc6a9e, type: 3}
