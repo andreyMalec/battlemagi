@@ -163,12 +163,11 @@ namespace ASD
         {
             Initiation();
         }
-        [Obsolete("Obsolete")]
         private void LateUpdate()
         {
             if (outsideUpdate || !m_Anim.enabled) return;
 
-            if (m_Anim.updateMode != AnimatorUpdateMode.AnimatePhysics)
+            if (m_Anim.updateMode != AnimatorUpdateMode.Fixed)
                 FootIK();
             else
             {
@@ -181,10 +180,9 @@ namespace ASD
         /// Works only with AnimatorUpdateMode.AnimatePhysics and enabled the IK Pass checkbox in the Layer settings in Animator window.
         /// </summary>
         /// <param name="layerIndex"></param>
-        [Obsolete("Obsolete")]
         private void OnAnimatorIK(int layerIndex)
         {
-           if (m_Anim.updateMode == AnimatorUpdateMode.AnimatePhysics)
+           if (m_Anim.updateMode == AnimatorUpdateMode.Fixed)
                 FootIK();
         }
         /// <summary>
