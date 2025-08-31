@@ -6,14 +6,16 @@ public class PlayerAnimator : MonoBehaviour {
     private static readonly int VelocityX = Animator.StringToHash("Velocity X");
     private static readonly int VelocityAny = Animator.StringToHash("Velocity Any");
     private static readonly int JumpStart = Animator.StringToHash("Jump Start");
+    private static readonly int FallStart = Animator.StringToHash("Fall Start");
 
     private static readonly float eps = 0.05f;
 
     [Header("Animator")] public Animator animator;
     [Header("FirstPersonMovement")] public FirstPersonMovement movement;
 
-    private float acceleration = 2f;
-    private float deceleration = 2.5f;
+    public float acceleration = 2f;
+    public AnimationCurve decelerationCurve;
+
     private float velocityZ = 0f;
     private float velocityX = 0f;
 
@@ -21,6 +23,8 @@ public class PlayerAnimator : MonoBehaviour {
     private float maxVelocity => isRunning ? 2f : 0.5f;
 
     private bool jumpStart = false;
+    private bool fallStart = false;
+    private float lastPositionY;
 
     private void Start() {
         movement.Jumped += Jumped;
@@ -28,10 +32,18 @@ public class PlayerAnimator : MonoBehaviour {
 
     private void Update() {
         animator.SetBool(JumpStart, jumpStart);
-        
+        animator.SetBool(FallStart, fallStart);
+
+        if (fallStart)
+            fallStart = false;
+
+        if (lastPositionY - movement.rb.position.y > eps && !jumpStart && !fallStart &&
+            !movement.groundCheck.isGrounded)
+            fallStart = true;
+        lastPositionY = movement.rb.position.y;
+
         if (jumpStart && movement.groundCheck.isGrounded)
             jumpStart = false;
-
 
         var forward = Input.GetKey(KeyCode.W);
         var backward = Input.GetKey(KeyCode.S);
@@ -63,19 +75,23 @@ public class PlayerAnimator : MonoBehaviour {
         jumpStart = true;
     }
 
+    private float decelerate(float value) {
+        return decelerationCurve.Evaluate(Math.Abs(value));
+    }
+
     private float applyPositive(bool keyPressed, float velocity) {
         if (keyPressed && velocity < maxVelocity) {
             velocity += acceleration * Time.deltaTime;
         }
 
         if (!keyPressed && velocity > 0f) {
-            velocity -= deceleration * Time.deltaTime;
+            velocity -= decelerate(velocity) * Time.deltaTime;
         }
 
         if (keyPressed && isRunning && velocity > maxVelocity) {
             velocity = maxVelocity;
         } else if (keyPressed && velocity > maxVelocity) {
-            velocity -= deceleration * Time.deltaTime;
+            velocity -= decelerate(velocity) * Time.deltaTime;
             if (velocity > maxVelocity && velocity < (maxVelocity + eps)) {
                 velocity = maxVelocity;
             }
@@ -92,13 +108,13 @@ public class PlayerAnimator : MonoBehaviour {
         }
 
         if (!keyPressed && velocity < 0f) {
-            velocity += deceleration * Time.deltaTime;
+            velocity += decelerate(velocity) * Time.deltaTime;
         }
 
         if (keyPressed && isRunning && velocity < -maxVelocity) {
             velocity = -maxVelocity;
         } else if (keyPressed && velocity < -maxVelocity) {
-            velocity += deceleration * Time.deltaTime;
+            velocity += decelerate(velocity) * Time.deltaTime;
             if (velocity < -maxVelocity && velocity > (-maxVelocity - eps)) {
                 velocity = -maxVelocity;
             }
