@@ -415,9 +415,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1906551872839454473, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-      propertyPath: m_IsActive
-      value: 1
+    - target: {fileID: 1212797530474665920, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
+      propertyPath: defaultFOV
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 3580683726391601925, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -463,20 +463,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: First Person Controller
       objectReference: {fileID: 0}
-    - target: {fileID: 6916625131687324290, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-      propertyPath: flySpeedMulti
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5793509697026975924, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-      insertIndex: 6
-      addedObject: {fileID: 1458474877}
-    - targetCorrespondingSourceObject: {fileID: 5793509697026975924, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1458474876}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
 --- !u!1 &293358642
 GameObject:
@@ -4548,7 +4538,7 @@ Camera:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1262557674}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.9150943, g: 0.90958786, b: 0.19215687, a: 0}
@@ -4669,11 +4659,6 @@ Transform:
   - {fileID: 670423922}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!137 &1383378227 stripped
-SkinnedMeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 3558552960757035455, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-  m_PrefabInstance: {fileID: 191361657}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1458401942
 GameObject:
   m_ObjectHideFlags: 0
@@ -4721,44 +4706,6 @@ Transform:
   - {fileID: 293358643}
   m_Father: {fileID: 1955506391}
   m_LocalEulerAnglesHint: {x: 3.019, y: 35.751, z: -4.185}
---- !u!1 &1458474868 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5793509697026975924, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-  m_PrefabInstance: {fileID: 191361657}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1458474876
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1458474868}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d0584068ff64ff1a738c1e229624bcb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ModelPartHider
-  fullBodyRenderer: {fileID: 1383378227}
-  headModel: {fileID: 0}
-  bodyPartsToHide: []
-  fpsArms: {fileID: 0}
-  fpsWeapon: {fileID: 0}
-  hideHeadDistance: 0.8
-  wallLayers:
-    serializedVersion: 2
-    m_Bits: 0
---- !u!114 &1458474877
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1458474868}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2382bdbec0054bd2b17e3c11d2d63c9d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ShowCursor
 --- !u!4 &1546061418 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2512040927989131945, guid: b7a46b8c2431e884db0c07139efc6a9e, type: 3}

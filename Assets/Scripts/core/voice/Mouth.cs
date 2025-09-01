@@ -20,19 +20,15 @@ public class Mouth : MonoBehaviour {
     }
 
     public void Open() {
-        if (!microphoneRecord.IsRecording) {
-            microphoneRecord.StartRecord();
-        }
-        else {
-            microphoneRecord.StopRecord();
-            microphoneRecord.StartRecord();
-        }
-    }
-
-    public void Close() {
         if (microphoneRecord.IsRecording) {
             microphoneRecord.StopRecord();
         }
+
+        microphoneRecord.StartRecord();
+    }
+
+    public void Close() {
+        microphoneRecord.StopRecord();
     }
 
     private void OnNewSegment(WhisperSegment segment) {

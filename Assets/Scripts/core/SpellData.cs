@@ -7,20 +7,20 @@ public class SpellData : ScriptableObject {
     public GameObject mainSpellPrefab;
     public GameObject impactPrefab;
 
+    public int invocationIndex;
+
     public float castTime = 2f;
-    
+
     public float baseDamage = 10f;
     public bool hasAreaEffect = true;
     public float areaRadius = 5f;
-    
-    [Header("Projectile")]
-    public float lifeTime = 20f;
+
+    [Header("Projectile")] public float lifeTime = 20f;
     public bool piercing = false;
     public float baseSpeed = 20f;
     public float homingStrength = 1f;
 
-    [Header("Shake")]
-    public bool shakeEnabled = true;
+    [Header("Shake")] public bool shakeEnabled = true;
     public float shakeStrengthBurst = 0.05f;
     public float shakeStrengthImpact = 0.05f;
     public float shakeDurationBurst = 0.2f;

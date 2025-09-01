@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class PlayerAnimator : MonoBehaviour {
@@ -7,9 +8,12 @@ public class PlayerAnimator : MonoBehaviour {
     private static readonly int VelocityAny = Animator.StringToHash("Velocity Any");
     private static readonly int JumpStart = Animator.StringToHash("Jump Start");
     private static readonly int FallStart = Animator.StringToHash("Fall Start");
+    private static readonly int Invocation = Animator.StringToHash("Invocation");
+    private static readonly int CastStart = Animator.StringToHash("Cast Start");
+    private static readonly int CastCharge = Animator.StringToHash("Cast Charge");
 
     private static readonly float eps = 0.05f;
-
+    public ParticleSystem chargingParticles;
     [Header("Animator")] public Animator animator;
     [Header("FirstPersonMovement")] public FirstPersonMovement movement;
 
@@ -28,6 +32,20 @@ public class PlayerAnimator : MonoBehaviour {
 
     private void Start() {
         movement.Jumped += Jumped;
+    }
+
+    public void Casting(bool start, float charge) {
+        animator.SetBool(CastStart, start);
+        animator.SetFloat(CastCharge, charge);
+        
+        var emission = chargingParticles.emission;
+        emission.rateOverTime = charge * 10f;
+    }
+
+    public IEnumerator CastSpell(SpellData spell) {
+        animator.SetFloat(Invocation, spell.invocationIndex);
+        yield return new WaitForSeconds(1f);
+        animator.SetFloat(Invocation, 0);
     }
 
     private void Update() {

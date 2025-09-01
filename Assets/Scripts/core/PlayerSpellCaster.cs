@@ -12,6 +12,7 @@ public class PlayerSpellCaster : MonoBehaviour {
 
     public SpellManager spellManager;
     public Mouth mouth;
+    public PlayerAnimator playerAnimator;
 
     public KeyCode spellCastKey = KeyCode.Mouse0;
 
@@ -39,6 +40,7 @@ public class PlayerSpellCaster : MonoBehaviour {
 
     private void Update() {
         HandleSpellCasting();
+        playerAnimator.Casting(IsCasting, currentChargeTime);
     }
 
     private void HandleSpellCasting() {
@@ -54,6 +56,8 @@ public class PlayerSpellCaster : MonoBehaviour {
     }
 
     private void CastSpell() {
+        currentChargeTime = 0;
+        StartCoroutine(playerAnimator.CastSpell(CurrentSpell));
         StartCoroutine(spellManager.CastSpell(CurrentSpell));
     }
 }
