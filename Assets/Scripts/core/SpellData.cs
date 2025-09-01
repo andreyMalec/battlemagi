@@ -2,7 +2,10 @@
 
 [CreateAssetMenu(fileName = "New Spell", menuName = "Spells/Spell Data")]
 public class SpellData : ScriptableObject {
-    public string spellName;
+    public string name;
+    public string nameRu;
+    public string[] spellWords;
+    public string[] spellWordsRu;
     public GameObject spellBurstPrefab;
     public GameObject mainSpellPrefab;
     public GameObject impactPrefab;

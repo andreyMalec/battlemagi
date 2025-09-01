@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf4989d79519c1349aa400eb4e706e49, type: 3}
+  m_Name: Firestorm
+  m_EditorClassIdentifier: Assembly-CSharp::SpellData
+  name: Firestorm
+  nameRu: "\u041E\u0433\u043D\u0435\u043D\u043D\u044B\u0439 \u0428\u0442\u043E\u0440\u043C"
+  spellWords:
+  - Firestorm
+  spellWordsRu:
+  - "\u041E\u0433\u043D\u0435\u043D\u043D\u044B\u0439\u0428\u0442\u043E\u0440\u043C"
+  spellBurstPrefab: {fileID: 0}
+  mainSpellPrefab: {fileID: 7354784787554302670, guid: 2c1e610ca4bf5374cb0698a11abf1ad1, type: 3}
+  impactPrefab: {fileID: 417761080263594737, guid: 7800b8f6b712bfe49bd663eeb3ebe1e4, type: 3}
+  invocationIndex: 3
+  castTime: 1
+  baseDamage: 10
+  hasAreaEffect: 1
+  areaRadius: 5
+  lifeTime: 20
+  piercing: 0
+  baseSpeed: 30
+  homingStrength: 1
+  shakeEnabled: 1
+  shakeStrengthBurst: 0.05
+  shakeStrengthImpact: 0.05
+  shakeDurationBurst: 0.2
+  shakeDurationImpact: 0.2
+  spellColor: {r: 1, g: 0.45490196, b: 0, a: 1}
+  spellTracking: 0
+  spawnOnGround: 0

@@ -176,6 +176,8 @@ MonoBehaviour:
   character: {fileID: 3580683726391601925}
   sensitivity: 2
   smoothing: 1.5
+  yMin: -90
+  yMax: 90
 --- !u!81 &7712086605545114110
 AudioListener:
   m_ObjectHideFlags: 0
@@ -1568,7 +1570,7 @@ SkinnedMeshRenderer:
   m_RootBone: {fileID: 1500547211949919864}
   m_AABB:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0.39, y: 0.78, z: 0.42}
   m_DirtyAABB: 0
 --- !u!183 &6238048905760699466
 Cloth:
@@ -2284,6 +2286,8 @@ MonoBehaviour:
   character: {fileID: 3580683726391601925}
   sensitivity: 2
   smoothing: 1.5
+  yMin: -90
+  yMax: 90
 --- !u!114 &3684824733104456915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3078,10 +3082,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSpellCaster
   spells:
   - {fileID: 11400000, guid: d8af665352a8959419fda43b75dcdbf6, type: 2}
-  - {fileID: 11400000, guid: ca21875ca11bf3d4c84fe2b37d78a23a, type: 2}
+  - {fileID: 11400000, guid: 5763ea8db7d5fa74281107a26119aac4, type: 2}
+  - {fileID: 11400000, guid: f69eaa29ac8ae3846946c9e91ebd5cbb, type: 2}
+  - {fileID: 11400000, guid: 644393e076cdc7040b45659eee23ecda, type: 2}
+  - {fileID: 11400000, guid: 63a25a6a48aa18142a49eee9e9a2585b, type: 2}
+  - {fileID: 11400000, guid: 40d1a96d2ece56141b3be6e737463a87, type: 2}
+  - {fileID: 11400000, guid: 5513c397b894f154498d17f811fb949b, type: 2}
+  - {fileID: 11400000, guid: 58360fb38ec9ce747ab747d69ed079d7, type: 2}
+  - {fileID: 11400000, guid: 662ac08991b4f5b45b4209392d312c7b, type: 2}
+  - {fileID: 11400000, guid: 60842698da47dd4478bda65ebf8dbb8c, type: 2}
+  recognizedText: {fileID: 0}
   spellManager: {fileID: 590111089370120790}
   mouth: {fileID: 7062876200609141023}
   playerAnimator: {fileID: 6425691076356515085}
+  recognitionThreshold: 0.85
   spellCastKey: 323
 --- !u!114 &590111089370120790
 MonoBehaviour:
@@ -3171,6 +3185,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HideCloak
   firstPersonCamera: {fileID: 3561322077568356742}
+  thirdPersonCamera: {fileID: 0}
   cloak: {fileID: 2637469738146407555}
 --- !u!1 &5885443919124521433
 GameObject:
@@ -3366,6 +3381,8 @@ MonoBehaviour:
   character: {fileID: 3580683726391601925}
   sensitivity: 2
   smoothing: 1.5
+  yMin: -90
+  yMax: 90
 --- !u!81 &7392469896060275245
 AudioListener:
   m_ObjectHideFlags: 0
