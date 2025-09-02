@@ -194,11 +194,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 399489158}
   m_CullTransparentMesh: 1
---- !u!82 &410000819 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 4551373672288408725, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-  m_PrefabInstance: {fileID: 8237277880426101281}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -498,11 +493,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &812837576 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2934301547977243489, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-  m_PrefabInstance: {fileID: 8237277880426101281}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -645,16 +635,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &876592727 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5894542900604772476, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-  m_PrefabInstance: {fileID: 8237277880426101281}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &968085890 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 6913197298611088051, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-  m_PrefabInstance: {fileID: 8237277880426101281}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1331458578
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -905,41 +885,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1596727472}
   m_CullTransparentMesh: 1
---- !u!1 &1677188333 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6200229261487304820, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-  m_PrefabInstance: {fileID: 8237277880426101281}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1677188338
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1677188333}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 298df8dc547c4aadbc576deb7d6990ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Whisper.Utils.MicrophoneRecord
-  maxLengthSec: 60
-  loop: 0
-  frequency: 44000
-  chunksLengthSec: 0.5
-  echo: 1
-  echoPosition: {fileID: 812837576}
-  useVad: 1
-  vadUpdateRateSec: 0.1
-  vadContextSec: 30
-  vadLastSec: 1.25
-  vadThd: 1
-  vadFreqThd: 100
-  vadIndicatorImage: {fileID: 1896608278}
-  vadStop: 1
-  dropVadPart: 1
-  vadStopTime: 0.5
-  microphoneDropdown: {fileID: 0}
-  microphoneDefaultLabel: Default microphone
 --- !u!1 &1754744360
 GameObject:
   m_ObjectHideFlags: 0
@@ -1249,18 +1194,6 @@ PrefabInstance:
       propertyPath: recognizedText
       value: 
       objectReference: {fileID: 1596727474}
-    - target: {fileID: 1333359562643360423, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-      propertyPath: recognitionThreshold
-      value: 0.6
-      objectReference: {fileID: 0}
-    - target: {fileID: 1807120291959698604, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1807120291959698604, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-      propertyPath: vadIndicatorImage
-      value: 
-      objectReference: {fileID: 1896608278}
     - target: {fileID: 3580683726391601925, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 29.77
@@ -1301,66 +1234,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4966461228147620054, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-      propertyPath: m_Enabled
-      value: 1
+    - target: {fileID: 5596533096327910552, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.24
+      objectReference: {fileID: 0}
+    - target: {fileID: 5596533096327910552, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.69019604
+      objectReference: {fileID: 0}
+    - target: {fileID: 5596533096327910552, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.4482454
+      objectReference: {fileID: 0}
+    - target: {fileID: 5596533096327910552, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.34231827
+      objectReference: {fileID: 0}
+    - target: {fileID: 5596533096327910552, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.45334727
       objectReference: {fileID: 0}
     - target: {fileID: 5793509697026975924, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
       propertyPath: m_Name
       value: First Person Controller
       objectReference: {fileID: 0}
-    - target: {fileID: 6425691076356515085, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-      propertyPath: chargingParticles
+    - target: {fileID: 8279561303262719019, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
+      propertyPath: vadIndicatorImage
       value: 
-      objectReference: {fileID: 968085890}
-    - target: {fileID: 6483417693356377535, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-      propertyPath: rotationSmoothTime
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7062876200609141023, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-      propertyPath: microphoneRecord
-      value: 
-      objectReference: {fileID: 1677188338}
-    - target: {fileID: 7128835791163604312, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-      propertyPath: yMax
-      value: 70
-      objectReference: {fileID: 0}
-    - target: {fileID: 8390065012401786297, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-      propertyPath: footstepAudioSource
-      value: 
-      objectReference: {fileID: 410000819}
-    - target: {fileID: 8390065012401786297, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-      propertyPath: footstepSounds.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8390065012401786297, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-      propertyPath: 'footstepSounds.Array.data[0]'
-      value: 
-      objectReference: {fileID: 8300000, guid: 7f4de86af7c3209489565670560b76c4, type: 3}
-    - target: {fileID: 8745711078365152283, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-      propertyPath: thirdPersonCamera
-      value: 
-      objectReference: {fileID: 876592727}
-    - target: {fileID: 9074433269165931761, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-      propertyPath: language
-      value: en
-      objectReference: {fileID: 0}
-    - target: {fileID: 9074433269165931761, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-      propertyPath: modelPath
-      value: Whisper/tiny.bin
-      objectReference: {fileID: 0}
-    - target: {fileID: 9074433269165931761, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-      propertyPath: flashAttention
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 1807120291959698604, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
+      objectReference: {fileID: 1896608278}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6200229261487304820, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
-      insertIndex: 2
-      addedObject: {fileID: 1677188338}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9dcde044c9a4b6547956956d32158ac0, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
