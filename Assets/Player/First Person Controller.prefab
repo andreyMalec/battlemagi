@@ -50,7 +50,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5018617467678129579
 Transform:
   m_ObjectHideFlags: 0
@@ -2479,7 +2479,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3561322077568356742}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!114 &7128835791163604312
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2577,7 +2577,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3561322077568356742}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1e10e8d7dba04a03abfdc20b22fb79ef, type: 3}
   m_Name: 
@@ -3328,6 +3328,7 @@ GameObject:
   - component: {fileID: 906687778472763878}
   - component: {fileID: 6425691076356515085}
   - component: {fileID: 8745711078365152283}
+  - component: {fileID: 6341828913972651628}
   m_Layer: 0
   m_Name: First Person Controller
   m_TagString: Untagged
@@ -3552,6 +3553,31 @@ MonoBehaviour:
   firstPersonCamera: {fileID: 3561322077568356742}
   thirdPersonCamera: {fileID: 5894542900604772476}
   cloak: {fileID: 2637469738146407555}
+--- !u!114 &6341828913972651628
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 1984460357
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1 &5885443919124521433
 GameObject:
   m_ObjectHideFlags: 0
@@ -3755,7 +3781,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5894542900604772476}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!1 &6062983158547448604
 GameObject:
   m_ObjectHideFlags: 0
@@ -3914,7 +3940,7 @@ MonoBehaviour:
   logLevel: 1
   modelPath: Whisper/tiny.bin
   isModelPathInStreamingAssets: 1
-  initOnAwake: 1
+  initOnAwake: 0
   useGpu: 1
   flashAttention: 0
   language: en
