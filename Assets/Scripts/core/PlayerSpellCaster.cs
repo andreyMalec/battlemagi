@@ -5,12 +5,19 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using FullOpaqueVFX;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine.Serialization;
 using UnityEngine;
 using UnityEngine.Events;
 using Debug = UnityEngine.Debug;
 
 public class PlayerSpellCaster : MonoBehaviour {
+    public enum Language {
+        En,
+        Ru
+    }
+
+    public Language language = Language.En;
     [Header("Available Spells")] public List<SpellData> spells = new();
 
     public TMP_Text recognizedText;
@@ -21,8 +28,7 @@ public class PlayerSpellCaster : MonoBehaviour {
 
     public KeyCode spellCastKey = KeyCode.Mouse0;
 
-    private float currentChargeTime;
-    private float maxChargeTime = 3;
+    private float _currentChargeTime;
 
     public bool IsCasting { get; private set; }
 
@@ -40,7 +46,7 @@ public class PlayerSpellCaster : MonoBehaviour {
 
     private void Update() {
         HandleSpellCasting();
-        playerAnimator.Casting(IsCasting, currentChargeTime);
+        playerAnimator.Casting(IsCasting, _currentChargeTime);
     }
 
     private void HandleSpellCasting() {
@@ -48,34 +54,63 @@ public class PlayerSpellCaster : MonoBehaviour {
             IsCasting = true;
             mouth.Open();
             recognizedText.text = "";
-        } else if (Input.GetKeyUp(spellCastKey) && IsCasting)
-            mouth.Close();
+        } else if (Input.GetKeyUp(spellCastKey) && IsCasting) {
+            if (_currentChargeTime > 0.2)
+                mouth.Close();
+        }
 
         if (IsCasting)
-            currentChargeTime += Time.deltaTime;
+            _currentChargeTime += Time.deltaTime;
     }
 
     private void CastSpell(string words) {
-        currentChargeTime = 0;
+        _currentChargeTime = 0;
         words = Regex.Replace(words, @"[\p{P}\s]", "").ToLower();
-        Debug.Log("resultSpell: " + words);
 
-        var _similarity = 0.0;
+        var log = "";
         var recognizedSpell = spells
-            .FirstOrDefault(obj => obj.spellWordsRu
-                .Any(word => {
-                    var similarity = CalculateSimilarity(words, word.ToLower());
-                    _similarity = similarity;
-                    Debug.Log($"CalculateSimilarity([{words}], {word.ToLower()}) = {similarity}");
-                    return similarity >= recognitionThreshold;
-                }));
+            .Select(spell => {
+                var r = new RecognizedSpell();
+                string[] spellWords;
+                string spellName;
+                if (language == Language.Ru) {
+                    spellWords = spell.spellWordsRu;
+                    spellName = spell.nameRu;
+                } else {
+                    spellWords = spell.spellWords;
+                    spellName = spell.name;
+                }
 
-        if (recognizedSpell != null) {
-            recognizedText.text = $"{recognizedSpell.nameRu} ({_similarity * 100:F2}%)";
-            Debug.Log("recognized spell: " + recognizedSpell.nameRu);
-            StartCoroutine(playerAnimator.CastSpell(recognizedSpell));
-            StartCoroutine(spellManager.CastSpell(recognizedSpell));
+                r.spell = spell;
+                r.similarity = spellWords.Select(word => {
+                    var s = CalculateSimilarity(words, word.ToLower());
+                    return s;
+                }).Max();
+
+                log += spellName + " ~ " + r.similarity + "; ";
+                return r;
+            }).OrderByDescending(r => r.similarity).First();
+
+        string spellName;
+        if (language == Language.Ru) {
+            spellName = recognizedSpell.spell.nameRu;
+        } else {
+            spellName = recognizedSpell.spell.name;
         }
+
+        recognizedText.text = $"{spellName} ({recognizedSpell.similarity * 100:F2}%)";
+        Debug.Log("results: " + log);
+        Debug.Log("I heard: " + words);
+        Debug.Log("recognized spell: " + spellName);
+        if (recognizedSpell.similarity >= recognitionThreshold) {
+            StartCoroutine(playerAnimator.CastSpell(recognizedSpell.spell));
+            StartCoroutine(spellManager.CastSpell(recognizedSpell.spell));
+        }
+    }
+
+    struct RecognizedSpell {
+        public SpellData spell;
+        public double similarity;
     }
 
     private static double CalculateSimilarity(string s1, string s2) {

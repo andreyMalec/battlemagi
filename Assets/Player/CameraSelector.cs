@@ -5,27 +5,27 @@ public class CameraSelector : MonoBehaviour {
     public GameObject firstPersonCamera;
     public GameObject thirdPersonCamera;
     public GameObject cloak;
-    private SkinnedMeshRenderer renderer;
+    private SkinnedMeshRenderer _renderer;
 
-    private bool isFirstPerson = true;
+    private bool _isFirstPerson = true;
 
     private void Start() {
-        renderer = cloak.GetComponent<SkinnedMeshRenderer>();
+        _renderer = cloak.GetComponent<SkinnedMeshRenderer>();
     }
 
     private void Update() {
-        if (Input.GetKeyDown(KeyCode.F5) && isFirstPerson) {
-            isFirstPerson = false;
-        } else if (Input.GetKeyDown(KeyCode.F5) && !isFirstPerson) {
-            isFirstPerson = true;
+        if (Input.GetKeyDown(KeyCode.F5) && _isFirstPerson) {
+            _isFirstPerson = false;
+        } else if (Input.GetKeyDown(KeyCode.F5) && !_isFirstPerson) {
+            _isFirstPerson = true;
         }
 
-        firstPersonCamera.SetActive(isFirstPerson);
-        thirdPersonCamera.SetActive(!isFirstPerson);
+        firstPersonCamera.SetActive(_isFirstPerson);
+        thirdPersonCamera.SetActive(!_isFirstPerson);
 
         if (firstPersonCamera.activeSelf)
-            renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
+            _renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
         else
-            renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+            _renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
     }
 }

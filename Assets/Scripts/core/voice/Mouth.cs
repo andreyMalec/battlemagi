@@ -1,13 +1,14 @@
+using System.Collections;
 using System.Diagnostics;
 using UnityEngine;
+using Voice;
 using Whisper;
-using Whisper.Utils;
 using Debug = UnityEngine.Debug;
 
 public delegate void OnMouthClose(string lastWords);
 
 public class Mouth : MonoBehaviour {
-    [Header("References")] public MicrophoneRecord microphoneRecord;
+    [Header("References")] public Voice.MicrophoneRecord microphoneRecord;
     public WhisperManager whisper;
 
     public string lastWords = "";
@@ -28,6 +29,11 @@ public class Mouth : MonoBehaviour {
     }
 
     public void Close() {
+        StartCoroutine(StopRecord());
+    }
+
+    private IEnumerator StopRecord() {
+        yield return new WaitForSeconds(0.1f);
         microphoneRecord.StopRecord();
     }
 

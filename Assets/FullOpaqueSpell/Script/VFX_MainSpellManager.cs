@@ -1,10 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace FullOpaqueVFX
-{
-    public class MainSpellManager : MonoBehaviour
-    {
+namespace FullOpaqueVFX {
+    public class MainSpellManager : MonoBehaviour {
         private CameraShake cameraShake;
         private float impactShakeStrength = 0f;
         private float impactShakeDuration = 0.2f;
@@ -13,65 +11,53 @@ namespace FullOpaqueVFX
 
         public Transform forceFieldTarget;
 
-        void Start()
-        {
-            cameraShake = FindObjectOfType<CameraShake>();
+        void Start() {
+            cameraShake = FindFirstObjectByType<CameraShake>();
 
-            if (forceFieldTarget == null)
-            {
+            if (forceFieldTarget == null) {
                 Transform child = transform.Find("ForceFieldTarget");
-                if (child != null)
-                {
+                if (child != null) {
                     forceFieldTarget = child;
                 }
             }
         }
 
-        void Update()
-        {
-            if (isTracking && target != null && forceFieldTarget != null)
-            {
+        void Update() {
+            if (isTracking && target != null && forceFieldTarget != null) {
                 forceFieldTarget.position = target.position;
             }
         }
 
-        public void SetTarget(Transform newTarget)
-        {
+        public void SetTarget(Transform newTarget) {
             target = newTarget;
         }
 
-        public void EnableTracking()
-        {
+        public void EnableTracking() {
             isTracking = true;
         }
 
-        public void OnParticleCollision(GameObject other)
-        {
-            if (cameraShake != null)
-            {
+        public void OnParticleCollision(GameObject other) {
+            if (cameraShake != null) {
                 cameraShake.Shake(impactShakeStrength, impactShakeDuration);
             }
         }
 
-        public void SetImpactShakeStrength(float strength)
-        {
+        public void SetImpactShakeStrength(float strength) {
             impactShakeStrength = strength;
         }
 
-        public void SetImpactShakeDuration(float duration)
-        {
+        public void SetImpactShakeDuration(float duration) {
             impactShakeDuration = duration;
         }
 
-        private IEnumerator CheckAndDestroy()
-        {
+        private IEnumerator CheckAndDestroy() {
             ParticleSystem[] particleSystems = GetComponentsInChildren<ParticleSystem>();
-            yield return new WaitUntil(() => System.Array.TrueForAll(particleSystems, ps => ps == null || !ps.IsAlive(true)));
+            yield return new WaitUntil(() =>
+                System.Array.TrueForAll(particleSystems, ps => ps == null || !ps.IsAlive(true)));
             Destroy(gameObject);
         }
 
-        void OnEnable()
-        {
+        void OnEnable() {
             StartCoroutine(CheckAndDestroy());
         }
     }
