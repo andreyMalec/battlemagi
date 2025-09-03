@@ -118,10 +118,9 @@ public class FirstPersonMovement : NetworkBehaviour {
     }
 
     void FixedUpdate() {
-        if (IsServer) {
-            // Сервер рассчитывает движение
-            CalculateMovement();
-        } else if (!IsOwner) {
+        // Сервер рассчитывает движение
+        CalculateMovement();
+        if (!IsOwner) {
             // Клиенты интерполируют позицию
             InterpolateMovement();
         }
