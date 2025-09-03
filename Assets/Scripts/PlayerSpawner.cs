@@ -22,8 +22,10 @@ public class PlayerSpawner : NetworkBehaviour {
         List<ulong> clientsTimedOut
     ) {
         if (IsHost && sceneName == "Game") {
+            var i = 0;
             foreach (var id in clientsCompleted) {
-                GameObject p = Instantiate(player, Vector3.zero, Quaternion.identity);
+                i++;
+                GameObject p = Instantiate(player, new Vector3(i, 0, i), Quaternion.identity);
                 p.GetComponent<NetworkObject>().SpawnAsPlayerObject(id, true);
             }
         }

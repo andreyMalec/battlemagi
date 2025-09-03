@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 
-public class GroundCheck : MonoBehaviour
-{
+public class GroundCheck : MonoBehaviour {
     [Tooltip("Maximum distance from the ground.")]
     public float distanceThreshold = .15f;
 
     [Tooltip("Whether this transform is grounded now.")]
     public bool isGrounded = true;
+
     /// <summary>
     /// Called when the ground is touched again.
     /// </summary>
@@ -16,14 +16,12 @@ public class GroundCheck : MonoBehaviour
     Vector3 RaycastOrigin => transform.position + Vector3.up * OriginOffset;
     float RaycastDistance => distanceThreshold + OriginOffset;
 
-    void LateUpdate()
-    {
+    void LateUpdate() {
         // Check if we are grounded now.
         bool isGroundedNow = Physics.Raycast(RaycastOrigin, Vector3.down, distanceThreshold * 2);
 
         // Call event if we were in the air and we are now touching the ground.
-        if (isGroundedNow && !isGrounded)
-        {
+        if (isGroundedNow && !isGrounded) {
             Grounded?.Invoke();
         }
 
@@ -31,9 +29,9 @@ public class GroundCheck : MonoBehaviour
         isGrounded = isGroundedNow;
     }
 
-    void OnDrawGizmosSelected()
-    {
+    void OnDrawGizmosSelected() {
         // Draw a line in the Editor to show whether we are touching the ground.
-        Debug.DrawLine(RaycastOrigin, RaycastOrigin + Vector3.down * RaycastDistance, isGrounded ? Color.white : Color.red);
+        Debug.DrawLine(RaycastOrigin, RaycastOrigin + Vector3.down * RaycastDistance,
+            isGrounded ? Color.white : Color.red);
     }
 }

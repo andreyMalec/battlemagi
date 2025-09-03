@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using Netcode.Transports.Facepunch;
 using Steamworks;
 using Steamworks.Data;
@@ -33,10 +34,10 @@ public class Menu : MonoBehaviour {
     private int playerCount = 0;
     private int readyCount = 0;
 
-    string m_SessionTicket;
-    string identity = "unityauthenticationservice";
-
     public void Start() {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         exit.onClick.AddListener(Application.Quit);
         buttonBackToMain.onClick.AddListener(LeaveLobby);
         buttonJoinLobby.onClick.AddListener(JoinLobby);
@@ -44,10 +45,6 @@ public class Menu : MonoBehaviour {
         buttonReady.onClick.AddListener(ToggleReady);
         buttonCopyLobbyId.onClick.AddListener(() => StartCoroutine(CopyId()));
         copyButtonText = buttonCopyLobbyId.GetComponentInChildren<TMP_Text>();
-
-        SteamUser.OnValidateAuthTicketResponse += (id, steamId, arg3) => {
-            Debug.Log($"id={id}, steamId={steamId}, arg3={arg3}");
-        };
 
         fieldJoinLobbyId.onEndEdit.AddListener(id => {
             try {
@@ -93,21 +90,17 @@ public class Menu : MonoBehaviour {
         if (lobby == null)
             return;
 
-        foreach (var member in lobby.Value.Members) {
-            if (member.Id == SteamClient.SteamId) {
-                var last = lobby.Value.GetMemberData(member, "Ready");
-                if (last == "1") {
-                    lobby.Value.SetMemberData("Ready", "0");
-                    buttonReady.GetComponent<Image>().color = Color.white;
-                    Debug.Log($"{member.Name} [{member.Id}] is now NOT_READY");
-                } else {
-                    lobby.Value.SetMemberData("Ready", "1");
-                    buttonReady.GetComponent<Image>().color = Color.chartreuse;
-                    Debug.Log($"{member.Name} [{member.Id}] is now READY");
-                }
+        var me = LobbyHolder.instance.me;
 
-                break;
-            }
+        var last = lobby.Value.GetMemberData(me, "Ready");
+        if (last == "1") {
+            lobby.Value.SetMemberData("Ready", "0");
+            buttonReady.GetComponent<Image>().color = Color.white;
+            Debug.Log($"{me.Name} [{me.Id}] is now NOT_READY");
+        } else {
+            lobby.Value.SetMemberData("Ready", "1");
+            buttonReady.GetComponent<Image>().color = Color.chartreuse;
+            Debug.Log($"{me.Name} [{me.Id}] is now READY");
         }
     }
 
@@ -123,12 +116,14 @@ public class Menu : MonoBehaviour {
 
     private void OnLobbyEntered(Lobby lobby) {
         LobbyHolder.instance.currentLobby = lobby;
+        LobbyHolder.instance.me = lobby.Members.FirstOrDefault(m => m.Id == SteamClient.SteamId);
         fieldLobbyId.text = lobby.Id.ToString();
 
         inLobby = true;
         lobbySize = lobby.MaxMembers;
 
         lobbyId = lobby.Id.Value;
+        lobby.SendChatString($"{LobbyHolder.instance.me.Name} entered lobby {lobby.Id}");
         Debug.Log($"lobby {lobbyId} entered");
 
         if (NetworkManager.Singleton.IsHost)
@@ -144,6 +139,7 @@ public class Menu : MonoBehaviour {
             lobby.SetJoinable(true);
             lobby.SetData("ReadyCount", "0");
             NetworkManager.Singleton.StartHost();
+            lobby.SendChatString($"Lobby {lobby.Id} created");
         } else {
             Debug.LogWarning("lobby creation result is not OK: " + result);
         }

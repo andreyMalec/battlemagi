@@ -14,7 +14,7 @@ public class PlayerAnimator : MonoBehaviour {
 
     private static readonly float eps = 0.05f;
     public ParticleSystem chargingParticles;
-    [Header("Animator")] public Animator animator;
+    public PlayerNetwork network;
     [Header("FirstPersonMovement")] public FirstPersonMovement movement;
 
     public float acceleration = 2f;
@@ -35,28 +35,30 @@ public class PlayerAnimator : MonoBehaviour {
     }
 
     public void Casting(bool start, float charge) {
-        animator.SetBool(CastStart, start);
-        animator.SetFloat(CastCharge, charge);
-        
+        network.AnimateBool(CastStart, start);
+        network.AnimateFloat(CastCharge, charge);
+
         var emission = chargingParticles.emission;
         emission.rateOverTime = charge * 10f;
     }
 
     public IEnumerator CastSpell(SpellData spell) {
-        animator.SetFloat(Invocation, spell.invocationIndex);
+        network.AnimateFloat(Invocation, spell.invocationIndex);
         yield return new WaitForSeconds(1f);
-        animator.SetFloat(Invocation, 0);
+        network.AnimateFloat(Invocation, 0);
     }
 
     private void Update() {
-        animator.SetBool(JumpStart, jumpStart);
-        animator.SetBool(FallStart, fallStart);
+        network.AnimateBool(JumpStart, jumpStart);
+        network.AnimateBool(FallStart, fallStart);
 
         if (fallStart)
             fallStart = false;
 
-        if (lastPositionY - movement.rb.position.y > eps && !jumpStart && !fallStart &&
-            !movement.groundCheck.isGrounded)
+        if (lastPositionY - movement.rb.position.y > eps
+            && !jumpStart
+            && !fallStart
+            && !movement.groundCheck.isGrounded)
             fallStart = true;
         lastPositionY = movement.rb.position.y;
 
@@ -82,9 +84,9 @@ public class PlayerAnimator : MonoBehaviour {
         velocityX = applyPositive(right, velocityX);
         velocityX = applyNegative(left, velocityX);
 
-        animator.SetFloat(VelocityZ, velocityZ);
-        animator.SetFloat(VelocityX, velocityX);
-        animator.SetFloat(VelocityAny, (Math.Abs(velocityZ) + Math.Abs(velocityX)) / 2);
+        network.AnimateFloat(VelocityZ, velocityZ);
+        network.AnimateFloat(VelocityX, velocityX);
+        network.AnimateFloat(VelocityAny, (Math.Abs(velocityZ) + Math.Abs(velocityX)) / 2);
 
         // Debug.Log($"forward_Z: {velocityX}; right_X: {velocityZ} maxVelocity: {maxVelocity}");
     }
