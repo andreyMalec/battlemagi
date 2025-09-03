@@ -53,11 +53,11 @@ public class FirstPersonLook : NetworkBehaviour {
         _velocity += _frameVelocity;
         _velocity.y = Mathf.Clamp(_velocity.y, yMin, yMax);
 
-        // Применяем вращение локально
+        // Применяем вращение локально (клиентская авторизация)
         firstPersonCamera.localRotation = Quaternion.AngleAxis(-_velocity.y, Vector3.right);
         transform.localRotation = Quaternion.AngleAxis(_velocity.x, Vector3.up);
 
-        // Отправляем оба угла на сервер
+        // Синхронизируем вращение с сервером
         UpdateRotationServerRpc(_velocity.x, _velocity.y);
     }
 

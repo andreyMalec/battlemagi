@@ -55,12 +55,12 @@ public class PlayerAnimator : MonoBehaviour {
         if (fallStart)
             fallStart = false;
 
-        if (lastPositionY - movement.rb.position.y > eps
+        if (lastPositionY - movement.transform.position.y > eps
             && !jumpStart
             && !fallStart
             && !movement.groundCheck.isGrounded)
             fallStart = true;
-        lastPositionY = movement.rb.position.y;
+        lastPositionY = movement.transform.position.y;
 
         if (jumpStart && movement.groundCheck.isGrounded)
             jumpStart = false;

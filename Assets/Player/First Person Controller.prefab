@@ -3164,8 +3164,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3580683726391601925}
-  - component: {fileID: 6442045902954736206}
-  - component: {fileID: 3516776423195022169}
   - component: {fileID: 6341828913972651628}
   - component: {fileID: 6916625131687324290}
   - component: {fileID: 1333359562643360423}
@@ -3177,7 +3175,7 @@ GameObject:
   - component: {fileID: 606083009552804484}
   - component: {fileID: 3595582522434657761}
   - component: {fileID: 8271153046618425552}
-  - component: {fileID: 6644683401027521673}
+  - component: {fileID: 1874046057587579816}
   m_Layer: 0
   m_Name: First Person Controller
   m_TagString: Untagged
@@ -3207,56 +3205,6 @@ Transform:
   - {fileID: 7541469663608721881}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!136 &6442045902954736206
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5793509697026975924}
-  m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.43
-  m_Height: 1.83
-  m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
---- !u!54 &3516776423195022169
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5793509697026975924}
-  serializedVersion: 5
-  m_Mass: 10
-  m_LinearDamping: 2
-  m_AngularDamping: 1
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 1
-  m_Constraints: 80
-  m_CollisionDetection: 1
 --- !u!114 &6341828913972651628
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3269,7 +3217,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 36513934
+  GlobalObjectIdHash: 784087393
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -3300,14 +3248,14 @@ MonoBehaviour:
   runSpeed: 6
   jumpDelay: 0.2
   jumpCooldown: 1
+  gravity: -9.81
   fallGravityMultiplier: 2.5
   maxFallSpeed: -25
   flySpeedMulti: 1
   runningKey: 304
   jumpKey: 32
-  jumpStrength: 25
+  jumpStrength: 2
   groundCheck: {fileID: 6466238404988819252}
-  rb: {fileID: 3516776423195022169}
 --- !u!114 &1333359562643360423
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3427,7 +3375,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerNetwork
   ShowTopMostFoldoutHeaderGroup: 1
   animator: {fileID: 2677033096835765677}
-  rb: {fileID: 3516776423195022169}
+  rb: {fileID: 0}
 --- !u!114 &8745711078365152283
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3482,7 +3430,7 @@ MonoBehaviour:
   RotationMaxInterpolationTime: 0.05
   ScaleLerpSmoothing: 1
   ScaleMaxInterpolationTime: 0.1
-  AuthorityMode: 0
+  AuthorityMode: 1
   TickSyncChildren: 1
   UseUnreliableDeltas: 1
   SyncPositionX: 1
@@ -3527,23 +3475,31 @@ MonoBehaviour:
   rotationSmoothTime: 0.2
   offset: {x: 0, y: 0, z: 0.3}
   rotation: {x: -40, y: -30, z: 20}
---- !u!114 &6644683401027521673
-MonoBehaviour:
+--- !u!143 &1874046057587579816
+CharacterController:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5793509697026975924}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkRigidbody
-  ShowTopMostFoldoutHeaderGroup: 1
-  NetworkRigidbodyBaseExpanded: 0
-  UseRigidBodyForMotion: 1
-  AutoUpdateKinematicState: 1
-  AutoSetKinematicOnDespawn: 1
+  serializedVersion: 3
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &5885443919124521433
 GameObject:
   m_ObjectHideFlags: 0
