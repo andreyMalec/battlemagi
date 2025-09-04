@@ -1,116 +1,221 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading;
 using UnityEngine;
-using Steamworks;
 using Unity.Netcode;
+using Steamworks;
 
 public class SteamVoiceChat : NetworkBehaviour {
-    public float voiceChatRange = 15f;
+    [Header("Voice settings")] public float voiceChatRange = 15f;
+    public float bufferSeconds = 2.0f; // длина внутреннего буфера клипа
 
-    private Dictionary<SteamId, AudioSource> audioSources = new Dictionary<SteamId, AudioSource>();
+    private int sampleRate;
+    private int clipLengthSamples;
 
-    private int optimalRate;
-    private int clipBufferSize;
+    // Потоковые данные на игрока
+    private class VoiceStream {
+        public AudioSource source;
+        public AudioClip clip;
+        public Queue<float> queue = new Queue<float>(8192);
+        public AudioClip.PCMReaderCallback reader; // держим ссылку, чтобы GC не собрал
+        public AudioClip.PCMSetPositionCallback setPosition; // опционально
+        public object lockObj = new object();
+    }
 
-    private void Start() {
-        optimalRate = (int)SteamUser.OptimalSampleRate;
-        clipBufferSize = optimalRate * 5;
+    // SteamId → VoiceStream
+    private readonly Dictionary<SteamId, VoiceStream> streams = new Dictionary<SteamId, VoiceStream>();
+
+    private void OnEnable() {
+        sampleRate = (int)SteamUser.OptimalSampleRate;
+        clipLengthSamples = Mathf.Max(1, Mathf.RoundToInt(sampleRate * bufferSeconds));
+
+        if (PlayerManager.Instance != null) {
+            PlayerManager.Instance.OnPlayerAdded += HandlePlayerAdded;
+            PlayerManager.Instance.OnPlayerRemoved += HandlePlayerRemoved;
+
+            // На случай, если кто-то уже был в момент включения
+            foreach (var kv in PlayerManager.Instance.GetAllPlayers())
+                HandlePlayerAdded(kv.Key, kv.Value);
+        } else {
+            Debug.LogWarning("[SteamVoiceChat] PlayerManager.Instance is null");
+        }
+    }
+
+    public override void OnNetworkSpawn() {
+        base.OnNetworkSpawn();
 
         if (IsOwner) {
             SteamUser.VoiceRecord = true;
-            Debug.Log("[SteamVoiceChat] Голосовая запись включена для локального игрока");
+            Debug.Log("[SteamVoiceChat] Local voice recording enabled");
+        } else {
+            GetComponent<AudioListener>().enabled = false;
+        }
+    }
+
+    private void OnDisable() {
+        if (PlayerManager.Instance != null) {
+            PlayerManager.Instance.OnPlayerAdded -= HandlePlayerAdded;
+            PlayerManager.Instance.OnPlayerRemoved -= HandlePlayerRemoved;
         }
 
-        if (!IsOwner)
-            GetComponent<AudioListener>().enabled = false;
+        foreach (var vs in streams.Values) {
+            if (vs.source) vs.source.Stop();
+            if (vs.source) Destroy(vs.source.gameObject);
+        }
+
+        streams.Clear();
     }
 
     private void Update() {
         if (!SteamClient.IsValid) return;
 
+        // Считываем локальный микрофон и рассылаем всем
         if (IsOwner && SteamUser.HasVoiceData) {
-            using var stream = new MemoryStream();
-            int compressedWritten = SteamUser.ReadVoiceData(stream);
-            if (compressedWritten > 0) {
-                Debug.Log($"[SteamVoiceChat] Прочитано {compressedWritten} байт голоса, отправляем другим игрокам");
-                SendVoice(stream.GetBuffer(), compressedWritten);
+            using (var stream = new MemoryStream()) {
+                int compressedBytes = SteamUser.ReadVoiceData(stream);
+                if (compressedBytes > 0) {
+                    var buf = stream.GetBuffer();
+                    SteamId me = SteamClient.SteamId;
+
+                    foreach (var member in LobbyHolder.instance.currentLobby?.Members) {
+                        if (member.Id == me) continue;
+                        SteamNetworking.SendP2PPacket(member.Id, buf, compressedBytes, 0, P2PSend.Unreliable);
+                    }
+
+                    Debug.Log($"[SteamVoiceChat] Sent {compressedBytes} bytes to peers");
+                }
             }
         }
 
-        ReceiveVoice();
-    }
-
-    private void SendVoice(byte[] data, int size) {
-        SteamId localPlayer = SteamClient.SteamId;
-
-        foreach (var friend in LobbyHolder.instance.currentLobby?.Members) {
-            if (friend.Id == localPlayer) continue;
-
-            SteamNetworking.SendP2PPacket(friend.Id, data, size, 0, P2PSend.Unreliable);
-            Debug.Log($"[SteamVoiceChat] Отправлен голос игроку {friend.Id} ({size} байт)");
-        }
-    }
-
-    private void ReceiveVoice() {
+        // Принимаем пакеты
         while (SteamNetworking.IsP2PPacketAvailable()) {
-            var packet = SteamNetworking.ReadP2PPacket();
-            if (packet.HasValue) {
-                Debug.Log(
-                    $"[SteamVoiceChat] Получен пакет голоса от {packet.Value.SteamId}, размер {packet.Value.Data.Length} байт");
-                ProcessVoicePacket(packet.Value.SteamId, packet.Value.Data);
+            var pkt = SteamNetworking.ReadP2PPacket();
+            if (pkt.HasValue) {
+                var from = pkt.Value.SteamId;
+                var data = pkt.Value.Data;
+                // Декодируем и ставим в очередь
+                ProcessIncomingVoice(from, data);
             }
         }
     }
 
-    private void ProcessVoicePacket(SteamId steamId, byte[] voiceData) {
-        if (!audioSources.ContainsKey(steamId)) {
-            Transform playerTransform = PlayerManager.Instance.GetPlayerTransform(steamId);
-            if (playerTransform == null) {
-                Debug.LogWarning($"[SteamVoiceChat] Нет Transform для {steamId}, голос не будет воспроизведён");
+    // ===== PlayerManager events =====
+    private void HandlePlayerAdded(SteamId sid, Transform playerTransform) {
+        if (streams.ContainsKey(sid)) return;
+
+        // Создаём объект-источник звука у игрока
+        var go = new GameObject($"Voice_{sid}");
+        go.transform.SetParent(playerTransform);
+        go.transform.localPosition = Vector3.zero;
+
+        var src = go.AddComponent<AudioSource>();
+        src.playOnAwake = true;
+        src.loop = true;
+        src.spatialBlend = 1f;
+        src.minDistance = 1f;
+        src.maxDistance = voiceChatRange;
+        src.rolloffMode = AudioRolloffMode.Linear;
+        src.dopplerLevel = 0f;
+
+        var vs = new VoiceStream();
+        vs.source = src;
+
+        // Создаём стриминговый клип с PCM-callback (никаких SetData!)
+        vs.reader = data => PcmRead(sid, data);
+        vs.setPosition = pos => {
+            /* можно логать, но не обязательно */
+        };
+
+        vs.clip = AudioClip.Create($"VoiceClip {sid}", clipLengthSamples, 1, sampleRate, true, vs.reader,
+            vs.setPosition);
+        src.clip = vs.clip;
+        src.Play();
+
+        streams[sid] = vs;
+
+        Debug.Log(
+            $"[SteamVoiceChat] Created streaming AudioSource for {sid} (rate={sampleRate}, len={clipLengthSamples})");
+    }
+
+    private void HandlePlayerRemoved(SteamId sid) {
+        if (streams.TryGetValue(sid, out var vs)) {
+            if (vs.source) vs.source.Stop();
+            if (vs.source) Destroy(vs.source.gameObject);
+            streams.Remove(sid);
+            Debug.Log($"[SteamVoiceChat] Destroyed AudioSource for {sid}");
+        }
+    }
+
+    // ===== Audio streaming =====
+    private void PcmRead(SteamId sid, float[] data) {
+        // Этот коллбэк вызывается аудио-потоком Unity.
+        if (!streams.TryGetValue(sid, out var vs)) {
+            // Кто-то уже удалился — заполняем тишиной
+            Array.Clear(data, 0, data.Length);
+            return;
+        }
+
+        int i = 0;
+        lock (vs.lockObj) {
+            // Снимаем сэмплы из очереди
+            while (i < data.Length && vs.queue.Count > 0) {
+                data[i++] = vs.queue.Dequeue();
+            }
+        }
+
+        // Если не хватило, добиваем тишиной
+        for (; i < data.Length; i++)
+            data[i] = 0f;
+    }
+
+    private void EnqueueSamples(SteamId sid, float[] samples) {
+        if (!streams.TryGetValue(sid, out var vs)) {
+            // Ещё не создан источник (новичок?) — просто игнорируем пакет или можно накопить в temp-буфере
+            Debug.LogWarning($"[SteamVoiceChat] Voice from {sid} but stream not ready yet");
+            return;
+        }
+
+        lock (vs.lockObj) {
+            // Ограничим размер очереди, чтобы не росла бесконечно (например, x4 длины клипа)
+            int maxQueue = clipLengthSamples * 4;
+            if (vs.queue.Count > maxQueue) {
+                // если очередь переполнена — подчистим (дропнем лишнее)
+                int drop = vs.queue.Count - maxQueue;
+                for (int i = 0; i < drop; i++) vs.queue.Dequeue();
+                Debug.LogWarning($"[SteamVoiceChat] Queue overflow for {sid}, dropping {drop} samples");
+            }
+
+            for (int i = 0; i < samples.Length; i++)
+                vs.queue.Enqueue(samples[i]);
+        }
+    }
+
+    private void ProcessIncomingVoice(SteamId from, byte[] voiceData) {
+        // Распаковка из Steam (16-бит PCM little-endian)
+        using (var input = new MemoryStream(voiceData))
+        using (var output = new MemoryStream()) {
+            int uncompressedBytes = SteamUser.DecompressVoice(input, voiceData.Length, output);
+
+            if (uncompressedBytes <= 0) {
+                Debug.LogWarning($"[SteamVoiceChat] Decompress failed from {from}");
                 return;
             }
 
-            GameObject go = new GameObject($"Voice_{steamId}");
-            go.transform.SetParent(playerTransform);
-            go.transform.localPosition = Vector3.zero;
+            byte[] buf = output.GetBuffer();
+            int sampleCount = uncompressedBytes / 2;
 
-            AudioSource source = go.AddComponent<AudioSource>();
-            source.spatialBlend = 1f;
-            source.loop = true;
-            source.playOnAwake = true;
-            source.minDistance = 1f;
-            source.maxDistance = voiceChatRange;
-
-            source.clip = AudioClip.Create($"VoiceClip_{steamId}", clipBufferSize, 1, optimalRate, true);
-            source.Play();
-
-            audioSources[steamId] = source;
-
-            Debug.Log($"[SteamVoiceChat] Создан новый AudioSource для {steamId}");
-        }
-
-        AudioSource audioSource = audioSources[steamId];
-
-        using var input = new MemoryStream(voiceData);
-        using var output = new MemoryStream();
-
-        int uncompressedWritten = SteamUser.DecompressVoice(input, voiceData.Length, output);
-
-        if (uncompressedWritten > 0) {
-            byte[] buffer = output.GetBuffer();
-            float[] samples = new float[uncompressedWritten / 2];
-
-            for (int i = 0; i < uncompressedWritten; i += 2) {
-                short sample = (short)(buffer[i] | buffer[i + 1] << 8);
-                samples[i / 2] = sample / 32767.0f;
+            // Конвертация short → float [-1..1]
+            var samples = new float[sampleCount];
+            int bi = 0;
+            for (int si = 0; si < sampleCount; si++, bi += 2) {
+                short s = (short)(buf[bi] | (buf[bi + 1] << 8));
+                samples[si] = s / 32768f;
             }
 
-            audioSource.clip.SetData(samples, 0);
-            Debug.Log(
-                $"[SteamVoiceChat] Декомпрессия успешна: {uncompressedWritten} байт → {samples.Length} сэмплов для {steamId}");
-        } else {
-            Debug.LogWarning($"[SteamVoiceChat] Не удалось декомпрессировать голосовые данные от {steamId}");
+            EnqueueSamples(from, samples);
+            Debug.Log($"[SteamVoiceChat] From {from}: {uncompressedBytes} bytes → {sampleCount} samples (enqueued)");
         }
     }
 }

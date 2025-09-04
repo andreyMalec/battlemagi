@@ -3176,6 +3176,8 @@ GameObject:
   - component: {fileID: 606083009552804484}
   - component: {fileID: 3595582522434657761}
   - component: {fileID: 1874046057587579816}
+  - component: {fileID: 1540340668546877596}
+  - component: {fileID: 2342397811680414283}
   m_Layer: 0
   m_Name: First Person Controller
   m_TagString: Untagged
@@ -3217,7 +3219,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 36513934
+  GlobalObjectIdHash: 784087393
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -3490,6 +3492,29 @@ CharacterController:
   m_SkinWidth: 0.0001
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &1540340668546877596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0b6df829b7e4169a8bddf1418e78266, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SteamVoiceChat
+  ShowTopMostFoldoutHeaderGroup: 1
+  voiceChatRange: 15
+  bufferSeconds: 1
+--- !u!81 &2342397811680414283
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
 --- !u!1 &5885443919124521433
 GameObject:
   m_ObjectHideFlags: 0
@@ -3724,8 +3749,6 @@ GameObject:
   - component: {fileID: 4566222397654007818}
   - component: {fileID: 7062876200609141023}
   - component: {fileID: 8279561303262719019}
-  - component: {fileID: 1896892059355754975}
-  - component: {fileID: 8565704557057376358}
   m_Layer: 0
   m_Name: Mouth
   m_TagString: Untagged
@@ -3792,28 +3815,6 @@ MonoBehaviour:
   vadStopTime: 0.5
   microphoneDropdown: {fileID: 0}
   microphoneDefaultLabel: Default microphone
---- !u!81 &1896892059355754975
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6200229261487304820}
-  m_Enabled: 1
---- !u!114 &8565704557057376358
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6200229261487304820}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0b6df829b7e4169a8bddf1418e78266, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SteamVoiceChat
-  ShowTopMostFoldoutHeaderGroup: 1
-  voiceChatRange: 15
 --- !u!1 &6230359408947430596
 GameObject:
   m_ObjectHideFlags: 0
