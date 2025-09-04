@@ -12,15 +12,12 @@ public class PlayerNetwork : NetworkBehaviour {
     [SerializeField] private Camera mainCamera;
     [SerializeField] private Rig hand;
     [SerializeField] private Rig spine;
-    
-    public NetworkVariable<ulong> steamId = new NetworkVariable<ulong>();
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
 
         if (IsOwner) {
             mainCamera.GetComponent<Camera>().depth = 100;
-            SetSteamIDServerRpc(SteamClient.SteamId.Value);
         } else {
             foreach (var script in scriptsToDisable) {
                 script.enabled = false;
@@ -34,21 +31,6 @@ public class PlayerNetwork : NetworkBehaviour {
             spine.weight *= 3f;
             mainCamera.GetComponent<Camera>().enabled = false;
         }
-
-        Debug.Log($"OnNetworkSpawn id={steamId.Value}");
-        LobbyHolder.instance.players[steamId.Value] = gameObject;
-    }
-    
-    [ServerRpc]
-    private void SetSteamIDServerRpc(ulong _steamId)
-    {
-        steamId.Value = _steamId;
-    }
-
-    public override void OnNetworkDespawn() {
-        base.OnNetworkDespawn();
-
-        LobbyHolder.instance.players.Remove(steamId.Value);
     }
 
     public void AnimateBool(int key, bool value) {
