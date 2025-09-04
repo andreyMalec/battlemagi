@@ -2483,8 +2483,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5596533096327910552}
-  - component: {fileID: 3860984780299608430}
-  - component: {fileID: 7674627141929215356}
   m_Layer: 0
   m_Name: Hand IK Target
   m_TagString: Untagged
@@ -2508,62 +2506,6 @@ Transform:
   - {fileID: 6404953993623198568}
   m_Father: {fileID: 2934301547977243489}
   m_LocalEulerAnglesHint: {x: -68.3, y: -10.3, z: -59.6}
---- !u!33 &3860984780299608430
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3592863415251667902}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &7674627141929215356
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3592863415251667902}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 6c54ebe36e09f3d4785a434e84f6dd4c, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &3793347809841510759
 GameObject:
   m_ObjectHideFlags: 0
@@ -3224,6 +3166,7 @@ GameObject:
   - component: {fileID: 3580683726391601925}
   - component: {fileID: 6341828913972651628}
   - component: {fileID: 6916625131687324290}
+  - component: {fileID: 8271153046618425552}
   - component: {fileID: 1333359562643360423}
   - component: {fileID: 590111089370120790}
   - component: {fileID: 906687778472763878}
@@ -3232,7 +3175,6 @@ GameObject:
   - component: {fileID: 8745711078365152283}
   - component: {fileID: 606083009552804484}
   - component: {fileID: 3595582522434657761}
-  - component: {fileID: 8271153046618425552}
   - component: {fileID: 1874046057587579816}
   m_Layer: 0
   m_Name: First Person Controller
@@ -3301,19 +3243,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  speed: 3
-  canRun: 1
-  runSpeed: 6
-  jumpDelay: 0.2
-  jumpCooldown: 1
-  gravity: -9.81
-  fallGravityMultiplier: 2.5
-  maxFallSpeed: -25
-  flySpeedMulti: 1
-  runningKey: 304
-  jumpKey: 32
-  jumpStrength: 1
+  movementSettings: {fileID: 11400000, guid: 99067fe211a078d4bbfdb64adec90669, type: 2}
   groundCheck: {fileID: 6466238404988819252}
+--- !u!114 &8271153046618425552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec72980442fddac4d86e75ab24b4d027, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  lookSettings: {fileID: 11400000, guid: 5e09a9892218f1a49acfc9e000c99915, type: 2}
+  firstPersonCamera: {fileID: 2934301547977243489}
+  headBone: {fileID: 1832813403216849233}
 --- !u!114 &1333359562643360423
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3519,29 +3466,6 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 0
   SlerpPosition: 1
---- !u!114 &8271153046618425552
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5793509697026975924}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec72980442fddac4d86e75ab24b4d027, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  firstPersonCamera: {fileID: 2934301547977243489}
-  sensitivity: 2
-  smoothing: 1.5
-  yMin: -90
-  yMax: 70
-  headBone: {fileID: 1832813403216849233}
-  positionSmoothTime: 0.01
-  rotationSmoothTime: 0.2
-  offset: {x: 0, y: 0, z: 0.3}
-  rotation: {x: -40, y: -30, z: 20}
 --- !u!143 &1874046057587579816
 CharacterController:
   m_ObjectHideFlags: 0

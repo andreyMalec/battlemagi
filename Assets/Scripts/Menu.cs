@@ -31,7 +31,6 @@ public class Menu : MonoBehaviour {
     private bool inLobby = false;
     private UInt64 lobbyId = 0;
     private int lobbySize = 4;
-    private int playerCount = 0;
     private int readyCount = 0;
 
     public void Start() {
