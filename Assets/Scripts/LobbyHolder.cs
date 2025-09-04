@@ -11,4 +11,8 @@ public class LobbyHolder : MonoBehaviour {
         instance = this;
         DontDestroyOnLoad(gameObject);
     }
+
+    private void OnApplicationQuit() {
+        currentLobby?.Leave();
+    }
 }

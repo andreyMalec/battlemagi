@@ -3,47 +3,33 @@ using Steamworks;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 public class PlayerNetwork : NetworkBehaviour {
     [SerializeField] private Animator animator;
-    [SerializeField] private Rigidbody rb;
+    [SerializeField] private Behaviour[] scriptsToDisable;
+    [SerializeField] private GameObject[] objectsToDisable;
+    [SerializeField] private Camera mainCamera;
+    [SerializeField] private Rig hand;
+    [SerializeField] private Rig spine;
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
 
         if (IsOwner) {
-            GetComponentInChildren<Camera>().depth = 100;
-            // GetComponent<NetworkTransform>().Interpolate = false;
+            mainCamera.GetComponent<Camera>().depth = 100;
         } else {
-            GetComponent<PlayerSpellCaster>().enabled = false;
-            GetComponent<SpellManager>().enabled = false;
-            GetComponent<ShowCursor>().enabled = false;
-            GetComponent<CameraSelector>().enabled = false;
-            GetComponentInChildren<GroundCheck>().gameObject.SetActive(false);
-            GetComponentInChildren<Mouth>().gameObject.SetActive(false);
-            GetComponentInChildren<Camera>().gameObject.SetActive(false);
-            // GetComponent<NetworkTransform>().Interpolate = true;
-        }
-    }
+            foreach (var script in scriptsToDisable) {
+                script.enabled = false;
+            }
 
-    public void LocalRotate(Quaternion quaternion) {
-        if (IsOwner) {
-            transform.localRotation = quaternion;
-            LocalRotateServerRpc(quaternion);
-        }
-    }
+            foreach (var obj in objectsToDisable) {
+                obj.SetActive(false);
+            }
 
-    public void LinearVelocity(Vector3 velocity) {
-        if (IsOwner) {
-            // rb.linearVelocity = velocity;
-            LinearVelocityServerRpc(velocity);
-        }
-    }
-
-    public void LinearVelocityPlus(Vector3 velocity) {
-        if (IsOwner) {
-            // rb.linearVelocity += velocity;
-            LinearVelocityPlusServerRpc(velocity);
+            hand.weight = 0f;
+            spine.weight *= 3f;
+            mainCamera.GetComponent<Camera>().enabled = false;
         }
     }
 
@@ -62,21 +48,6 @@ public class PlayerNetwork : NetworkBehaviour {
     }
 
 //=====================================================
-    [ServerRpc]
-    private void LocalRotateServerRpc(Quaternion quaternion) {
-        transform.localRotation = quaternion;
-    }
-
-    [ServerRpc]
-    private void LinearVelocityServerRpc(Vector3 velocity) {
-        rb.linearVelocity = velocity;
-    }
-
-    [ServerRpc]
-    private void LinearVelocityPlusServerRpc(Vector3 velocity) {
-        rb.linearVelocity += velocity;
-    }
-
 
     [ServerRpc]
     private void AnimateBoolServerRpc(int key, bool value) {

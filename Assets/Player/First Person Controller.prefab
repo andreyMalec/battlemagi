@@ -945,10 +945,10 @@ MonoBehaviour:
     m_Bits: 0
   outsideUpdate: 0
   increasedAccuracy: 1
-  fixKnee: 0
+  fixKnee: 1
   footConstraint: 0
   m_MaxStepHeight: 0.5
-  m_FootHeightOffset: 0.265
+  m_FootHeightOffset: 0.27
   leftEnabled: 1
   rightEnabled: 1
   m_DistancePower: 1
@@ -2483,6 +2483,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5596533096327910552}
+  - component: {fileID: 3860984780299608430}
+  - component: {fileID: 7674627141929215356}
   m_Layer: 0
   m_Name: Hand IK Target
   m_TagString: Untagged
@@ -2500,12 +2502,68 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.4482454, y: -0.34231827, z: -0.45334727, w: 0.69019604}
   m_LocalPosition: {x: -0.09000015, y: 0.049999952, z: 0.24}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.07, y: 0.07, z: 0.07}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6404953993623198568}
   m_Father: {fileID: 2934301547977243489}
   m_LocalEulerAnglesHint: {x: -68.3, y: -10.3, z: -59.6}
+--- !u!33 &3860984780299608430
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3592863415251667902}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &7674627141929215356
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3592863415251667902}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 6c54ebe36e09f3d4785a434e84f6dd4c, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &3793347809841510759
 GameObject:
   m_ObjectHideFlags: 0
@@ -3217,7 +3275,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 784087393
+  GlobalObjectIdHash: 36513934
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -3254,7 +3312,7 @@ MonoBehaviour:
   flySpeedMulti: 1
   runningKey: 304
   jumpKey: 32
-  jumpStrength: 2
+  jumpStrength: 1
   groundCheck: {fileID: 6466238404988819252}
 --- !u!114 &1333359562643360423
 MonoBehaviour:
@@ -3375,7 +3433,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerNetwork
   ShowTopMostFoldoutHeaderGroup: 1
   animator: {fileID: 2677033096835765677}
-  rb: {fileID: 0}
+  scriptsToDisable:
+  - {fileID: 8745711078365152283}
+  - {fileID: 1333359562643360423}
+  - {fileID: 590111089370120790}
+  - {fileID: 906687778472763878}
+  objectsToDisable:
+  - {fileID: 6200229261487304820}
+  mainCamera: {fileID: 4966461228147620054}
+  hand: {fileID: 5425730970260597492}
+  spine: {fileID: 52562134939335665}
 --- !u!114 &8745711078365152283
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3431,7 +3498,7 @@ MonoBehaviour:
   ScaleLerpSmoothing: 1
   ScaleMaxInterpolationTime: 0.1
   AuthorityMode: 1
-  TickSyncChildren: 1
+  TickSyncChildren: 0
   UseUnreliableDeltas: 1
   SyncPositionX: 1
   SyncPositionY: 1
@@ -3493,11 +3560,11 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 2
+  m_Height: 1.8
   m_Radius: 0.5
   m_SlopeLimit: 45
   m_StepOffset: 0.3
-  m_SkinWidth: 0.08
+  m_SkinWidth: 0.0001
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &5885443919124521433

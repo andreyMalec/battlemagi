@@ -12,9 +12,16 @@ public class ReturnToMenu : MonoBehaviour {
 
     private void OnDisable() {
         SteamMatchmaking.OnLobbyMemberDisconnected += OnLobbyMemberDisconnected;
+        SteamMatchmaking.OnLobbyMemberLeave += OnLobbyMemberDisconnected;
+        SteamMatchmaking.OnLobbyMemberKicked += OnLobbyMemberKicked;
+    }
+
+    private void OnLobbyMemberKicked(Lobby lobby, Friend member, Friend owner) {
+        Debug.Log($"{owner.Name} kicked {member.Name}");
     }
 
     private void OnLobbyMemberDisconnected(Lobby lobby, Friend friend) {
+        Debug.Log($"{friend.Name} disconnected");
         if (lobby.Owner.Id == friend.Id) {
             Leave(lobby);
         }
