@@ -879,7 +879,6 @@ public class FootControllerIK : MonoBehaviour {
             return Mathf.Acos(Mathf.Clamp(
                 ((targetDistance * targetDistance) + (LowerLengthSquared) - (UpperLengthSquared)) /
                 (2 * targetDistance * LowerLength), -1, 1)) * Mathf.Rad2Deg;
-            ;
         }
 
         /// <summary>
@@ -891,7 +890,6 @@ public class FootControllerIK : MonoBehaviour {
             return Mathf.Acos(Mathf.Clamp(
                 ((targetDistance * targetDistance) + (UpperLengthSquared) - (LowerLengthSquared)) /
                 (2 * targetDistance * UpperLength), -1, 1)) * Mathf.Rad2Deg;
-            ;
         }
     }
 }

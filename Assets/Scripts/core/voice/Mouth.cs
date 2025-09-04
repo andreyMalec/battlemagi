@@ -9,13 +9,14 @@ public delegate void OnMouthClose(string lastWords);
 
 public class Mouth : MonoBehaviour {
     [Header("References")] public Voice.MicrophoneRecord microphoneRecord;
-    public WhisperManager whisper;
+    private WhisperManager whisper;
 
     public string lastWords = "";
 
     public event OnMouthClose OnMouthClose;
 
     private void Awake() {
+        whisper = WhisperHolder.instance.whisper;
         whisper.OnNewSegment += OnNewSegment;
         microphoneRecord.OnRecordStop += OnRecordStop;
     }

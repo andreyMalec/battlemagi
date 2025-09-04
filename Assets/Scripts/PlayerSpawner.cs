@@ -25,7 +25,7 @@ public class PlayerSpawner : NetworkBehaviour {
             var i = 0;
             foreach (var id in clientsCompleted) {
                 i++;
-                GameObject p = Instantiate(player, new Vector3(i, 0, i), Quaternion.identity);
+                GameObject p = Instantiate(player, new Vector3(i * 10, 3, i * 10), Quaternion.identity);
                 p.GetComponent<NetworkObject>().SpawnAsPlayerObject(id, true);
             }
         }

@@ -162,6 +162,7 @@ public class Menu : MonoBehaviour {
         LobbyHolder.instance.currentLobby?.Leave();
         LobbyHolder.instance.currentLobby = null;
         NetworkManager.Singleton.Shutdown();
+        buttonReady.GetComponent<Image>().color = Color.white;
     }
 
     private void OnEnable() {

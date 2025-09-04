@@ -37,6 +37,7 @@ public class ReturnToMenu : MonoBehaviour {
 
     private void Leave(Lobby lobby) {
         lobby.Leave();
+        LobbyHolder.instance.players.Clear();
         LobbyHolder.instance.currentLobby = null;
         NetworkManager.Singleton.Shutdown();
         SceneManager.LoadScene("MainMenu");

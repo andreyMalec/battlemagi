@@ -7,19 +7,19 @@ public class FirstPersonLook : NetworkBehaviour {
     [SerializeField] private Transform headBone;
 
     // Сетевые переменные
-    private readonly NetworkVariable<Vector2> syncRotation = new(
+    private readonly NetworkVariable<Vector2> _syncRotation = new(
         Vector2.zero,
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Owner
     );
 
-    private Vector2 currentRotation;
-    private Vector2 frameVelocity;
-    private Vector3 positionVelocity;
+    private Vector2 _currentRotation;
+    private Vector2 _frameVelocity;
+    private Vector3 _positionVelocity;
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
-        syncRotation.OnValueChanged += OnRotationChanged;
+        _syncRotation.OnValueChanged += OnRotationChanged;
 
         if (!IsOwner)
             ApplyRemoteRotation();
@@ -27,12 +27,12 @@ public class FirstPersonLook : NetworkBehaviour {
 
     public override void OnNetworkDespawn() {
         base.OnNetworkDespawn();
-        syncRotation.OnValueChanged -= OnRotationChanged;
+        _syncRotation.OnValueChanged -= OnRotationChanged;
     }
 
     private void OnRotationChanged(Vector2 _, Vector2 newValue) {
         if (!IsOwner) {
-            currentRotation = newValue;
+            _currentRotation = newValue;
             ApplyRemoteRotation();
         }
     }
@@ -54,38 +54,36 @@ public class FirstPersonLook : NetworkBehaviour {
         Vector2 mouseDelta = new(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"));
         Vector2 rawFrameVelocity = Vector2.Scale(mouseDelta, Vector2.one * lookSettings.sensitivity);
 
-        frameVelocity = Vector2.Lerp(frameVelocity, rawFrameVelocity, 1 / lookSettings.smoothing);
-        currentRotation += frameVelocity;
-        currentRotation.y = Mathf.Clamp(currentRotation.y, lookSettings.yMin, lookSettings.yMax);
+        _frameVelocity = Vector2.Lerp(_frameVelocity, rawFrameVelocity, 1 / lookSettings.smoothing);
+        _currentRotation += _frameVelocity;
+        _currentRotation.y = Mathf.Clamp(_currentRotation.y, lookSettings.yMin, lookSettings.yMax);
     }
 
     private void ApplyLocalRotation() {
-        firstPersonCamera.localRotation = Quaternion.AngleAxis(-currentRotation.y, Vector3.right);
-        transform.localRotation = Quaternion.AngleAxis(currentRotation.x, Vector3.up);
+        firstPersonCamera.localRotation = Quaternion.AngleAxis(-_currentRotation.y, Vector3.right);
+        transform.localRotation = Quaternion.AngleAxis(_currentRotation.x, Vector3.up);
     }
 
     private void SyncRotation() {
-        if (syncRotation.Value != currentRotation)
-            syncRotation.Value = currentRotation;
+        if (_syncRotation.Value != _currentRotation)
+            _syncRotation.Value = _currentRotation;
     }
 
     private void ApplyRemoteRotation() {
         if (!IsOwner && IsSpawned) {
-            transform.localRotation = Quaternion.AngleAxis(currentRotation.x, Vector3.up);
-            firstPersonCamera.localRotation = Quaternion.AngleAxis(-currentRotation.y, Vector3.right);
+            transform.localRotation = Quaternion.AngleAxis(_currentRotation.x, Vector3.up);
+            firstPersonCamera.localRotation = Quaternion.AngleAxis(-_currentRotation.y, Vector3.right);
         }
     }
 
     private void LateUpdate() => UpdateCameraPosition();
 
     private void UpdateCameraPosition() {
-        if (headBone == null || firstPersonCamera == null) return;
-
         Vector3 targetPosition = headBone.position + headBone.TransformDirection(lookSettings.offset);
         firstPersonCamera.position = Vector3.SmoothDamp(
             firstPersonCamera.position,
             targetPosition,
-            ref positionVelocity,
+            ref _positionVelocity,
             lookSettings.positionSmoothTime
         );
 
