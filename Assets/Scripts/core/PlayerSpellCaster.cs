@@ -20,7 +20,6 @@ public class PlayerSpellCaster : MonoBehaviour {
     public Language language = Language.En;
     [Header("Available Spells")] public List<SpellData> spells = new();
 
-    public TMP_Text recognizedText;
     public SpellManager spellManager;
     public Mouth mouth;
     public PlayerAnimator playerAnimator;
@@ -53,7 +52,6 @@ public class PlayerSpellCaster : MonoBehaviour {
         if (Input.GetKeyDown(spellCastKey) && !IsCasting) {
             IsCasting = true;
             mouth.Open();
-            recognizedText.text = "";
         } else if (Input.GetKeyUp(spellCastKey) && IsCasting) {
             if (_currentChargeTime > 0.2)
                 mouth.Close();
@@ -98,10 +96,9 @@ public class PlayerSpellCaster : MonoBehaviour {
             spellName = recognizedSpell.spell.name;
         }
 
-        recognizedText.text = $"{spellName} ({recognizedSpell.similarity * 100:F2}%)";
         Debug.Log("results: " + log);
         Debug.Log("I heard: " + words);
-        Debug.Log("recognized spell: " + spellName);
+        Debug.Log($"{spellName} ({recognizedSpell.similarity * 100:F2}%)");
         if (recognizedSpell.similarity >= recognitionThreshold) {
             StartCoroutine(playerAnimator.CastSpell(recognizedSpell.spell));
             StartCoroutine(spellManager.CastSpell(recognizedSpell.spell));

@@ -1,8 +1,9 @@
 using System;
 using System.Collections;
+using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerAnimator : MonoBehaviour {
+public class PlayerAnimator : NetworkBehaviour {
     private static readonly int VelocityZ = Animator.StringToHash("Velocity Z");
     private static readonly int VelocityX = Animator.StringToHash("Velocity X");
     private static readonly int VelocityAny = Animator.StringToHash("Velocity Any");
@@ -30,16 +31,31 @@ public class PlayerAnimator : MonoBehaviour {
     private bool fallStart = false;
     private float lastPositionY;
 
+    private NetworkVariable<float> castCharge = new(0, NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Owner);
+
     private void Start() {
+        if (!IsOwner) return;
+
         movement.Jumped += Jumped;
     }
 
     public void Casting(bool start, float charge) {
         network.AnimateBool(CastStart, start);
-        network.AnimateFloat(CastCharge, charge);
+        castCharge.Value = charge * 10;
+    }
 
+    private void OnEnable() {
+        castCharge.OnValueChanged += OnEffectChanged;
+    }
+
+    private void OnDisable() {
+        castCharge.OnValueChanged -= OnEffectChanged;
+    }
+
+    private void OnEffectChanged(float oldValue, float newValue) {
         var emission = chargingParticles.emission;
-        emission.rateOverTime = charge * 10f;
+        emission.rateOverTime = newValue;
     }
 
     public IEnumerator CastSpell(SpellData spell) {
@@ -49,6 +65,8 @@ public class PlayerAnimator : MonoBehaviour {
     }
 
     private void Update() {
+        if (!IsOwner) return;
+
         network.AnimateBool(JumpStart, jumpStart);
         network.AnimateBool(FallStart, fallStart);
 

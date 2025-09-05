@@ -3219,7 +3219,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 784087393
+  GlobalObjectIdHash: 36513934
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -3287,7 +3287,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 58360fb38ec9ce747ab747d69ed079d7, type: 2}
   - {fileID: 11400000, guid: 662ac08991b4f5b45b4209392d312c7b, type: 2}
   - {fileID: 11400000, guid: 60842698da47dd4478bda65ebf8dbb8c, type: 2}
-  recognizedText: {fileID: 0}
   spellManager: {fileID: 590111089370120790}
   mouth: {fileID: 7062876200609141023}
   playerAnimator: {fileID: 6425691076356515085}
@@ -3331,6 +3330,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6de11dec44440348b76c1eed791f7a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimator
+  ShowTopMostFoldoutHeaderGroup: 1
   chargingParticles: {fileID: 6913197298611088051}
   network: {fileID: 5739434593196869952}
   movement: {fileID: 6916625131687324290}
@@ -5240,7 +5240,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2868296385495765804, guid: 503bd0f0096c8614cb518c7e0e13ee1a, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4549259007994739464, guid: 503bd0f0096c8614cb518c7e0e13ee1a, type: 3}
       propertyPath: looping
@@ -5345,6 +5345,18 @@ PrefabInstance:
     - target: {fileID: 4649377929486435539, guid: 503bd0f0096c8614cb518c7e0e13ee1a, type: 3}
       propertyPath: EmissionModule.m_Bursts.Array.data[0].countCurve.scalar
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074393582618940019, guid: 503bd0f0096c8614cb518c7e0e13ee1a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.008
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074393582618940019, guid: 503bd0f0096c8614cb518c7e0e13ee1a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.038
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074393582618940019, guid: 503bd0f0096c8614cb518c7e0e13ee1a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.029
       objectReference: {fileID: 0}
     - target: {fileID: 5074393582618940019, guid: 503bd0f0096c8614cb518c7e0e13ee1a, type: 3}
       propertyPath: m_LocalRotation.w

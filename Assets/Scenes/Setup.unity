@@ -1174,7 +1174,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Now loading...
+  m_text: Loading model... Please wait
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1317,6 +1317,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WhisperHolder
   whisper: {fileID: 0}
+  downloadUrl: https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny.bin
 --- !u!4 &1870896187
 Transform:
   m_ObjectHideFlags: 0
