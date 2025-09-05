@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf4989d79519c1349aa400eb4e706e49, type: 3}
   m_Name: Flame Wall
   m_EditorClassIdentifier: Assembly-CSharp::SpellData
+  id: 3
   name: Flame Wall
   nameRu: "\u041E\u0433\u043D\u0435\u043D\u043D\u0430\u044F \u0421\u0442\u0435\u043D\u0430"
   spellWords:
@@ -32,6 +33,7 @@ MonoBehaviour:
   - "\u041E\u0433\u0440\u043D\u0435\u043D\u043D\u043E\u044F\u0421\u0442\u0435\u043D\u0430"
   - "\u041E\u0433\u0440\u043D\u0435\u043D\u043D\u043E\u0435\u0421\u0442\u0435\u043D\u0430"
   - "\u041E\u0433\u043D\u0435\u043D\u043D\u043E\u0421\u0442\u0438\u043D\u043E"
+  spellInHandPrefab: {fileID: 0}
   spellBurstPrefab: {fileID: 0}
   mainSpellPrefab: {fileID: 7354784787554302670, guid: 2c1e610ca4bf5374cb0698a11abf1ad1, type: 3}
   impactPrefab: {fileID: 417761080263594737, guid: 7800b8f6b712bfe49bd663eeb3ebe1e4, type: 3}
@@ -49,6 +51,5 @@ MonoBehaviour:
   shakeStrengthImpact: 0.05
   shakeDurationBurst: 0.2
   shakeDurationImpact: 0.2
-  spellColor: {r: 1, g: 0.45490196, b: 0, a: 1}
   spellTracking: 0
   spawnOnGround: 0

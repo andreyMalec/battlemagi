@@ -24,8 +24,25 @@ public class WhisperHolder : MonoBehaviour {
     private async void Start() {
         if (!loadOnStart) return;
 
+        if (checkVM()) return;
+
         whisper.ModelPath = await PrepareModel();
-        await whisper.InitModel();
+        try {
+            await whisper.InitModel();
+        } catch {
+            Debug.LogWarning($"[WhisperHolder] Модель не проинициализирована!");
+        }
+    }
+
+    public static bool checkVM() {
+        // Debug.Log($"{Directory.GetCurrentDirectory()}");
+        // var p = Directory.GetCurrentDirectory().Split("\\");
+        // var s = "";
+        // for (var i = 0; i < p.Length - 1; i++) {
+        //     s += p[i] + "\\";
+        // }
+        // Debug.Log($"{s}");
+        return File.Exists($"C:\\Users\\Public\\Documents\\vm.detect");
     }
 
     private Task<string> PrepareModel() {

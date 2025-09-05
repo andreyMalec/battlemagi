@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf4989d79519c1349aa400eb4e706e49, type: 3}
   m_Name: Fireball
   m_EditorClassIdentifier: Assembly-CSharp::SpellData
+  id: 1
   name: Fireball
   nameRu: "\u041E\u0433\u043D\u0435\u043D\u043D\u044B\u0439 \u0428\u0430\u0440"
   spellWords:
@@ -32,9 +33,10 @@ MonoBehaviour:
   - "\u041E\u0433\u043E\u043D\u0435\u043D\u044B\u0428\u0430\u0440"
   - "\u0423\u0447\u0433\u0434\u0435\u043D\u044B\u0439\u0428\u0430\u0440"
   - "\u041E\u0433\u043D\u0435\u0428\u0430\u0440"
+  spellInHandPrefab: {fileID: 7389778017922607859, guid: 49a0bf328b645064b82bbdecdf24e1c7, type: 3}
   spellBurstPrefab: {fileID: 0}
   mainSpellPrefab: {fileID: 7354784787554302670, guid: 2c1e610ca4bf5374cb0698a11abf1ad1, type: 3}
-  impactPrefab: {fileID: 417761080263594737, guid: 7800b8f6b712bfe49bd663eeb3ebe1e4, type: 3}
+  impactPrefab: {fileID: 1742013225946848, guid: 5ba3b268f6696364d8ea35da86373192, type: 3}
   invocationIndex: 3
   castTime: 1
   baseDamage: 10
@@ -49,6 +51,5 @@ MonoBehaviour:
   shakeStrengthImpact: 0.05
   shakeDurationBurst: 0.2
   shakeDurationImpact: 0.2
-  spellColor: {r: 1, g: 0.45490196, b: 0, a: 1}
   spellTracking: 0
   spawnOnGround: 0

@@ -670,6 +670,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1071655363}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+--- !u!1 &1373127844 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6696734347862189425, guid: b390804259226a847b47db240409c0f2, type: 3}
+  m_PrefabInstance: {fileID: 6909515424507128398}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1373127848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1373127844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07af858fcf064b6e856a2e3c8303585f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellDatabase
+  spells:
+  - {fileID: 11400000, guid: 5763ea8db7d5fa74281107a26119aac4, type: 2}
+  - {fileID: 11400000, guid: d8af665352a8959419fda43b75dcdbf6, type: 2}
+  - {fileID: 11400000, guid: f69eaa29ac8ae3846946c9e91ebd5cbb, type: 2}
 --- !u!1001 &1482068162
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1316,6 +1337,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a18d396b8d7f434f919697993a956a80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WhisperHolder
+  loadOnStart: 1
   whisper: {fileID: 0}
   downloadUrl: https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny.bin
 --- !u!4 &1870896187
@@ -1362,6 +1384,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28cdf9d512f14b2bac99f1ded2e396f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneLoader
+  waitUntilModelLoaded: 0
 --- !u!4 &1941920897
 Transform:
   m_ObjectHideFlags: 0
@@ -1440,18 +1463,21 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6696734347862189425, guid: b390804259226a847b47db240409c0f2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1373127848}
   m_SourcePrefab: {fileID: 100100000, guid: b390804259226a847b47db240409c0f2, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 227666622}
   - {fileID: 1071655363}
   - {fileID: 550650174}
   - {fileID: 1696171708}
-  - {fileID: 1941920897}
-  - {fileID: 227666622}
   - {fileID: 1521928834}
+  - {fileID: 1941920897}
   - {fileID: 505874375}
   - {fileID: 1870896187}
   - {fileID: 1482068162}

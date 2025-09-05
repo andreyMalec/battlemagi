@@ -84,10 +84,10 @@ public class SpellProjectile : MonoBehaviour {
 
     private void DestroyProjectile() {
         // Отключаем видимые компоненты
-        if (coll is not null) coll.enabled = false;
-        if (renderer is not null) renderer.enabled = false;
-        if (rb is not null) rb.isKinematic = true;
-        if (ps is not null) {
+        if (coll != null) coll.enabled = false;
+        if (renderer != null) renderer.enabled = false;
+        if (rb != null) rb.isKinematic = true;
+        if (ps != null) {
             var emission = ps.emission;
             emission.rateOverTime = 0f;
         }

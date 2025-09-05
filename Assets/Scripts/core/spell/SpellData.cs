@@ -2,10 +2,12 @@
 
 [CreateAssetMenu(fileName = "New Spell", menuName = "Spells/Spell Data")]
 public class SpellData : ScriptableObject {
+    public int id;
     public string name;
     public string nameRu;
     public string[] spellWords;
     public string[] spellWordsRu;
+    public GameObject spellInHandPrefab;
     public GameObject spellBurstPrefab;
     public GameObject mainSpellPrefab;
     public GameObject impactPrefab;
@@ -29,26 +31,6 @@ public class SpellData : ScriptableObject {
     public float shakeDurationBurst = 0.2f;
     public float shakeDurationImpact = 0.2f;
 
-    public Color spellColor = Color.white;
     public bool spellTracking = false;
     public bool spawnOnGround = false;
-
-    public GameObject SpawnEffect(GameObject prefab, Vector3 position, Quaternion rotation) {
-        if (prefab != null) {
-            GameObject obj = Instantiate(prefab, position, rotation);
-            ApplyColorToParticles(obj);
-            return obj;
-        }
-
-        return null;
-    }
-
-    private void ApplyColorToParticles(GameObject spellObject) {
-        if (spellObject == null || spellColor == Color.white) return;
-        ParticleSystem[] particleSystems = spellObject.GetComponentsInChildren<ParticleSystem>();
-        foreach (ParticleSystem ps in particleSystems) {
-            var mainModule = ps.main;
-            mainModule.startColor = spellColor;
-        }
-    }
 }

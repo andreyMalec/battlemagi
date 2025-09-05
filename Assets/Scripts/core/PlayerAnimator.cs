@@ -12,8 +12,10 @@ public class PlayerAnimator : NetworkBehaviour {
     private static readonly int Invocation = Animator.StringToHash("Invocation");
     private static readonly int CastStart = Animator.StringToHash("Cast Start");
     private static readonly int CastCharge = Animator.StringToHash("Cast Charge");
+    private static readonly int CastWaiting = Animator.StringToHash("Cast Waiting");
 
     private static readonly float eps = 0.05f;
+    public Transform ikHand;
     public ParticleSystem chargingParticles;
     public PlayerNetwork network;
     [Header("FirstPersonMovement")] public FirstPersonMovement movement;
@@ -34,15 +36,31 @@ public class PlayerAnimator : NetworkBehaviour {
     private NetworkVariable<float> castCharge = new(0, NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Owner);
 
+    private Vector3 ikPos;
+    private Quaternion ikRot;
+
     private void Start() {
         if (!IsOwner) return;
 
         movement.Jumped += Jumped;
+        ikPos = ikHand.localPosition;
+        ikRot = ikHand.localRotation;
     }
 
     public void Casting(bool start, float charge) {
         network.AnimateBool(CastStart, start);
-        castCharge.Value = charge * 10;
+        castCharge.Value = charge * 40;
+    }
+
+    public void CastWaitingAnim(bool waiting) {
+        network.AnimateBool(CastWaiting, waiting);
+        if (waiting) {
+            ikHand.localPosition = new Vector3(-0.55f, -0.24f, 0.44f);
+            ikHand.localRotation = Quaternion.Euler(0, -90, 0);
+        } else {
+            ikHand.localPosition = ikPos;
+            ikHand.localRotation = ikRot;
+        }
     }
 
     private void OnEnable() {
@@ -60,7 +78,7 @@ public class PlayerAnimator : NetworkBehaviour {
 
     public IEnumerator CastSpell(SpellData spell) {
         network.AnimateFloat(Invocation, spell.invocationIndex);
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(spell.castTime);
         network.AnimateFloat(Invocation, 0);
     }
 

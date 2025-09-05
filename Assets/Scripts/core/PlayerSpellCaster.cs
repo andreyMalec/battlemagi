@@ -1,17 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
-using FullOpaqueVFX;
-using TMPro;
-using Unity.VisualScripting;
-using UnityEngine.Serialization;
+using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Events;
 using Debug = UnityEngine.Debug;
 
-public class PlayerSpellCaster : MonoBehaviour {
+[RequireComponent(typeof(SpellManager))]
+public class PlayerSpellCaster : NetworkBehaviour {
     public enum Language {
         En,
         Ru
@@ -20,7 +16,7 @@ public class PlayerSpellCaster : MonoBehaviour {
     public Language language = Language.En;
     [Header("Available Spells")] public List<SpellData> spells = new();
 
-    public SpellManager spellManager;
+    private SpellManager spellManager;
     public Mouth mouth;
     public PlayerAnimator playerAnimator;
     public float recognitionThreshold = 0.85f;
@@ -28,41 +24,52 @@ public class PlayerSpellCaster : MonoBehaviour {
     public KeyCode spellCastKey = KeyCode.Mouse0;
 
     private float _currentChargeTime;
+    private RecognizedSpell? recognizedSpell = null;
 
     public bool IsCasting { get; private set; }
+    private bool castWaiting = false;
 
     private void Start() {
         IsCasting = false;
+        if (!IsOwner) return;
+        spellManager = GetComponent<SpellManager>();
         mouth.OnMouthClose += OnMouthClose;
     }
 
     private void OnMouthClose(string lastWords) {
-        CastSpell(lastWords);
-
-
         IsCasting = false;
+        _currentChargeTime = 0;
+        var s = RecognizeSpell(lastWords);
+        recognizedSpell = s;
+        if (s.similarity >= recognitionThreshold) {
+            castWaiting = true;
+            playerAnimator.CastWaitingAnim(true);
+            spellManager.PrepareSpell(s.spell);
+        }
     }
 
     private void Update() {
+        if (!IsOwner) return;
+
         HandleSpellCasting();
         playerAnimator.Casting(IsCasting, _currentChargeTime);
     }
 
     private void HandleSpellCasting() {
-        if (Input.GetKeyDown(spellCastKey) && !IsCasting) {
+        if (Input.GetKeyDown(spellCastKey) && !IsCasting && !castWaiting) {
             IsCasting = true;
             mouth.Open();
-        } else if (Input.GetKeyUp(spellCastKey) && IsCasting) {
-            if (_currentChargeTime > 0.2)
-                mouth.Close();
+        } else if (Input.GetKeyUp(spellCastKey) && castWaiting) {
+            playerAnimator.CastWaitingAnim(false);
+            castWaiting = false;
+            CastSpell();
         }
 
         if (IsCasting)
             _currentChargeTime += Time.deltaTime;
     }
 
-    private void CastSpell(string words) {
-        _currentChargeTime = 0;
+    private RecognizedSpell RecognizeSpell(string words) {
         words = Regex.Replace(words, @"[\p{P}\s]", "").ToLower();
 
         var log = "";
@@ -99,9 +106,13 @@ public class PlayerSpellCaster : MonoBehaviour {
         Debug.Log("results: " + log);
         Debug.Log("I heard: " + words);
         Debug.Log($"{spellName} ({recognizedSpell.similarity * 100:F2}%)");
-        if (recognizedSpell.similarity >= recognitionThreshold) {
-            StartCoroutine(playerAnimator.CastSpell(recognizedSpell.spell));
-            StartCoroutine(spellManager.CastSpell(recognizedSpell.spell));
+        return recognizedSpell;
+    }
+
+    private void CastSpell() {
+        if (recognizedSpell?.similarity >= recognitionThreshold) {
+            StartCoroutine(playerAnimator.CastSpell(recognizedSpell.Value.spell));
+            StartCoroutine(spellManager.CastSpell(recognizedSpell.Value.spell));
         }
     }
 

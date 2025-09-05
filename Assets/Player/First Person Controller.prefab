@@ -2500,7 +2500,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.4482454, y: -0.34231827, z: -0.45334727, w: 0.69019604}
   m_LocalPosition: {x: -0.09000015, y: 0.049999952, z: 0.24}
-  m_LocalScale: {x: 0.07, y: 0.07, z: 0.07}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6404953993623198568}
@@ -3219,7 +3219,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 36513934
+  GlobalObjectIdHash: 784087393
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -3275,6 +3275,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cceb25009154ab19e7cfacfe6b05a59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSpellCaster
+  ShowTopMostFoldoutHeaderGroup: 1
   language: 0
   spells:
   - {fileID: 11400000, guid: d8af665352a8959419fda43b75dcdbf6, type: 2}
@@ -3287,7 +3288,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 58360fb38ec9ce747ab747d69ed079d7, type: 2}
   - {fileID: 11400000, guid: 662ac08991b4f5b45b4209392d312c7b, type: 2}
   - {fileID: 11400000, guid: 60842698da47dd4478bda65ebf8dbb8c, type: 2}
-  spellManager: {fileID: 590111089370120790}
   mouth: {fileID: 7062876200609141023}
   playerAnimator: {fileID: 6425691076356515085}
   recognitionThreshold: 0.6
@@ -3304,8 +3304,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47708fe4c1c25e242a8a9b0b003057e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellManager
+  ShowTopMostFoldoutHeaderGroup: 1
   spellCastPoint: {fileID: 3077521524520137575}
-  cameraShake: {fileID: 7594489981059989853}
+  spellInHandPoint: {fileID: 6421757949054942227}
 --- !u!114 &906687778472763878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3331,6 +3332,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimator
   ShowTopMostFoldoutHeaderGroup: 1
+  ikHand: {fileID: 5596533096327910552}
   chargingParticles: {fileID: 6913197298611088051}
   network: {fileID: 5739434593196869952}
   movement: {fileID: 6916625131687324290}
@@ -3800,19 +3802,19 @@ MonoBehaviour:
   maxLengthSec: 60
   loop: 0
   frequency: 44000
-  chunksLengthSec: 0.5
-  echo: 1
+  chunksLengthSec: 1
+  echo: 0
   echoPosition: {fileID: 2934301547977243489}
   useVad: 1
-  vadUpdateRateSec: 0.1
-  vadContextSec: 30
-  vadLastSec: 1.25
+  vadUpdateRateSec: 0.05
+  vadContextSec: 5
+  vadLastSec: 0.5
   vadThd: 1
   vadFreqThd: 100
   vadIndicatorImage: {fileID: 0}
   vadStop: 1
   dropVadPart: 1
-  vadStopTime: 0.5
+  vadStopTime: 0.3
   microphoneDropdown: {fileID: 0}
   microphoneDefaultLabel: Default microphone
 --- !u!1 &6230359408947430596
@@ -4096,7 +4098,7 @@ Light:
   m_BounceIntensity: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 0, y: 6e-45, z: 0, w: 3e-45}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ForceVisible: 0
@@ -5319,6 +5321,10 @@ PrefabInstance:
       value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 4649377929486435539, guid: 503bd0f0096c8614cb518c7e0e13ee1a, type: 3}
+      propertyPath: EmissionModule.rateOverTime.scalar
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4649377929486435539, guid: 503bd0f0096c8614cb518c7e0e13ee1a, type: 3}
       propertyPath: LightsModule.intensityCurve.scalar
       value: 0.5
       objectReference: {fileID: 0}
@@ -5337,6 +5343,10 @@ PrefabInstance:
     - target: {fileID: 4649377929486435539, guid: 503bd0f0096c8614cb518c7e0e13ee1a, type: 3}
       propertyPath: InitialModule.gravityModifier.scalar
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4649377929486435539, guid: 503bd0f0096c8614cb518c7e0e13ee1a, type: 3}
+      propertyPath: EmissionModule.rateOverTime.minMaxState
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4649377929486435539, guid: 503bd0f0096c8614cb518c7e0e13ee1a, type: 3}
       propertyPath: EmissionModule.m_Bursts.Array.data[0].cycleCount
@@ -5445,6 +5455,11 @@ PrefabInstance:
       addedObject: {fileID: 9139599161258026096}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 503bd0f0096c8614cb518c7e0e13ee1a, type: 3}
+--- !u!4 &6421757949054942227 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5074393582618940019, guid: 503bd0f0096c8614cb518c7e0e13ee1a, type: 3}
+  m_PrefabInstance: {fileID: 2266846386915110496}
+  m_PrefabAsset: {fileID: 0}
 --- !u!198 &6913197298611088051 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 4649377929486435539, guid: 503bd0f0096c8614cb518c7e0e13ee1a, type: 3}
