@@ -1,10 +1,11 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
 public class FirstPersonLook : NetworkBehaviour {
     [SerializeField] private LookSettings lookSettings;
     [SerializeField] private Transform firstPersonCamera;
-    [SerializeField] private Transform headBone;
+    private Transform headBone;
 
     // Сетевые переменные
     private readonly NetworkVariable<Vector2> _syncRotation = new(
@@ -17,12 +18,18 @@ public class FirstPersonLook : NetworkBehaviour {
     private Vector2 _frameVelocity;
     private Vector3 _positionVelocity;
 
+    private void Awake() {
+        headBone = GetComponentInChildren<MeshController>()?.head;
+    }
+
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
         _syncRotation.OnValueChanged += OnRotationChanged;
 
-        if (!IsOwner)
+        if (!IsOwner) {
             ApplyRemoteRotation();
+            GetComponent<AudioListener>().enabled = false;
+        }
     }
 
     public override void OnNetworkDespawn() {
@@ -79,6 +86,8 @@ public class FirstPersonLook : NetworkBehaviour {
     private void LateUpdate() => UpdateCameraPosition();
 
     private void UpdateCameraPosition() {
+        if (headBone == null) return;
+        
         Vector3 targetPosition = headBone.position + headBone.TransformDirection(lookSettings.offset);
         firstPersonCamera.position = Vector3.SmoothDamp(
             firstPersonCamera.position,

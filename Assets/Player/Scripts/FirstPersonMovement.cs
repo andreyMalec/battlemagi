@@ -17,7 +17,7 @@ public class FirstPersonMovement : NetworkBehaviour {
 
     private CharacterController _characterController;
     private float _jumpCooldownTimer;
-    private Vector3 _velocity;
+    private float _velocityY;
 
     private void Awake() {
         _characterController = GetComponent<CharacterController>();
@@ -41,10 +41,6 @@ public class FirstPersonMovement : NetworkBehaviour {
         _isRunningNetwork.OnValueChanged -= OnIsRunningChanged;
         _isJumpingNetwork.OnValueChanged -= OnIsJumpingChanged;
         _networkPosition.OnValueChanged -= OnPositionChanged;
-
-        if (IsOwner) {
-            SceneManager.LoadScene("MainMenu");
-        }
     }
 
     private void OnIsRunningChanged(bool _, bool newValue) => IsRunning = newValue;
@@ -100,17 +96,17 @@ public class FirstPersonMovement : NetworkBehaviour {
         ));
 
         ApplyGravity();
-        _characterController.Move((moveDirection + Vector3.up * _velocity.y) * Time.deltaTime);
+        _characterController.Move((moveDirection + Vector3.up * _velocityY) * Time.deltaTime);
     }
 
     private void ApplyGravity() {
-        if (groundCheck.isGrounded && _velocity.y < 0)
-            _velocity.y = -2f;
+        if (groundCheck.isGrounded && _velocityY < 0)
+            _velocityY = -2f;
         else
-            _velocity.y += movementSettings.gravity * (_velocity.y < 0 ? movementSettings.fallGravityMultiplier : 1f) *
-                           Time.deltaTime;
+            _velocityY += movementSettings.gravity * (_velocityY < 0 ? movementSettings.fallGravityMultiplier : 1f) *
+                          Time.deltaTime;
 
-        _velocity.y = Mathf.Max(_velocity.y, movementSettings.maxFallSpeed);
+        _velocityY = Mathf.Max(_velocityY, movementSettings.maxFallSpeed);
     }
 
     private void TryJump() {
@@ -132,7 +128,7 @@ public class FirstPersonMovement : NetworkBehaviour {
     private IEnumerator ApplyJumpForce() {
         Jumped?.Invoke();
         yield return new WaitForSeconds(movementSettings.jumpDelay);
-        _velocity.y = Mathf.Sqrt(movementSettings.jumpStrength * -2f * movementSettings.gravity);
+        _velocityY = Mathf.Sqrt(movementSettings.jumpStrength * -2f * movementSettings.gravity);
         JumpServerRpc(false);
     }
 

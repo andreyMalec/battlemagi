@@ -50,8 +50,6 @@ public class SteamVoiceChat : NetworkBehaviour {
             if (LobbyHolder.instance.currentLobby?.MemberCount == 1) return;
             SteamUser.VoiceRecord = true;
             Debug.Log("[SteamVoiceChat] Local voice recording enabled");
-        } else {
-            GetComponent<AudioListener>().enabled = false;
         }
     }
 

@@ -13,9 +13,9 @@ using Color = UnityEngine.Color;
 using Image = UnityEngine.UI.Image;
 
 public class Menu : MonoBehaviour {
+    public GameObject lobbyEnjoyer;
     [Header("States")] public GameObject mainState;
     public GameObject lobbyState;
-
 
     [Header("GUI")] public Button exit;
     public Button buttonMakeLobby;

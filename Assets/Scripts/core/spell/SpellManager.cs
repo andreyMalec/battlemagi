@@ -4,7 +4,11 @@ using Unity.Netcode;
 
 public class SpellManager : NetworkBehaviour {
     [SerializeField] private Transform spellCastPoint;
-    public Transform spellInHandPoint;
+    public Transform invocation;
+
+    private void Awake() {
+        invocation = GetComponentInChildren<MeshController>().invocation.transform;
+    }
 
     public void PrepareSpell(SpellData spell) {
         if (!IsOwner) return;
@@ -35,10 +39,10 @@ public class SpellManager : NetworkBehaviour {
     }
 
     [ServerRpc]
-    private void ClearInHandServerRpc(ulong clienId) {
+    private void ClearInHandServerRpc(ulong clientId) {
         foreach (var kvp in NetworkManager.Singleton.SpawnManager.SpawnedObjects) {
             var netObj = kvp.Value;
-            if (netObj != null && netObj.IsSpawned && netObj.OwnerClientId == clienId) {
+            if (netObj != null && netObj.IsSpawned && netObj.OwnerClientId == clientId) {
                 if (netObj.TryGetComponent<SpellInHand>(out _)) {
                     Debug.Log($"[SpellManager] Сервер: Подчищаем эффект в руке заклинателя");
                     netObj.Despawn();
@@ -54,7 +58,8 @@ public class SpellManager : NetworkBehaviour {
         var spell = SpellDatabase.Instance?.GetSpell(spellId);
         if (spell == null || spell.spellInHandPrefab == null) return;
 
-        GameObject obj = Instantiate(spell.spellInHandPrefab, spellInHandPoint.position, spellInHandPoint.rotation);
+        GameObject obj = Instantiate(spell.spellInHandPrefab, invocation.transform.position,
+            invocation.transform.rotation);
 
         var netObj = obj.GetComponent<NetworkObject>();
         if (netObj == null) {
@@ -68,7 +73,11 @@ public class SpellManager : NetworkBehaviour {
     }
 
     [ServerRpc]
-    private void SpawnMainServerRpc(int spellId, Vector3 position, Quaternion rotation) {
+    private void SpawnMainServerRpc(
+        int spellId, Vector3 position,
+        Quaternion rotation,
+        ServerRpcParams serverRpcParams = default
+    ) {
         var spell = SpellDatabase.Instance != null ? SpellDatabase.Instance.GetSpell(spellId) : null;
         if (spell == null || spell.mainSpellPrefab == null)
             return;
@@ -81,7 +90,7 @@ public class SpellManager : NetworkBehaviour {
             return;
         }
 
-        netObj.Spawn();
+        netObj.SpawnWithOwnership(serverRpcParams.Receive.SenderClientId);
         StartCoroutine(DespawnAndDestroyServer(netObj, spell.lifeTime));
         SpawnMainClientRpc(netObj.NetworkObjectId, spellId);
     }
@@ -108,13 +117,13 @@ public class SpellManager : NetworkBehaviour {
 
         if (!IsServer) yield break;
 
-        GameObject go = netObj.gameObject;
         if (netObj.IsSpawned) {
             netObj.Despawn();
-        }
 
-        if (go != null) {
-            Destroy(go);
+            GameObject go = netObj.gameObject;
+            if (go != null) {
+                Destroy(go);
+            }
         }
     }
 

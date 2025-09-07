@@ -33,4 +33,5 @@ public class SpellData : ScriptableObject {
 
     public bool spellTracking = false;
     public bool spawnOnGround = false;
+    public bool canSelfDamage = true;
 }

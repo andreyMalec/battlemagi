@@ -10,8 +10,7 @@ public class PlayerNetwork : NetworkBehaviour {
     [SerializeField] private Behaviour[] scriptsToDisable;
     [SerializeField] private GameObject[] objectsToDisable;
     [SerializeField] private Camera mainCamera;
-    [SerializeField] private Rig hand;
-    [SerializeField] private Rig spine;
+    [SerializeField] private MeshController meshController;
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
@@ -27,8 +26,8 @@ public class PlayerNetwork : NetworkBehaviour {
                 obj.SetActive(false);
             }
 
-            hand.weight = 0f;
-            spine.weight *= 3f;
+            meshController.leftHand.weight = 0f;
+            meshController.spine.weight *= 3f;
             mainCamera.GetComponent<Camera>().enabled = false;
         }
     }

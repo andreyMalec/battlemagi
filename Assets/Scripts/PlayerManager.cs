@@ -48,6 +48,10 @@ public class PlayerManager : NetworkBehaviour {
     private void OnClientConnected(ulong clientId) {
         Debug.Log($"[PlayerManager] Подключился clientId={clientId}");
 
+        if (IsServer) {
+            PlayerSpawner.instance.SpawnLobbyEnjoyer(clientId);
+        }
+
         // Только локальный клиент отправляет свой SteamId серверу
         if (clientId == NetworkManager.Singleton.LocalClientId && NetworkManager.Singleton.IsClient) {
             Debug.Log($"[PlayerManager] Локальный клиент отправляет серверу SteamId {SteamClient.SteamId}");
@@ -89,6 +93,12 @@ public class PlayerManager : NetworkBehaviour {
     [ClientRpc]
     private void RegisterPlayerClientRpc(ulong steamId, ulong clientId) {
         SteamId sid = (SteamId)steamId;
+
+        if (!clientToSteam.ContainsKey(clientId)) {
+            clientToSteam.Add(clientId, sid);
+            Debug.Log($"[PlayerManager] Клиент: зарегистрирован SteamId {sid} для clientId={clientId}");
+        }
+
         if (!TryAttachPlayer(sid, clientId)) {
             Debug.LogWarning($"[PlayerManager] Не удалось сразу привязать {sid} (clientId={clientId}), в очередь");
             pendingRegistrations.Add((sid, clientId));
@@ -98,6 +108,11 @@ public class PlayerManager : NetworkBehaviour {
     [ClientRpc]
     private void SendExistingPlayerClientRpc(ulong steamId, ulong clientId, ClientRpcParams rpcParams = default) {
         SteamId sid = (SteamId)steamId;
+        if (!clientToSteam.ContainsKey(clientId)) {
+            clientToSteam.Add(clientId, sid);
+            Debug.Log($"[PlayerManager] Клиент: зарегистрирован SteamId {sid} для clientId={clientId}");
+        }
+
         if (!TryAttachPlayer(sid, clientId)) {
             Debug.LogWarning(
                 $"[PlayerManager] (Синхронизация) не удалось привязать {sid} (clientId={clientId}), в очередь");
@@ -120,17 +135,22 @@ public class PlayerManager : NetworkBehaviour {
         if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client)) {
             var playerObj = client.PlayerObject;
             if (playerObj != null) {
-                if (!players.ContainsKey(sid)) {
-                    players.Add(sid, playerObj.transform);
-                    Debug.Log($"[PlayerManager] Привязан {sid} → {playerObj.name}");
-                    OnPlayerAdded?.Invoke(sid, playerObj.transform);
-                }
+                players[sid] = playerObj.transform;
+                Debug.Log($"[PlayerManager] Привязан {sid} → {playerObj.name}");
+                OnPlayerAdded?.Invoke(sid, playerObj.transform);
 
                 return true;
             }
         }
 
         return false;
+    }
+
+    public void ResetPlayerTransform(ulong clientId, GameObject player) {
+        var steamId = GetSteamIdByClientId(clientId);
+        if (!steamId.HasValue) return;
+        players[steamId.Value] = player.transform;
+        SendExistingPlayerClientRpc(steamId.Value, clientId);
     }
 
     public Transform GetPlayerTransform(SteamId steamId) {
@@ -142,8 +162,12 @@ public class PlayerManager : NetworkBehaviour {
     }
 
     public SteamId? GetSteamIdByClientId(ulong clientId) {
-        if (clientToSteam.TryGetValue(clientId, out SteamId sid))
+        if (clientToSteam.TryGetValue(clientId, out SteamId sid)) {
+            Debug.Log($"[PlayerManager] GetSteamIdByClientId({clientId})={sid}");
             return sid;
+        }
+
+        Debug.Log($"[PlayerManager] GetSteamIdByClientId({clientId})=null");
         return null;
     }
 

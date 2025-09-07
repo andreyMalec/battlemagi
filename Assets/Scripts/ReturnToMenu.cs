@@ -8,12 +8,14 @@ using UnityEngine.SceneManagement;
 public class ReturnToMenu : MonoBehaviour {
     private void OnEnable() {
         SteamMatchmaking.OnLobbyMemberDisconnected += OnLobbyMemberDisconnected;
+        SteamMatchmaking.OnLobbyMemberLeave += OnLobbyMemberDisconnected;
+        SteamMatchmaking.OnLobbyMemberKicked += OnLobbyMemberKicked;
     }
 
     private void OnDisable() {
-        SteamMatchmaking.OnLobbyMemberDisconnected += OnLobbyMemberDisconnected;
-        SteamMatchmaking.OnLobbyMemberLeave += OnLobbyMemberDisconnected;
-        SteamMatchmaking.OnLobbyMemberKicked += OnLobbyMemberKicked;
+        SteamMatchmaking.OnLobbyMemberDisconnected -= OnLobbyMemberDisconnected;
+        SteamMatchmaking.OnLobbyMemberLeave -= OnLobbyMemberDisconnected;
+        SteamMatchmaking.OnLobbyMemberKicked -= OnLobbyMemberKicked;
     }
 
     private void OnLobbyMemberKicked(Lobby lobby, Friend member, Friend owner) {
@@ -37,7 +39,6 @@ public class ReturnToMenu : MonoBehaviour {
 
     private void Leave(Lobby lobby) {
         lobby.Leave();
-        LobbyHolder.instance.players.Clear();
         LobbyHolder.instance.currentLobby = null;
         NetworkManager.Singleton.Shutdown();
         SceneManager.LoadScene("MainMenu");

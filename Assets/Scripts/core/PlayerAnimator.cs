@@ -16,7 +16,6 @@ public class PlayerAnimator : NetworkBehaviour {
 
     private static readonly float eps = 0.05f;
     public Transform ikHand;
-    public ParticleSystem chargingParticles;
     public PlayerNetwork network;
     [Header("FirstPersonMovement")] public FirstPersonMovement movement;
 
@@ -32,12 +31,18 @@ public class PlayerAnimator : NetworkBehaviour {
     private bool jumpStart = false;
     private bool fallStart = false;
     private float lastPositionY;
+    
+    private ParticleSystem chargingParticles;
 
     private NetworkVariable<float> castCharge = new(0, NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Owner);
 
     private Vector3 ikPos;
     private Quaternion ikRot;
+
+    private void Awake() {
+        chargingParticles = GetComponentInChildren<MeshController>().invocation;
+    }
 
     private void Start() {
         if (!IsOwner) return;

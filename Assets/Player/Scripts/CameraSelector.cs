@@ -4,13 +4,12 @@ using UnityEngine;
 public class CameraSelector : MonoBehaviour {
     public GameObject firstPersonCamera;
     public GameObject thirdPersonCamera;
-    public GameObject cloak;
     private SkinnedMeshRenderer _renderer;
 
     private bool _isFirstPerson = true;
 
-    private void Start() {
-        _renderer = cloak.GetComponent<SkinnedMeshRenderer>();
+    private void Awake() {
+        _renderer = GetComponentInChildren<MeshController>().cloak.GetComponent<SkinnedMeshRenderer>();
     }
 
     private void Update() {

@@ -10,7 +10,7 @@ public class SpellInHand : NetworkBehaviour {
             var manager = client.PlayerObject.GetComponent<SpellManager>();
             if (manager != null) {
                 Debug.Log($"[SpellInHand] Установлена локальная позиция");
-                localAnchor = manager.spellInHandPoint;
+                localAnchor = manager.invocation.transform;
             }
         }
     }

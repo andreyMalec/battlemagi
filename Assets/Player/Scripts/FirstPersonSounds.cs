@@ -17,10 +17,6 @@ public class FirstPersonSounds : MonoBehaviour {
     private float lastStep;
     private float lastJump;
 
-    private void Start() {
-        animator = GetComponent<Animator>();
-    }
-
     private void Update() {
         UpdateStep();
         UpdateJump();

@@ -39,7 +39,7 @@ MonoBehaviour:
   impactPrefab: {fileID: 1742013225946848, guid: 5ba3b268f6696364d8ea35da86373192, type: 3}
   invocationIndex: 3
   castTime: 1
-  baseDamage: 10
+  baseDamage: 200
   hasAreaEffect: 1
   areaRadius: 5
   lifeTime: 20
@@ -53,3 +53,4 @@ MonoBehaviour:
   shakeDurationImpact: 0.2
   spellTracking: 0
   spawnOnGround: 0
+  canSelfDamage: 0
