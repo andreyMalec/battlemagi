@@ -20,7 +20,7 @@ public class SpellProjectile : NetworkBehaviour {
     }
 
     private void Update() {
-        if (!IsOwner) return;
+        if (!IsServer) return;
 
         currentLifeTime += Time.deltaTime;
 
@@ -33,13 +33,10 @@ public class SpellProjectile : NetworkBehaviour {
     }
 
     private void OnTriggerEnter(Collider other) {
-        Debug.Log($"[{gameObject.name}] OnTriggerEnter 0");
         if (other.isTrigger) return;
-        if (!IsOwner) return;
-        Debug.Log($"[{gameObject.name}] OnTriggerEnter 1");
+        if (!IsServer) return;
 
         HandleImpact(other);
-        Debug.Log($"[{gameObject.name}] OnTriggerEnter HandleImpact");
 
         if (!spellData.piercing)
             DestroyProjectileServerRpc(NetworkObjectId);
@@ -78,17 +75,14 @@ public class SpellProjectile : NetworkBehaviour {
                 $"[{gameObject.name}] Прямое попадание в игрока {other.GetComponent<NetworkObject>().OwnerClientId}");
             damageable.TakeDamage(damage);
         }
-        Debug.Log($"[{gameObject.name}] HandleImpact 0");
 
         // Area effect
         if (spellData.hasAreaEffect)
             ApplyAreaEffect(spellData.canSelfDamage ? null : OwnerClientId);
-        Debug.Log($"[{gameObject.name}] HandleImpact 1");
 
         // Spawn impact effect
         if (spellData.impactPrefab != null)
             SpawnImpactClientRpc(spellData.id, transform.position);
-        Debug.Log($"[{gameObject.name}] HandleImpact 2");
     }
 
     [ClientRpc]

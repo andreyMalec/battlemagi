@@ -81,6 +81,8 @@ public class PlayerSpawner : NetworkBehaviour {
             Debug.Log($"[PlayerSpawner] Клиент: Отключаем контроль над игроком {clientId}");
             player.GetComponentInChildren<MeshController>().SetRagdoll(true);
             player.GetComponent<CharacterController>().enabled = false;
+            player.GetComponent<PlayerSpellCaster>().enabled = false;
+            player.GetComponent<SteamVoiceChat>().enabled = false;
             player.GetComponent<FirstPersonMovement>().enabled = false;
             player.GetComponent<FirstPersonLook>().enabled = false;
             if (NetworkManager.Singleton.LocalClientId == clientId)

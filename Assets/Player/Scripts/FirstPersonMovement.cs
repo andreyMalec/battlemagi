@@ -31,9 +31,6 @@ public class FirstPersonMovement : NetworkBehaviour {
         _isRunningNetwork.OnValueChanged += OnIsRunningChanged;
         _isJumpingNetwork.OnValueChanged += OnIsJumpingChanged;
         _networkPosition.OnValueChanged += OnPositionChanged;
-
-        if (!IsOwner)
-            _characterController.enabled = false;
     }
 
     public override void OnNetworkDespawn() {

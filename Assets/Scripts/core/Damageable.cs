@@ -4,18 +4,17 @@ using UnityEngine;
 public class Damageable : NetworkBehaviour {
     [SerializeField] private float maxHealth = 100f;
 
-    private NetworkVariable<float> health = new(1, NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Owner);
+    private NetworkVariable<float> health = new();
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
 
-        if (IsOwner)
+        if (IsServer)
             health.Value = maxHealth;
     }
 
     public void TakeDamage(float damage) {
-        if (!IsOwner) return;
+        if (!IsServer) return;
         if (damage < 0) return;
         if (TryGetComponent<NetworkObject>(out var netObj) && netObj != null && netObj.IsSpawned) {
             var clientId = netObj.OwnerClientId;
