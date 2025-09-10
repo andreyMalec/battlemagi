@@ -67,6 +67,11 @@ public class PlayerSpellCaster : NetworkBehaviour {
 
         if (IsCasting)
             _currentChargeTime += Time.deltaTime;
+
+        if (_currentChargeTime > 10) {
+            _currentChargeTime = 0;
+            IsCasting = false;
+        }
     }
 
     private RecognizedSpell RecognizeSpell(string words) {

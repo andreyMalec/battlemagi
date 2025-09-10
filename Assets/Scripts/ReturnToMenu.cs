@@ -6,41 +6,16 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class ReturnToMenu : MonoBehaviour {
-    private void OnEnable() {
-        SteamMatchmaking.OnLobbyMemberDisconnected += OnLobbyMemberDisconnected;
-        SteamMatchmaking.OnLobbyMemberLeave += OnLobbyMemberDisconnected;
-        SteamMatchmaking.OnLobbyMemberKicked += OnLobbyMemberKicked;
-    }
-
-    private void OnDisable() {
-        SteamMatchmaking.OnLobbyMemberDisconnected -= OnLobbyMemberDisconnected;
-        SteamMatchmaking.OnLobbyMemberLeave -= OnLobbyMemberDisconnected;
-        SteamMatchmaking.OnLobbyMemberKicked -= OnLobbyMemberKicked;
-    }
-
-    private void OnLobbyMemberKicked(Lobby lobby, Friend member, Friend owner) {
-        Debug.Log($"{owner.Name} kicked {member.Name}");
-    }
-
-    private void OnLobbyMemberDisconnected(Lobby lobby, Friend friend) {
-        Debug.Log($"{friend.Name} disconnected");
-        if (lobby.Owner.Id == friend.Id) {
-            Leave(lobby);
-        }
-    }
-
     private void Update() {
         if (Input.GetKeyDown(KeyCode.F2)) {
-            var lobby = LobbyHolder.instance.currentLobby;
+            var lobby = LobbyManager.Instance.CurrentLobby;
             if (lobby.HasValue)
-                Leave(lobby.Value);
+                Leave();
         }
     }
 
-    private void Leave(Lobby lobby) {
-        lobby.Leave();
-        LobbyHolder.instance.currentLobby = null;
-        NetworkManager.Singleton.Shutdown();
+    private void Leave() {
+        LobbyManager.Instance.LeaveLobby();
         SceneManager.LoadScene("MainMenu");
     }
 }

@@ -16,6 +16,8 @@ public class PlayerSpawner : NetworkBehaviour {
     private void Start() {
         instance = this;
         DontDestroyOnLoad(gameObject);
+
+        NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
     }
 
     private void Update() {
@@ -25,6 +27,20 @@ public class PlayerSpawner : NetworkBehaviour {
             var player = toKill[0];
             toKill.RemoveAt(0);
             StartCoroutine(HandleDeath(player));
+        }
+    }
+
+    private void OnClientConnected(ulong clientId) {
+        if (IsServer) {
+            SpawnLobbyEnjoyer(clientId);
+        }
+    }
+
+    public override void OnDestroy() {
+        base.OnDestroy();
+
+        if (NetworkManager.Singleton != null) {
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
         }
     }
 
@@ -45,11 +61,11 @@ public class PlayerSpawner : NetworkBehaviour {
         }
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void HandleDeathServerRpc(ulong clientId) {
         if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client)) {
             var player = client.PlayerObject;
-            if (player != null && player.IsSpawned && player.OwnerClientId == clientId) {
+            if (player != null && player.IsSpawned) {
                 Debug.Log($"[PlayerSpawner] Сервер: Игрок {clientId} умирает");
                 HandleDeathClientRpc(clientId);
                 toKill.Add(clientId);
@@ -60,17 +76,16 @@ public class PlayerSpawner : NetworkBehaviour {
 
     [ClientRpc]
     private void HandleDeathClientRpc(ulong clientId) {
-        var steamId = PlayerManager.Instance.GetSteamIdByClientId(clientId);
-        Debug.Log($"[PlayerSpawner] HandleDeathClientRpc {clientId} steamId={steamId}; {steamId.HasValue}");
-        if (!steamId.HasValue) return;
-        var player = PlayerManager.Instance.GetPlayerTransform(steamId.Value).gameObject;
-        Debug.Log($"[PlayerSpawner] Клиент: Отключаем контроль над игроком {clientId}");
-        player.GetComponentInChildren<MeshController>().SetRagdoll(true);
-        player.GetComponent<CharacterController>().enabled = false;
-        player.GetComponent<FirstPersonMovement>().enabled = false;
-        player.GetComponent<FirstPersonLook>().enabled = false;
-        if (NetworkManager.Singleton.LocalClientId == clientId)
-            player.GetComponentInChildren<Observer>(true).gameObject.SetActive(true);
+        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client)) {
+            var player = client.PlayerObject;
+            Debug.Log($"[PlayerSpawner] Клиент: Отключаем контроль над игроком {clientId}");
+            player.GetComponentInChildren<MeshController>().SetRagdoll(true);
+            player.GetComponent<CharacterController>().enabled = false;
+            player.GetComponent<FirstPersonMovement>().enabled = false;
+            player.GetComponent<FirstPersonLook>().enabled = false;
+            if (NetworkManager.Singleton.LocalClientId == clientId)
+                player.GetComponentInChildren<Observer>(true).gameObject.SetActive(true);
+        }
     }
 
     public override void OnNetworkSpawn() {
@@ -95,25 +110,14 @@ public class PlayerSpawner : NetworkBehaviour {
     [ServerRpc]
     private void SpawnPlayerServerRpc(ulong clientId, Vector3 position) {
         GameObject newPlayer = Instantiate(playerPrefab, position, Quaternion.identity);
-        var name = $"Player_{clientId}";
+        newPlayer.name = "Player_" + clientId;
         newPlayer.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
-        SetNameClientRpc(clientId, name);
-        PlayerManager.Instance.ResetPlayerTransform(clientId, newPlayer);
-        Debug.Log($"[PlayerSpawner] Сервер: Создан новый {name}");
+        Debug.Log($"[PlayerSpawner] Сервер: Создан новый Player_{clientId}");
     }
 
-    [ClientRpc]
-    private void SetNameClientRpc(ulong clientId, string name) {
-        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client)) {
-            client.PlayerObject.name = name;
-        }
-    }
-
-    public void SpawnLobbyEnjoyer(ulong clientId) {
-        var p = Instantiate(lobbyEnjoyer, Vector3.zero, Quaternion.identity);
-        var name = $"LobbyEnjoyer_{clientId}";
-        p.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
-        SetNameClientRpc(clientId, name);
-        Debug.Log($"[Menu] Сервер: Создан новый {name}");
+    private void SpawnLobbyEnjoyer(ulong clientId) {
+        var newLobbyEnjoyer = Instantiate(lobbyEnjoyer, Vector3.zero, Quaternion.identity);
+        newLobbyEnjoyer.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+        Debug.Log($"[Menu] Сервер: Создан новый LobbyEnjoyer_{clientId}");
     }
 }

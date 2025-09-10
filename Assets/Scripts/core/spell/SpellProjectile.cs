@@ -20,7 +20,7 @@ public class SpellProjectile : NetworkBehaviour {
     }
 
     private void Update() {
-        if (!IsServer) return;
+        if (!IsOwner) return;
 
         currentLifeTime += Time.deltaTime;
 
@@ -35,7 +35,7 @@ public class SpellProjectile : NetworkBehaviour {
     private void OnTriggerEnter(Collider other) {
         Debug.Log($"[{gameObject.name}] OnTriggerEnter 0");
         if (other.isTrigger) return;
-        if (!IsServer) return;
+        if (!IsOwner) return;
         Debug.Log($"[{gameObject.name}] OnTriggerEnter 1");
 
         HandleImpact(other);

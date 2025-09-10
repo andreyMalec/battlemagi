@@ -1,0 +1,161 @@
+using System;
+using System.Collections.Generic;
+using Steamworks;
+using Unity.Netcode;
+using UnityEngine;
+
+public class PlayerManager : NetworkBehaviour {
+    [Serializable]
+    public struct PlayerData : INetworkSerializable, IEquatable<PlayerData> {
+        public ulong ClientId;
+        public ulong SteamId;
+
+        public PlayerData(ulong clientId, ulong steamId) {
+            ClientId = clientId;
+            SteamId = steamId;
+        }
+
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter {
+            serializer.SerializeValue(ref ClientId);
+            serializer.SerializeValue(ref SteamId);
+        }
+
+        public bool Equals(PlayerData other) =>
+            ClientId == other.ClientId && SteamId == other.SteamId;
+
+        public override string ToString() {
+            return $"PlayerData({ClientId}, {SteamId})";
+        }
+
+        public Transform PlayerTransform() {
+            if (NetworkManager.Singleton.ConnectedClients.TryGetValue(ClientId, out var client))
+                return client.PlayerObject.transform;
+            return null;
+        }
+    }
+
+    public event Action<PlayerData> OnPlayerAdded;
+    public event Action<PlayerData> OnPlayerRemoved;
+
+    private NetworkList<PlayerData> players;
+
+    [SerializeField] private List<PlayerData> debugPlayers = new(); // видимый в инспекторе
+
+    public static PlayerManager Instance { get; private set; }
+
+    private void Awake() {
+        if (Instance == null) Instance = this;
+        DontDestroyOnLoad(gameObject);
+        players = new NetworkList<PlayerData>();
+        players.OnListChanged += OnPlayersChanged;
+    }
+
+    private void Start() {
+        NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+        NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
+    }
+
+    private void OnClientConnected(ulong clientId) {
+        if (clientId == NetworkManager.Singleton.LocalClientId) {
+            ulong steamId = (ulong)SteamClient.SteamId;
+            RegisterPlayerServerRpc(steamId);
+        }
+    }
+
+    public override void OnDestroy() {
+        base.OnDestroy();
+
+        if (NetworkManager.Singleton != null) {
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
+        }
+    }
+
+    public override void OnNetworkSpawn() {
+        if (IsServer)
+            players.Clear();
+        else {
+        }
+    }
+
+    private void OnPlayersChanged(NetworkListEvent<PlayerData> changeEvent) {
+        debugPlayers.Clear();
+        foreach (var player in players) {
+            debugPlayers.Add(player);
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void RegisterPlayerServerRpc(ulong steamId, ServerRpcParams rpcParams = default) {
+        ulong clientId = rpcParams.Receive.SenderClientId;
+        PlayerData data = new PlayerData(clientId, steamId);
+
+        if (!players.Contains(data)) {
+            players.Add(data);
+            OnPlayerAdded?.Invoke(data);
+
+            // Отправить НОВОМУ клиенту всех УЖЕ ПОДКЛЮЧЕННЫХ
+            foreach (var member in players) {
+                if (member.ClientId == clientId) continue;
+                RegisterPlayerClientRpc(member.SteamId, member.ClientId, new ClientRpcParams {
+                    Send = new ClientRpcSendParams { TargetClientIds = new[] { clientId } }
+                });
+            }
+        }
+
+        Debug.Log($"[Server] Registered player ClientId={clientId}, SteamId={steamId}");
+    }
+
+    [ClientRpc]
+    private void RegisterPlayerClientRpc(ulong steamId, ulong clientId, ClientRpcParams rpcParams = default) {
+        PlayerData data = new PlayerData(clientId, steamId);
+        OnPlayerAdded?.Invoke(data);
+        Debug.Log($"[PlayerManager] Клиент: Зарегистрирован SteamId {steamId} для clientId={clientId}");
+    }
+
+    private void OnClientDisconnected(ulong clientId) {
+        if (!IsServer) return;
+
+        for (int i = players.Count - 1; i >= 0; i--) {
+            var player = players[i];
+            if (player.ClientId == clientId) {
+                Debug.Log($"[Server] Removing player ClientId={clientId}");
+                players.RemoveAt(i);
+                OnPlayerRemoved?.Invoke(player);
+            }
+        }
+    }
+
+    public SteamId? GetSteamId(ulong clientId) {
+        return FindByClientId(clientId)?.SteamId;
+    }
+
+    public PlayerData? FindByClientId(ulong clientId) {
+        foreach (var player in players) {
+            if (player.ClientId == clientId) {
+                return player;
+            }
+        }
+
+        return null;
+    }
+
+    public PlayerData? FindBySteamId(ulong steamId) {
+        foreach (var player in players) {
+            if (player.SteamId == steamId) {
+                return player;
+            }
+        }
+
+        return null;
+    }
+
+    public List<PlayerData> Players() {
+        var list = new List<PlayerData>();
+        foreach (var player in players) {
+            list.Add(player);
+        }
+
+        return list;
+    }
+}
