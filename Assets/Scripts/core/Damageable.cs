@@ -1,10 +1,15 @@
+using System;
+using TMPro;
 using Unity.Netcode;
+using UnityEditor;
 using UnityEngine;
 
 public class Damageable : NetworkBehaviour {
-    [SerializeField] private float maxHealth = 100f;
+    [SerializeField] public float maxHealth = 100f;
+    [SerializeField] private bool immortal = false;
+    [SerializeField] private TMP_Text hp;
 
-    private NetworkVariable<float> health = new();
+    public NetworkVariable<float> health = new();
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
@@ -13,17 +18,37 @@ public class Damageable : NetworkBehaviour {
             health.Value = maxHealth;
     }
 
-    public void TakeDamage(float damage) {
-        if (!IsServer) return;
-        if (damage < 0) return;
+    private void Update() {
+        if (hp == null) return;
+
+        hp.text = health.Value.ToString("0.0");
+    }
+
+    public bool TakeDamage(float damage) {
+        if (!IsServer) return false;
+        if (damage < 0) return false;
         if (TryGetComponent<NetworkObject>(out var netObj) && netObj != null && netObj.IsSpawned) {
             var clientId = netObj.OwnerClientId;
             Debug.Log($"[Damageable] Игрок {clientId} получает урон: {damage}");
             health.Value -= damage;
 
-            if (health.Value <= 0) {
+            if (!immortal && health.Value <= 0) {
                 PlayerSpawner.instance.HandleDeathServerRpc(clientId);
             }
+
+            return true;
         }
+
+        return false;
     }
 }
+
+// [CustomEditor(typeof(Damageable))]
+// class DamageableEditor : Editor {
+//     public override void OnInspectorGUI() {
+//         if (GUILayout.Button("Restore")) {
+//             var d = target as Damageable;
+//             d.health.Value = d.maxHealth;
+//         }
+//     }
+// }

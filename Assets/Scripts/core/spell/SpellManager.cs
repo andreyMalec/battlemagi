@@ -40,36 +40,36 @@ public class SpellManager : NetworkBehaviour {
 
     [ServerRpc]
     private void ClearInHandServerRpc(ulong clientId) {
-        foreach (var kvp in NetworkManager.Singleton.SpawnManager.SpawnedObjects) {
-            var netObj = kvp.Value;
-            if (netObj != null && netObj.IsSpawned && netObj.OwnerClientId == clientId) {
-                if (netObj.TryGetComponent<SpellInHand>(out _)) {
-                    Debug.Log($"[SpellManager] Сервер: Подчищаем эффект в руке заклинателя");
-                    netObj.Despawn();
-                    Destroy(netObj.gameObject);
-                    break;
-                }
+        ClearInHandClientRpc(clientId);
+    }
+
+    [ClientRpc]
+    private void ClearInHandClientRpc(ulong clientId) {
+        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client)) {
+            var player = client.PlayerObject;
+            var manager = player.GetComponent<SpellManager>();
+            for (int i = 0; i < manager.invocation.childCount; i++) {
+                Destroy(manager.invocation.GetChild(i).gameObject);
             }
+            Debug.Log($"[SpellManager] Подчищаем эффект в руке заклинателя");
         }
     }
 
     [ServerRpc]
     private void SpawnInHandServerRpc(int spellId, ulong clientId) {
+        SpawnInHandClientRpc(spellId, clientId);
+    }
+
+    [ClientRpc]
+    private void SpawnInHandClientRpc(int spellId, ulong clientId) {
         var spell = SpellDatabase.Instance?.GetSpell(spellId);
         if (spell == null || spell.spellInHandPrefab == null) return;
 
-        GameObject obj = Instantiate(spell.spellInHandPrefab, invocation.transform.position,
-            invocation.transform.rotation);
+        GameObject obj = Instantiate(spell.spellInHandPrefab, Vector3.zero, Quaternion.identity);
+        obj.transform.SetParent(invocation.transform);
+        obj.transform.localPosition = Vector3.zero;
 
-        var netObj = obj.GetComponent<NetworkObject>();
-        if (netObj == null) {
-            Debug.LogError("Spell prefab must have a NetworkObject component");
-            Destroy(obj);
-            return;
-        }
-
-        netObj.SpawnWithOwnership(clientId);
-        Debug.Log($"[SpellManager] Сервер: Проявляем {spell.name} в руке заклинателя {clientId}");
+        Debug.Log($"[SpellManager] Проявляем {spell.name} в руке заклинателя {clientId}");
     }
 
     [ServerRpc]

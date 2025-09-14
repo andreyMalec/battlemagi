@@ -16,6 +16,7 @@ public class SpellData : ScriptableObject {
 
     public float castTime = 2f;
 
+    public bool isDOT = false;
     public float baseDamage = 10f;
     public bool hasAreaEffect = true;
     public float areaRadius = 5f;

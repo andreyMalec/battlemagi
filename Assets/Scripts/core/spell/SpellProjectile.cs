@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -15,7 +16,7 @@ public class SpellProjectile : NetworkBehaviour {
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
-        
+
         Debug.Log($"[SpellProjectile] Игрок {OwnerClientId} выпустил {gameObject.name}");
     }
 
@@ -40,6 +41,18 @@ public class SpellProjectile : NetworkBehaviour {
 
         if (!spellData.piercing)
             DestroyProjectileServerRpc(NetworkObjectId);
+    }
+
+    private void OnTriggerStay(Collider other) {
+        if (!spellData.isDOT) return;
+
+        // Apply damage
+        if (other.TryGetComponent<Damageable>(out var damageable)) {
+            var damage = spellData.baseDamage;
+            Debug.Log(
+                $"[{gameObject.name}] Прямое попадание в игрока {other.GetComponent<NetworkObject>().OwnerClientId}");
+            damageable.TakeDamage(damage);
+        }
     }
 
     public void Initialize(SpellData data) {
@@ -68,17 +81,23 @@ public class SpellProjectile : NetworkBehaviour {
     }
 
     private void HandleImpact(Collider other) {
+        if (spellData.isDOT) return;
         // Apply damage
+        var excludeClients = new [] { ulong.MaxValue, ulong.MaxValue };
         if (other.TryGetComponent<Damageable>(out var damageable)) {
             var damage = spellData.baseDamage;
+            var target = other.GetComponent<NetworkObject>().OwnerClientId;
             Debug.Log(
-                $"[{gameObject.name}] Прямое попадание в игрока {other.GetComponent<NetworkObject>().OwnerClientId}");
-            damageable.TakeDamage(damage);
+                $"[{gameObject.name}] Прямое попадание в игрока {target}");
+            if (damageable.TakeDamage(damage)) {
+                excludeClients[1] = target;
+            }
         }
 
+        excludeClients[0] = spellData.canSelfDamage ? ulong.MaxValue : OwnerClientId;
         // Area effect
         if (spellData.hasAreaEffect)
-            ApplyAreaEffect(spellData.canSelfDamage ? null : OwnerClientId);
+            ApplyAreaEffect(excludeClients);
 
         // Spawn impact effect
         if (spellData.impactPrefab != null)
@@ -92,7 +111,8 @@ public class SpellProjectile : NetworkBehaviour {
         Instantiate(spell.impactPrefab, position, Quaternion.identity);
     }
 
-    private void ApplyAreaEffect(ulong? excludeClientId) {
+    private void ApplyAreaEffect(ulong[] excludeClientId) {
+        Debug.Log($"[{gameObject.name}] ApplyAreaEffect exclude {string.Join(", ", excludeClientId)}");
         var hits = Physics.OverlapSphere(transform.position, spellData.areaRadius);
         foreach (var hit in hits) {
             if (hit.TryGetComponent<Damageable>(out var player)) {
@@ -101,7 +121,7 @@ public class SpellProjectile : NetworkBehaviour {
                 var distance = Vector3.Distance(transform.position, hit.transform.position);
                 var damageMultiplier = 1f - distance / spellData.areaRadius;
 
-                if (excludeClientId.HasValue && netObj.OwnerClientId == excludeClientId.Value) continue;
+                if (excludeClientId.Contains(netObj.OwnerClientId)) continue;
                 var damageable = hit.GetComponent<Damageable>();
                 damageable.TakeDamage(spellData.baseDamage * damageMultiplier);
             }
