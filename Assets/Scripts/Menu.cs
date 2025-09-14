@@ -9,6 +9,8 @@ using Color = UnityEngine.Color;
 using Image = UnityEngine.UI.Image;
 
 public class Menu : MonoBehaviour {
+    private static readonly int StandUp = Animator.StringToHash("Stand Up");
+    private static readonly int SitDown = Animator.StringToHash("Sit Down");
     [Header("States")] public GameObject mainState;
     public GameObject lobbyState;
 
@@ -22,6 +24,9 @@ public class Menu : MonoBehaviour {
     public TMP_InputField fieldJoinLobbyId;
     public TMP_InputField fieldLobbyId;
     private TMP_Text copyButtonText;
+
+    public LobbyMembers lobbyMembers;
+    [Header("Character")] public Animator animator;
 
     private bool inLobby = false;
     private UInt64 lobbyId = 0;
@@ -112,13 +117,23 @@ public class Menu : MonoBehaviour {
     }
 
     private void OnStateChanged(LobbyManager.PlayerState state) {
-        inLobby = state == LobbyManager.PlayerState.InLobby;
+        var newValue = state == LobbyManager.PlayerState.InLobby;
+        if (newValue && !inLobby) {
+            animator.SetTrigger(StandUp);
+        }
+
+        if (!newValue && inLobby) {
+            animator.SetTrigger(SitDown);
+        }
+
+        inLobby = newValue;
         if (inLobby) {
             var lobby = LobbyManager.Instance.CurrentLobby.Value;
             fieldLobbyId.text = lobby.Id.ToString();
             lobbySize = lobby.MaxMembers;
             lobbyId = lobby.Id.Value;
         }
+        lobbyMembers.RequestUpdate();
     }
 
     private IEnumerator CopyId() {

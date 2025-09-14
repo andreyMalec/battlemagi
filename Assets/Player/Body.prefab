@@ -6556,6 +6556,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6262062465551024603}
   - component: {fileID: 6148170143937763377}
+  - component: {fileID: 3187019647631488134}
   m_Layer: 0
   m_Name: Magician_RIO
   m_TagString: Untagged
@@ -6697,6 +6698,18 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.00075668097, y: -0.0020179152, z: 0.011004329}
     m_Extent: {x: 0.8952128, y: 1.0148451, z: 0.37376067}
   m_DirtyAABB: 0
+--- !u!114 &3187019647631488134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4074939123857394381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f74c1794b5147d5a7cf69ba60f1803b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MeshBody
 --- !u!1 &4078554245983839394
 GameObject:
   m_ObjectHideFlags: 0
@@ -8571,6 +8584,7 @@ GameObject:
   - component: {fileID: 8453594921617664144}
   - component: {fileID: 3952683814520845215}
   - component: {fileID: 8999261293897763558}
+  - component: {fileID: 53291653332463518}
   m_Layer: 0
   m_Name: Cloak
   m_TagString: Untagged
@@ -8855,6 +8869,18 @@ Cloth:
   - {x: 0.6666667, y: 0.16666667, z: 0.16666667}
   - {x: 0.5, y: 0.5, z: 0}
   m_VirtualParticleIndices: 
+--- !u!114 &53291653332463518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8771685419707555780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33b52493fc44412db0ca6802c0f79339, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MeshCloak
 --- !u!1 &8838262003984041150
 GameObject:
   m_ObjectHideFlags: 0

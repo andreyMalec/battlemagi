@@ -1,12 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Steamworks;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PlayerSpawner : NetworkBehaviour {
     [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private Shader playerBodyShader;
+    [SerializeField] private Shader playerCloakShader;
     [SerializeField] private GameObject lobbyEnjoyer;
 
     public static PlayerSpawner instance;
@@ -115,6 +118,24 @@ public class PlayerSpawner : NetworkBehaviour {
         newPlayer.name = "Player_" + clientId;
         newPlayer.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
         Debug.Log($"[PlayerSpawner] Сервер: Создан новый Player_{clientId}");
+        ApplyMaterialClientRpc(clientId);
+    }
+
+    [ClientRpc]
+    private void ApplyMaterialClientRpc(ulong clientId) {
+        var steamid = PlayerManager.Instance.GetSteamId(clientId);
+        if (!steamid.HasValue) return;
+        var color = new Friend(steamid.Value).GetColor();
+        var bodyMat = new Material(playerBodyShader);
+        bodyMat.SetFloat(ColorizeMesh.Hue, color.hue);
+        bodyMat.SetFloat(ColorizeMesh.Saturation, color.saturation);
+        var cloakMat = new Material(playerCloakShader);
+        cloakMat.SetFloat(ColorizeMesh.Hue, color.hue);
+        cloakMat.SetFloat(ColorizeMesh.Saturation, color.saturation);
+        var player = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
+        player.GetComponentInChildren<MeshBody>().gameObject.GetComponent<SkinnedMeshRenderer>().material = bodyMat;
+        player.GetComponentInChildren<MeshCloak>().gameObject.GetComponent<SkinnedMeshRenderer>().material =
+            cloakMat;
     }
 
     private void SpawnLobbyEnjoyer(ulong clientId) {

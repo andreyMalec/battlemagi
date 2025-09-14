@@ -35,6 +35,7 @@ public class SteamVoiceChat : NetworkBehaviour {
         PlayerManager.Instance.OnPlayerAdded += HandlePlayerAdded;
         PlayerManager.Instance.OnPlayerRemoved += HandlePlayerRemoved;
 
+        SteamUser.VoiceRecord = true;
         Debug.Log("[SteamVoiceChat] Local voice recording enabled");
     }
 
@@ -58,8 +59,6 @@ public class SteamVoiceChat : NetworkBehaviour {
     private void Update() {
         if (!SteamClient.IsValid) return;
         if (!IsOwner) return;
-
-        SteamUser.VoiceRecord = Input.GetKey(KeyCode.V);
 
         // Считываем локальный микрофон и рассылаем всем
         if (SteamUser.HasVoiceData) {

@@ -6,8 +6,11 @@ using UnityEngine;
 using Steamworks;
 using Steamworks.Data;
 using Unity.Netcode;
+using Color = System.Drawing.Color;
 
 public class LobbyManager : MonoBehaviour {
+    public static readonly string KeyReady = "Ready";
+    public static readonly string KeyColor = "Color";
     public static LobbyManager Instance { get; private set; }
 
     public enum PlayerState {
@@ -167,14 +170,14 @@ public class LobbyManager : MonoBehaviour {
             return false;
 
         var me = Me;
-        var last = lobby.Value.GetMemberData(me, "Ready");
+        var last = lobby.Value.GetMemberData(me, KeyReady);
         if (last == "1") {
-            lobby.Value.SetMemberData("Ready", "0");
+            lobby.Value.SetMemberData(KeyReady, "0");
             Debug.Log($"{me.Name} [{me.Id}] is now NOT_READY");
             return false;
         }
 
-        lobby.Value.SetMemberData("Ready", "1");
+        lobby.Value.SetMemberData(KeyReady, "1");
         Debug.Log($"{me.Name} [{me.Id}] is now READY");
         return true;
     }
@@ -203,7 +206,7 @@ public static class LobbyExt {
         var lobbyReadyCount = 0;
         if (lobby.HasValue) {
             foreach (var member in lobby.Value.Members) {
-                var ready = lobby.Value.GetMemberData(member, "Ready");
+                var ready = lobby.Value.GetMemberData(member, LobbyManager.KeyReady);
                 if (ready == "1") {
                     lobbyReadyCount++;
                 }
@@ -211,5 +214,54 @@ public static class LobbyExt {
         }
 
         return lobbyReadyCount;
+    }
+
+    public static bool IsReady(this Friend member) {
+        if (LobbyManager.Instance.CurrentLobby != null) {
+            var lobby = LobbyManager.Instance.CurrentLobby;
+            if (lobby.HasValue) {
+                var ready = lobby.Value.GetMemberData(member, LobbyManager.KeyReady);
+                return ready == "1";
+            }
+        }
+
+        return false;
+    }
+
+    public static PlayerColor GetColor(this Friend member) {
+        if (LobbyManager.Instance.CurrentLobby != null) {
+            var lobby = LobbyManager.Instance.CurrentLobby;
+            if (lobby.HasValue) {
+                var color = lobby.Value.GetMemberData(member, LobbyManager.KeyColor);
+                if (string.IsNullOrEmpty(color))
+                    color = "78,0;0,5";
+                var split = color.Split(";");
+                var h = float.Parse(split[0]);
+                var s = float.Parse(split[1]);
+                return new PlayerColor(h, s);
+            }
+        }
+
+        return new PlayerColor(78f, 0.5f);
+    }
+
+    public static void SetColor(PlayerColor color) {
+        if (LobbyManager.Instance.CurrentLobby != null) {
+            var lobby = LobbyManager.Instance.CurrentLobby;
+            if (lobby.HasValue) {
+                var c = $"{color.hue};{color.saturation}";
+                lobby.Value.SetMemberData(LobbyManager.KeyColor, c);
+            }
+        }
+    }
+}
+
+public struct PlayerColor {
+    public float hue;
+    public float saturation;
+
+    public PlayerColor(float hue, float saturation) {
+        this.hue = hue;
+        this.saturation = saturation;
     }
 }
