@@ -14,7 +14,6 @@ public class PlayerSpellCaster : NetworkBehaviour {
     }
 
     public Language language = Language.En;
-    [Header("Available Spells")] public List<SpellData> spells = new();
 
     private SpellManager spellManager;
     public Mouth mouth;
@@ -78,7 +77,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
         words = Regex.Replace(words, @"[\p{P}\s]", "").ToLower();
 
         var log = "";
-        var recognizedSpell = spells
+        var recognizedSpell = SpellDatabase.Instance.spells
             .Select(spell => {
                 var r = new RecognizedSpell();
                 string[] spellWords;

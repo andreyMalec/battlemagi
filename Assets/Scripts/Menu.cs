@@ -113,7 +113,7 @@ public class Menu : MonoBehaviour {
 
     private void OnDisable() {
         if (LobbyManager.Instance != null)
-            LobbyManager.Instance.OnStateChanged += OnStateChanged;
+            LobbyManager.Instance.OnStateChanged -= OnStateChanged;
     }
 
     private void OnStateChanged(LobbyManager.PlayerState state) {

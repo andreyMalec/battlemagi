@@ -3,11 +3,13 @@ using TMPro;
 using Unity.Netcode;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Damageable : NetworkBehaviour {
     [SerializeField] public float maxHealth = 100f;
     [SerializeField] private bool immortal = false;
     [SerializeField] private TMP_Text hp;
+    private Image hpFill;
 
     public NetworkVariable<float> health = new();
 
@@ -16,12 +18,16 @@ public class Damageable : NetworkBehaviour {
 
         if (IsServer)
             health.Value = maxHealth;
+        if (IsOwner)
+            hpFill = FindFirstObjectByType<HpRenderer>().playerHp;
     }
 
     private void Update() {
-        if (hp == null) return;
+        if (hp != null)
+            hp.text = health.Value.ToString("0.0");
 
-        hp.text = health.Value.ToString("0.0");
+        if (hpFill != null)
+            hpFill.transform.localScale = new Vector3(Math.Clamp(health.Value / maxHealth, 0, 1), 1, 1);
     }
 
     public bool TakeDamage(float damage) {

@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class FirstPersonMovement : NetworkBehaviour {
     [SerializeField] private MovementSettings movementSettings;
     public GroundCheck groundCheck;
+    public NetworkVariable<float> globalSpeedMultiplier = new(1f);
 
     public bool IsRunning { get; private set; }
     public event System.Action Jumped;
@@ -87,9 +88,9 @@ public class FirstPersonMovement : NetworkBehaviour {
         float speedMultiplier = groundCheck.isGrounded ? 1f : movementSettings.flySpeedMultiplier;
 
         Vector3 moveDirection = transform.TransformDirection(new Vector3(
-            input.x * targetSpeed * speedMultiplier,
+            input.x * targetSpeed * speedMultiplier * globalSpeedMultiplier.Value,
             0f,
-            input.y * targetSpeed * speedMultiplier
+            input.y * targetSpeed * speedMultiplier * globalSpeedMultiplier.Value
         ));
 
         ApplyGravity();

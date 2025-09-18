@@ -4,10 +4,7 @@ using UnityEngine;
 public class SpellDatabase : MonoBehaviour {
     public static SpellDatabase Instance { get; private set; }
 
-    [Tooltip(
-        "Fill this list in the inspector with all SpellData assets included in the build (same list on server & clients)")]
-    [SerializeField]
-    private List<SpellData> spells = new List<SpellData>();
+    public List<SpellData> spells = new List<SpellData>();
 
     private Dictionary<int, SpellData> map;
 

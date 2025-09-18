@@ -31,8 +31,9 @@ public class PlayerAnimator : NetworkBehaviour {
     private bool jumpStart = false;
     private bool fallStart = false;
     private float lastPositionY;
-    
+
     private ParticleSystem chargingParticles;
+    private AudioSource chargingAudio;
 
     private NetworkVariable<float> castCharge = new(0, NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Owner);
@@ -42,6 +43,7 @@ public class PlayerAnimator : NetworkBehaviour {
 
     private void Awake() {
         chargingParticles = GetComponentInChildren<MeshController>().invocation;
+        chargingAudio = GetComponent<AudioSource>();
     }
 
     private void Start() {
@@ -79,6 +81,7 @@ public class PlayerAnimator : NetworkBehaviour {
     private void OnEffectChanged(float oldValue, float newValue) {
         var emission = chargingParticles.emission;
         emission.rateOverTime = newValue;
+        chargingAudio.volume = Math.Clamp(newValue / 200, 0, 0.25f);
     }
 
     public IEnumerator CastSpell(SpellData spell) {

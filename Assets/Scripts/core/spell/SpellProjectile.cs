@@ -46,13 +46,7 @@ public class SpellProjectile : NetworkBehaviour {
     private void OnTriggerStay(Collider other) {
         if (!spellData.isDOT) return;
 
-        // Apply damage
-        if (other.TryGetComponent<Damageable>(out var damageable)) {
-            var damage = spellData.baseDamage;
-            Debug.Log(
-                $"[{gameObject.name}] Прямое попадание в игрока {other.GetComponent<NetworkObject>().OwnerClientId}");
-            damageable.TakeDamage(damage);
-        }
+        ApplyDamage(Array.Empty<ulong>(), other);
     }
 
     public void Initialize(SpellData data) {
@@ -80,19 +74,34 @@ public class SpellProjectile : NetworkBehaviour {
             }
     }
 
+    /**
+     * @returns clientId
+     */
+    private ulong ApplyDamage(ulong[] excludeClients, Collider other, bool applyDistanceMultiplier = false) {
+        if (!other.TryGetComponent<Damageable>(out var damageable)) return ulong.MaxValue;
+        var netObj = other.GetComponent<NetworkObject>();
+        if (!spellData.canSelfDamage && OwnerClientId == netObj.OwnerClientId) return ulong.MaxValue;
+        if (excludeClients.Contains(netObj.OwnerClientId)) return ulong.MaxValue;
+
+        if (applyDistanceMultiplier) {
+            Debug.Log($"[{gameObject.name}] Взрыв задел игрока {netObj.OwnerClientId}");
+            var distance = Vector3.Distance(transform.position, other.transform.position);
+            var damageMultiplier = 1f - distance / spellData.areaRadius;
+
+            damageable.TakeDamage(spellData.baseDamage * damageMultiplier);
+        } else {
+            Debug.Log($"[{gameObject.name}] Прямое попадание в игрока {netObj.OwnerClientId}");
+            damageable.TakeDamage(spellData.baseDamage);
+        }
+
+        return netObj.OwnerClientId;
+    }
+
     private void HandleImpact(Collider other) {
         if (spellData.isDOT) return;
         // Apply damage
-        var excludeClients = new [] { ulong.MaxValue, ulong.MaxValue };
-        if (other.TryGetComponent<Damageable>(out var damageable)) {
-            var damage = spellData.baseDamage;
-            var target = other.GetComponent<NetworkObject>().OwnerClientId;
-            Debug.Log(
-                $"[{gameObject.name}] Прямое попадание в игрока {target}");
-            if (damageable.TakeDamage(damage)) {
-                excludeClients[1] = target;
-            }
-        }
+        var excludeClients = new[] { ulong.MaxValue, ulong.MaxValue };
+        excludeClients[1] = ApplyDamage(excludeClients, other);
 
         excludeClients[0] = spellData.canSelfDamage ? ulong.MaxValue : OwnerClientId;
         // Area effect
@@ -101,30 +110,24 @@ public class SpellProjectile : NetworkBehaviour {
 
         // Spawn impact effect
         if (spellData.impactPrefab != null)
-            SpawnImpactClientRpc(spellData.id, transform.position);
+            SpawnImpactClientRpc(spellData.id, transform.position, OwnerClientId);
     }
 
     [ClientRpc]
-    private void SpawnImpactClientRpc(int spellId, Vector3 position) {
+    private void SpawnImpactClientRpc(int spellId, Vector3 position, ulong ownerId) {
         var spell = SpellDatabase.Instance.GetSpell(spellId);
 
-        Instantiate(spell.impactPrefab, position, Quaternion.identity);
+        var go = Instantiate(spell.impactPrefab, position, Quaternion.identity);
+        if (IsServer && go.TryGetComponent<NetworkObject>(out var netObj)) {
+            netObj.SpawnWithOwnership(ownerId);
+        }
     }
 
-    private void ApplyAreaEffect(ulong[] excludeClientId) {
-        Debug.Log($"[{gameObject.name}] ApplyAreaEffect exclude {string.Join(", ", excludeClientId)}");
+    private void ApplyAreaEffect(ulong[] excludeClients) {
+        Debug.Log($"[{gameObject.name}] ApplyAreaEffect exclude {string.Join(", ", excludeClients)}");
         var hits = Physics.OverlapSphere(transform.position, spellData.areaRadius);
         foreach (var hit in hits) {
-            if (hit.TryGetComponent<Damageable>(out var player)) {
-                var netObj = hit.GetComponent<NetworkObject>();
-                Debug.Log($"[{gameObject.name}] Взрыв задел игрока {netObj.OwnerClientId}");
-                var distance = Vector3.Distance(transform.position, hit.transform.position);
-                var damageMultiplier = 1f - distance / spellData.areaRadius;
-
-                if (excludeClientId.Contains(netObj.OwnerClientId)) continue;
-                var damageable = hit.GetComponent<Damageable>();
-                damageable.TakeDamage(spellData.baseDamage * damageMultiplier);
-            }
+            ApplyDamage(excludeClients, hit);
         }
     }
 

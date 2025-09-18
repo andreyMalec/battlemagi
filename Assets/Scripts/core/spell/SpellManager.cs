@@ -4,6 +4,7 @@ using Unity.Netcode;
 
 public class SpellManager : NetworkBehaviour {
     [SerializeField] private Transform spellCastPoint;
+    [HideInInspector]
     public Transform invocation;
 
     private void Awake() {

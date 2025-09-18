@@ -75,8 +75,8 @@ public class SteamVoiceChat : NetworkBehaviour {
                         i.Add(member.Id);
                     }
 
-                    Debug.Log(
-                        $"[SteamVoiceChat] Sent {compressedBytes} bytes to {i.Count} peers ({string.Join(", ", i)})");
+                    // Debug.Log(
+                    //     $"[SteamVoiceChat] Sent {compressedBytes} bytes to {i.Count} peers ({string.Join(", ", i)})");
                 }
             }
         }
@@ -130,8 +130,8 @@ public class SteamVoiceChat : NetworkBehaviour {
 
         streams[player.SteamId] = vs;
 
-        Debug.Log(
-            $"[SteamVoiceChat] Created streaming AudioSource for {player.SteamId} (rate={sampleRate}, len={clipLengthSamples})");
+        // Debug.Log(
+        //     $"[SteamVoiceChat] Created streaming AudioSource for {player.SteamId} (rate={sampleRate}, len={clipLengthSamples})");
     }
 
     private void HandlePlayerRemoved(PlayerManager.PlayerData player) {
