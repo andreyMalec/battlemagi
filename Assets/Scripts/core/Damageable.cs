@@ -36,9 +36,10 @@ public class Damageable : NetworkBehaviour {
         if (TryGetComponent<NetworkObject>(out var netObj) && netObj != null && netObj.IsSpawned) {
             var clientId = netObj.OwnerClientId;
             Debug.Log($"[Damageable] Игрок {clientId} получает урон: {damage}");
+            var before = health.Value;
             health.Value -= damage;
 
-            if (!immortal && health.Value <= 0) {
+            if (!immortal && health.Value <= 0 && before > 0) {
                 PlayerSpawner.instance.HandleDeathServerRpc(clientId);
             }
 

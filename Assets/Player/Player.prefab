@@ -754,7 +754,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   movementSettings: {fileID: 11400000, guid: 99067fe211a078d4bbfdb64adec90669, type: 2}
   groundCheck: {fileID: 6466238404988819252}
-  globalSpeedMultiplier: 1
+  globalSpeedMultiplier:
+    m_InternalValue: 1
 --- !u!114 &8271153046618425552
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1038,6 +1039,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 310377ea541c4261a7d3cdc28d8173b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StatusEffectManager
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!82 &1507093393527865229
 AudioSource:
   m_ObjectHideFlags: 0

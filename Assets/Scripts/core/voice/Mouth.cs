@@ -16,6 +16,7 @@ public class Mouth : MonoBehaviour {
     public event OnMouthClose OnMouthClose;
 
     private void Awake() {
+        if (WhisperHolder.instance == null) return;
         whisper = WhisperHolder.instance.whisper;
         whisper.OnNewSegment += OnNewSegment;
         microphoneRecord.OnRecordStop += OnRecordStop;

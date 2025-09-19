@@ -21,6 +21,8 @@ public class GroundEffect : NetworkBehaviour {
     }
 
     private void Update() {
+        if (duration < 0) return;
+
         _tickTimer += Time.deltaTime;
         if (_tickTimer >= duration) {
             var netObj = GetComponent<NetworkObject>();
