@@ -88,10 +88,10 @@ public class SpellProjectile : NetworkBehaviour {
             var distance = Vector3.Distance(transform.position, other.transform.position);
             var damageMultiplier = 1f - distance / spellData.areaRadius;
 
-            damageable.TakeDamage(spellData.baseDamage * damageMultiplier);
+            damageable.TakeDamage(spellData.baseDamage * damageMultiplier, spellData.damageSound);
         } else {
             Debug.Log($"[{gameObject.name}] Прямое попадание в игрока {netObj.OwnerClientId}");
-            damageable.TakeDamage(spellData.baseDamage);
+            damageable.TakeDamage(spellData.baseDamage, spellData.damageSound);
         }
 
         return netObj.OwnerClientId;

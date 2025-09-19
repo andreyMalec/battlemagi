@@ -26,7 +26,7 @@ public class PlayerAnimator : NetworkBehaviour {
     private float velocityX = 0f;
 
     private bool isRunning => movement.IsRunning;
-    private float maxVelocity => isRunning ? 2f : 0.5f;
+    private float maxVelocity => (isRunning ? 2f : 0.5f) * movement.globalSpeedMultiplier.Value;
 
     private bool jumpStart = false;
     private bool fallStart = false;
@@ -81,7 +81,7 @@ public class PlayerAnimator : NetworkBehaviour {
     private void OnEffectChanged(float oldValue, float newValue) {
         var emission = chargingParticles.emission;
         emission.rateOverTime = newValue;
-        chargingAudio.volume = Math.Clamp(newValue / 200, 0, 0.25f);
+        chargingAudio.volume = Math.Clamp(newValue / 200, 0, 0.15f);
     }
 
     public IEnumerator CastSpell(SpellData spell) {

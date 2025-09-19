@@ -30,7 +30,6 @@ public class PlayerSpawner : NetworkBehaviour {
         if (toKill.Count > 0) {
             var player = toKill[0];
             toKill.RemoveAt(0);
-            Debug.Log($"[PlayerSpawner] ______________ 0");
             StartCoroutine(HandleDeath(player));
         }
     }
@@ -51,7 +50,6 @@ public class PlayerSpawner : NetworkBehaviour {
 
     private IEnumerator HandleDeath(ulong clientId) {
         Debug.Log($"[PlayerSpawner] Сервер: Ждем перед тем как удалить игрока {clientId}");
-        Debug.Log($"[PlayerSpawner] ______________ 1");
         yield return new WaitForSeconds(5);
         DestroyClientServerRpc(clientId);
     }
@@ -59,7 +57,6 @@ public class PlayerSpawner : NetworkBehaviour {
     [ServerRpc]
     private void DestroyClientServerRpc(ulong clientId) {
         if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client)) {
-            Debug.Log($"[PlayerSpawner] ______________ 2");
             var playerObj = client.PlayerObject;
             playerObj.Despawn();
             Destroy(playerObj.gameObject);
@@ -119,9 +116,8 @@ public class PlayerSpawner : NetworkBehaviour {
 
     [ServerRpc]
     private void SpawnPlayerServerRpc(ulong clientId, Vector3 position) {
-        Debug.Log($"[PlayerSpawner] ______________ 3");
         var spawnPoints = FindFirstObjectByType<SpawnPoint>().spawnPoints;
-        var r = new Random().Next(spawnPoints.Count);
+        var r = new Random().Next(spawnPoints.Count);//TODO client spawn at 0 0 0
         GameObject newPlayer = Instantiate(playerPrefab, spawnPoints[r].position, spawnPoints[r].rotation);
         newPlayer.name = "Player_" + clientId;
         newPlayer.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);

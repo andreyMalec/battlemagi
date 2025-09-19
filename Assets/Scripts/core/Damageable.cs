@@ -7,9 +7,11 @@ using UnityEngine.UI;
 
 public class Damageable : NetworkBehaviour {
     [SerializeField] public float maxHealth = 100f;
+    [SerializeField] public float hpRestore = 1f;
     [SerializeField] private bool immortal = false;
     [SerializeField] private TMP_Text hp;
-    private Image hpFill;
+    [SerializeField] AudioSource damageAudio;
+    private float _restoreTick;
 
     public NetworkVariable<float> health = new();
 
@@ -18,19 +20,21 @@ public class Damageable : NetworkBehaviour {
 
         if (IsServer)
             health.Value = maxHealth;
-        if (IsOwner)
-            hpFill = FindFirstObjectByType<HpRenderer>().playerHp;
     }
 
     private void Update() {
         if (hp != null)
             hp.text = health.Value.ToString("0.0");
 
-        if (hpFill != null)
-            hpFill.transform.localScale = new Vector3(Math.Clamp(health.Value / maxHealth, 0, 1), 1, 1);
+        if (!IsServer) return;
+        _restoreTick += Time.deltaTime;
+        if (_restoreTick >= 1) {
+            health.Value += hpRestore;
+            _restoreTick = 0f;
+        }
     }
 
-    public bool TakeDamage(float damage) {
+    public bool TakeDamage(float damage, AudioClip sound = null) {
         if (!IsServer) return false;
         if (damage < 0) return false;
         if (TryGetComponent<NetworkObject>(out var netObj) && netObj != null && netObj.IsSpawned) {
@@ -38,6 +42,10 @@ public class Damageable : NetworkBehaviour {
             Debug.Log($"[Damageable] Игрок {clientId} получает урон: {damage}");
             var before = health.Value;
             health.Value -= damage;
+            if (sound != null) {
+                damageAudio?.PlayOneShot(sound);//TODO ClientRpc
+                // возвращать damageAudio чтобы вызывающий сам играл свой звук
+            }
 
             if (!immortal && health.Value <= 0 && before > 0) {
                 PlayerSpawner.instance.HandleDeathServerRpc(clientId);

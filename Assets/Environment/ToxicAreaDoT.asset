@@ -14,4 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DamageOverTimeEffect
   effectName: DoT Toxic
   duration: 0.5
-  dps: 20
+  dps: 10
+  tickInterval: 0.5
+  damageSound: {fileID: 8300000, guid: 99a9ec5ac38aa9849a3d692681d009ae, type: 3}
