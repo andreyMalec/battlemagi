@@ -87,7 +87,7 @@ public class FirstPersonLook : NetworkBehaviour {
 
     private void UpdateCameraPosition() {
         if (headBone == null) return;
-        
+
         Vector3 targetPosition = headBone.position + headBone.TransformDirection(lookSettings.offset);
         firstPersonCamera.position = Vector3.SmoothDamp(
             firstPersonCamera.position,
@@ -102,5 +102,19 @@ public class FirstPersonLook : NetworkBehaviour {
             targetRotation,
             lookSettings.rotationSmoothTime
         );
+    }
+
+    public void ApplyInitialRotation(Quaternion worldRotation) {
+        // worldRotation содержит "куда смотреть"
+        // Берём yaw из Y и pitch = 0 (или можно рассчитать из камеры)
+        Vector3 euler = worldRotation.eulerAngles;
+
+        _currentRotation = new Vector2(euler.y, 0f);
+        transform.rotation = Quaternion.Euler(0f, _currentRotation.x, 0f);
+        firstPersonCamera.localRotation = Quaternion.Euler(-_currentRotation.y, 0f, 0f);
+
+        // Сразу синкнем на сервере
+        if (IsOwner)
+            _syncRotation.Value = _currentRotation;
     }
 }

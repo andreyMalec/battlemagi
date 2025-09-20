@@ -1,7 +1,11 @@
 ﻿using UnityEngine;
 using Unity.Netcode;
 using System.Collections;
+using Unity.Netcode.Components;
 
+[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(NetworkObject))]
+[RequireComponent(typeof(NetworkTransform))]
 public class FirstPersonMovement : NetworkBehaviour {
     public MovementSettings movementSettings;
     public GroundCheck groundCheck;
@@ -11,10 +15,11 @@ public class FirstPersonMovement : NetworkBehaviour {
     public event System.Action Jumped;
 
     // Сетевые переменные
-    private readonly NetworkVariable<Vector3> _networkPosition = new();
     private readonly NetworkVariable<bool> _isRunningNetwork = new();
     private readonly NetworkVariable<bool> _isJumpingNetwork = new();
     public readonly NetworkVariable<float> stamina = new();
+    public readonly NetworkVariable<Vector3> spawnPoint = new();
+    private int spawnTick = 0;
 
     private CharacterController _characterController;
     private float _jumpCooldownTimer;
@@ -29,8 +34,6 @@ public class FirstPersonMovement : NetworkBehaviour {
 
     private void Awake() {
         _characterController = GetComponent<CharacterController>();
-        if (_characterController == null)
-            _characterController = gameObject.AddComponent<CharacterController>();
     }
 
     public override void OnNetworkSpawn() {
@@ -38,16 +41,29 @@ public class FirstPersonMovement : NetworkBehaviour {
 
         _isRunningNetwork.OnValueChanged += OnIsRunningChanged;
         _isJumpingNetwork.OnValueChanged += OnIsJumpingChanged;
-        _networkPosition.OnValueChanged += OnPositionChanged;
 
-        if (IsServer) stamina.Value = movementSettings.maxStamina;
+        if (IsServer) {
+            stamina.Value = movementSettings.maxStamina;
+        }
+
+        if (IsOwner) {
+            spawnPoint.OnValueChanged += OnSpawnPointChanged;
+        }
+    }
+
+    private void OnSpawnPointChanged(Vector3 previousValue, Vector3 newValue) {
+        Debug.Log($"OnSpawnPointChanged: {previousValue} -> {newValue}");
+        spawnTick = 5;
     }
 
     public override void OnNetworkDespawn() {
         base.OnNetworkDespawn();
         _isRunningNetwork.OnValueChanged -= OnIsRunningChanged;
         _isJumpingNetwork.OnValueChanged -= OnIsJumpingChanged;
-        _networkPosition.OnValueChanged -= OnPositionChanged;
+
+        if (IsOwner) {
+            spawnPoint.OnValueChanged -= OnSpawnPointChanged;
+        }
     }
 
     private void OnIsRunningChanged(bool _, bool newValue) => IsRunning = newValue;
@@ -57,16 +73,17 @@ public class FirstPersonMovement : NetworkBehaviour {
             Jumped?.Invoke();
     }
 
-    private void OnPositionChanged(Vector3 _, Vector3 newValue) {
-        if (!IsOwner)
-            transform.position = newValue;
-    }
-
     private void Update() {
         // 1) Обработка ввода — делаем это ДО возврата для серверного блока.
         //    Input доступен только на клиенте/владельце, поэтому проверяем IsOwner.
-        if (IsOwner)
-            HandleOwnerInput();
+        if (IsOwner) {
+            if (spawnTick > 0) {
+                spawnTick--;
+                transform.position = spawnPoint.Value;
+            } else {
+                HandleOwnerInput();
+            }
+        }
 
         // 2) Серверная логика стамины и состояния бега
         if (!IsServer) return;
@@ -100,7 +117,6 @@ public class FirstPersonMovement : NetworkBehaviour {
         UpdateJumpCooldown();
         HandleMovementInput();
         TryJump();
-        SyncPosition();
     }
 
     private void UpdateJumpCooldown() {
@@ -196,12 +212,4 @@ public class FirstPersonMovement : NetworkBehaviour {
         _velocityY = Mathf.Sqrt(movementSettings.jumpStrength * -2f * movementSettings.gravity);
         JumpServerRpc(false);
     }
-
-    private void SyncPosition() {
-        if (Vector3.Distance(transform.position, _networkPosition.Value) > 0.1f)
-            UpdatePositionServerRpc(transform.position);
-    }
-
-    [ServerRpc]
-    private void UpdatePositionServerRpc(Vector3 position) => _networkPosition.Value = position;
 }

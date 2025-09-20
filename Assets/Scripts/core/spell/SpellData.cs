@@ -11,7 +11,7 @@ public class SpellData : ScriptableObject {
     public GameObject spellBurstPrefab;
     public GameObject mainSpellPrefab;
     public GameObject impactPrefab;
-    public AudioClip damageSound;
+    public DamageSoundType damageSound;
 
     public int invocationIndex;
 

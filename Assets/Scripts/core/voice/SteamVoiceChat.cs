@@ -6,6 +6,8 @@ using Unity.Netcode;
 using Steamworks;
 
 public class SteamVoiceChat : NetworkBehaviour {
+    private static bool LOG = false;
+
     [Header("Voice settings")] public float voiceChatRange = 25f;
     public float bufferSeconds = 1.0f; // длина внутреннего буфера клипа
 
@@ -36,7 +38,7 @@ public class SteamVoiceChat : NetworkBehaviour {
         PlayerManager.Instance.OnPlayerRemoved += HandlePlayerRemoved;
 
         SteamUser.VoiceRecord = true;
-        Debug.Log("[SteamVoiceChat] Local voice recording enabled");
+        if (LOG) Debug.Log("[SteamVoiceChat] Local voice recording enabled");
     }
 
     public override void OnNetworkDespawn() {
@@ -75,8 +77,9 @@ public class SteamVoiceChat : NetworkBehaviour {
                         i.Add(member.Id);
                     }
 
-                    // Debug.Log(
-                    //     $"[SteamVoiceChat] Sent {compressedBytes} bytes to {i.Count} peers ({string.Join(", ", i)})");
+                    if (LOG)
+                        Debug.Log(
+                            $"[SteamVoiceChat] Sent {compressedBytes} bytes to {i.Count} peers ({string.Join(", ", i)})");
                 }
             }
         }
@@ -95,7 +98,7 @@ public class SteamVoiceChat : NetworkBehaviour {
 
     // ===== PlayerManager events =====
     private void HandlePlayerAdded(PlayerManager.PlayerData player) {
-        Debug.Log($"[SteamVoiceChat] HandlePlayerAdded {player.SteamId}");
+        if (LOG) Debug.Log($"[SteamVoiceChat] HandlePlayerAdded {player.SteamId}");
         if (streams.TryGetValue(player.SteamId, out var oldVs)) {
             if (oldVs.source != null) {
                 oldVs.source.Stop();
@@ -129,9 +132,9 @@ public class SteamVoiceChat : NetworkBehaviour {
         src.Play();
 
         streams[player.SteamId] = vs;
-
-        // Debug.Log(
-        //     $"[SteamVoiceChat] Created streaming AudioSource for {player.SteamId} (rate={sampleRate}, len={clipLengthSamples})");
+        if (LOG)
+            Debug.Log(
+                $"[SteamVoiceChat] Created streaming AudioSource for {player.SteamId} (rate={sampleRate}, len={clipLengthSamples})");
     }
 
     private void HandlePlayerRemoved(PlayerManager.PlayerData player) {
@@ -139,7 +142,7 @@ public class SteamVoiceChat : NetworkBehaviour {
             if (vs.source) vs.source.Stop();
             if (vs.source) Destroy(vs.source.gameObject);
             streams.Remove(player.SteamId);
-            Debug.Log($"[SteamVoiceChat] Destroyed AudioSource for {player.SteamId}");
+            if (LOG) Debug.Log($"[SteamVoiceChat] Destroyed AudioSource for {player.SteamId}");
         }
     }
 
@@ -169,7 +172,7 @@ public class SteamVoiceChat : NetworkBehaviour {
         VoiceStream vs;
         if (!streams.TryGetValue(steamId, out vs) || vs.source == null || vs.source.gameObject == null) {
             // Ещё не создан источник (новичок?) — просто игнорируем пакет или можно накопить в temp-буфере
-            Debug.LogWarning($"[SteamVoiceChat] Voice from {steamId} but stream not ready yet");
+            if (LOG) Debug.LogWarning($"[SteamVoiceChat] Voice from {steamId} but stream not ready yet");
             var data = PlayerManager.Instance.FindBySteamId(steamId);
             if (data.HasValue) {
                 HandlePlayerAdded(data.Value);
@@ -188,7 +191,7 @@ public class SteamVoiceChat : NetworkBehaviour {
                 // если очередь переполнена — подчистим
                 int drop = vs.queue.Count - maxQueue;
                 for (int i = 0; i < drop; i++) vs.queue.Dequeue();
-                Debug.LogWarning($"[SteamVoiceChat] Queue overflow for {steamId}, dropping {drop} samples");
+                if (LOG) Debug.LogWarning($"[SteamVoiceChat] Queue overflow for {steamId}, dropping {drop} samples");
             }
 
             for (int i = 0; i < samples.Length; i++)
@@ -203,7 +206,7 @@ public class SteamVoiceChat : NetworkBehaviour {
             int uncompressedBytes = SteamUser.DecompressVoice(input, voiceData.Length, output);
 
             if (uncompressedBytes <= 0) {
-                Debug.LogWarning($"[SteamVoiceChat] Decompress failed from {fromSteamId}");
+                if (LOG) Debug.LogWarning($"[SteamVoiceChat] Decompress failed from {fromSteamId}");
                 return;
             }
 
@@ -219,8 +222,9 @@ public class SteamVoiceChat : NetworkBehaviour {
             }
 
             EnqueueSamples(fromSteamId, samples);
-            Debug.Log(
-                $"[SteamVoiceChat] From {fromSteamId}: {uncompressedBytes} bytes → {sampleCount} samples (enqueued)");
+            if (LOG)
+                Debug.Log(
+                    $"[SteamVoiceChat] From {fromSteamId}: {uncompressedBytes} bytes → {sampleCount} samples (enqueued)");
         }
     }
 }

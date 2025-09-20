@@ -5,7 +5,6 @@ using Steamworks;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Random = System.Random;
 
 public class PlayerSpawner : NetworkBehaviour {
     [SerializeField] private GameObject playerPrefab;
@@ -61,7 +60,7 @@ public class PlayerSpawner : NetworkBehaviour {
             playerObj.Despawn();
             Destroy(playerObj.gameObject);
 
-            SpawnPlayerServerRpc(clientId, Vector3.zero);
+            SpawnPlayerServerRpc(clientId);
         }
     }
 
@@ -106,27 +105,34 @@ public class PlayerSpawner : NetworkBehaviour {
         List<ulong> clientsTimedOut
     ) {
         if (IsHost && sceneName == "Game") {
-            var i = 0;
             foreach (var id in clientsCompleted) {
-                i++;
-                SpawnPlayerServerRpc(id, new Vector3(i * 10, 3, i * 10));
+                SpawnPlayerServerRpc(id);
             }
         }
     }
 
     [ServerRpc]
-    private void SpawnPlayerServerRpc(ulong clientId, Vector3 position) {
-        var spawnPoints = FindFirstObjectByType<SpawnPoint>().spawnPoints;
-        var r = new Random().Next(spawnPoints.Count);//TODO client spawn at 0 0 0
-        GameObject newPlayer = Instantiate(playerPrefab, spawnPoints[r].position, spawnPoints[r].rotation);
+    private void SpawnPlayerServerRpc(ulong clientId) {
+        var spawnPoint = FindFirstObjectByType<SpawnPoint>().Get();
+        var position = spawnPoint.position;
+        var rotation = spawnPoint.rotation;
+
+        GameObject newPlayer = Instantiate(playerPrefab, position, rotation);
         newPlayer.name = "Player_" + clientId;
-        newPlayer.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
-        Debug.Log($"[PlayerSpawner] Сервер: Создан новый Player_{clientId}");
-        ApplyMaterialClientRpc(clientId);
+        newPlayer.transform.SetPositionAndRotation(position, rotation);
+
+        var netObj = newPlayer.GetComponent<NetworkObject>();
+        netObj.SpawnAsPlayerObject(clientId, true);
+
+        var movement = newPlayer.GetComponent<FirstPersonMovement>();
+        movement.spawnPoint.Value = position;
+        Debug.Log($"[PlayerSpawner] Сервер: Player_{clientId} создан в {position}, {rotation}");
+
+        ApplyMaterialClientRpc(clientId, rotation);
     }
 
     [ClientRpc]
-    private void ApplyMaterialClientRpc(ulong clientId) {
+    private void ApplyMaterialClientRpc(ulong clientId, Quaternion rotation) {
         var steamid = PlayerManager.Instance.GetSteamId(clientId);
         if (!steamid.HasValue) return;
         var color = new Friend(steamid.Value).GetColor();
@@ -140,6 +146,8 @@ public class PlayerSpawner : NetworkBehaviour {
         player.GetComponentInChildren<MeshBody>().gameObject.GetComponent<SkinnedMeshRenderer>().material = bodyMat;
         player.GetComponentInChildren<MeshCloak>().gameObject.GetComponent<SkinnedMeshRenderer>().material =
             cloakMat;
+
+        player.GetComponent<FirstPersonLook>().ApplyInitialRotation(rotation);
     }
 
     private void SpawnLobbyEnjoyer(ulong clientId) {

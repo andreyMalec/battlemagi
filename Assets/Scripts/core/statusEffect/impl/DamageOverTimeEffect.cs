@@ -4,7 +4,7 @@ using UnityEngine;
 public class DamageOverTimeEffect : StatusEffectData {
     public float dps;
     public float tickInterval = 1f;
-    public AudioClip damageSound;
+    public DamageSoundType damageSound;
 
     public override StatusEffectRuntime CreateRuntime() {
         return new DamageOverTimeRuntime(this);

@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DamageOverTimeEffect
   effectName: DoT Lava
   duration: 0.5
-  dps: 5
-  tickInterval: 0.2
+  dps: 0.3
+  tickInterval: 0
+  damageSound: 1

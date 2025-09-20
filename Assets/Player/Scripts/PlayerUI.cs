@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
-//TODO Net obj ?
+
 public class PlayerUI : MonoBehaviour {
     private PlayerUIRenderer _renderer;
     private Damageable _damageable;
@@ -15,6 +15,7 @@ public class PlayerUI : MonoBehaviour {
 
     private void Update() {
         if (_renderer == null) return;
+        if (!_damageable.IsOwner) return;
 
         var hp = Math.Clamp(_damageable.health.Value / _damageable.maxHealth, 0, 1);
         _renderer.hp.transform.localScale = new Vector3(hp, 1, 1);

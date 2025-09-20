@@ -943,7 +943,7 @@ MonoBehaviour:
   ScaleMaxInterpolationTime: 0.1
   AuthorityMode: 1
   TickSyncChildren: 0
-  UseUnreliableDeltas: 1
+  UseUnreliableDeltas: 0
   SyncPositionX: 1
   SyncPositionY: 1
   SyncPositionZ: 1
@@ -1029,6 +1029,7 @@ MonoBehaviour:
   immortal: 0
   hp: {fileID: 0}
   damageAudio: {fileID: 8201634953252771622}
+  damageSoundCooldown: 0.2
   health:
     m_InternalValue: 0
 --- !u!114 &1915652513373438011

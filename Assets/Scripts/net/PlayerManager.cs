@@ -74,8 +74,6 @@ public class PlayerManager : NetworkBehaviour {
     public override void OnNetworkSpawn() {
         if (IsServer)
             players.Clear();
-        else {
-        }
     }
 
     private void OnPlayersChanged(NetworkListEvent<PlayerData> changeEvent) {

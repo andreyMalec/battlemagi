@@ -10,8 +10,11 @@ public class Damageable : NetworkBehaviour {
     [SerializeField] public float hpRestore = 1f;
     [SerializeField] private bool immortal = false;
     [SerializeField] private TMP_Text hp;
-    [SerializeField] AudioSource damageAudio;
+    [Header("Sound")] [SerializeField] private AudioSource damageAudio;
+    [SerializeField] private float damageSoundCooldown = 0.2f; // минимальное время между звуками
+    private float _lastDamageSoundTime;
     private float _restoreTick;
+    private bool _isDead = false;
 
     public NetworkVariable<float> health = new();
 
@@ -28,33 +31,42 @@ public class Damageable : NetworkBehaviour {
 
         if (!IsServer) return;
         _restoreTick += Time.deltaTime;
-        if (_restoreTick >= 1) {
+        if (_restoreTick >= 1 && !_isDead) {
             health.Value += hpRestore;
             _restoreTick = 0f;
         }
+
+        health.Value = Mathf.Clamp(health.Value, 0, maxHealth);
     }
 
-    public bool TakeDamage(float damage, AudioClip sound = null) {
-        if (!IsServer) return false;
-        if (damage < 0) return false;
+    public void TakeDamage(float damage, DamageSoundType sound = DamageSoundType.Default) {
+        if (!IsServer) return;
+        if (damage < 0 || _isDead) return;
         if (TryGetComponent<NetworkObject>(out var netObj) && netObj != null && netObj.IsSpawned) {
             var clientId = netObj.OwnerClientId;
             Debug.Log($"[Damageable] Игрок {clientId} получает урон: {damage}");
             var before = health.Value;
             health.Value -= damage;
-            if (sound != null) {
-                damageAudio?.PlayOneShot(sound);//TODO ClientRpc
-                // возвращать damageAudio чтобы вызывающий сам играл свой звук
+            if (Time.time - _lastDamageSoundTime >= damageSoundCooldown) {
+                _lastDamageSoundTime = Time.time;
+                PlayDamageSoundClientRpc((int)sound);
             }
 
             if (!immortal && health.Value <= 0 && before > 0) {
+                _isDead = true;
                 PlayerSpawner.instance.HandleDeathServerRpc(clientId);
             }
-
-            return true;
         }
+    }
 
-        return false;
+    [ClientRpc]
+    private void PlayDamageSoundClientRpc(int damageSoundType) {
+        if (damageAudio == null) return;
+        var type = (DamageSoundType)damageSoundType;
+        var clip = AudioManager.Instance.GetDamageSound(type);
+        if (clip != null) {
+            damageAudio.PlayOneShot(clip);
+        }
     }
 }
 
