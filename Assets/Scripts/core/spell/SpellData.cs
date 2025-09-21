@@ -8,7 +8,6 @@ public class SpellData : ScriptableObject {
     public string[] spellWords;
     public string[] spellWordsRu;
     public GameObject spellInHandPrefab;
-    public GameObject spellBurstPrefab;
     public GameObject mainSpellPrefab;
     public GameObject impactPrefab;
     public DamageSoundType damageSound;
@@ -26,6 +25,7 @@ public class SpellData : ScriptableObject {
     public bool piercing = false;
     public float baseSpeed = 20f;
     public float homingStrength = 1f;
+    public int projCount = 1;
 
     [Header("Shake")] public bool shakeEnabled = true;
     public float shakeStrengthBurst = 0.05f;

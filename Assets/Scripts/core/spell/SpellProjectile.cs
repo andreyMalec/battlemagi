@@ -4,6 +4,7 @@ using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
+[RequireComponent(typeof(NetworkObject))]
 public class SpellProjectile : NetworkBehaviour {
     [Header("References")] public Rigidbody rb;
 
@@ -109,15 +110,37 @@ public class SpellProjectile : NetworkBehaviour {
             ApplyAreaEffect(excludeClients);
 
         // Spawn impact effect
-        if (spellData.impactPrefab != null)
-            SpawnImpactClientRpc(spellData.id, transform.position, OwnerClientId);
+        if (spellData.impactPrefab != null) {
+            if (Physics.Raycast(transform.position - transform.forward * 0.1f, transform.forward, out RaycastHit hit,
+                    2f)) {
+                Vector3 normal = hit.normal; // нормаль поверхности
+                Vector3 direction = transform.forward; // куда летел снаряд
+
+                // Строим базис: Y = нормаль, Z = направление полёта вдоль поверхности
+                Vector3 tangent = Vector3.Cross(normal, direction);
+                if (tangent.sqrMagnitude < 0.001f) {
+                    // если снаряд прилетел почти строго по нормали, берём запасной вектор
+                    tangent = Vector3.Cross(normal, Vector3.up);
+                }
+
+                Vector3 forward = Vector3.Cross(tangent, normal);
+
+                // Итоговый поворот: Y = нормаль, Z = согласованный "вперёд"
+                Quaternion rot = Quaternion.LookRotation(forward, normal);
+
+                SpawnImpactClientRpc(spellData.id, hit.point, rot, OwnerClientId);
+            } else {
+                // fallback: просто по позиции снаряда
+                SpawnImpactClientRpc(spellData.id, hit.point, Quaternion.identity, OwnerClientId);
+            }
+        }
     }
 
     [ClientRpc]
-    private void SpawnImpactClientRpc(int spellId, Vector3 position, ulong ownerId) {
+    private void SpawnImpactClientRpc(int spellId, Vector3 position, Quaternion quaternion, ulong ownerId) {
         var spell = SpellDatabase.Instance.GetSpell(spellId);
 
-        var go = Instantiate(spell.impactPrefab, position, Quaternion.identity);
+        var go = Instantiate(spell.impactPrefab, position, quaternion);
         if (IsServer && go.TryGetComponent<NetworkObject>(out var netObj)) {
             netObj.SpawnWithOwnership(ownerId);
         }

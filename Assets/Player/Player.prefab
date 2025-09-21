@@ -408,7 +408,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -686,6 +686,7 @@ GameObject:
   - component: {fileID: 1915652513373438011}
   - component: {fileID: 1507093393527865229}
   - component: {fileID: 5865273710895956458}
+  - component: {fileID: 2716919782836391855}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -706,6 +707,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8942189524516076115}
   - {fileID: 2934301547977243489}
   - {fileID: 2019376321681842677}
   - {fileID: 5018617467678129579}
@@ -789,7 +791,7 @@ MonoBehaviour:
   language: 0
   mouth: {fileID: 7062876200609141023}
   playerAnimator: {fileID: 6425691076356515085}
-  recognitionThreshold: 0.3
+  recognitionThreshold: 0.7
   spellCastKey: 323
 --- !u!114 &590111089370120790
 MonoBehaviour:
@@ -805,6 +807,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpellManager
   ShowTopMostFoldoutHeaderGroup: 1
   spellCastPoint: {fileID: 3077521524520137575}
+  multiProjTimeout: 0.2
   invocation: {fileID: 0}
 --- !u!114 &906687778472763878
 MonoBehaviour:
@@ -1001,7 +1004,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SteamVoiceChat
   ShowTopMostFoldoutHeaderGroup: 1
-  voiceChatRange: 30
+  voiceChatRange: 60
   bufferSeconds: 0.5
 --- !u!81 &2342397811680414283
 AudioListener:
@@ -1154,6 +1157,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 824eb303d2104240b1225884229c593f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerUI
+--- !u!114 &2716919782836391855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5c99606efbe4c0dba21b6c0df448a11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StateController
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &5894542900604772476
 GameObject:
   m_ObjectHideFlags: 0
@@ -1261,7 +1277,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -1829,7 +1845,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -1979,4 +1995,70 @@ MonoBehaviour:
 Animator:
   m_CorrespondingSourceObject: {fileID: 4147517012472145779, guid: 140f34d414a550040b4e2eeb46cce691, type: 3}
   m_PrefabInstance: {fileID: 4028519367845557902}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &8224858169178024182
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 3580683726391601925}
+    m_Modifications:
+    - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.009
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3064280272593765402, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_Name
+      value: Freeze
+      objectReference: {fileID: 0}
+    - target: {fileID: 3064280272593765402, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+--- !u!4 &8942189524516076115 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+  m_PrefabInstance: {fileID: 8224858169178024182}
   m_PrefabAsset: {fileID: 0}

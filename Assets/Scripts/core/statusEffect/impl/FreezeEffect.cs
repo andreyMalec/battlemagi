@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "StatusEffects/Freeze")]
@@ -14,21 +15,11 @@ public class FreezeEffect : StatusEffectData {
         }
 
         public override void OnApply(GameObject target) {
-            var mover = target.GetComponent<FirstPersonMovement>();
-            if (mover != null) mover.enabled = false;
-            var caster = target.GetComponent<PlayerSpellCaster>();
-            if (caster != null) caster.enabled = false;
-            var looker = target.GetComponent<FirstPersonLook>();
-            if (looker != null) looker.enabled = false;
+            target.GetComponent<StateController>().SetFreeze(true);
         }
 
         public override void OnExpire(GameObject target) {
-            var mover = target.GetComponent<FirstPersonMovement>();
-            if (mover != null) mover.enabled = true;
-            var caster = target.GetComponent<PlayerSpellCaster>();
-            if (caster != null) caster.enabled = true;
-            var looker = target.GetComponent<FirstPersonLook>();
-            if (looker != null) looker.enabled = true;
+            target.GetComponent<StateController>().SetFreeze(false);
         }
     }
 }

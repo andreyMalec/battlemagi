@@ -4,8 +4,8 @@ using Unity.Netcode;
 
 public class SpellManager : NetworkBehaviour {
     [SerializeField] private Transform spellCastPoint;
-    [HideInInspector]
-    public Transform invocation;
+    [SerializeField] private float multiProjTimeout = 0.2f;
+    [HideInInspector] public Transform invocation;
 
     private void Awake() {
         invocation = GetComponentInChildren<MeshController>().invocation.transform;
@@ -29,14 +29,17 @@ public class SpellManager : NetworkBehaviour {
             ClearInHandServerRpc(NetworkManager.Singleton.LocalClientId);
         }
 
-        Vector3 spawnPosition = spellCastPoint != null ? spellCastPoint.position : transform.position;
-        Quaternion spawnRotation = spellCastPoint != null ? spellCastPoint.rotation : transform.rotation;
+        for (int i = 0; i < currentSpell.projCount; i++) {
+            Vector3 spawnPosition = spellCastPoint != null ? spellCastPoint.position : transform.position;
+            Quaternion spawnRotation = spellCastPoint != null ? spellCastPoint.rotation : transform.rotation;
 
-        if (currentSpell.spawnOnGround) {
-            spawnPosition = GetGroundPosition(spawnPosition);
+            if (currentSpell.spawnOnGround) {
+                spawnPosition = GetGroundPosition(spawnPosition);
+            }
+
+            SpawnMainServerRpc(currentSpell.id, spawnPosition, spawnRotation);
+            yield return new WaitForSeconds(multiProjTimeout);
         }
-
-        SpawnMainServerRpc(currentSpell.id, spawnPosition, spawnRotation);
     }
 
     [ServerRpc]
@@ -52,6 +55,7 @@ public class SpellManager : NetworkBehaviour {
             for (int i = 0; i < manager.invocation.childCount; i++) {
                 Destroy(manager.invocation.GetChild(i).gameObject);
             }
+
             Debug.Log($"[SpellManager] Подчищаем эффект в руке заклинателя");
         }
     }
@@ -69,6 +73,7 @@ public class SpellManager : NetworkBehaviour {
         GameObject obj = Instantiate(spell.spellInHandPrefab, Vector3.zero, Quaternion.identity);
         obj.transform.SetParent(invocation.transform);
         obj.transform.localPosition = Vector3.zero;
+        obj.transform.localEulerAngles = Vector3.zero;
 
         Debug.Log($"[SpellManager] Проявляем {spell.name} в руке заклинателя {clientId}");
     }

@@ -39,11 +39,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _LavaNormal:
-        m_Texture: {fileID: 2800000, guid: 916c270d6f104254faad8bd94c227304, type: 3}
+        m_Texture: {fileID: 2800000, guid: aacb67b5b40fe4e48b27e3676e2366ab, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _LavaTex:
-        m_Texture: {fileID: 2800000, guid: c9cddf36de4a01542866d59e7b126154, type: 3}
+        m_Texture: {fileID: 2800000, guid: fd584e6e58813824985e80f248b388d9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalFromTexture_baab837276c243419950343fa3f5c5bc_Texture_0:
@@ -70,11 +70,11 @@ Material:
     m_Floats:
     - _BackGround_Strenght: 0
     - _BottomPower: 0.89
-    - _Frenselpower: 0.85
+    - _Frenselpower: 0.8
     - _LavaNormalSpeed: 0.05
     - _Metallic: 0
-    - _NoiseAmount: 1
-    - _NoiseScale: 30
+    - _NoiseAmount: 1.01
+    - _NoiseScale: 20
     - _Normal_Strength: 20
     - _Power: 2
     - _QueueControl: 0

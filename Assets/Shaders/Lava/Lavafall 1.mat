@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Lavafall
+  m_Name: Lavafall 1
   m_Shader: {fileID: -6465566751694194690, guid: 04e5f833877e093489922b3f6797372e, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -69,13 +69,13 @@ Material:
     - _BottomRemap: {r: 0, g: 1, b: 0, a: 0}
     - _FresnelColor: {r: 1, g: 1, b: 1, a: 0}
     - _LavaColor: {r: 25.688934, g: 6.885694, b: 0.66208607, a: 1}
-    - _LavaNormalSpeed: {r: 0, g: 0.2, b: 0, a: 0}
-    - _LavaScale: {r: 1, g: 2, b: 0, a: 0}
-    - _LavaScaleNormal: {r: 1, g: 2, b: 0, a: 0}
-    - _LavaSpeed: {r: 0, g: 0.2, b: 0, a: 0}
+    - _LavaNormalSpeed: {r: 0, g: 0, b: 0, a: 0}
+    - _LavaScale: {r: 50, g: 50, b: 0, a: 0}
+    - _LavaScaleNormal: {r: 1, g: 1, b: 0, a: 0}
+    - _LavaSpeed: {r: 0, g: 0, b: 0, a: 0}
     - _Lavaremap: {r: 0, g: 1, b: 0, a: 0}
     - _NoiseSpeed: {r: 0.05, g: 0.05, b: 0, a: 0}
-    - _VoronoiSpeed: {r: 0, g: 0.3, b: 0, a: 0}
+    - _VoronoiSpeed: {r: 0, g: 0.01, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &5592098867669067023

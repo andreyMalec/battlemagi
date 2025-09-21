@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf4989d79519c1349aa400eb4e706e49, type: 3}
+  m_Name: Ice Shards
+  m_EditorClassIdentifier: Assembly-CSharp::SpellData
+  id: 4
+  name: Ice Shards
+  nameRu: 
+  spellWords:
+  - IceShards
+  spellWordsRu:
+  - "\u041E\u0433\u043D\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
+  - "\u0428\u0430\u0440\u041E\u0433\u043D\u044F"
+  - "\u041E\u0433\u0434\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
+  - "\u041E\u0433\u0434\u0438\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
+  - "\u041E\u0433\u0434\u0438\u043D\u044B\u0439\u0428\u0430\u0440"
+  - "\u041E\u0433\u0434\u0435\u043D\u044B\u0439\u0428\u0430\u0440"
+  - "\u041E\u0431\u043D\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
+  - "\u0412\u043E\u0433\u0434\u043D\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
+  - "\u041F\u043E\u0433\u043D\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
+  - "\u041E\u0433\u043D\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0433"
+  - "\u041A\u043E\u0433\u043D\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
+  - "\u041E\u0433\u043E\u043D\u0435\u043D\u043D\u044B\u0428\u0430\u0440"
+  - "\u041E\u0433\u043E\u043D\u0435\u043D\u044B\u0428\u0430\u0440"
+  - "\u0423\u0447\u0433\u0434\u0435\u043D\u044B\u0439\u0428\u0430\u0440"
+  - "\u041E\u0433\u043D\u0435\u0428\u0430\u0440"
+  spellInHandPrefab: {fileID: 7389778017922607859, guid: c265ae2eccea0804aa31db5363406269, type: 3}
+  mainSpellPrefab: {fileID: 7354784787554302670, guid: 8ba852e80c16a33419c14dc0725da18a, type: 3}
+  impactPrefab: {fileID: 1742013225946848, guid: 37a5f388d84f25145b3592c23b96be04, type: 3}
+  damageSound: 2
+  invocationIndex: 3
+  castTime: 1
+  isDOT: 0
+  baseDamage: 30
+  hasAreaEffect: 0
+  areaRadius: 0
+  lifeTime: 5
+  piercing: 0
+  baseSpeed: 10
+  homingStrength: 1
+  projCount: 5
+  shakeEnabled: 0
+  shakeStrengthBurst: 0
+  shakeStrengthImpact: 0
+  shakeDurationBurst: 0
+  shakeDurationImpact: 0
+  spellTracking: 0
+  spawnOnGround: 0
+  canSelfDamage: 0
