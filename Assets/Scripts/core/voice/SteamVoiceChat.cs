@@ -6,7 +6,9 @@ using Unity.Netcode;
 using Steamworks;
 
 public class SteamVoiceChat : NetworkBehaviour {
-    private static bool LOG = false;
+    private static bool LOG = true;
+
+    [SerializeField] private AudioSource playerVoice;
 
     [Header("Voice settings")] public float voiceChatRange = 25f;
     public float bufferSeconds = 1.0f; // длина внутреннего буфера клипа
@@ -52,7 +54,6 @@ public class SteamVoiceChat : NetworkBehaviour {
 
         foreach (var vs in streams.Values) {
             if (vs.source) vs.source.Stop();
-            if (vs.source) Destroy(vs.source.gameObject);
         }
 
         streams.Clear();
@@ -102,26 +103,13 @@ public class SteamVoiceChat : NetworkBehaviour {
         if (streams.TryGetValue(player.SteamId, out var oldVs)) {
             if (oldVs.source != null) {
                 oldVs.source.Stop();
-                Destroy(oldVs.source.gameObject);
             }
         }
 
-        var playerTransform = player.PlayerTransform();
-        if (playerTransform == null) return;
+        var playerObject = player.PlayerObject();
+        if (playerObject == null) return;
 
-        // Создаём объект-источник звука у игрока
-        var go = new GameObject($"Voice_{player.SteamId}");
-        go.transform.SetParent(playerTransform);
-        go.transform.localPosition = Vector3.zero;
-
-        var src = go.AddComponent<AudioSource>();
-        src.playOnAwake = true;
-        src.loop = true;
-        src.spatialBlend = 1f;
-        src.minDistance = 0f;
-        src.maxDistance = voiceChatRange;
-        src.rolloffMode = AudioRolloffMode.Linear;
-        src.dopplerLevel = 0f;
+        var src = playerObject.GetComponent<SteamVoiceChat>().playerVoice;
 
         var vs = new VoiceStream();
         vs.source = src;
@@ -140,7 +128,6 @@ public class SteamVoiceChat : NetworkBehaviour {
     private void HandlePlayerRemoved(PlayerManager.PlayerData player) {
         if (streams.TryGetValue(player.SteamId, out var vs)) {
             if (vs.source) vs.source.Stop();
-            if (vs.source) Destroy(vs.source.gameObject);
             streams.Remove(player.SteamId);
             if (LOG) Debug.Log($"[SteamVoiceChat] Destroyed AudioSource for {player.SteamId}");
         }

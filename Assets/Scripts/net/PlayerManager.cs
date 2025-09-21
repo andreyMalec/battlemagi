@@ -27,9 +27,9 @@ public class PlayerManager : NetworkBehaviour {
             return $"PlayerData({ClientId}, {SteamId})";
         }
 
-        public Transform PlayerTransform() {
+        public GameObject PlayerObject() {
             if (NetworkManager.Singleton.ConnectedClients.TryGetValue(ClientId, out var client))
-                return client.PlayerObject.transform;
+                return client.PlayerObject.gameObject;
             return null;
         }
     }
