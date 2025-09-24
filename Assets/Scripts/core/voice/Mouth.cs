@@ -1,68 +1,46 @@
-using System.Collections;
-using System.Diagnostics;
+using System;
+using System.Reflection;
 using UnityEngine;
-using Voice;
 using Whisper;
+using Whisper.Utils;
 using Debug = UnityEngine.Debug;
 
-public delegate void OnMouthClose(string lastWords);
+public delegate bool OnMouthClose(string lastWords);
 
 public class Mouth : MonoBehaviour {
-    [Header("References")] public Voice.MicrophoneRecord microphoneRecord;
+    [Header("References")]
+    public MicrophoneRecord microphoneRecord;
+
     private WhisperManager whisper;
 
-    public string lastWords = "";
+    private WhisperStream _stream;
+    private MethodInfo _updateSlidingWindow;
 
     public event OnMouthClose OnMouthClose;
 
-    private void Awake() {
+    private async void Awake() {
         if (WhisperHolder.instance == null) return;
         whisper = WhisperHolder.instance.whisper;
-        whisper.OnNewSegment += OnNewSegment;
-        microphoneRecord.OnRecordStop += OnRecordStop;
-    }
+        if (microphoneRecord != null) {
+            _stream = await whisper.CreateStream(microphoneRecord);
+            _stream.StartStream();
+            microphoneRecord.StartRecord();
+            _stream.OnSegmentUpdated += OnSegmentUpdated;
 
-    public void Open() {
-        if (microphoneRecord.IsRecording) {
-            microphoneRecord.StopRecord();
+            Type type = typeof(WhisperStream);
+            _updateSlidingWindow =
+                type.GetMethod("UpdateSlidingWindow", BindingFlags.NonPublic | BindingFlags.Instance);
         }
-
-        microphoneRecord.StartRecord();
     }
 
-    public void Close() {
-        StartCoroutine(StopRecord());
-    }
-
-    private IEnumerator StopRecord() {
-        yield return new WaitForSeconds(0.1f);
-        microphoneRecord.StopRecord();
-    }
-
-    private void OnNewSegment(WhisperSegment segment) {
-        Debug.Log("OnNewSegment: " + segment.Text);
-
-        lastWords += segment.Text.Trim();
-    }
-
-    private async void OnRecordStop(AudioChunk recordedAudio) {
-        if (lastWords.Length > 0)
-            Debug.Log("lastWords: " + lastWords);
-        lastWords = "";
-
-        var sw = new Stopwatch();
-        sw.Start();
-
-        var res = await whisper.GetTextAsync(recordedAudio.Data, recordedAudio.Frequency, recordedAudio.Channels);
-        if (res == null)
-            return;
-
-        var time = sw.ElapsedMilliseconds;
-        var rate = recordedAudio.Length / (time * 0.001f);
-        var timeText = $"Time: {time} ms\nRate: {rate:F1}x";
-
-        var text = res.Result;
-        Debug.Log("OnRecordStop: " + timeText + "; " + text);
-        OnMouthClose?.Invoke(text);
+    private void OnSegmentUpdated(WhisperResult segment) {
+        var r = segment.Result;
+        if (string.IsNullOrWhiteSpace(r) || r.Contains("[BLANK_AUDIO]") || r.Contains("music") ||
+            r.Contains("[typing]")) return;
+        Debug.Log("OnSegmentUpdated: " + segment.Result);
+        var handled = OnMouthClose?.Invoke(segment.Result);
+        if (handled.HasValue && handled.Value) {
+            _updateSlidingWindow.Invoke(_stream, new object[] { true });
+        }
     }
 }

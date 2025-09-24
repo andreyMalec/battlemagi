@@ -22,54 +22,41 @@ public class PlayerSpellCaster : NetworkBehaviour {
 
     public KeyCode spellCastKey = KeyCode.Mouse0;
 
-    private float _currentChargeTime;
     private RecognizedSpell? recognizedSpell = null;
 
-    public bool IsCasting { get; private set; }
     private bool castWaiting = false;
 
     private void Start() {
-        IsCasting = false;
         if (!IsOwner) return;
         spellManager = GetComponent<SpellManager>();
         mouth.OnMouthClose += OnMouthClose;
     }
 
-    private void OnMouthClose(string lastWords) {
-        IsCasting = false;
-        _currentChargeTime = 0;
+    private bool OnMouthClose(string lastWords) {
+        if (castWaiting) return false;
         var s = RecognizeSpell(lastWords);
         recognizedSpell = s;
-        if (s.similarity >= recognitionThreshold) {
+        var handled = s.similarity >= recognitionThreshold;
+        if (handled) {
             castWaiting = true;
             playerAnimator.CastWaitingAnim(true);
             spellManager.PrepareSpell(s.spell);
         }
+
+        return handled;
     }
 
     private void Update() {
         if (!IsOwner) return;
 
         HandleSpellCasting();
-        playerAnimator.Casting(IsCasting, _currentChargeTime);
     }
 
     private void HandleSpellCasting() {
-        if (Input.GetKeyDown(spellCastKey) && !IsCasting && !castWaiting) {
-            IsCasting = true;
-            mouth.Open();
-        } else if (Input.GetKeyUp(spellCastKey) && castWaiting) {
+        if (Input.GetKeyDown(spellCastKey) && castWaiting) {
             playerAnimator.CastWaitingAnim(false);
             castWaiting = false;
             CastSpell();
-        }
-
-        if (IsCasting)
-            _currentChargeTime += Time.deltaTime;
-
-        if (_currentChargeTime > 10) {
-            _currentChargeTime = 0;
-            IsCasting = false;
         }
     }
 

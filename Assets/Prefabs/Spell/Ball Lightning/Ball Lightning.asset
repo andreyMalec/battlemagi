@@ -33,7 +33,6 @@ MonoBehaviour:
   - "\u041F\u0430\u0440\u043E\u0432\u0430\u044F\u041C\u043E\u043B\u043D\u0438\u044F"
   - "\u041F\u0430\u0440\u043E\u0432\u0430\u0438\u041C\u043E\u043B\u043D\u0438\u044F"
   spellInHandPrefab: {fileID: 7389778017922607859, guid: 147a7e07436446d46b8c9c3de6e146f0, type: 3}
-  spellBurstPrefab: {fileID: 0}
   mainSpellPrefab: {fileID: 7389778017922607859, guid: 108008661223d2f4caab986158e09592, type: 3}
   impactPrefab: {fileID: 0}
   damageSound: 3
@@ -43,10 +42,11 @@ MonoBehaviour:
   baseDamage: 10
   hasAreaEffect: 1
   areaRadius: 5
-  lifeTime: 50
+  lifeTime: 20
   piercing: 1
   baseSpeed: 5
   homingStrength: 1
+  projCount: 1
   shakeEnabled: 0
   shakeStrengthBurst: 0.05
   shakeStrengthImpact: 0.05

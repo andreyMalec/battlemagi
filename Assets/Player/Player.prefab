@@ -791,7 +791,7 @@ MonoBehaviour:
   language: 0
   mouth: {fileID: 7062876200609141023}
   playerAnimator: {fileID: 6425691076356515085}
-  recognitionThreshold: 0.5
+  recognitionThreshold: 0.6
   spellCastKey: 323
 --- !u!114 &590111089370120790
 MonoBehaviour:
@@ -1354,9 +1354,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4566222397654007818}
-  - component: {fileID: 7062876200609141023}
-  - component: {fileID: 8279561303262719019}
   - component: {fileID: 8091174937036172696}
+  - component: {fileID: 4698157495094038902}
+  - component: {fileID: 7062876200609141023}
   m_Layer: 0
   m_Name: Mouth
   m_TagString: Untagged
@@ -1379,50 +1379,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3580683726391601925}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7062876200609141023
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6200229261487304820}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 218b0c0e4d434f36a0af4d69fc343cc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Mouth
-  microphoneRecord: {fileID: 8279561303262719019}
-  lastWords: 
---- !u!114 &8279561303262719019
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6200229261487304820}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 298df8dc547c4aadbc576deb7d6990ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Whisper.Utils.MicrophoneRecord
-  maxLengthSec: 60
-  loop: 0
-  frequency: 44000
-  chunksLengthSec: 1
-  echo: 0
-  echoPosition: {fileID: 2934301547977243489}
-  useVad: 1
-  vadUpdateRateSec: 0.05
-  vadContextSec: 5
-  vadLastSec: 0.5
-  vadThd: 1
-  vadFreqThd: 100
-  vadIndicatorImage: {fileID: 0}
-  vadStop: 1
-  dropVadPart: 1
-  vadStopTime: 0.3
-  microphoneDropdown: {fileID: 0}
-  microphoneDefaultLabel: Default microphone
 --- !u!82 &8091174937036172696
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1520,6 +1476,48 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &4698157495094038902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6200229261487304820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bc03a4c19604ea394e364f8fc632928, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: com.whisper.unity::Whisper.Utils.MicrophoneRecord
+  maxLengthSec: 3
+  loop: 1
+  frequency: 44000
+  chunksLengthSec: 0.5
+  echo: 0
+  useVad: 1
+  vadUpdateRateSec: 0.1
+  vadContextSec: 30
+  vadLastSec: 1.25
+  vadThd: 1
+  vadFreqThd: 100
+  vadIndicatorImage: {fileID: 0}
+  vadStop: 0
+  dropVadPart: 1
+  vadStopTime: 3
+  microphoneDropdown: {fileID: 0}
+  microphoneDefaultLabel: Default microphone
+--- !u!114 &7062876200609141023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6200229261487304820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 218b0c0e4d434f36a0af4d69fc343cc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Mouth
+  microphoneRecord: {fileID: 4698157495094038902}
 --- !u!1 &6409226882149161985
 GameObject:
   m_ObjectHideFlags: 0
@@ -2104,12 +2102,24 @@ PrefabInstance:
     m_TransformParent: {fileID: 3580683726391601925}
     m_Modifications:
     - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.009
+      value: 1.1111
       objectReference: {fileID: 0}
     - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
       propertyPath: m_LocalPosition.z

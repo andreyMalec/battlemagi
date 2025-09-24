@@ -131,7 +131,7 @@ public class SpellProjectile : NetworkBehaviour {
                 SpawnImpactClientRpc(spellData.id, hit.point, rot, OwnerClientId);
             } else {
                 // fallback: просто по позиции снаряда
-                SpawnImpactClientRpc(spellData.id, hit.point, Quaternion.identity, OwnerClientId);
+                SpawnImpactClientRpc(spellData.id, transform.position, Quaternion.identity, OwnerClientId);
             }
         }
     }
