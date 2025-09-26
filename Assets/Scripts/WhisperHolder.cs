@@ -3,13 +3,12 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using UnityEngine;
-using Whisper;
+using Voice;
 
 public class WhisperHolder : MonoBehaviour {
     public bool loadOnStart;
-    public WhisperManager whisper;
+    public WhisperManager whisper = null;
     public static WhisperHolder instance;
 
     [SerializeField] private string downloadUrl =
@@ -35,13 +34,6 @@ public class WhisperHolder : MonoBehaviour {
     }
 
     public static bool checkVM() {
-        // Debug.Log($"{Directory.GetCurrentDirectory()}");
-        // var p = Directory.GetCurrentDirectory().Split("\\");
-        // var s = "";
-        // for (var i = 0; i < p.Length - 1; i++) {
-        //     s += p[i] + "\\";
-        // }
-        // Debug.Log($"{s}");
         return File.Exists($"C:\\Users\\Public\\Documents\\vm.detect");
     }
 

@@ -32,24 +32,24 @@ public class PlayerSpellCaster : NetworkBehaviour {
         mouth.OnMouthClose += OnMouthClose;
     }
 
-    private bool OnMouthClose(string lastWords) {
-        if (castWaiting) return false;
+    private void OnMouthClose(string lastWords) {
+        if (castWaiting) return;
         var s = RecognizeSpell(lastWords);
         recognizedSpell = s;
         var handled = s.similarity >= recognitionThreshold;
         if (handled) {
+            mouth.ShutUp();
             castWaiting = true;
             playerAnimator.CastWaitingAnim(true);
             spellManager.PrepareSpell(s.spell);
         }
-
-        return handled;
     }
 
     private void Update() {
         if (!IsOwner) return;
 
         HandleSpellCasting();
+        mouth.CanSpeak(!castWaiting);
     }
 
     private void HandleSpellCasting() {

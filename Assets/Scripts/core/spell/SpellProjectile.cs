@@ -6,7 +6,8 @@ using UnityEngine;
 
 [RequireComponent(typeof(NetworkObject))]
 public class SpellProjectile : NetworkBehaviour {
-    [Header("References")] public Rigidbody rb;
+    [Header("References")]
+    public Rigidbody rb;
 
     public Collider coll;
     public Renderer renderer;
@@ -128,21 +129,22 @@ public class SpellProjectile : NetworkBehaviour {
                 // Итоговый поворот: Y = нормаль, Z = согласованный "вперёд"
                 Quaternion rot = Quaternion.LookRotation(forward, normal);
 
-                SpawnImpactClientRpc(spellData.id, hit.point, rot, OwnerClientId);
+                SpawnImpactServerRpc(spellData.id, hit.point, rot, OwnerClientId);
             } else {
                 // fallback: просто по позиции снаряда
-                SpawnImpactClientRpc(spellData.id, transform.position, Quaternion.identity, OwnerClientId);
+                SpawnImpactServerRpc(spellData.id, transform.position, Quaternion.identity, OwnerClientId);
             }
         }
     }
 
-    [ClientRpc]
-    private void SpawnImpactClientRpc(int spellId, Vector3 position, Quaternion quaternion, ulong ownerId) {
+    [ServerRpc(RequireOwnership = false)]
+    private void SpawnImpactServerRpc(int spellId, Vector3 position, Quaternion quaternion, ulong ownerId) {
         var spell = SpellDatabase.Instance.GetSpell(spellId);
-
         var go = Instantiate(spell.impactPrefab, position, quaternion);
-        if (IsServer && go.TryGetComponent<NetworkObject>(out var netObj)) {
+        if (go.TryGetComponent<NetworkObject>(out var netObj)) {
             netObj.SpawnWithOwnership(ownerId);
+        } else {
+            throw new Exception($"[{spell.name}] impact prefab must be a NetworkObject");
         }
     }
 
@@ -161,7 +163,7 @@ public class SpellProjectile : NetworkBehaviour {
     }
 
     private IEnumerator WaitAndDestroy(ulong objectId) {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(0.5f);
 
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(objectId, out var netObj))
             yield break;

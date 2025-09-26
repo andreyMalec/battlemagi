@@ -1417,7 +1417,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1870896187}
   - component: {fileID: 1870896186}
-  - component: {fileID: 1870896185}
+  - component: {fileID: 1870896188}
   m_Layer: 0
   m_Name: WhisperHolder
   m_TagString: Untagged
@@ -1425,39 +1425,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1870896185
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1870896184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9370225a2ca94276b870d5f87b0db55, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: com.whisper.unity::Whisper.WhisperManager
-  logLevel: 2
-  modelPath: 
-  isModelPathInStreamingAssets: 1
-  initOnAwake: 0
-  useGpu: 1
-  flashAttention: 0
-  language: en
-  translateToEnglish: 0
-  strategy: 0
-  noContext: 1
-  singleSegment: 1
-  enableTokens: 0
-  initialPrompt: firaball, ball lightning, toxic strike, ice shards
-  stepSec: 0.5
-  keepSec: 0
-  lengthSec: 3
-  updatePrompt: 0
-  dropOldBuffer: 1
-  useVad: 1
-  tokensTimestamps: 0
-  audioCtx: 0
 --- !u!114 &1870896186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1471,7 +1438,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WhisperHolder
   loadOnStart: 1
-  whisper: {fileID: 1870896185}
+  whisper: {fileID: 1870896188}
   downloadUrl: https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny.bin
 --- !u!4 &1870896187
 Transform:
@@ -1488,6 +1455,39 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1870896188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1870896184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6391c609cdb74d368431b5f1d11992cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Voice.WhisperManager
+  logLevel: 2
+  modelPath: 
+  isModelPathInStreamingAssets: 1
+  initOnAwake: 0
+  useGpu: 1
+  flashAttention: 0
+  language: en
+  translateToEnglish: 0
+  strategy: 0
+  noContext: 1
+  singleSegment: 1
+  enableTokens: 0
+  initialPrompt: firaball, ball lightning, toxic strike, ice shards, chidori
+  stepSec: 0.5
+  keepSec: 0
+  lengthSec: 3
+  updatePrompt: 0
+  dropOldBuffer: 1
+  useVad: 1
+  tokensTimestamps: 0
+  audioCtx: 0
 --- !u!1 &1941920895
 GameObject:
   m_ObjectHideFlags: 0

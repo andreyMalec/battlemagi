@@ -12,6 +12,8 @@ public class GroundEffect : NetworkBehaviour {
     private float _tickTimer;
     private readonly List<ulong> _affectedIds = new();
 
+    private bool _destroyed = false;
+
     private void OnTriggerStay(Collider other) {
         if (other.isTrigger) return;
         if (!IsServer) return;
@@ -30,14 +32,29 @@ public class GroundEffect : NetworkBehaviour {
     }
 
     private void Update() {
+        if (_destroyed) return;
         if (duration < 0) return;
 
         _tickTimer += Time.deltaTime;
         if (_tickTimer >= duration) {
-            var netObj = GetComponent<NetworkObject>();
-            if (IsServer)
+            if (IsServer) {
+                _destroyed = true;
+                var netObj = GetComponent<NetworkObject>();
+                DestroyClientRpc(netObj.NetworkObjectId);
+            }
+        }
+    }
+
+    [ClientRpc]
+    private void DestroyClientRpc(ulong netObjId) {
+        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(netObjId, out var netObj)) {
+            if (IsServer && netObj.IsSpawned) {
                 netObj.Despawn();
-            Destroy(netObj.gameObject);
+            }
+
+            if (netObj.gameObject != null) {
+                Destroy(netObj.gameObject);
+            }
         }
     }
 }

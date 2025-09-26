@@ -144,6 +144,7 @@ GameObject:
   - component: {fileID: 1318891264716447179}
   - component: {fileID: 2716590686438998688}
   - component: {fileID: 9222707079392840899}
+  - component: {fileID: 6691727437620742875}
   m_Layer: 0
   m_Name: Spell Toxic Sphere
   m_TagString: Untagged
@@ -456,6 +457,23 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &6691727437620742875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7354784787554302670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkRigidbody
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkRigidbodyBaseExpanded: 0
+  UseRigidBodyForMotion: 1
+  AutoUpdateKinematicState: 0
+  AutoSetKinematicOnDespawn: 1
 --- !u!1001 &3080669112843474258
 PrefabInstance:
   m_ObjectHideFlags: 0

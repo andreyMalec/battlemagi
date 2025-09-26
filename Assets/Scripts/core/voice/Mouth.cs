@@ -1,46 +1,48 @@
-using System;
-using System.Reflection;
+using Unity.Netcode;
 using UnityEngine;
 using Whisper;
 using Whisper.Utils;
-using Debug = UnityEngine.Debug;
 
-public delegate bool OnMouthClose(string lastWords);
+public delegate void OnMouthClose(string lastWords);
 
-public class Mouth : MonoBehaviour {
+public class Mouth : NetworkBehaviour {
     [Header("References")]
-    public MicrophoneRecord microphoneRecord;
+    [SerializeField] private MicrophoneRecord microphoneRecord;
 
-    private WhisperManager whisper;
-
-    private WhisperStream _stream;
-    private MethodInfo _updateSlidingWindow;
+    private Voice.WhisperManager _whisper;
+    private Voice.WhisperStream _stream;
 
     public event OnMouthClose OnMouthClose;
 
-    private async void Awake() {
-        if (WhisperHolder.instance == null) return;
-        whisper = WhisperHolder.instance.whisper;
-        if (microphoneRecord != null) {
-            _stream = await whisper.CreateStream(microphoneRecord);
+    public override async void OnNetworkSpawn() {
+        base.OnNetworkSpawn();
+        if (!IsOwner) return;
+        if (microphoneRecord != null && WhisperHolder.instance.whisper.IsLoaded) {
+            _stream = await _whisper.CreateStream(microphoneRecord);
+            _stream.OnSegmentUpdated += OnSegmentUpdated;
             _stream.StartStream();
             microphoneRecord.StartRecord();
-            _stream.OnSegmentUpdated += OnSegmentUpdated;
-
-            Type type = typeof(WhisperStream);
-            _updateSlidingWindow =
-                type.GetMethod("UpdateSlidingWindow", BindingFlags.NonPublic | BindingFlags.Instance);
         }
+    }
+
+    private void Awake() {
+        if (!WhisperHolder.instance.whisper.IsLoaded) return;
+        _whisper = WhisperHolder.instance.whisper;
+    }
+
+    public void ShutUp() {
+        _stream?.ResetStream();
+    }
+
+    public void CanSpeak(bool canSpeak) {
+        if (_stream != null)
+            _stream._isStreaming = canSpeak;
     }
 
     private void OnSegmentUpdated(WhisperResult segment) {
         var r = segment.Result;
         if (string.IsNullOrWhiteSpace(r) || r.Contains("[BLANK_AUDIO]") || r.Contains("music") ||
-            r.Contains("[typing]")) return;
-        Debug.Log("OnSegmentUpdated: " + segment.Result);
-        var handled = OnMouthClose?.Invoke(segment.Result);
-        if (handled.HasValue && handled.Value) {
-            _updateSlidingWindow.Invoke(_stream, new object[] { true });
-        }
+            r.Contains("clicking") || r.Contains("[typing]")) return;
+        OnMouthClose?.Invoke(segment.Result);
     }
 }
