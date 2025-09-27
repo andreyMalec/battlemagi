@@ -18,7 +18,7 @@ public class SpellProjectile : NetworkBehaviour {
     private IProjectileImpact impact;
     private IProjectileLifetime lifetime;
 
-    private SpellData spellData;
+    public SpellData spellData;
 
     public void Initialize(SpellData data) {
         spellData = data;
@@ -26,7 +26,7 @@ public class SpellProjectile : NetworkBehaviour {
         Debug.Log($"[SpellProjectile] Игрок {OwnerClientId} выпустил {spellData.name}");
 
         if (!IsServer) return;
-        movement = spellData.spellTracking
+        movement = spellData.isHoming
             ? new HomingMovement(this, rb, spellData)
             : new StraightMovement(this, rb, spellData);
         movement.Initialize();
@@ -107,6 +107,19 @@ public class SpellProjectile : NetworkBehaviour {
         if (projectile.ps != null) {
             var emission = projectile.ps.emission;
             emission.rateOverTime = 0f;
+        }
+    }
+
+    private void OnDrawGizmos() {
+        if (spellData == null) return;
+        if (spellData.hasAreaEffect) {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, spellData.areaRadius);
+        }
+
+        if (spellData.isHoming) {
+            Gizmos.color = Color.deepSkyBlue;
+            Gizmos.DrawWireSphere(transform.position, spellData.homingRadius);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using NaughtyAttributes;
+using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Spell", menuName = "Spells/Spell Data")]
 public class SpellData : ScriptableObject {
@@ -16,19 +17,30 @@ public class SpellData : ScriptableObject {
 
     public float castTime = 2f;
 
-    public bool isDOT = false;
-    public float baseDamage = 10f;
-    public bool hasAreaEffect = true;
-    public float areaRadius = 5f;
-
-    [Header("Projectile")] public float lifeTime = 20f;
-    public bool piercing = false;
-    public float baseSpeed = 20f;
-    public float homingRadius = 10f;
-    public float homingStrength = 1f;
-    public int projCount = 1;
-
-    public bool spellTracking = false;
     public bool spawnOnGround = false;
+    [Header("Damage")]
+    public float baseDamage = 10f;
+
     public bool canSelfDamage = true;
+    public bool isDOT = false;
+    public bool hasAreaEffect = true;
+    [ShowIf("hasAreaEffect")] public float areaRadius = 5f;
+
+    [Header("Projectile")]
+    public bool isProjectile = true;
+
+    [ShowIf("isProjectile")] public float lifeTime = 20f;
+
+    [ShowIf("isProjectile")] public bool piercing = false;
+    [ShowIf("isProjectile")] public float baseSpeed = 20f;
+    [ShowIf("isProjectile")] public int projCount = 1;
+
+    [Header("Homing")]
+    [ShowIf("isProjectile")] public bool isHoming = false;
+
+    [ShowIf(EConditionOperator.And, "isProjectile", "isHoming")]
+    public float homingRadius = 10f;
+
+    [ShowIf(EConditionOperator.And, "isProjectile", "isHoming")]
+    public float homingStrength = 1f;
 }
