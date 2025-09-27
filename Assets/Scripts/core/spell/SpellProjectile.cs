@@ -13,6 +13,8 @@ public class SpellProjectile : NetworkBehaviour {
     public Renderer renderer;
     public ParticleSystem ps;
     private float currentLifeTime;
+    private Vector3 lastHomingDirection;
+    private Collider[] homingTargets = new Collider[10];
 
     private SpellData spellData;
 
@@ -20,6 +22,7 @@ public class SpellProjectile : NetworkBehaviour {
         base.OnNetworkSpawn();
 
         Debug.Log($"[SpellProjectile] Игрок {OwnerClientId} выпустил {gameObject.name}");
+        lastHomingDirection = transform.forward;
     }
 
     private void Update() {
@@ -30,9 +33,7 @@ public class SpellProjectile : NetworkBehaviour {
         if (currentLifeTime >= spellData.lifeTime)
             DestroyProjectileServerRpc(NetworkObjectId);
 
-        // Homing behavior
-        if (spellData.spellTracking)
-            ApplyHoming();
+        ApplyHoming();
     }
 
     private void OnTriggerEnter(Collider other) {
@@ -54,6 +55,7 @@ public class SpellProjectile : NetworkBehaviour {
     public void Initialize(SpellData data) {
         spellData = data;
 
+        if (!IsServer) return;
         // Apply initial force
         var speed = spellData.baseSpeed;
         rb.linearVelocity = transform.forward * speed;
@@ -62,18 +64,32 @@ public class SpellProjectile : NetworkBehaviour {
     }
 
     private void ApplyHoming() {
-        // Simple homing implementation
-        var nearby = Physics.OverlapSphere(transform.position, 10f);
-        foreach (var col in nearby)
-            if (col.CompareTag("Enemy")) {
-                var direction = (col.transform.position - transform.position).normalized;
-                rb.linearVelocity = Vector3.Lerp(
-                    rb.linearVelocity.normalized,
-                    direction,
-                    spellData.homingStrength * Time.deltaTime
-                ) * rb.linearVelocity.magnitude;
-                break;
-            }
+        if (!spellData.spellTracking) return;
+        if (rb.isKinematic) return;
+        var size = Physics.OverlapSphereNonAlloc(transform.position, spellData.homingRadius, homingTargets);
+        var applied = false;
+        for (var i = 0; i < size; i++) {
+            var col = homingTargets[i];
+            if (!col.TryGetComponent<Damageable>(out _)) continue;
+            var netObj = col.GetComponent<NetworkObject>();
+            if (netObj.OwnerClientId == OwnerClientId) continue;
+            var direction = (col.transform.position - transform.position).normalized;
+            direction *= (spellData.homingStrength * spellData.baseSpeed);
+            lastHomingDirection = direction;
+            lastHomingDirection.y = 0;
+            var v = Vector3.Lerp(
+                rb.linearVelocity.normalized,
+                direction,
+                spellData.homingStrength * Time.deltaTime
+            ) * rb.linearVelocity.magnitude;
+            v.y = 0;
+            rb.linearVelocity = v;
+            applied = true;
+            break;
+        }
+
+        if (!applied)
+            rb.linearVelocity = lastHomingDirection * spellData.baseSpeed;
     }
 
     /**

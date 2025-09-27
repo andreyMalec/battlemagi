@@ -39,7 +39,7 @@ public class SteamVoiceChat : NetworkBehaviour {
         PlayerManager.Instance.OnPlayerAdded += HandlePlayerAdded;
         PlayerManager.Instance.OnPlayerRemoved += HandlePlayerRemoved;
 
-        // SteamUser.VoiceRecord = true;
+        SteamUser.VoiceRecord = true;
         if (LOG) Debug.Log("[SteamVoiceChat] Local voice recording enabled");
     }
 

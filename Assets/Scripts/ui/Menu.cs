@@ -1,9 +1,7 @@
 using System;
 using System.Collections;
 using TMPro;
-using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Color = UnityEngine.Color;
 using Image = UnityEngine.UI.Image;
@@ -11,10 +9,15 @@ using Image = UnityEngine.UI.Image;
 public class Menu : MonoBehaviour {
     private static readonly int StandUp = Animator.StringToHash("Stand Up");
     private static readonly int SitDown = Animator.StringToHash("Sit Down");
-    [Header("States")] public GameObject mainState;
+
+    [Header("States")]
+    public GameObject mainState;
+
     public GameObject lobbyState;
 
-    [Header("GUI")] public Button exit;
+    [Header("GUI")]
+    public Button exit;
+
     public Button buttonMakeLobby;
     public Button buttonJoinLobby;
     public Button buttonBackToMain;
@@ -26,7 +29,9 @@ public class Menu : MonoBehaviour {
     private TMP_Text copyButtonText;
 
     public LobbyMembers lobbyMembers;
-    [Header("Character")] public Animator animator;
+
+    [Header("Character")]
+    public Animator animator;
 
     private bool inLobby = false;
     private UInt64 lobbyId = 0;
@@ -83,9 +88,7 @@ public class Menu : MonoBehaviour {
     }
 
     private void StartGame() {
-        if (NetworkManager.Singleton.IsHost) {
-            NetworkManager.Singleton.SceneManager.LoadScene("Game", LoadSceneMode.Single);
-        }
+        GameScene.StartGame();
     }
 
     private void CreateLobby() {
@@ -133,6 +136,7 @@ public class Menu : MonoBehaviour {
             lobbySize = lobby.MaxMembers;
             lobbyId = lobby.Id.Value;
         }
+
         lobbyMembers.RequestUpdate();
     }
 

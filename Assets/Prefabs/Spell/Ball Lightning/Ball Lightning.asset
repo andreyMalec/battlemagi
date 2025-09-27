@@ -42,16 +42,12 @@ MonoBehaviour:
   baseDamage: 10
   hasAreaEffect: 1
   areaRadius: 5
-  lifeTime: 20
+  lifeTime: 15
   piercing: 1
   baseSpeed: 5
-  homingStrength: 1
+  homingRadius: 10
+  homingStrength: 0.5
   projCount: 1
-  shakeEnabled: 0
-  shakeStrengthBurst: 0.05
-  shakeStrengthImpact: 0.05
-  shakeDurationBurst: 0.2
-  shakeDurationImpact: 0.2
-  spellTracking: 0
+  spellTracking: 1
   spawnOnGround: 0
   canSelfDamage: 0

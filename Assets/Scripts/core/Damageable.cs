@@ -62,11 +62,12 @@ public class Damageable : NetworkBehaviour {
             if (!immortal && health.Value <= 0 && before > 0) {
                 _isDead = true;
                 foreach (var enemy in _damagedBy) {
-                    if (enemy == fromClientId) continue;
-                    PlayerManager.Instance.AddAssist(enemy);
+                    if (enemy == fromClientId)
+                        PlayerManager.Instance.AddKill(fromClientId);
+                    else
+                        PlayerManager.Instance.AddAssist(enemy);
                 }
 
-                PlayerManager.Instance.AddKill(fromClientId);
                 PlayerManager.Instance.AddDeath(clientId);
                 PlayerSpawner.instance.HandleDeathServerRpc(clientId);
             }
