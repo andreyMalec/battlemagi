@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
 using UnityEditor;
@@ -10,11 +11,15 @@ public class Damageable : NetworkBehaviour {
     [SerializeField] public float hpRestore = 1f;
     [SerializeField] private bool immortal = false;
     [SerializeField] private TMP_Text hp;
-    [Header("Sound")] [SerializeField] private AudioSource damageAudio;
+
+    [Header("Sound")]
+    [SerializeField] private AudioSource damageAudio;
+
     [SerializeField] private float damageSoundCooldown = 0.2f; // минимальное время между звуками
     private float _lastDamageSoundTime;
     private float _restoreTick;
     private bool _isDead = false;
+    private List<ulong> _damagedBy = new();
 
     public NetworkVariable<float> health = new();
 
@@ -39,12 +44,14 @@ public class Damageable : NetworkBehaviour {
         health.Value = Mathf.Clamp(health.Value, 0, maxHealth);
     }
 
-    public void TakeDamage(float damage, DamageSoundType sound = DamageSoundType.Default) {
+    public void TakeDamage(ulong fromClientId, float damage, DamageSoundType sound = DamageSoundType.Default) {
         if (!IsServer) return;
         if (damage < 0 || _isDead) return;
         if (TryGetComponent<NetworkObject>(out var netObj) && netObj != null && netObj.IsSpawned) {
             var clientId = netObj.OwnerClientId;
-            Debug.Log($"[Damageable] Игрок {clientId} получает урон: {damage}");
+            Debug.Log($"[Damageable] Игрок {clientId} получает урон: {damage} от {fromClientId}");
+            if (!_damagedBy.Contains(fromClientId) && clientId != fromClientId)
+                _damagedBy.Add(fromClientId);
             var before = health.Value;
             health.Value -= damage;
             if (Time.time - _lastDamageSoundTime >= damageSoundCooldown) {
@@ -54,6 +61,13 @@ public class Damageable : NetworkBehaviour {
 
             if (!immortal && health.Value <= 0 && before > 0) {
                 _isDead = true;
+                foreach (var enemy in _damagedBy) {
+                    if (enemy == fromClientId) continue;
+                    PlayerManager.Instance.AddAssist(enemy);
+                }
+
+                PlayerManager.Instance.AddKill(fromClientId);
+                PlayerManager.Instance.AddDeath(clientId);
                 PlayerSpawner.instance.HandleDeathServerRpc(clientId);
             }
         }

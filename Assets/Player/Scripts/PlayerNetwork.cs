@@ -15,6 +15,8 @@ public class PlayerNetwork : NetworkBehaviour {
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
 
+        gameObject.name = $"Player_{OwnerClientId}";
+
         if (IsOwner) {
             mainCamera.GetComponent<Camera>().depth = 100;
         } else {

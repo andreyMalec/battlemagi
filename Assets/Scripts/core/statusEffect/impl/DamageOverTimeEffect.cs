@@ -32,7 +32,8 @@ public class DamageOverTimeEffect : StatusEffectData {
             if (_tickTimer >= _data.tickInterval) {
                 _tickTimer = 0f;
                 var health = target.GetComponent<Damageable>();
-                if (health != null) health.TakeDamage(_data.dps, _data.damageSound);
+                if (health != null) 
+                    health.TakeDamage(_ownerClientId, _data.dps, _data.damageSound);
             }
         }
     }

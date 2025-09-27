@@ -202,6 +202,18 @@ public class LobbyManager : MonoBehaviour {
 }
 
 public static class LobbyExt {
+    public static string Name(this PlayerManager.PlayerData player) {
+        var lobby = LobbyManager.Instance.CurrentLobby;
+        if (lobby == null) return null;
+
+        foreach (var member in lobby.Value.Members) {
+            if (player.SteamId == member.Id)
+                return member.Name;
+        }
+
+        return null;
+    }
+
     public static int ReadyCount(this Lobby? lobby) {
         var lobbyReadyCount = 0;
         if (lobby.HasValue) {

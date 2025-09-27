@@ -23,7 +23,8 @@ public class SlowEffect : StatusEffectData {
             _data = data;
         }
 
-        public override void OnApply(GameObject target) {
+        public override void OnApply(ulong ownerClientId, GameObject target) {
+            base.OnApply(ownerClientId, target);
             var mover = target.GetComponent<FirstPersonMovement>();
             if (mover != null) {
                 mover.globalSpeedMultiplier.Value = _data.multiplier;

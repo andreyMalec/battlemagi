@@ -25,8 +25,11 @@ public class GroundEffect : NetworkBehaviour {
                 _affectedIds.Add(netObj.NetworkObjectId);
             }
 
+            var ownerId = OwnerClientId;
+            if (IsOwnedByServer)
+                ownerId = ulong.MaxValue;
             foreach (var effect in effects) {
-                manager.AddEffect(effect);
+                manager.AddEffect(ownerId, effect);
             }
         }
     }

@@ -22,7 +22,7 @@ public class StatusEffectManager : NetworkBehaviour {
         }
     }
 
-    public void AddEffect(StatusEffectData effect) {
+    public void AddEffect(ulong ownerClientId, StatusEffectData effect) {
         if (activeEffects.TryGetValue(effect.GetType(), out var previous)) {
             switch (effect.CompareTo(previous.data)) {
                 case 0:
@@ -30,17 +30,17 @@ public class StatusEffectManager : NetworkBehaviour {
                     break;
                 case 1:
                     previous.OnExpire(gameObject);
-                    Apply(effect);
+                    Apply(ownerClientId, effect);
                     break;
             }
         } else {
-            Apply(effect);
+            Apply(ownerClientId, effect);
         }
     }
 
-    private void Apply(StatusEffectData effect) {
+    private void Apply(ulong ownerClientId, StatusEffectData effect) {
         var runtime = effect.CreateRuntime();
-        runtime.OnApply(gameObject);
+        runtime.OnApply(ownerClientId, gameObject);
         activeEffects[effect.GetType()] = runtime;
         Debug.Log($"AddEffect {effect.effectName} to {gameObject.name}");
     }
