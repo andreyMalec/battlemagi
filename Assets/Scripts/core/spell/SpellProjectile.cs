@@ -12,149 +12,63 @@ public class SpellProjectile : NetworkBehaviour {
     public Collider coll;
     public Renderer renderer;
     public ParticleSystem ps;
-    private float currentLifeTime;
-    private Vector3 lastHomingDirection;
-    private Collider[] homingTargets = new Collider[10];
+
+    private IProjectileMovement movement;
+    private IProjectileDamage damage;
+    private IProjectileImpact impact;
+    private IProjectileLifetime lifetime;
 
     private SpellData spellData;
 
-    public override void OnNetworkSpawn() {
-        base.OnNetworkSpawn();
+    public void Initialize(SpellData data) {
+        spellData = data;
 
-        Debug.Log($"[SpellProjectile] Игрок {OwnerClientId} выпустил {gameObject.name}");
-        lastHomingDirection = transform.forward;
+        Debug.Log($"[SpellProjectile] Игрок {OwnerClientId} выпустил {spellData.name}");
+
+        if (!IsServer) return;
+        movement = spellData.spellTracking
+            ? new HomingMovement(this, rb, spellData)
+            : new StraightMovement(this, rb, spellData);
+        movement.Initialize();
+
+        if (spellData.isDOT)
+            damage = new DotDamage(this, spellData);
+        else if (spellData.hasAreaEffect)
+            damage = new AreaDamage(this, spellData);
+        else
+            damage = new DirectDamage(this, spellData);
+
+        impact = new ImpactEffect(this, spellData);
+
+        lifetime = new ProjectileLifetime(this, spellData);
+        lifetime.Initialize();
     }
 
     private void Update() {
         if (!IsServer) return;
 
-        currentLifeTime += Time.deltaTime;
-
-        if (currentLifeTime >= spellData.lifeTime)
-            DestroyProjectileServerRpc(NetworkObjectId);
-
-        ApplyHoming();
+        movement.Tick();
+        lifetime.Tick();
     }
 
     private void OnTriggerEnter(Collider other) {
-        if (other.isTrigger) return;
-        if (!IsServer) return;
+        if (!IsServer || other.isTrigger) return;
 
-        HandleImpact(other);
+        damage.OnHit(other);
+        impact.OnImpact(other);
 
         if (!spellData.piercing)
-            DestroyProjectileServerRpc(NetworkObjectId);
+            lifetime.Destroy();
     }
 
     private void OnTriggerStay(Collider other) {
-        if (!spellData.isDOT) return;
+        if (!IsServer || other.isTrigger) return;
 
-        ApplyDamage(Array.Empty<ulong>(), other);
-    }
-
-    public void Initialize(SpellData data) {
-        spellData = data;
-
-        if (!IsServer) return;
-        // Apply initial force
-        var speed = spellData.baseSpeed;
-        rb.linearVelocity = transform.forward * speed;
-
-        currentLifeTime = 0f;
-    }
-
-    private void ApplyHoming() {
-        if (!spellData.spellTracking) return;
-        if (rb.isKinematic) return;
-        var size = Physics.OverlapSphereNonAlloc(transform.position, spellData.homingRadius, homingTargets);
-        var applied = false;
-        for (var i = 0; i < size; i++) {
-            var col = homingTargets[i];
-            if (!col.TryGetComponent<Damageable>(out _)) continue;
-            var netObj = col.GetComponent<NetworkObject>();
-            if (netObj.OwnerClientId == OwnerClientId) continue;
-            var direction = (col.transform.position - transform.position).normalized;
-            direction *= (spellData.homingStrength * spellData.baseSpeed);
-            lastHomingDirection = direction;
-            lastHomingDirection.y = 0;
-            var v = Vector3.Lerp(
-                rb.linearVelocity.normalized,
-                direction,
-                spellData.homingStrength * Time.deltaTime
-            ) * rb.linearVelocity.magnitude;
-            v.y = 0;
-            rb.linearVelocity = v;
-            applied = true;
-            break;
-        }
-
-        if (!applied)
-            rb.linearVelocity = lastHomingDirection * spellData.baseSpeed;
-    }
-
-    /**
-     * @returns clientId
-     */
-    private ulong ApplyDamage(ulong[] excludeClients, Collider other, bool applyDistanceMultiplier = false) {
-        if (!other.TryGetComponent<Damageable>(out var damageable)) return ulong.MaxValue;
-        var netObj = other.GetComponent<NetworkObject>();
-        if (!spellData.canSelfDamage && OwnerClientId == netObj.OwnerClientId) return ulong.MaxValue;
-        if (excludeClients.Contains(netObj.OwnerClientId)) return ulong.MaxValue;
-
-        if (applyDistanceMultiplier) {
-            Debug.Log($"[{gameObject.name}] Взрыв задел игрока {netObj.OwnerClientId}");
-            var distance = Vector3.Distance(transform.position, other.transform.position);
-            var damageMultiplier = 1f - distance / spellData.areaRadius;
-
-            damageable.TakeDamage(OwnerClientId, spellData.baseDamage * damageMultiplier, spellData.damageSound);
-        } else {
-            Debug.Log($"[{gameObject.name}] Прямое попадание в игрока {netObj.OwnerClientId}");
-            damageable.TakeDamage(OwnerClientId, spellData.baseDamage, spellData.damageSound);
-        }
-
-        return netObj.OwnerClientId;
-    }
-
-    private void HandleImpact(Collider other) {
-        if (spellData.isDOT) return;
-        // Apply damage
-        var excludeClients = new[] { ulong.MaxValue, ulong.MaxValue };
-        excludeClients[1] = ApplyDamage(excludeClients, other);
-
-        excludeClients[0] = spellData.canSelfDamage ? ulong.MaxValue : OwnerClientId;
-        // Area effect
-        if (spellData.hasAreaEffect)
-            ApplyAreaEffect(excludeClients);
-
-        // Spawn impact effect
-        if (spellData.impactPrefab != null) {
-            if (Physics.Raycast(transform.position - transform.forward * 0.1f, transform.forward, out RaycastHit hit,
-                    2f)) {
-                Vector3 normal = hit.normal; // нормаль поверхности
-                Vector3 direction = transform.forward; // куда летел снаряд
-
-                // Строим базис: Y = нормаль, Z = направление полёта вдоль поверхности
-                Vector3 tangent = Vector3.Cross(normal, direction);
-                if (tangent.sqrMagnitude < 0.001f) {
-                    // если снаряд прилетел почти строго по нормали, берём запасной вектор
-                    tangent = Vector3.Cross(normal, Vector3.up);
-                }
-
-                Vector3 forward = Vector3.Cross(tangent, normal);
-
-                // Итоговый поворот: Y = нормаль, Z = согласованный "вперёд"
-                Quaternion rot = Quaternion.LookRotation(forward, normal);
-
-                SpawnImpactServerRpc(spellData.id, hit.point, rot, OwnerClientId);
-            } else {
-                // fallback: просто по позиции снаряда
-                SpawnImpactServerRpc(spellData.id, transform.position, Quaternion.identity, OwnerClientId);
-            }
-        }
+        damage.OnStay(other);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void SpawnImpactServerRpc(int spellId, Vector3 position, Quaternion quaternion, ulong ownerId) {
+    public void SpawnImpactServerRpc(int spellId, Vector3 position, Quaternion quaternion, ulong ownerId) {
         var spell = SpellDatabase.Instance.GetSpell(spellId);
         var go = Instantiate(spell.impactPrefab, position, quaternion);
         if (go.TryGetComponent<NetworkObject>(out var netObj)) {
@@ -164,16 +78,8 @@ public class SpellProjectile : NetworkBehaviour {
         }
     }
 
-    private void ApplyAreaEffect(ulong[] excludeClients) {
-        Debug.Log($"[{gameObject.name}] ApplyAreaEffect exclude {string.Join(", ", excludeClients)}");
-        var hits = Physics.OverlapSphere(transform.position, spellData.areaRadius);
-        foreach (var hit in hits) {
-            ApplyDamage(excludeClients, hit);
-        }
-    }
-
     [ServerRpc(RequireOwnership = false)]
-    private void DestroyProjectileServerRpc(ulong objectId) {
+    public void DestroyProjectileServerRpc(ulong objectId) {
         DestroyProjectileClientRpc(objectId);
         StartCoroutine(WaitAndDestroy(objectId));
     }
