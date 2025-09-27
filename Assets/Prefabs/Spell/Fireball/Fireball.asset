@@ -34,25 +34,22 @@ MonoBehaviour:
   - "\u0423\u0447\u0433\u0434\u0435\u043D\u044B\u0439\u0428\u0430\u0440"
   - "\u041E\u0433\u043D\u0435\u0428\u0430\u0440"
   spellInHandPrefab: {fileID: 7389778017922607859, guid: 49a0bf328b645064b82bbdecdf24e1c7, type: 3}
-  spellBurstPrefab: {fileID: 0}
   mainSpellPrefab: {fileID: 7354784787554302670, guid: 2c1e610ca4bf5374cb0698a11abf1ad1, type: 3}
   impactPrefab: {fileID: 1742013225946848, guid: 5ba3b268f6696364d8ea35da86373192, type: 3}
   damageSound: 1
   invocationIndex: 3
   castTime: 1
-  isDOT: 0
+  spawnOnGround: 0
   baseDamage: 80
+  canSelfDamage: 1
+  isDOT: 0
   hasAreaEffect: 1
   areaRadius: 5
+  isProjectile: 1
   lifeTime: 20
   piercing: 0
   baseSpeed: 30
+  projCount: 1
+  isHoming: 0
+  homingRadius: 10
   homingStrength: 1
-  shakeEnabled: 1
-  shakeStrengthBurst: 0.05
-  shakeStrengthImpact: 0.05
-  shakeDurationBurst: 0.2
-  shakeDurationImpact: 0.2
-  spellTracking: 0
-  spawnOnGround: 0
-  canSelfDamage: 1

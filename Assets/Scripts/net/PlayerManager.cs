@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Steamworks;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerManager : NetworkBehaviour {
     [Serializable]
@@ -62,23 +63,31 @@ public class PlayerManager : NetworkBehaviour {
     }
 
     private void Start() {
-        NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
-        NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
-    }
-
-    private void OnClientConnected(ulong clientId) {
-        if (clientId == NetworkManager.Singleton.LocalClientId) {
-            ulong steamId = (ulong)SteamClient.SteamId;
-            RegisterPlayerServerRpc(steamId);
-        }
+        NetworkManager.Singleton.OnConnectionEvent += OnConnectionEvent;
     }
 
     public override void OnDestroy() {
         base.OnDestroy();
 
         if (NetworkManager.Singleton != null) {
-            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
-            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
+            NetworkManager.Singleton.OnConnectionEvent -= OnConnectionEvent;
+        }
+    }
+
+    private void OnConnectionEvent(NetworkManager arg1, ConnectionEventData arg2) {
+        if (arg2.EventType == ConnectionEvent.ClientDisconnected) {
+            OnClientDisconnected(arg2.ClientId);
+        }
+
+        if (arg2.EventType == ConnectionEvent.ClientConnected) {
+            OnClientConnected(arg2.ClientId);
+        }
+    }
+
+    private void OnClientConnected(ulong clientId) {
+        if (clientId == NetworkManager.Singleton.LocalClientId) {
+            ulong steamId = (ulong)SteamClient.SteamId;
+            RegisterPlayerServerRpc(steamId);
         }
     }
 
@@ -92,6 +101,7 @@ public class PlayerManager : NetworkBehaviour {
         foreach (var player in players) {
             debugPlayers.Add(player);
         }
+
         OnListChanged?.Invoke(debugPlayers);
     }
 
@@ -124,6 +134,12 @@ public class PlayerManager : NetworkBehaviour {
     }
 
     private void OnClientDisconnected(ulong clientId) {
+        if (!IsServer && (clientId == 0 || clientId == NetworkManager.Singleton.LocalClientId)) {
+            LobbyManager.Instance.LeaveLobby();
+            SceneManager.LoadScene("MainMenu");
+            return;
+        }
+
         if (!IsServer) return;
 
         for (int i = players.Count - 1; i >= 0; i--) {

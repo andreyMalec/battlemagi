@@ -19,6 +19,7 @@ public class Menu : MonoBehaviour {
     public Button exit;
 
     public Button buttonMakeLobby;
+    public Button buttonInvite;
     public Button buttonJoinLobby;
     public Button buttonBackToMain;
     public Button buttonCopyLobbyId;
@@ -35,7 +36,7 @@ public class Menu : MonoBehaviour {
 
     private bool inLobby = false;
     private UInt64 lobbyId = 0;
-    private int lobbySize = 4;
+    private int lobbySize = 6;
     private int readyCount = 0;
 
     public void Start() {
@@ -46,6 +47,7 @@ public class Menu : MonoBehaviour {
         buttonBackToMain.onClick.AddListener(LeaveLobby);
         buttonJoinLobby.onClick.AddListener(JoinLobby);
         buttonMakeLobby.onClick.AddListener(CreateLobby);
+        buttonInvite.onClick.AddListener(InviteFriends);
         buttonReady.onClick.AddListener(ToggleReady);
         buttonCopyLobbyId.onClick.AddListener(() => StartCoroutine(CopyId()));
         copyButtonText = buttonCopyLobbyId.GetComponentInChildren<TMP_Text>();
@@ -93,6 +95,10 @@ public class Menu : MonoBehaviour {
 
     private void CreateLobby() {
         LobbyManager.Instance.CreateLobby(lobbySize);
+    }
+
+    private void InviteFriends() {
+        LobbyManager.Instance.InviteFriends();
     }
 
     private void JoinLobby() {

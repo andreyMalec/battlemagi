@@ -11,7 +11,10 @@ using Image = UnityEngine.UI.Image;
 public class LobbyMembers : MonoBehaviour {
     [SerializeField] private GameObject lobbyMemberPrefab;
     [SerializeField] private LayoutGroup container;
-    [Header("UI")] [SerializeField] private Sprite spriteReady;
+
+    [Header("UI")]
+    [SerializeField] private Sprite spriteReady;
+
     [SerializeField] private Sprite spriteNotReady;
     [SerializeField] private Shader colorShader;
 
@@ -64,7 +67,13 @@ public class LobbyMembers : MonoBehaviour {
     private void Destroy(ulong steamId) {
         if (lobbyMembers.TryGetValue(steamId, out var item)) {
             Destroy(item.name.transform.parent.gameObject);
-            lobbyMembers.Remove(steamId);
+            var tmp = new Dictionary<ulong, MemberItem>();
+            foreach (var member in lobbyMembers.Keys) {
+                if (member == steamId) continue;
+                tmp[member] = lobbyMembers[member];
+            }
+
+            lobbyMembers = tmp;
         }
     }
 

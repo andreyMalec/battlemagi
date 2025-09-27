@@ -6,7 +6,6 @@ using UnityEngine;
 using Steamworks;
 using Steamworks.Data;
 using Unity.Netcode;
-using Color = System.Drawing.Color;
 
 public class LobbyManager : MonoBehaviour {
     public static readonly string KeyReady = "Ready";
@@ -137,6 +136,11 @@ public class LobbyManager : MonoBehaviour {
     public async void CreateLobby(int maxPlayers) {
         Debug.Log("[LobbyManager] Creating new lobby...");
         await SteamMatchmaking.CreateLobbyAsync(maxPlayers);
+    }
+
+    public void InviteFriends() {
+        if (CurrentLobby.HasValue)
+            SteamFriends.OpenGameInviteOverlay(CurrentLobby.Value.Id);
     }
 
     /**

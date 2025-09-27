@@ -39,16 +39,17 @@ MonoBehaviour:
   damageSound: 2
   invocationIndex: 3
   castTime: 1
-  isDOT: 0
+  spawnOnGround: 0
   baseDamage: 30
+  canSelfDamage: 0
+  isDOT: 0
   hasAreaEffect: 0
   areaRadius: 0
+  isProjectile: 1
   lifeTime: 5
   piercing: 0
   baseSpeed: 20
+  projCount: 5
+  isHoming: 0
   homingRadius: 10
   homingStrength: 1
-  projCount: 5
-  spellTracking: 0
-  spawnOnGround: 0
-  canSelfDamage: 0
