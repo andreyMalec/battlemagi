@@ -11,7 +11,12 @@ public class FirstPersonSounds : MonoBehaviour {
     public Animator animator;
     public GroundCheck groundCheck;
 
-    [Header("Clips")] public AudioClip[] steps;
+    [SerializeField] private float stepsPitchFrom = 0.8f;
+    [SerializeField] private float stepsPitchTo = 1.2f;
+
+    [Header("Clips")]
+    public AudioClip[] steps;
+
     public AudioClip[] jumps;
 
     private float lastStep;
@@ -50,7 +55,7 @@ public class FirstPersonSounds : MonoBehaviour {
     }
 
     public void PlayStep() {
-        stepsAudio.pitch = Random.Range(0.8f, 1.2f);
+        stepsAudio.pitch = Random.Range(stepsPitchFrom, stepsPitchTo);
         stepsAudio.PlayOneShot(steps[Random.Range(0, steps.Length)]);
     }
 

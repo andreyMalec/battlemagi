@@ -3,5 +3,6 @@ public enum DamageSoundType {
     Fire,
     Ice,
     Lightning,
-    Poison
+    Poison,
+    Lava,
 }

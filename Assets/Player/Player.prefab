@@ -173,7 +173,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 7f4de86af7c3209489565670560b76c4, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.2
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -524,8 +524,14 @@ MonoBehaviour:
   jumpsAudio: {fileID: 6962596785093598452}
   animator: {fileID: 1037760559241335293}
   groundCheck: {fileID: 6466238404988819252}
+  stepsPitchFrom: 1
+  stepsPitchTo: 1
   steps:
-  - {fileID: 8300000, guid: 7f4de86af7c3209489565670560b76c4, type: 3}
+  - {fileID: 8300000, guid: 3adccfa3a91aa2b4aa72feaa3a2f642e, type: 3}
+  - {fileID: 8300000, guid: 7e9733d31a5c2e54584219ce90e3f1e2, type: 3}
+  - {fileID: 8300000, guid: c3a3c1651027b0d4c98e1b78ca2a6695, type: 3}
+  - {fileID: 8300000, guid: 1ba5f97c2f3fae94d983ed8a25801b8d, type: 3}
+  - {fileID: 8300000, guid: 8160ddd511c069c4e96c93734d568129, type: 3}
   jumps:
   - {fileID: 8300000, guid: 3888a1e1c52793144a6d07b8c508772e, type: 3}
   - {fileID: 8300000, guid: 5b26cf3cd5f6b914a80e6d3476caaf86, type: 3}
@@ -792,7 +798,7 @@ MonoBehaviour:
   language: 0
   mouth: {fileID: 3269581595495701639}
   playerAnimator: {fileID: 6425691076356515085}
-  recognitionThreshold: 0.6
+  recognitionThreshold: 0.9
   spellCastKey: 323
 --- !u!114 &590111089370120790
 MonoBehaviour:
