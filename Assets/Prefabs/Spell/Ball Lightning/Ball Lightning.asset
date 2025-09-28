@@ -39,6 +39,7 @@ MonoBehaviour:
   invocationIndex: 3
   castTime: 1
   spawnOnGround: 0
+  clearInHandBeforeAnim: 0
   baseDamage: 10
   canSelfDamage: 0
   isDOT: 1
@@ -49,6 +50,8 @@ MonoBehaviour:
   piercing: 1
   baseSpeed: 5
   projCount: 1
+  multiProjDelay: 0.2
+  spawnMode: 0
   isHoming: 1
   homingRadius: 10
   homingStrength: 1

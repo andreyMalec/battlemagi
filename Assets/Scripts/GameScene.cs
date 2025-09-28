@@ -9,6 +9,7 @@ public static class GameScene {
 
     public static void StartGame() {
         if (NetworkManager.Singleton.IsHost) {
+            LobbyManager.Instance.CurrentLobby?.SetJoinable(false);
             NetworkManager.Singleton.SceneManager.LoadScene(Name, LoadSceneMode.Single);
         }
     }

@@ -18,6 +18,8 @@ public class SpellData : ScriptableObject {
     public float castTime = 2f;
 
     public bool spawnOnGround = false;
+    public bool clearInHandBeforeAnim = false;
+
     [Header("Damage")]
     public float baseDamage = 10f;
 
@@ -34,6 +36,8 @@ public class SpellData : ScriptableObject {
     [ShowIf("isProjectile")] public bool piercing = false;
     [ShowIf("isProjectile")] public float baseSpeed = 20f;
     [ShowIf("isProjectile")] public int projCount = 1;
+    [ShowIf("isProjectile")] public float multiProjDelay = 0.2f;
+    [ShowIf("isProjectile")] public SpawnMode spawnMode = SpawnMode.Direct;
 
     [Header("Homing")]
     [ShowIf("isProjectile")] public bool isHoming = false;
