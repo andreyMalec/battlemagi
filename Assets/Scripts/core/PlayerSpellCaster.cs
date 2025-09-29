@@ -25,6 +25,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
     private RecognizedSpell? recognizedSpell = null;
 
     private bool castWaiting = false;
+    public bool channeling = false;
 
     private void Start() {
         if (!IsOwner) return;
@@ -49,11 +50,11 @@ public class PlayerSpellCaster : NetworkBehaviour {
         if (!IsOwner) return;
 
         HandleSpellCasting();
-        mouth.CanSpeak(!castWaiting);
+        mouth.CanSpeak(!castWaiting && !channeling);
     }
 
     private void HandleSpellCasting() {
-        if (Input.GetKeyDown(spellCastKey) && castWaiting) {
+        if (!channeling && Input.GetKeyDown(spellCastKey) && castWaiting) {
             playerAnimator.CastWaitingAnim(false);
             castWaiting = false;
             CastSpell();

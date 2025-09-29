@@ -50,7 +50,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1548787872
+  GlobalObjectIdHash: 635774725
   InScenePlacedSourceGlobalObjectIdHash: 1548787872
   DeferredDespawnTick: 0
   Ownership: 1
@@ -77,9 +77,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Damageable
   ShowTopMostFoldoutHeaderGroup: 1
   maxHealth: 100000000
+  hpRestore: 1
   immortal: 1
   hp: {fileID: 953732796625237949}
   damageAudio: {fileID: 1021149336119197285}
+  damageSoundCooldown: 0.2
   health:
     m_InternalValue: 0
 --- !u!136 &5533485296804457294

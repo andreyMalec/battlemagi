@@ -1,12 +1,12 @@
 using UnityEngine;
 
-public class ProjectileLifetime : IProjectileLifetime {
+public class SpellLifetime : ISpellLifetime {
     private readonly SpellData data;
-    private readonly SpellProjectile projectile;
+    private readonly BaseSpell spell;
     private float currentLifeTime;
 
-    public ProjectileLifetime(SpellProjectile p, SpellData d) {
-        projectile = p;
+    public SpellLifetime(BaseSpell s, SpellData d) {
+        spell = s;
         data = d;
     }
 
@@ -21,6 +21,6 @@ public class ProjectileLifetime : IProjectileLifetime {
     }
 
     public void Destroy() {
-        projectile.DestroyProjectileServerRpc(projectile.NetworkObjectId);
+        spell.DestroySpellServerRpc(spell.NetworkObjectId);
     }
 }

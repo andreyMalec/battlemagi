@@ -6,7 +6,7 @@ using Unity.Netcode;
 using Steamworks;
 
 public class SteamVoiceChat : NetworkBehaviour {
-    private static bool LOG = true;
+    private static bool LOG = false;
 
     [SerializeField] private AudioSource playerVoice;
 

@@ -13,11 +13,14 @@ public class PlayerAnimator : NetworkBehaviour {
     private static readonly int CastStart = Animator.StringToHash("Cast Start");
     private static readonly int CastCharge = Animator.StringToHash("Cast Charge");
     private static readonly int CastWaiting = Animator.StringToHash("Cast Waiting");
+    private static readonly int Channeling = Animator.StringToHash("Channeling");
 
     private static readonly float eps = 0.05f;
     public Transform ikHand;
     public PlayerNetwork network;
-    [Header("FirstPersonMovement")] public FirstPersonMovement movement;
+
+    [Header("FirstPersonMovement")]
+    public FirstPersonMovement movement;
 
     public float acceleration = 2f;
     public AnimationCurve decelerationCurve;
@@ -54,9 +57,8 @@ public class PlayerAnimator : NetworkBehaviour {
         ikRot = ikHand.localRotation;
     }
 
-    public void Casting(bool start, float charge) {
-        network.AnimateBool(CastStart, start);
-        castCharge.Value = charge * 40;
+    public void TriggerChanneling() {
+        network.AnimateTrigger(Channeling);
     }
 
     public void CastWaitingAnim(bool waiting) {

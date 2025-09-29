@@ -48,6 +48,13 @@ public class PlayerNetwork : NetworkBehaviour {
         }
     }
 
+    public void AnimateTrigger(int key) {
+        if (IsOwner) {
+            animator.SetTrigger(key);
+            AnimateTriggerServerRpc(key);
+        }
+    }
+
 //=====================================================
 
     [ServerRpc]
@@ -58,5 +65,10 @@ public class PlayerNetwork : NetworkBehaviour {
     [ServerRpc]
     private void AnimateFloatServerRpc(int key, float value) {
         animator.SetFloat(key, value);
+    }
+
+    [ServerRpc]
+    private void AnimateTriggerServerRpc(int key) {
+        animator.SetTrigger(key);
     }
 }

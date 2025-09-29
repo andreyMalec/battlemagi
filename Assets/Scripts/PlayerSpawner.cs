@@ -58,7 +58,8 @@ public class PlayerSpawner : NetworkBehaviour {
         if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client)) {
             var playerObj = client.PlayerObject;
             playerObj.Despawn();
-            Destroy(playerObj.gameObject);
+            if (playerObj != null)
+                Destroy(playerObj.gameObject);
 
             SpawnPlayerServerRpc(clientId);
         }

@@ -46,12 +46,15 @@ MonoBehaviour:
   hasAreaEffect: 0
   areaRadius: 5
   isProjectile: 1
-  lifeTime: 15
+  lifeTime: 10
   piercing: 1
   baseSpeed: 5
   projCount: 1
   multiProjDelay: 0.2
   spawnMode: 0
+  isBeam: 0
   isHoming: 1
   homingRadius: 10
-  homingStrength: 1
+  homingStrength: 0.2
+  isChanneling: 0
+  channelDuration: 3

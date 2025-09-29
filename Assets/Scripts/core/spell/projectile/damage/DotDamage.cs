@@ -1,11 +1,11 @@
 using UnityEngine;
 
-public class DotDamage : IProjectileDamage {
+public class DotDamage : ISpellDamage {
     private readonly SpellData data;
-    private readonly SpellProjectile projectile;
+    private readonly BaseSpell spell;
 
-    public DotDamage(SpellProjectile p, SpellData d) {
-        projectile = p;
+    public DotDamage(BaseSpell s, SpellData d) {
+        spell = s;
         data = d;
     }
 
@@ -13,6 +13,6 @@ public class DotDamage : IProjectileDamage {
     }
 
     public void OnStay(Collider other) {
-        DamageUtils.TryApplyDamage(projectile, data, other);
+        DamageUtils.TryApplyDamage(spell, data, other);
     }
 }

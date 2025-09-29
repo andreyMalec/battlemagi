@@ -1,4 +1,4 @@
-public interface IProjectileMovement {
+public interface ISpellMovement {
     void Initialize();
     void Tick();
 }

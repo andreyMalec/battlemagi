@@ -800,6 +800,7 @@ MonoBehaviour:
   playerAnimator: {fileID: 6425691076356515085}
   recognitionThreshold: 0.6
   spellCastKey: 323
+  channeling: 0
 --- !u!114 &590111089370120790
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -814,7 +815,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpellManager
   ShowTopMostFoldoutHeaderGroup: 1
   spellCastPoint: {fileID: 3077521524520137575}
-  preparedSpell: {fileID: 0}
+  activeSpell: {fileID: 0}
 --- !u!114 &906687778472763878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -924,7 +925,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkAnimator
   ShowTopMostFoldoutHeaderGroup: 1
-  TransitionStateInfoList: []
+  TransitionStateInfoList:
+  - IsCrossFadeExit: 0
+    Layer: 1
+    OriginatingState: -499022955
+    DestinationState: -824652151
+    TransitionDuration: 0
+    TriggerNameHash: -888734683
+    TransitionIndex: 5
   m_Animator: {fileID: 1037760559241335293}
 --- !u!114 &3595582522434657761
 MonoBehaviour:
