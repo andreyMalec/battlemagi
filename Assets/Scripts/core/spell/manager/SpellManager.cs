@@ -24,6 +24,12 @@ public class SpellManager : NetworkBehaviour {
         activeSpell.PrepareSpell(spell);
     }
 
+    public void CancelSpell() {
+        if (IsOwner) {
+            activeSpell.ClearInHandServerRpc(OwnerClientId);
+        }
+    }
+
     public IEnumerator CastSpell(SpellData spell) {
         if (spell == null) yield break;
 

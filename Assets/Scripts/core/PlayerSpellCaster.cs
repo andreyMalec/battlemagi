@@ -21,6 +21,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
     public float recognitionThreshold = 0.85f;
 
     public KeyCode spellCastKey = KeyCode.Mouse0;
+    public KeyCode spellCancelKey = KeyCode.Mouse1;
 
     private RecognizedSpell? recognizedSpell = null;
 
@@ -58,6 +59,12 @@ public class PlayerSpellCaster : NetworkBehaviour {
             playerAnimator.CastWaitingAnim(false);
             castWaiting = false;
             CastSpell();
+            recognizedSpell = null;
+        } else if (!channeling && Input.GetKeyDown(spellCancelKey) && castWaiting) {
+            playerAnimator.CastWaitingAnim(false);
+            castWaiting = false;
+            spellManager.CancelSpell();
+            recognizedSpell = null;
         }
     }
 
