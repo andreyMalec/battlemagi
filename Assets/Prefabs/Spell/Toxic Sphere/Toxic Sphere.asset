@@ -38,11 +38,11 @@ MonoBehaviour:
   impactPrefab: {fileID: 1315042845377307778, guid: b48ce577639015d448fd32bdf03334f9, type: 3}
   damageSound: 4
   invocationIndex: 2
-  castTime: 0.35
-  spawnOnGround: 0
+  castTime: 0.5
   clearInHandBeforeAnim: 0
   baseDamage: 10
   canSelfDamage: 1
+  useParticleCollision: 0
   isDOT: 0
   hasAreaEffect: 1
   areaRadius: 5
@@ -53,6 +53,9 @@ MonoBehaviour:
   projCount: 1
   multiProjDelay: 0.2
   spawnMode: 0
+  isBeam: 0
   isHoming: 0
   homingRadius: 10
   homingStrength: 1
+  isChanneling: 0
+  channelDuration: 3

@@ -70,6 +70,7 @@ public class Damageable : NetworkBehaviour {
 
                 PlayerManager.Instance.AddDeath(clientId);
                 PlayerSpawner.instance.HandleDeathServerRpc(clientId);
+                Killfeed.Instance?.HandleClientRpc(fromClientId, clientId);
             }
         }
     }
