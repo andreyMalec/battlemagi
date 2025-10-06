@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -7,139 +9,313 @@ public class SpellBook : MonoBehaviour {
     private const int SHAPE_PAGE1 = 1;
     private const int SHAPE_PAGE2 = 2;
 
-    [SerializeField] private int animScale = 200;
-    [SerializeField] private int page = 50;
+    [Header("Animation settings")]
+    [Tooltip("Time to open/close book in seconds")] [SerializeField]
+    private float openDuration = 0.35f;
+
+    [Tooltip("Total time of one page flip (both phases)")] [SerializeField]
+    private float pageFlipDuration = 0.6f;
+
+    [Tooltip("Normalized point in first phase when page index actually changes (0..1)")]
+    [Range(0.0f, 1.0f)]
+    [SerializeField]
+    private float pageFlipMidpoint = 0.45f;
+
+    [Header("References")]
     [SerializeField] private SkinnedMeshRenderer book;
-    [SerializeField] private Renderer image;
-    [SerializeField] private TMP_Text nameText;
-    [SerializeField] private TMP_Text descriptionText;
-    [SerializeField] private GameObject helper;
+
+    [SerializeField] private Renderer spellImage;
+    [SerializeField] private TMP_Text spellNameText;
+    [SerializeField] private TMP_Text spellDescriptionText;
+    [SerializeField] private GameObject helperUI;
 
     [Header("Audio")]
     [SerializeField] private AudioClip[] pageSounds;
 
     [SerializeField] private AudioSource audioSource;
 
-    [Header("Keys")]
-    [SerializeField] private KeyCode openKey = KeyCode.B;
+    [Header("Keys (optional)")]
+    [SerializeField] private bool useKeyboardInput = true;
 
+    [SerializeField] private KeyCode openKey = KeyCode.B;
     [SerializeField] private KeyCode nextKey = KeyCode.E;
     [SerializeField] private KeyCode prevKey = KeyCode.Q;
 
-    private int index = 0;
+    // data
     private List<SpellData> spells;
-    private float timePaging;
-    private float timeOpening = 100;
-    private int pageDir = 0;
-    private bool opened = false;
-    private int openDir = -1;
-    private bool paging = false;
-    private bool visible = false;
+    private int currentIndex = 0;
+    private SpellData pendingSpell;
+
+    // state
+    private bool isVisible = false;
+    private bool isOpened = false;
+    private bool isPaging = false;
+
+    // coroutines
+    private Coroutine openCoroutine;
+    private Coroutine pageCoroutine;
 
     private void Start() {
-        spells = SpellDatabase.Instance.spells;
-        book.SetBlendShapeWeight(SHAPE_CLOSED, 100);
-        book.SetBlendShapeWeight(SHAPE_PAGE1, 0);
-        book.SetBlendShapeWeight(SHAPE_PAGE2, 0);
+        if (SpellDatabase.Instance != null)
+            spells = SpellDatabase.Instance.spells;
+        else
+            spells = new List<SpellData>();
+
+        // initialize visuals
+        ResetBlendShapes();
+        UpdateSpellUI();
+        SetUIVisibility(false);
+        book.enabled = false;
+        helperUI.SetActive(false);
     }
 
     private void Update() {
-        if (!opened && Input.GetKeyDown(openKey)) {
-            openDir = 1;
-            timeOpening = 100;
-            visible = true;
-        } else if (opened && Input.GetKeyDown(openKey)) {
-            openDir = -1;
-            timeOpening = 0;
+        if (!useKeyboardInput) return;
+
+        if (Input.GetKeyDown(openKey)) {
+            if (isOpened) Close();
+            else Open();
         }
 
-        if (openDir == 1) {
-            timeOpening -= Time.deltaTime * animScale;
-            if (timeOpening < 0) {
-                opened = true;
-                openDir = 0;
-            }
-        }
+        if (!isOpened) return;
 
-        if (openDir == -1) {
-            opened = false;
-            timeOpening += Time.deltaTime * animScale;
-            if (timeOpening > 100) {
-                openDir = 0;
-                visible = false;
-            }
-        }
-
-        book.SetBlendShapeWeight(SHAPE_CLOSED, timeOpening);
-        book.enabled = visible;
-        helper.SetActive(visible);
-        image.enabled = opened;
-        nameText.enabled = opened;
-        descriptionText.enabled = opened;
-        if (!opened) return;
-
-        var i = index;
-        if (Input.GetKeyDown(nextKey)) {
-            pageDir = 1;
-            timePaging = 0;
-            paging = true;
-            audioSource.Play(pageSounds);
-        }
-
-        if (Input.GetKeyDown(prevKey)) {
-            pageDir = -1;
-            timePaging = 200;
-            paging = true;
-            book.SetBlendShapeWeight(SHAPE_PAGE1, 100);
-            book.SetBlendShapeWeight(SHAPE_PAGE2, 100);
-            audioSource.Play(pageSounds);
-        }
-
-        index = Mathf.Clamp(index, 0, spells.Count - 1);
-
-        nameText.text = spells[index].name;
-        descriptionText.text = spells[index].description;
-        image.material.mainTexture = spells[index].bookImage;
-
-        if (pageDir == 1 && timePaging < 100) {
-            timePaging += Time.deltaTime * animScale;
-            book.SetBlendShapeWeight(SHAPE_PAGE1, timePaging);
-            if (timePaging > page && paging) {
-                paging = false;
-                index += pageDir;
-            }
-        }
-
-        if (pageDir == 1 && timePaging >= 100) {
-            timePaging += Time.deltaTime * animScale;
-            book.SetBlendShapeWeight(SHAPE_PAGE2, timePaging - 100);
-        }
-
-        if (pageDir == -1 && timePaging < 100) {
-            timePaging -= Time.deltaTime * animScale;
-            book.SetBlendShapeWeight(SHAPE_PAGE1, timePaging);
-            if (timePaging > page && paging) {
-                paging = false;
-                index += pageDir;
-            }
-        }
-
-        if (pageDir == -1 && timePaging >= 100) {
-            timePaging -= Time.deltaTime * animScale;
-            book.SetBlendShapeWeight(SHAPE_PAGE2, timePaging - 100);
-        }
-
-
-        if (pageDir == 1 && timePaging >= 200) {
-            pageDir = 0;
-            book.SetBlendShapeWeight(SHAPE_PAGE1, 0);
-            book.SetBlendShapeWeight(SHAPE_PAGE2, 0);
-        }
-
-        if (pageDir == -1 && timePaging <= 0) {
-            pageDir = 0;
-            book.SetBlendShapeWeight(SHAPE_PAGE1, 0);
-            book.SetBlendShapeWeight(SHAPE_PAGE2, 0);
+        if (!isPaging) {
+            if (Input.GetKeyDown(nextKey)) Next();
+            else if (Input.GetKeyDown(prevKey)) Prev();
         }
     }
+
+    #region Public API (call from UI / other systems)
+
+    public void Open() {
+        if (isVisible) return;
+        if (openCoroutine != null) StopCoroutine(openCoroutine);
+        openCoroutine = StartCoroutine(OpenRoutine());
+    }
+
+    public void Close() {
+        if (!isVisible) return;
+        if (openCoroutine != null) StopCoroutine(openCoroutine);
+        openCoroutine = StartCoroutine(CloseRoutine());
+    }
+
+    public void Next() {
+        if (isPaging || spells == null || spells.Count == 0) return;
+        if (currentIndex >= spells.Count - 1) return;
+        if (pageCoroutine != null) StopCoroutine(pageCoroutine);
+        pageCoroutine = StartCoroutine(FlipPageRoutine(1));
+    }
+
+    public void Prev() {
+        if (isPaging || spells == null || spells.Count == 0) return;
+        if (currentIndex <= 0) return;
+        if (pageCoroutine != null) StopCoroutine(pageCoroutine);
+        pageCoroutine = StartCoroutine(FlipPageRoutine(-1));
+    }
+
+    #endregion
+
+    #region Open/Close coroutines
+
+    private IEnumerator OpenRoutine() {
+        isVisible = true;
+        // enable renderer/UI immediately for opening animation
+        book.enabled = true;
+        helperUI?.SetActive(true);
+
+        float elapsed = 0f;
+        float from = 100f;
+        float to = 0f;
+
+        while (elapsed < openDuration) {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / openDuration);
+            float blend = Mathf.Lerp(from, to, t);
+            SetClosedBlend(blend);
+            yield return null;
+        }
+
+        SetClosedBlend(to);
+        isOpened = true;
+        SetUIVisibility(true);
+        openCoroutine = null;
+    }
+
+    private IEnumerator CloseRoutine() {
+        // hide interactive UI immediately
+        SetUIVisibility(false);
+
+        float elapsed = 0f;
+        float from = 0f;
+        float to = 100f;
+
+        while (elapsed < openDuration) {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / openDuration);
+            float blend = Mathf.Lerp(from, to, t);
+            SetClosedBlend(blend);
+            yield return null;
+        }
+
+        SetClosedBlend(to);
+        isOpened = false;
+        isVisible = false;
+
+        // disable renderer after animation
+        book.enabled = false;
+        helperUI?.SetActive(false);
+
+        openCoroutine = null;
+    }
+
+    #endregion
+
+    #region Page flip coroutine
+
+    private IEnumerator FlipPageRoutine(int dir) {
+        if (dir != 1 && dir != -1) yield break;
+
+        isPaging = true;
+        PlayPageSound();
+
+        float half = pageFlipDuration * 0.5f;
+        bool pageChanged = false;
+
+        if (dir == 1) {
+            // ➡️ Листаем вперёд
+            float elapsed = 0f;
+            while (elapsed < half) {
+                elapsed += Time.deltaTime;
+                float t = Mathf.Clamp01(elapsed / half);
+                SetPage1Blend(Mathf.Lerp(0f, 100f, t));
+
+                if (!pageChanged && t >= pageFlipMidpoint) {
+                    currentIndex = Mathf.Clamp(currentIndex + 1, 0, spells.Count - 1);
+                    pendingSpell = spells[currentIndex];
+
+                    // Вперёд: обновляем ПРАВУЮ страницу (новая)
+                    UpdateRightPageText(pendingSpell);
+                    pageChanged = true;
+                }
+
+                yield return null;
+            }
+
+            // Вторая половина
+            elapsed = 0f;
+            while (elapsed < half) {
+                elapsed += Time.deltaTime;
+                float t = Mathf.Clamp01(elapsed / half);
+                SetPage2Blend(Mathf.Lerp(0f, 100f, t));
+                yield return null;
+            }
+
+            // После полного переворота — обновляем ЛЕВУЮ страницу
+            if (pendingSpell != null) {
+                UpdateLeftPageImage(pendingSpell);
+                pendingSpell = null;
+            }
+        } else {
+            // ⬅️ Листаем назад
+            SetPage1Blend(100f);
+            SetPage2Blend(100f);
+
+            float elapsed = 0f;
+            while (elapsed < half) {
+                elapsed += Time.deltaTime;
+                float t = Mathf.Clamp01(elapsed / half);
+                SetPage2Blend(Mathf.Lerp(100f, 0f, t));
+
+                if (!pageChanged && t >= pageFlipMidpoint) {
+                    currentIndex = Mathf.Clamp(currentIndex - 1, 0, spells.Count - 1);
+                    pendingSpell = spells[currentIndex];
+
+                    // Назад: обновляем ЛЕВУЮ страницу (новая)
+                    UpdateLeftPageImage(pendingSpell);
+                    pageChanged = true;
+                }
+
+                yield return null;
+            }
+
+            elapsed = 0f;
+            while (elapsed < half) {
+                elapsed += Time.deltaTime;
+                float t = Mathf.Clamp01(elapsed / half);
+                SetPage1Blend(Mathf.Lerp(100f, 0f, t));
+                yield return null;
+            }
+
+            // После полного переворота — обновляем ПРАВУЮ страницу
+            if (pendingSpell != null) {
+                UpdateRightPageText(pendingSpell);
+                pendingSpell = null;
+            }
+        }
+
+        ResetPageBlend();
+        isPaging = false;
+        pageCoroutine = null;
+    }
+
+    private void UpdateRightPageText(SpellData spell) {
+        if (spell == null) return;
+        spellNameText.text = spell.name;
+        spellDescriptionText.text = spell.description;
+    }
+
+    private void UpdateLeftPageImage(SpellData spell) {
+        if (spell == null || spell.bookImage == null) return;
+        spellImage.material.mainTexture = spell.bookImage;
+    }
+
+    #endregion
+
+    #region Helpers: visuals/audio/UI
+
+    private void SetUIVisibility(bool show) {
+        if (spellImage != null) spellImage.enabled = show;
+        if (spellNameText != null) spellNameText.enabled = show;
+        if (spellDescriptionText != null) spellDescriptionText.enabled = show;
+    }
+
+    private void UpdateSpellUI(SpellData spell = null) {
+        if (spells == null || spells.Count == 0) return;
+
+        var s = spell ?? spells[currentIndex];
+        spellNameText.text = s.name;
+        spellDescriptionText.text = s.description;
+        if (s.bookImage != null)
+            spellImage.material.mainTexture = s.bookImage;
+    }
+
+    private void PlayPageSound() {
+        if (audioSource == null || pageSounds == null || pageSounds.Length == 0) return;
+        audioSource.Play(pageSounds);
+    }
+
+    private void ResetBlendShapes() {
+        SetClosedBlend(100f);
+        SetPage1Blend(0f);
+        SetPage2Blend(0f);
+    }
+
+    private void SetClosedBlend(float v) {
+        if (book != null) book.SetBlendShapeWeight(SHAPE_CLOSED, Mathf.Clamp(v, 0f, 100f));
+    }
+
+    private void SetPage1Blend(float v) {
+        if (book != null) book.SetBlendShapeWeight(SHAPE_PAGE1, Mathf.Clamp(v, 0f, 100f));
+    }
+
+    private void SetPage2Blend(float v) {
+        if (book != null) book.SetBlendShapeWeight(SHAPE_PAGE2, Mathf.Clamp(v, 0f, 100f));
+    }
+
+    private void ResetPageBlend() {
+        SetPage1Blend(0f);
+        SetPage2Blend(0f);
+    }
+
+    #endregion
 }

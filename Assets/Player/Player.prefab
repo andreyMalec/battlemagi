@@ -897,7 +897,8 @@ MonoBehaviour:
   scriptsToDisable:
   - {fileID: 8745711078365152283}
   - {fileID: 906687778472763878}
-  objectsToDisable: []
+  objectsToDisable:
+  - {fileID: 3049812759064434572}
   mainCamera: {fileID: 4966461228147620054}
   meshController: {fileID: 825623871399556391}
 --- !u!114 &8745711078365152283
@@ -2178,6 +2179,11 @@ PrefabInstance:
 --- !u!4 &2929352888958925704 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1381134658574864066, guid: 0de2c1dc599d3ab4685bb2c1396fc2ec, type: 3}
+  m_PrefabInstance: {fileID: 4291332624753685834}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3049812759064434572 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1287744456044421830, guid: 0de2c1dc599d3ab4685bb2c1396fc2ec, type: 3}
   m_PrefabInstance: {fileID: 4291332624753685834}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8224858169178024182
