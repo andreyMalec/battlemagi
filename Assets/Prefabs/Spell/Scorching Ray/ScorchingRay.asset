@@ -14,6 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpellData
   id: 2
   name: Scorching Ray
+  description: 'A focused stream of flame that burns through flesh, will, and shadow
+    alike.
+
+
+    Channels a continuous beam of fire; caster is slowed while maintaining
+    it.'
   nameRu: 
   spellWords:
   - ScorchingRay
@@ -33,13 +39,13 @@ MonoBehaviour:
   - "\u041E\u0433\u043E\u043D\u0435\u043D\u044B\u0428\u0430\u0440"
   - "\u0423\u0447\u0433\u0434\u0435\u043D\u044B\u0439\u0428\u0430\u0440"
   - "\u041E\u0433\u043D\u0435\u0428\u0430\u0440"
+  bookImage: {fileID: 2800000, guid: 7663bfc2c85b7324b81396f95c7cdbda, type: 3}
   spellInHandPrefab: {fileID: 7389778017922607859, guid: b24841a049b8fd843ad123b7c03fb2b6, type: 3}
   mainSpellPrefab: {fileID: 7354784787554302670, guid: c4e07b3a2b5ba2b42ab3b65522b61a45, type: 3}
   impactPrefab: {fileID: 0}
   damageSound: 5
   invocationIndex: 0
   castTime: 0
-  spawnOnGround: 0
   clearInHandBeforeAnim: 1
   baseDamage: 1.5
   canSelfDamage: 1

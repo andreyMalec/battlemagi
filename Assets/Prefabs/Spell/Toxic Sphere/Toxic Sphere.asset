@@ -14,6 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpellData
   id: 3
   name: Toxic Sphere
+  description: 'A swirling core of decay that poisons the ground it touches.
+
+
+    Creates
+    a lingering toxic pool that slows and damages enemies over time.'
   nameRu: 
   spellWords:
   - ToxicSphere
@@ -33,6 +38,7 @@ MonoBehaviour:
   - "\u041E\u0433\u043E\u043D\u0435\u043D\u044B\u0428\u0430\u0440"
   - "\u0423\u0447\u0433\u0434\u0435\u043D\u044B\u0439\u0428\u0430\u0440"
   - "\u041E\u0433\u043D\u0435\u0428\u0430\u0440"
+  bookImage: {fileID: 2800000, guid: f040f455d549b614b986d8e801cdb7dd, type: 3}
   spellInHandPrefab: {fileID: 7389778017922607859, guid: 377453720fd1c914bbdb8d49ae98c40d, type: 3}
   mainSpellPrefab: {fileID: 7354784787554302670, guid: cd275c08be68b2942afa392daa393cbf, type: 3}
   impactPrefab: {fileID: 1315042845377307778, guid: b48ce577639015d448fd32bdf03334f9, type: 3}

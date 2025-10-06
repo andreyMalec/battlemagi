@@ -14,11 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpellData
   id: 5
   name: Shadow step
+  description: 'The caster slips between moments, stepping through darkness unseen.
+
+
+    Teleports
+    the caster forward, evading danger.'
   nameRu: 
   spellWords:
   - ShadowStep
+  - Blink
   spellWordsRu: []
+  bookImage: {fileID: 2800000, guid: e839b1b2c39b322419e1c2e161878f39, type: 3}
   spellInHandPrefab: {fileID: 7389778017922607859, guid: 12756a2ffe0d48f4180ab1612e2d906b, type: 3}
+  spellBurstPrefab: {fileID: 1970519832159055978, guid: c03f980547ce3a9479798b66474258e5, type: 3}
   mainSpellPrefab: {fileID: 7389778017922607859, guid: 6dca2ea7606027e40af1aee6baedc003, type: 3}
   impactPrefab: {fileID: 0}
   damageSound: 0

@@ -56,11 +56,11 @@ public class FirstPersonSounds : MonoBehaviour {
 
     public void PlayStep() {
         stepsAudio.pitch = Random.Range(stepsPitchFrom, stepsPitchTo);
-        stepsAudio.PlayOneShot(steps[Random.Range(0, steps.Length)]);
+        stepsAudio.Play(steps);
     }
 
     public void PlayJump() {
         jumpsAudio.pitch = Random.Range(0.9f, 1.1f);
-        jumpsAudio.PlayOneShot(jumps[Random.Range(0, jumps.Length)]);
+        jumpsAudio.Play(jumps);
     }
 }

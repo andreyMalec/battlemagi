@@ -5,10 +5,14 @@ using UnityEngine;
 public class SpellData : ScriptableObject {
     public int id;
     public string name;
+    [Multiline(5)]
+    public string description;
     public string nameRu;
     public string[] spellWords;
     public string[] spellWordsRu;
+    public Texture2D bookImage;
     public GameObject spellInHandPrefab;
+    public GameObject spellBurstPrefab;
     public GameObject mainSpellPrefab;
     public GameObject impactPrefab;
     public DamageSoundType damageSound;

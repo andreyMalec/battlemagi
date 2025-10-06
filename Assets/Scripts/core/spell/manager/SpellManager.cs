@@ -37,7 +37,9 @@ public class SpellManager : NetworkBehaviour {
             activeSpell.ClearInHandServerRpc(OwnerClientId);
         }
 
-        yield return new WaitForSeconds(spell.castTime);
+        yield return new WaitForSeconds(spell.castTime / 2);
+        SpawnBurst(spell.id);
+        yield return new WaitForSeconds(spell.castTime / 2);
 
         if (IsOwner && !spell.clearInHandBeforeAnim) {
             activeSpell.ClearInHandServerRpc(OwnerClientId);
@@ -86,6 +88,13 @@ public class SpellManager : NetworkBehaviour {
 
         netObj.gameObject.SetActive(true);
         PlayParticleSystem(netObj.gameObject);
+    }
+
+    private void SpawnBurst(int spellId) {
+        var spell = SpellDatabase.Instance != null ? SpellDatabase.Instance.GetSpell(spellId) : null;
+        var burst = spell?.spellBurstPrefab;
+        if (burst == null) return;
+        GameObject obj = Instantiate(burst, spellCastPoint);
     }
 
     private IEnumerator DespawnAndDestroyServer(NetworkObject netObj, float lifetime) {
