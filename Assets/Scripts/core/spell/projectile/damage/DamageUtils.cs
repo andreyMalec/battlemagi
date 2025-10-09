@@ -20,12 +20,14 @@ public static class DamageUtils {
         if (excludeClients != null && excludeClients.Contains(netObj.OwnerClientId))
             return ulong.MaxValue;
 
+        var damageMulti = spell.damageMultiplier;
         if (applyDistanceMultiplier) {
             var distance = Vector3.Distance(spell.transform.position, other.transform.position);
-            var damageMultiplier = 1f - distance / data.areaRadius;
-            damageable.TakeDamage(spell.OwnerClientId, data.baseDamage * damageMultiplier, data.damageSound);
+            var areaDamageMulti = 1f - distance / data.areaRadius;
+            damageable.TakeDamage(spell.OwnerClientId, data.baseDamage * areaDamageMulti * damageMulti,
+                data.damageSound);
         } else {
-            damageable.TakeDamage(spell.OwnerClientId, data.baseDamage, data.damageSound);
+            damageable.TakeDamage(spell.OwnerClientId, data.baseDamage * damageMulti, data.damageSound);
         }
 
         return netObj.OwnerClientId;

@@ -7,6 +7,8 @@ public class FirstPersonLook : NetworkBehaviour {
     [SerializeField] private Transform firstPersonCamera;
     private Transform headBone;
 
+    public bool disableView = false;
+
     // Сетевые переменные
     private readonly NetworkVariable<Vector2> _syncRotation = new(
         Vector2.zero,
@@ -52,6 +54,7 @@ public class FirstPersonLook : NetworkBehaviour {
     }
 
     private void HandleOwnerInput() {
+        if (disableView) return;
         ProcessMouseInput();
         ApplyLocalRotation();
         SyncRotation();

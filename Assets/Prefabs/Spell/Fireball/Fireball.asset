@@ -40,11 +40,11 @@ MonoBehaviour:
   - "\u041E\u0433\u043D\u0435\u0428\u0430\u0440"
   bookImage: {fileID: 2800000, guid: a71e1d617aef2024790b3ddd6de6a405, type: 3}
   spellInHandPrefab: {fileID: 7389778017922607859, guid: 49a0bf328b645064b82bbdecdf24e1c7, type: 3}
+  spellBurstPrefab: {fileID: 0}
   mainSpellPrefab: {fileID: 7354784787554302670, guid: 2c1e610ca4bf5374cb0698a11abf1ad1, type: 3}
   impactPrefab: {fileID: 1742013225946848, guid: 5ba3b268f6696364d8ea35da86373192, type: 3}
   damageSound: 1
   invocationIndex: 3
-  castTime: 1
   clearInHandBeforeAnim: 0
   baseDamage: 80
   canSelfDamage: 1
@@ -57,8 +57,8 @@ MonoBehaviour:
   piercing: 0
   baseSpeed: 30
   projCount: 1
-  multiProjDelay: 0.2
-  spawnMode: 0
+  multiProjDelay: 0
+  spawnMode: 2
   isBeam: 0
   isHoming: 0
   homingRadius: 10

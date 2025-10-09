@@ -6,10 +6,10 @@ using Unity.Netcode.Components;
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(NetworkObject))]
 [RequireComponent(typeof(NetworkTransform))]
+[RequireComponent(typeof(NetworkStatSystem))]
 public class FirstPersonMovement : NetworkBehaviour {
     public MovementSettings movementSettings;
     public GroundCheck groundCheck;
-    public NetworkVariable<float> globalSpeedMultiplier = new(1f);
 
     public bool IsRunning { get; private set; }
     public event System.Action Jumped;
@@ -21,6 +21,7 @@ public class FirstPersonMovement : NetworkBehaviour {
     public readonly NetworkVariable<Vector3> spawnPoint = new();
     private int spawnTick = 0;
 
+    private NetworkStatSystem _statSystem;
     private CharacterController _characterController;
     private float _jumpCooldownTimer;
     private float _velocityY;
@@ -34,6 +35,7 @@ public class FirstPersonMovement : NetworkBehaviour {
 
     private void Awake() {
         _characterController = GetComponent<CharacterController>();
+        _statSystem = GetComponent<NetworkStatSystem>();
     }
 
     public override void OnNetworkSpawn() {
@@ -102,7 +104,8 @@ public class FirstPersonMovement : NetworkBehaviour {
             // (т.е. пока держат кнопку — стамина не растёт)
             if (!runKeyHeldServer && !runLock) {
                 float missing = movementSettings.maxStamina - stamina.Value;
-                float restoreRate = movementSettings.staminaRestore * (missing / movementSettings.maxStamina);
+                var staminaRegen = movementSettings.staminaRestore * _statSystem.Stats.GetFinal(StatType.StaminaRegen);
+                float restoreRate = staminaRegen * (missing / movementSettings.maxStamina);
                 stamina.Value += Time.deltaTime * restoreRate;
             }
         }
@@ -170,10 +173,11 @@ public class FirstPersonMovement : NetworkBehaviour {
         float targetSpeed = running ? movementSettings.runSpeed : movementSettings.speed;
         float speedMultiplier = groundCheck.isGrounded ? 1f : movementSettings.flySpeedMultiplier;
 
+        speedMultiplier *= _statSystem.Stats.GetFinal(StatType.MoveSpeed);
         Vector3 moveDirection = transform.TransformDirection(new Vector3(
-            input.x * targetSpeed * speedMultiplier * globalSpeedMultiplier.Value,
+            input.x * targetSpeed * speedMultiplier,
             0f,
-            input.y * targetSpeed * speedMultiplier * globalSpeedMultiplier.Value
+            input.y * targetSpeed * speedMultiplier
         ));
 
         ApplyGravity();

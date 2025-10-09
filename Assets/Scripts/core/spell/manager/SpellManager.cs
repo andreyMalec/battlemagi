@@ -5,12 +5,27 @@ using Unity.Netcode;
 public class SpellManager : NetworkBehaviour {
     [SerializeField] public Transform spellCastPoint;
     [SerializeField] private ActiveSpell activeSpell;
+    [HideInInspector] public NetworkStatSystem statSystem;
 
+    private MeshController _meshController;
     private ISpawnStrategy spawnStrategy;
+    private SpellData spellData;
 
     private void Awake() {
         if (!TryGetComponent(out activeSpell))
             activeSpell = gameObject.AddComponent<ActiveSpell>();
+        _meshController = GetComponentInChildren<MeshController>();
+        statSystem = GetComponent<NetworkStatSystem>();
+    }
+
+    public override void OnNetworkSpawn() {
+        _meshController.OnCast += OnSpellCasted;
+        _meshController.OnBurst += OnBurst;
+    }
+
+    public override void OnNetworkDespawn() {
+        _meshController.OnCast -= OnSpellCasted;
+        _meshController.OnBurst -= OnBurst;
     }
 
     public void PrepareSpell(SpellData spell) {
@@ -28,6 +43,8 @@ public class SpellManager : NetworkBehaviour {
         if (IsOwner) {
             activeSpell.ClearInHandServerRpc(OwnerClientId);
         }
+
+        spellData = null;
     }
 
     public IEnumerator CastSpell(SpellData spell) {
@@ -37,15 +54,21 @@ public class SpellManager : NetworkBehaviour {
             activeSpell.ClearInHandServerRpc(OwnerClientId);
         }
 
-        yield return new WaitForSeconds(spell.castTime / 2);
-        SpawnBurst(spell.id);
-        yield return new WaitForSeconds(spell.castTime / 2);
+        spellData = spell;
+    }
 
-        if (IsOwner && !spell.clearInHandBeforeAnim) {
+    private void OnSpellCasted(bool _) {
+        if (spellData == null) return;
+        if (IsOwner && !spellData.clearInHandBeforeAnim) {
             activeSpell.ClearInHandServerRpc(OwnerClientId);
         }
 
-        yield return spawnStrategy.Spawn(this, spell);
+        StartCoroutine(spawnStrategy.Spawn(this, spellData));
+    }
+
+    private void OnBurst(bool _) {
+        if (spellData == null) return;
+        SpawnBurst(spellData.id);
     }
 
     public void SpawnProjectile(SpellData spell, Vector3 pos, Quaternion rot) {
@@ -70,20 +93,22 @@ public class SpellManager : NetworkBehaviour {
             return;
         }
 
-        netObj.SpawnWithOwnership(serverRpcParams.Receive.SenderClientId);
+        var casterId = serverRpcParams.Receive.SenderClientId;
+        netObj.SpawnWithOwnership(casterId);
         StartCoroutine(DespawnAndDestroyServer(netObj, spell.lifeTime));
-        SpawnMainClientRpc(netObj.NetworkObjectId, spellId);
+        var caster = NetworkManager.Singleton.ConnectedClients[casterId].PlayerObject.GetComponent<NetworkStatSystem>();
+        SpawnMainClientRpc(netObj.NetworkObjectId, spellId, caster.Stats.GetFinal(StatType.SpellDamage));
     }
 
     [ClientRpc]
-    private void SpawnMainClientRpc(ulong objectId, int spellId, ClientRpcParams clientRpcParams = default) {
+    private void SpawnMainClientRpc(ulong objectId, int spellId, float damageMultiplier) {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(objectId, out var netObj))
             return;
 
         var spell = SpellDatabase.Instance != null ? SpellDatabase.Instance.GetSpell(spellId) : null;
 
         if (netObj.TryGetComponent<SpellProjectile>(out var projectile) && spell != null) {
-            projectile.Initialize(spell);
+            projectile.Initialize(spell, damageMultiplier);
         }
 
         netObj.gameObject.SetActive(true);

@@ -1,12 +1,11 @@
 using System;
-using Steamworks;
 using Unity.Netcode;
-using Unity.Netcode.Components;
 using UnityEngine;
-using UnityEngine.Animations.Rigging;
 
 public class PlayerNetwork : NetworkBehaviour {
-    [SerializeField] private Animator animator;
+    private static readonly int OutlineColor = Shader.PropertyToID("OutlineColor");
+    private static readonly int OutlineAlpha = Shader.PropertyToID("OutlineAlpha");
+
     [SerializeField] private Behaviour[] scriptsToDisable;
     [SerializeField] private GameObject[] objectsToDisable;
     [SerializeField] private Camera mainCamera;
@@ -34,41 +33,27 @@ public class PlayerNetwork : NetworkBehaviour {
         }
     }
 
-    public void AnimateBool(int key, bool value) {
-        if (IsOwner) {
-            animator.SetBool(key, value);
-            AnimateBoolServerRpc(key, value);
+    [ClientRpc]
+    public void ApplyEffectColorClientRpc(Color color) {
+        ApplyColor(prev => prev + color);
+    }
+
+    [ClientRpc]
+    public void RemoveEffectColorClientRpc(Color color) {
+        ApplyColor(prev => prev - color);
+    }
+
+    private void ApplyColor(Func<Color, Color> operation) {
+        var materials = GetComponentInChildren<MeshBody>().GetComponent<SkinnedMeshRenderer>().materials;
+        foreach (var material in materials) {
+            if (!material.HasColor(OutlineColor)) continue;
+            var prev = material.GetColor(OutlineColor);
+            var next = operation.Invoke(prev);
+            var alpha = 0f;
+            if (next.a > 0)
+                alpha = 1f;
+            material.SetFloat(OutlineAlpha, alpha);
+            material.SetColor(OutlineColor, next);
         }
-    }
-
-    public void AnimateFloat(int key, float value) {
-        if (IsOwner) {
-            animator.SetFloat(key, value);
-            AnimateFloatServerRpc(key, value);
-        }
-    }
-
-    public void AnimateTrigger(int key) {
-        if (IsOwner) {
-            animator.SetTrigger(key);
-            AnimateTriggerServerRpc(key);
-        }
-    }
-
-//=====================================================
-
-    [ServerRpc]
-    private void AnimateBoolServerRpc(int key, bool value) {
-        animator.SetBool(key, value);
-    }
-
-    [ServerRpc]
-    private void AnimateFloatServerRpc(int key, float value) {
-        animator.SetFloat(key, value);
-    }
-
-    [ServerRpc]
-    private void AnimateTriggerServerRpc(int key) {
-        animator.SetTrigger(key);
     }
 }

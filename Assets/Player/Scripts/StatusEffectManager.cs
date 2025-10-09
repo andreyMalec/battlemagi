@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -25,17 +26,32 @@ public class StatusEffectManager : NetworkBehaviour {
     public void AddEffect(ulong ownerClientId, StatusEffectData effect) {
         if (activeEffects.TryGetValue(effect.GetType(), out var previous)) {
             switch (effect.CompareTo(previous.data)) {
-                case 0:
+                case StatusEffectData.RESET_TIME:
                     previous.ResetTime();
                     break;
-                case 1:
+                case StatusEffectData.REPLACE:
                     previous.OnExpire(gameObject);
+                    Apply(ownerClientId, effect);
+                    break;
+                case StatusEffectData.ADD:
                     Apply(ownerClientId, effect);
                     break;
             }
         } else {
             Apply(ownerClientId, effect);
         }
+    }
+
+    public StatusEffectData RemoveEffect(System.Type type) {
+        StatusEffectData removed = null;
+        foreach (var effect in activeEffects.Values.Where(effect => effect.data.GetType() == type)) {
+            effect.OnExpire(gameObject);
+            removed = effect.data;
+        }
+
+        activeEffects = activeEffects.FilterKeys(effect => effect != type);
+
+        return removed;
     }
 
     private void Apply(ulong ownerClientId, StatusEffectData effect) {

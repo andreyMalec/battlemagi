@@ -3,6 +3,9 @@ using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
+[RequireComponent(typeof(FirstPersonMovement))]
+[RequireComponent(typeof(NetworkStatSystem))]
+[RequireComponent(typeof(PlayerNetwork))]
 public class PlayerAnimator : NetworkBehaviour {
     private static readonly int VelocityZ = Animator.StringToHash("Velocity Z");
     private static readonly int VelocityX = Animator.StringToHash("Velocity X");
@@ -10,17 +13,18 @@ public class PlayerAnimator : NetworkBehaviour {
     private static readonly int JumpStart = Animator.StringToHash("Jump Start");
     private static readonly int FallStart = Animator.StringToHash("Fall Start");
     private static readonly int Invocation = Animator.StringToHash("Invocation");
-    private static readonly int CastStart = Animator.StringToHash("Cast Start");
-    private static readonly int CastCharge = Animator.StringToHash("Cast Charge");
     private static readonly int CastWaiting = Animator.StringToHash("Cast Waiting");
     private static readonly int Channeling = Animator.StringToHash("Channeling");
+    private static readonly int CastSpeed = Animator.StringToHash("CastSpeed");
+    private static readonly int Cast = Animator.StringToHash("Cast");
+    private static readonly int Burst = Animator.StringToHash("Burst");
 
     private static readonly float eps = 0.05f;
     public Transform ikHand;
-    public PlayerNetwork network;
 
-    [Header("FirstPersonMovement")]
-    public FirstPersonMovement movement;
+    [SerializeField] private Animator animator;
+    private FirstPersonMovement movement;
+    private NetworkStatSystem statSystem;
 
     public float acceleration = 2f;
     public AnimationCurve decelerationCurve;
@@ -29,24 +33,18 @@ public class PlayerAnimator : NetworkBehaviour {
     private float velocityX = 0f;
 
     private bool isRunning => movement.IsRunning;
-    private float maxVelocity => (isRunning ? 2f : 0.5f) * movement.globalSpeedMultiplier.Value;
+    private float maxVelocity => (isRunning ? 2f : 0.5f) * statSystem.Stats.GetFinal(StatType.MoveSpeed);
 
     private bool jumpStart = false;
     private bool fallStart = false;
     private float lastPositionY;
 
-    private ParticleSystem chargingParticles;
-    private AudioSource chargingAudio;
-
-    private NetworkVariable<float> castCharge = new(0, NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Owner);
-
     private Vector3 ikPos;
     private Quaternion ikRot;
 
     private void Awake() {
-        chargingParticles = GetComponentInChildren<MeshController>().invocation;
-        chargingAudio = GetComponent<AudioSource>();
+        movement = GetComponent<FirstPersonMovement>();
+        statSystem = GetComponent<NetworkStatSystem>();
     }
 
     private void Start() {
@@ -58,11 +56,11 @@ public class PlayerAnimator : NetworkBehaviour {
     }
 
     public void TriggerChanneling() {
-        network.AnimateTrigger(Channeling);
+        AnimateTrigger(Channeling);
     }
 
     public void CastWaitingAnim(bool waiting) {
-        network.AnimateBool(CastWaiting, waiting);
+        AnimateBool(CastWaiting, waiting);
         if (waiting) {
             ikHand.localPosition = new Vector3(-0.55f, -0.24f, 0.44f);
             ikHand.localRotation = Quaternion.Euler(0, -90, 0);
@@ -72,31 +70,18 @@ public class PlayerAnimator : NetworkBehaviour {
         }
     }
 
-    private void OnEnable() {
-        castCharge.OnValueChanged += OnEffectChanged;
-    }
-
-    private void OnDisable() {
-        castCharge.OnValueChanged -= OnEffectChanged;
-    }
-
-    private void OnEffectChanged(float oldValue, float newValue) {
-        var emission = chargingParticles.emission;
-        emission.rateOverTime = newValue;
-        chargingAudio.volume = Math.Clamp(newValue / 200, 0, 0.15f);
-    }
-
     public IEnumerator CastSpell(SpellData spell) {
-        network.AnimateFloat(Invocation, spell.invocationIndex);
-        yield return new WaitForSeconds(spell.castTime);
-        network.AnimateFloat(Invocation, 0);
+        AnimateFloat(CastSpeed, statSystem.Stats.GetFinal(StatType.CastSpeed));
+        AnimateFloat(Invocation, spell.invocationIndex);
+        yield return new WaitForSeconds(0.2f);
+        AnimateFloat(Invocation, 0);
     }
 
     private void Update() {
         if (!IsOwner) return;
 
-        network.AnimateBool(JumpStart, jumpStart);
-        network.AnimateBool(FallStart, fallStart);
+        AnimateBool(JumpStart, jumpStart);
+        AnimateBool(FallStart, fallStart);
 
         if (fallStart)
             fallStart = false;
@@ -130,11 +115,9 @@ public class PlayerAnimator : NetworkBehaviour {
         velocityX = applyPositive(right, velocityX);
         velocityX = applyNegative(left, velocityX);
 
-        network.AnimateFloat(VelocityZ, velocityZ);
-        network.AnimateFloat(VelocityX, velocityX);
-        network.AnimateFloat(VelocityAny, (Math.Abs(velocityZ) + Math.Abs(velocityX)) / 2);
-
-        // Debug.Log($"forward_Z: {velocityX}; right_X: {velocityZ} maxVelocity: {maxVelocity}");
+        AnimateFloat(VelocityZ, velocityZ);
+        AnimateFloat(VelocityX, velocityX);
+        AnimateFloat(VelocityAny, (Math.Abs(velocityZ) + Math.Abs(velocityX)) / 2);
     }
 
     private void Jumped() {
@@ -189,5 +172,43 @@ public class PlayerAnimator : NetworkBehaviour {
         }
 
         return velocity;
+    }
+
+    public void AnimateBool(int key, bool value) {
+        if (IsOwner) {
+            animator.SetBool(key, value);
+            AnimateBoolServerRpc(key, value);
+        }
+    }
+
+    public void AnimateFloat(int key, float value) {
+        if (IsOwner) {
+            animator.SetFloat(key, value);
+            AnimateFloatServerRpc(key, value);
+        }
+    }
+
+    public void AnimateTrigger(int key) {
+        if (IsOwner) {
+            animator.SetTrigger(key);
+            AnimateTriggerServerRpc(key);
+        }
+    }
+
+//=====================================================
+
+    [ServerRpc]
+    private void AnimateBoolServerRpc(int key, bool value) {
+        animator.SetBool(key, value);
+    }
+
+    [ServerRpc]
+    private void AnimateFloatServerRpc(int key, float value) {
+        animator.SetFloat(key, value);
+    }
+
+    [ServerRpc]
+    private void AnimateTriggerServerRpc(int key) {
+        animator.SetTrigger(key);
     }
 }

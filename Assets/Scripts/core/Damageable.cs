@@ -6,10 +6,12 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(NetworkStatSystem))]
 public class Damageable : NetworkBehaviour {
     [SerializeField] public float maxHealth = 100f;
     [SerializeField] public float hpRestore = 1f;
     [SerializeField] private bool immortal = false;
+    [SerializeField] public bool invulnerable = false;
     [SerializeField] private TMP_Text hp;
 
     [Header("Sound")]
@@ -20,8 +22,15 @@ public class Damageable : NetworkBehaviour {
     private float _restoreTick;
     private bool _isDead = false;
     private List<ulong> _damagedBy = new();
+    private NetworkStatSystem _statSystem;
+    private StatusEffectManager _effectManager;
 
     public NetworkVariable<float> health = new();
+
+    private void Awake() {
+        _statSystem = GetComponent<NetworkStatSystem>();
+        _effectManager = GetComponent<StatusEffectManager>();
+    }
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
@@ -37,7 +46,7 @@ public class Damageable : NetworkBehaviour {
         if (!IsServer) return;
         _restoreTick += Time.deltaTime;
         if (_restoreTick >= 1 && !_isDead) {
-            health.Value += hpRestore;
+            health.Value += hpRestore * _statSystem.Stats.GetFinal(StatType.HealthRegen);
             _restoreTick = 0f;
         }
 
@@ -46,17 +55,28 @@ public class Damageable : NetworkBehaviour {
 
     public void TakeDamage(ulong fromClientId, float damage, DamageSoundType sound = DamageSoundType.Default) {
         if (!IsServer) return;
+        if (invulnerable) return;
         if (damage < 0 || _isDead) return;
         if (TryGetComponent<NetworkObject>(out var netObj) && netObj != null && netObj.IsSpawned) {
             var clientId = netObj.OwnerClientId;
-            Debug.Log($"[Damageable] Игрок {clientId} получает урон: {damage} от {fromClientId}");
+            var finalDamage = damage * _statSystem.Stats.GetFinal(StatType.DamageReduction);
+            Debug.Log($"[Damageable] Игрок {clientId} получает урон: {finalDamage} от {fromClientId}");
             if (!_damagedBy.Contains(fromClientId) && clientId != fromClientId)
                 _damagedBy.Add(fromClientId);
             var before = health.Value;
-            health.Value -= damage;
+            health.Value -= finalDamage;
             if (Time.time - _lastDamageSoundTime >= damageSoundCooldown) {
                 _lastDamageSoundTime = Time.time;
                 PlayDamageSoundClientRpc((int)sound);
+            }
+
+            if (_effectManager.HasEffect(typeof(RuneOfStasisEffect))) {
+                if (health.Value <= 0 && before > 0) {
+                    var removed = (RuneOfStasisEffect)_effectManager.RemoveEffect(typeof(RuneOfStasisEffect));
+                    _effectManager.AddEffect(clientId, removed.onExpire);
+
+                    return;
+                }
             }
 
             if (!immortal && health.Value <= 0 && before > 0) {

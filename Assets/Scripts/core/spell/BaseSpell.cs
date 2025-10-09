@@ -18,6 +18,7 @@ public class BaseSpell : NetworkBehaviour {
     private ISpellLifetime lifetime;
 
     public SpellData spellData;
+    public float damageMultiplier = 1;
     private bool movementAuthority;
 
     public override void OnNetworkSpawn() {
@@ -27,8 +28,9 @@ public class BaseSpell : NetworkBehaviour {
                             (mode == NetworkTransform.AuthorityModes.Server && IsServer);
     }
 
-    public virtual void Initialize(SpellData data) {
+    public virtual void Initialize(SpellData data, float damageMulti) {
         spellData = data;
+        damageMultiplier = damageMulti;
 
         Debug.Log($"[SpellProjectile] Игрок {OwnerClientId} выпустил {spellData.name}");
 

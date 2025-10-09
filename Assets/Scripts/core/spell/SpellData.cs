@@ -19,8 +19,6 @@ public class SpellData : ScriptableObject {
 
     public int invocationIndex;
 
-    public float castTime = 2f;
-
     public bool clearInHandBeforeAnim = false;
 
     [Header("Damage")]

@@ -20,6 +20,7 @@ public class FreezeEffect : StatusEffectData {
         }
 
         public override void OnExpire(GameObject target) {
+            base.OnExpire(target);
             target.GetComponent<StateController>().SetFreeze(false);
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -12,9 +13,10 @@ public class ArcSpawn : ISpawnStrategy {
 
     public IEnumerator Spawn(SpellManager manager, SpellData spell) {
         Vector3 origin = manager.spellCastPoint.position;
-        float startAngle = -((spell.projCount - 1) * angleStep) / 2f;
+        var projCount = (int)Math.Floor(spell.projCount * manager.statSystem.Stats.GetFinal(StatType.ProjectileCount));
+        float startAngle = -((projCount - 1) * angleStep) / 2f;
 
-        for (int i = spell.projCount - 1; i >= 0; i--) {
+        for (int i = projCount - 1; i >= 0; i--) {
             Quaternion rot = manager.spellCastPoint.rotation * Quaternion.Euler(0, startAngle + angleStep * i, 0);
             manager.SpawnProjectile(spell, origin, rot);
 

@@ -15,7 +15,7 @@ public class DamageOverTimeEffect : StatusEffectData {
             return dps.CompareTo(effect.dps);
         }
 
-        return 0;
+        return RESET_TIME;
     }
 
     private class DamageOverTimeRuntime : StatusEffectRuntime {

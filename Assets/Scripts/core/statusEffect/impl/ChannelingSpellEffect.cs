@@ -13,7 +13,7 @@ public class ChannelingSpellEffect : StatusEffectData {
             return speedMultiplier.CompareTo(effect.speedMultiplier);
         }
 
-        return 0;
+        return RESET_TIME;
     }
 
     private class ChannelingSpellRuntime : StatusEffectRuntime {
@@ -25,18 +25,19 @@ public class ChannelingSpellEffect : StatusEffectData {
 
         public override void OnApply(ulong ownerClientId, GameObject target) {
             base.OnApply(ownerClientId, target);
-            var mover = target.GetComponent<FirstPersonMovement>();
-            if (mover != null) {
-                mover.globalSpeedMultiplier.Value = _data.speedMultiplier;
+            var statSystem = target.GetComponent<NetworkStatSystem>();
+            if (statSystem != null) {
+                statSystem.AddModifierServer(StatType.MoveSpeed, _data.speedMultiplier);
             }
 
             target.GetComponent<StateController>().SetChanneling(true);
         }
 
         public override void OnExpire(GameObject target) {
-            var mover = target.GetComponent<FirstPersonMovement>();
-            if (mover != null) {
-                mover.globalSpeedMultiplier.Value = 1f;
+            base.OnExpire(target);
+            var statSystem = target.GetComponent<NetworkStatSystem>();
+            if (statSystem != null) {
+                statSystem.RemoveModifierServer(StatType.MoveSpeed, _data.speedMultiplier);
             }
 
             target.GetComponent<StateController>().SetChanneling(false);

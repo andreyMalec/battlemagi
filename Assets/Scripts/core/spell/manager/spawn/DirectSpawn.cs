@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -9,13 +10,14 @@ public class DirectSpawn : ISpawnStrategy {
     }
 
     public IEnumerator Spawn(SpellManager manager, SpellData spell) {
-        for (int i = 0; i < spell.projCount; i++) {
+        var projCount = (int)Math.Floor(spell.projCount * manager.statSystem.Stats.GetFinal(StatType.ProjectileCount));
+        for (int i = 0; i < projCount; i++) {
             Vector3 spawnPosition = manager.spellCastPoint.position;
             Quaternion spawnRotation = manager.spellCastPoint.rotation;
 
             manager.SpawnProjectile(spell, spawnPosition, spawnRotation);
 
-            if (delay > 0f && i < spell.projCount - 1) {
+            if (delay > 0f && i < projCount - 1) {
                 yield return new WaitForSeconds(delay);
             }
         }

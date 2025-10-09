@@ -695,6 +695,7 @@ GameObject:
   - component: {fileID: 5865273710895956458}
   - component: {fileID: 2716919782836391855}
   - component: {fileID: 3269581595495701639}
+  - component: {fileID: 5208608556239358256}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -766,8 +767,6 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   movementSettings: {fileID: 11400000, guid: 99067fe211a078d4bbfdb64adec90669, type: 2}
   groundCheck: {fileID: 6466238404988819252}
-  globalSpeedMultiplier:
-    m_InternalValue: 1
 --- !u!114 &8271153046618425552
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -818,6 +817,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   spellCastPoint: {fileID: 3077521524520137575}
   activeSpell: {fileID: 0}
+  statSystem: {fileID: 0}
 --- !u!114 &906687778472763878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -844,8 +844,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimator
   ShowTopMostFoldoutHeaderGroup: 1
   ikHand: {fileID: 5596533096327910552}
-  network: {fileID: 5739434593196869952}
-  movement: {fileID: 6916625131687324290}
+  animator: {fileID: 1037760559241335293}
   acceleration: 3
   decelerationCurve:
     serializedVersion: 2
@@ -893,7 +892,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerNetwork
   ShowTopMostFoldoutHeaderGroup: 1
-  animator: {fileID: 1037760559241335293}
   scriptsToDisable:
   - {fileID: 8745711078365152283}
   - {fileID: 906687778472763878}
@@ -1195,6 +1193,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Mouth
   ShowTopMostFoldoutHeaderGroup: 1
   microphoneRecord: {fileID: 4698157495094038902}
+--- !u!114 &5208608556239358256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a60bd481fc714fb8b20e472a6e5c1969, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NetworkStatSystem
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &5894542900604772476
 GameObject:
   m_ObjectHideFlags: 0

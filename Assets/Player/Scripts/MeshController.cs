@@ -22,6 +22,9 @@ public class MeshController : MonoBehaviour {
     private Animator animator;
     private Cloth cloth;
 
+    public event Action<bool> OnCast;
+    public event Action<bool> OnBurst;
+
     private void Awake() {
         leftHandIkConstraint .data.target = ikTargetHand;
         headIkConstraint.data.target = ikTargetSpine;
@@ -64,5 +67,13 @@ public class MeshController : MonoBehaviour {
             joint.enableProjection = enable;
             joint.enablePreprocessing = enable;
         }
+    }
+
+    public void Cast() {
+        OnCast?.Invoke(true);
+    }
+
+    public void Burst() {
+        OnBurst?.Invoke(true);
     }
 }
