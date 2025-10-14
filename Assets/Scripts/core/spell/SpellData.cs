@@ -10,6 +10,7 @@ public class SpellData : ScriptableObject {
     public string nameRu;
     public string[] spellWords;
     public string[] spellWordsRu;
+    public float manaCost = 50;
     public Texture2D bookImage;
     public GameObject spellInHandPrefab;
     public GameObject spellBurstPrefab;

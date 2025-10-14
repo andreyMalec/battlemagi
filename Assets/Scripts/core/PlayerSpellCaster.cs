@@ -15,6 +15,8 @@ public class PlayerSpellCaster : NetworkBehaviour {
 
     public Language language = Language.En;
 
+    [SerializeField] private AudioSource noManaSound;
+    private NetworkStatSystem _statSystem;
     private SpellManager spellManager;
     public Mouth mouth;
     public PlayerAnimator playerAnimator;
@@ -26,7 +28,24 @@ public class PlayerSpellCaster : NetworkBehaviour {
     private RecognizedSpell? recognizedSpell = null;
 
     private bool castWaiting = false;
-    public bool channeling = false;
+    [HideInInspector] public bool channeling = false;
+
+    [SerializeField] private float manaRestore = 5f;
+    [SerializeField] private float manaRestoreTickInterval = 0.5f;
+    public float maxMana = 100;
+    public NetworkVariable<float> mana = new();
+    private float _restoreTick;
+
+    public override void OnNetworkSpawn() {
+        base.OnNetworkSpawn();
+
+        if (IsServer)
+            mana.Value = maxMana;
+    }
+
+    private void Awake() {
+        _statSystem = GetComponent<NetworkStatSystem>();
+    }
 
     private void Start() {
         if (!IsOwner) return;
@@ -39,15 +58,31 @@ public class PlayerSpellCaster : NetworkBehaviour {
         var s = RecognizeSpell(lastWords);
         recognizedSpell = s;
         var handled = s.similarity >= recognitionThreshold;
-        if (handled) {
+        if (!handled) return;
+
+        if (mana.Value >= s.spell.manaCost) {
+            mana.Value -= s.spell.manaCost;
             mouth.ShutUp();
             castWaiting = true;
             playerAnimator.CastWaitingAnim(true);
             spellManager.PrepareSpell(s.spell);
+        } else {
+            if (!noManaSound.isPlaying)
+                noManaSound.Play();
         }
     }
 
     private void Update() {
+        if (IsServer) {
+            _restoreTick += Time.deltaTime;
+            if (_restoreTick >= manaRestoreTickInterval) {
+                mana.Value += manaRestore * _statSystem.Stats.GetFinal(StatType.ManaRegen);
+                _restoreTick = 0f;
+            }
+
+            mana.Value = Mathf.Clamp(mana.Value, 0, maxMana);
+        }
+
         if (!IsOwner) return;
 
         HandleSpellCasting();

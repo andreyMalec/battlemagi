@@ -819,12 +819,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSpellCaster
   ShowTopMostFoldoutHeaderGroup: 1
   language: 0
+  noManaSound: {fileID: 1507093393527865229}
   mouth: {fileID: 3269581595495701639}
   playerAnimator: {fileID: 6425691076356515085}
   recognitionThreshold: 0.6
   spellCastKey: 323
   spellCancelKey: 324
   channeling: 0
+  manaRestore: 0.5
+  manaRestoreTickInterval: 0.1
+  maxMana: 100
+  mana:
+    m_InternalValue: 0
 --- !u!114 &590111089370120790
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1092,18 +1098,18 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 5062687673072769487, guid: 0dee41fcfd7ec4c429ddbec189e528ae, type: 2}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 2c734c368d27f5e449f1855745ff48fc, type: 3}
-  m_PlayOnAwake: 1
-  m_Volume: 0
+  m_Resource: {fileID: 8300000, guid: 9611abb8e7f880547b6383ac3cc12a36, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 0.3
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 30
+  MaxDistance: 10
   Pan2D: 0
   rolloffMode: 1
   BypassEffects: 0

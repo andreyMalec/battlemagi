@@ -3,8 +3,8 @@ public enum StatType {
     SpellDamage,
     CastSpeed,
     DamageReduction,
-    BlinkCooldown,
     ProjectileCount,
     HealthRegen,
     StaminaRegen,
+    ManaRegen,
 }

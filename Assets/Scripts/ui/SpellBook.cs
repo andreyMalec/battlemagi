@@ -27,6 +27,7 @@ public class SpellBook : MonoBehaviour {
     [SerializeField] private Renderer spellImage;
     [SerializeField] private TMP_Text spellNameText;
     [SerializeField] private TMP_Text spellDescriptionText;
+    [SerializeField] private TMP_Text spellManaCostText;
     [SerializeField] private GameObject helperUI;
 
     [Header("Audio")]
@@ -212,7 +213,7 @@ public class SpellBook : MonoBehaviour {
 
             // После полного переворота — обновляем ЛЕВУЮ страницу
             if (pendingSpell != null) {
-                UpdateLeftPageImage(pendingSpell);
+                UpdateLeftPage(pendingSpell);
                 pendingSpell = null;
             }
         } else {
@@ -231,7 +232,7 @@ public class SpellBook : MonoBehaviour {
                     pendingSpell = spells[currentIndex];
 
                     // Назад: обновляем ЛЕВУЮ страницу (новая)
-                    UpdateLeftPageImage(pendingSpell);
+                    UpdateLeftPage(pendingSpell);
                     pageChanged = true;
                 }
 
@@ -264,9 +265,10 @@ public class SpellBook : MonoBehaviour {
         spellDescriptionText.text = spell.description;
     }
 
-    private void UpdateLeftPageImage(SpellData spell) {
+    private void UpdateLeftPage(SpellData spell) {
         if (spell == null || spell.bookImage == null) return;
         spellImage.material.mainTexture = spell.bookImage;
+        spellManaCostText.text = spell.manaCost.ToString("0");
     }
 
     #endregion
@@ -275,6 +277,7 @@ public class SpellBook : MonoBehaviour {
 
     private void SetUIVisibility(bool show) {
         if (spellImage != null) spellImage.enabled = show;
+        if (spellManaCostText != null) spellManaCostText.enabled = show;
         if (spellNameText != null) spellNameText.enabled = show;
         if (spellDescriptionText != null) spellDescriptionText.enabled = show;
     }
@@ -285,6 +288,7 @@ public class SpellBook : MonoBehaviour {
         var s = spell ?? spells[currentIndex];
         spellNameText.text = s.name;
         spellDescriptionText.text = s.description;
+        spellManaCostText.text = s.manaCost.ToString("0");
         if (s.bookImage != null)
             spellImage.material.mainTexture = s.bookImage;
     }
