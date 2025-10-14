@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -17,6 +18,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
 
     [SerializeField] private AudioSource noManaSound;
     private NetworkStatSystem _statSystem;
+    private MeshController _meshController;
     private SpellManager spellManager;
     public Mouth mouth;
     public PlayerAnimator playerAnimator;
@@ -35,16 +37,21 @@ public class PlayerSpellCaster : NetworkBehaviour {
     public float maxMana = 100;
     public NetworkVariable<float> mana = new();
     private float _restoreTick;
+    private int echoCount = 0;
+    private RecognizedSpell? spellEcho;
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
 
         if (IsServer)
             mana.Value = maxMana;
+        if (IsOwner)
+            _meshController.OnCast += OnSpellCasted;
     }
 
     private void Awake() {
         _statSystem = GetComponent<NetworkStatSystem>();
+        _meshController = GetComponentInChildren<MeshController>();
     }
 
     private void Start() {
@@ -61,6 +68,9 @@ public class PlayerSpellCaster : NetworkBehaviour {
         if (!handled) return;
 
         if (mana.Value >= s.spell.manaCost) {
+            echoCount = s.spell.echoCount;
+            if (echoCount > 0)
+                spellEcho = s;
             mana.Value -= s.spell.manaCost;
             mouth.ShutUp();
             castWaiting = true;
@@ -144,10 +154,31 @@ public class PlayerSpellCaster : NetworkBehaviour {
     }
 
     private void CastSpell() {
-        if (recognizedSpell?.similarity >= recognitionThreshold) {
-            StartCoroutine(playerAnimator.CastSpell(recognizedSpell.Value.spell));
-            StartCoroutine(spellManager.CastSpell(recognizedSpell.Value.spell));
+        var spell = recognizedSpell;
+        if (spellEcho.HasValue)
+            spell = spellEcho;
+        if (!spell.HasValue) return;
+        StartCoroutine(playerAnimator.CastSpell(spell.Value.spell));
+        StartCoroutine(spellManager.CastSpell(spell.Value.spell));
+    }
+
+    private void OnSpellCasted(bool _) {
+        if (echoCount > 0 && spellEcho.HasValue) {
+            echoCount--;
+            StartCoroutine(SpellEcho(spellEcho.Value.spell));
         }
+
+        if (echoCount < 0)
+            spellEcho = null;
+    }
+
+    private IEnumerator SpellEcho(SpellData spell) {
+        yield return new WaitForSeconds(0.2f);
+
+        mouth.ShutUp();
+        castWaiting = true;
+        playerAnimator.CastWaitingAnim(true);
+        spellManager.PrepareSpell(spell);
     }
 
     struct RecognizedSpell {
@@ -176,5 +207,11 @@ public class PlayerSpellCaster : NetworkBehaviour {
                 matrix[i - 1, j - 1] + (a[i - 1] == b[j - 1] ? 0 : 1));
 
         return matrix[a.Length, b.Length];
+    }
+
+    public override void OnNetworkDespawn() {
+        base.OnNetworkDespawn();
+        if (IsOwner)
+            _meshController.OnCast -= OnSpellCasted;
     }
 }

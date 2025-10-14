@@ -5,8 +5,7 @@ using UnityEngine;
 public class SpellData : ScriptableObject {
     public int id;
     public string name;
-    [Multiline(5)]
-    public string description;
+    [Multiline(5)] public string description;
     public string nameRu;
     public string[] spellWords;
     public string[] spellWordsRu;
@@ -21,6 +20,8 @@ public class SpellData : ScriptableObject {
     public int invocationIndex;
 
     public bool clearInHandBeforeAnim = false;
+
+    public int echoCount = 0;
 
     [Header("Damage")]
     public float baseDamage = 10f;
