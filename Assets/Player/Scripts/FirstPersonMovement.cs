@@ -92,7 +92,7 @@ public class FirstPersonMovement : NetworkBehaviour {
 
         // Если игрок бежит — тратим стамину
         if (_isRunningNetwork.Value) {
-            stamina.Value -= Time.deltaTime;
+            stamina.Value -= Time.deltaTime * movementSettings.staminaUsage;
             if (stamina.Value <= minStaminaThreshold) {
                 stamina.Value = 0f;
                 // Отключаем бег и ставим лок: запрещаем авто-возобновление, пока не отпущена клавиша

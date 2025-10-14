@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 using Color = UnityEngine.Color;
@@ -24,6 +25,7 @@ public class Menu : MonoBehaviour {
     public Button buttonBackToMain;
     public Button buttonCopyLobbyId;
     public Button buttonReady;
+    public TMP_Dropdown dropdownMap;
     public TMP_Text lobbyName;
     public TMP_InputField fieldJoinLobbyId;
     public TMP_InputField fieldLobbyId;
@@ -38,6 +40,7 @@ public class Menu : MonoBehaviour {
     private UInt64 lobbyId = 0;
     private int lobbySize = 6;
     private int readyCount = 0;
+    private int mapIndex = 0;
 
     public void Start() {
         Cursor.lockState = CursorLockMode.None;
@@ -51,6 +54,7 @@ public class Menu : MonoBehaviour {
         buttonReady.onClick.AddListener(ToggleReady);
         buttonCopyLobbyId.onClick.AddListener(() => StartCoroutine(CopyId()));
         copyButtonText = buttonCopyLobbyId.GetComponentInChildren<TMP_Text>();
+        dropdownMap.onValueChanged.AddListener(SubmitMap);
 
         fieldJoinLobbyId.onEndEdit.AddListener(id => {
             try {
@@ -61,6 +65,10 @@ public class Menu : MonoBehaviour {
                 Console.WriteLine(e);
             }
         });
+    }
+
+    private void SubmitMap(int index) {
+        mapIndex = index;
     }
 
     private void FixedUpdate() {
@@ -90,7 +98,7 @@ public class Menu : MonoBehaviour {
     }
 
     private void StartGame() {
-        GameScene.StartGame();
+        GameScene.StartGame(mapIndex);
     }
 
     private void CreateLobby() {
@@ -142,6 +150,8 @@ public class Menu : MonoBehaviour {
             lobbySize = lobby.MaxMembers;
             lobbyId = lobby.Id.Value;
         }
+
+        dropdownMap.gameObject.SetActive(inLobby && LobbyManager.Instance.IsHost());
 
         lobbyMembers.RequestUpdate();
     }

@@ -3226,6 +3226,14 @@ PrefabInstance:
       propertyPath: SceneMigrationSynchronization
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6180065054090120759, guid: 577e1231901326747972941493c3658b, type: 3}
+      propertyPath: duration
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 6180065054090120759, guid: 577e1231901326747972941493c3658b, type: 3}
+      propertyPath: restoreTime
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 8570435428822963942, guid: 577e1231901326747972941493c3658b, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3220492022
@@ -6003,119 +6011,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4313786072988970, guid: fd64a30dd68aeee438e405bbfa47eb61, type: 3}
   m_PrefabInstance: {fileID: 1982105259}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &2004030052
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 5939425762507189614, guid: 577e1231901326747972941493c3658b, type: 3}
-      propertyPath: GlobalObjectIdHash
-      value: 2477493747
-      objectReference: {fileID: 0}
-    - target: {fileID: 5939425762507189614, guid: 577e1231901326747972941493c3658b, type: 3}
-      propertyPath: SceneMigrationSynchronization
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6180065054090120759, guid: 577e1231901326747972941493c3658b, type: 3}
-      propertyPath: runes.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6180065054090120759, guid: 577e1231901326747972941493c3658b, type: 3}
-      propertyPath: 'runes.Array.data[0]'
-      value: 
-      objectReference: {fileID: 5573621734820598480, guid: 974267233583a6042ba9f85ba3adcf92, type: 3}
-    - target: {fileID: 6180065054090120759, guid: 577e1231901326747972941493c3658b, type: 3}
-      propertyPath: 'runes.Array.data[1]'
-      value: 
-      objectReference: {fileID: 5573621734820598480, guid: 2e59fc9193bfd3c4ca24c7ce8106cccd, type: 3}
-    - target: {fileID: 6180065054090120759, guid: 577e1231901326747972941493c3658b, type: 3}
-      propertyPath: 'runes.Array.data[2]'
-      value: 
-      objectReference: {fileID: 5573621734820598480, guid: 2e59fc9193bfd3c4ca24c7ce8106cccd, type: 3}
-    - target: {fileID: 6180065054090120759, guid: 577e1231901326747972941493c3658b, type: 3}
-      propertyPath: 'runes.Array.data[3]'
-      value: 
-      objectReference: {fileID: 5573621734820598480, guid: 2e59fc9193bfd3c4ca24c7ce8106cccd, type: 3}
-    - target: {fileID: 8570435428822963942, guid: 577e1231901326747972941493c3658b, type: 3}
-      propertyPath: GlobalObjectIdHash
-      value: 3935397708
-      objectReference: {fileID: 0}
-    - target: {fileID: 8570435428822963942, guid: 577e1231901326747972941493c3658b, type: 3}
-      propertyPath: SceneMigrationSynchronization
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8570435428822963942, guid: 577e1231901326747972941493c3658b, type: 3}
-      propertyPath: InScenePlacedSourceGlobalObjectIdHash
-      value: 3565887570
-      objectReference: {fileID: 0}
-    - target: {fileID: 8829864031521416944, guid: 577e1231901326747972941493c3658b, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8829864031521416944, guid: 577e1231901326747972941493c3658b, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8829864031521416944, guid: 577e1231901326747972941493c3658b, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8829864031521416944, guid: 577e1231901326747972941493c3658b, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 54.15
-      objectReference: {fileID: 0}
-    - target: {fileID: 8829864031521416944, guid: 577e1231901326747972941493c3658b, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.49
-      objectReference: {fileID: 0}
-    - target: {fileID: 8829864031521416944, guid: 577e1231901326747972941493c3658b, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 50.61
-      objectReference: {fileID: 0}
-    - target: {fileID: 8829864031521416944, guid: 577e1231901326747972941493c3658b, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.9997488
-      objectReference: {fileID: 0}
-    - target: {fileID: 8829864031521416944, guid: 577e1231901326747972941493c3658b, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0.02165578
-      objectReference: {fileID: 0}
-    - target: {fileID: 8829864031521416944, guid: 577e1231901326747972941493c3658b, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.0000033302495
-      objectReference: {fileID: 0}
-    - target: {fileID: 8829864031521416944, guid: 577e1231901326747972941493c3658b, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0.005777018
-      objectReference: {fileID: 0}
-    - target: {fileID: 8829864031521416944, guid: 577e1231901326747972941493c3658b, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: -2.482
-      objectReference: {fileID: 0}
-    - target: {fileID: 8829864031521416944, guid: 577e1231901326747972941493c3658b, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0.015
-      objectReference: {fileID: 0}
-    - target: {fileID: 8829864031521416944, guid: 577e1231901326747972941493c3658b, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: -0.662
-      objectReference: {fileID: 0}
-    - target: {fileID: 8829864031521416944, guid: 577e1231901326747972941493c3658b, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8888296576667898284, guid: 577e1231901326747972941493c3658b, type: 3}
-      propertyPath: m_Name
-      value: RunePlatform (1)
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 577e1231901326747972941493c3658b, type: 3}
 --- !u!1 &2013707760 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7423594646761524157, guid: 9adf7af000156bc439918111686ccf21, type: 3}
@@ -6942,4 +6837,3 @@ SceneRoots:
   - {fileID: 1206303645}
   - {fileID: 1083816466}
   - {fileID: 973135742}
-  - {fileID: 2004030052}

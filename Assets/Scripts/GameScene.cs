@@ -2,15 +2,20 @@ using Unity.Netcode;
 using UnityEngine.SceneManagement;
 
 public static class GameScene {
-    private const string game = "Game";
+    private const string game0 = "Game";
+    private const string game1 = "Game 3";
     private const string test = "Test";
-    
-    public const string Name = game;
 
-    public static void StartGame() {
+    public static string Name;
+
+    public static void StartGame(int mapIndex) {
         if (NetworkManager.Singleton.IsHost) {
             LobbyManager.Instance.CurrentLobby?.SetJoinable(false);
-            NetworkManager.Singleton.SceneManager.LoadScene(Name, LoadSceneMode.Single);
+            var map = game0;
+            if (mapIndex == 1)
+                map = game1;
+            Name = map;
+            NetworkManager.Singleton.SceneManager.LoadScene(map, LoadSceneMode.Single);
         }
     }
 }

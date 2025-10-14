@@ -5,6 +5,7 @@ public class MovementSettings : ScriptableObject {
     [Header("Movement")] public float speed = 4f;
     public float maxStamina = 5f;
     public float staminaRestore = 0.1f;
+    public float staminaUsage = 0.5f;
     public float runSpeed = 8f;
     public bool canRun = true;
     public KeyCode runningKey = KeyCode.LeftShift;

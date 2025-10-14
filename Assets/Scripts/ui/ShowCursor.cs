@@ -12,11 +12,13 @@ public class ShowCursor : MonoBehaviour {
         if (Input.GetKey(KeyCode.LeftAlt)) {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            _firstPersonLook.disableView = true;
+            if (_firstPersonLook != null)
+                _firstPersonLook.disableView = true;
         } else {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-            _firstPersonLook.disableView = false;
+            if (_firstPersonLook != null)
+                _firstPersonLook.disableView = false;
         }
     }
 }

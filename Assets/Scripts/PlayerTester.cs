@@ -14,6 +14,7 @@ public class PlayerTester : MonoBehaviour {
 
     private void Awake() {
         _characterController = GetComponent<CharacterController>();
+        Application.targetFrameRate = 120;
     }
 
     private void Update() {

@@ -130,6 +130,10 @@ public class LobbyManager : MonoBehaviour {
 
     #region Public API
 
+    public bool IsHost() {
+        return CurrentLobby.HasValue && CurrentLobby.Value.Owner.Id == SteamClient.SteamId;
+    }
+
     /**
      * Создать новое лобби
      */

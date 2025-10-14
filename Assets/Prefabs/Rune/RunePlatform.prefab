@@ -79,7 +79,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3565887570
+  GlobalObjectIdHash: 3724621855
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -112,8 +112,8 @@ MonoBehaviour:
   - {fileID: 5573621734820598480, guid: 30341a9d8936a6a49968c97d0073f73e, type: 3}
   - {fileID: 5573621734820598480, guid: 2e59fc9193bfd3c4ca24c7ce8106cccd, type: 3}
   - {fileID: 5573621734820598480, guid: 974267233583a6042ba9f85ba3adcf92, type: 3}
-  restoreTime: 10.1
-  duration: 10
+  restoreTime: 40
+  duration: 20
   spawnPoint: {fileID: 561189962538401740}
 --- !u!82 &7833503863762410395
 AudioSource:
