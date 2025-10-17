@@ -42,7 +42,7 @@ public class Mouth : NetworkBehaviour {
     private void OnSegmentUpdated(WhisperResult segment) {
         var r = segment.Result;
         if (string.IsNullOrWhiteSpace(r) || r.Contains("[BLANK_AUDIO]") || r.Contains("music") ||
-            r.Contains("clicking") || r.Contains("[typing]")) return;
+            r.Contains("clicking") || r.Contains("[typing]") || r.Contains("andtheballlightning")) return;
         OnMouthClose?.Invoke(segment.Result);
     }
 }

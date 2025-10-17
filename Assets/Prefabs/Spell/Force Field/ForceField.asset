@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf4989d79519c1349aa400eb4e706e49, type: 3}
+  m_Name: ForceField
+  m_EditorClassIdentifier: Assembly-CSharp::SpellData
+  id: 6
+  name: Force Field
+  description: 'A shimmering dome of condensed magic, bending light and matter alike.
+
+
+    Deflects
+    incoming projectiles and shields the caster for a short duration.'
+  nameRu: 
+  spellWords:
+  - ForceField
+  spellWordsRu:
+  - "\u041E\u0433\u043D\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
+  - "\u0428\u0430\u0440\u041E\u0433\u043D\u044F"
+  - "\u041E\u0433\u0434\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
+  - "\u041E\u0433\u0434\u0438\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
+  - "\u041E\u0433\u0434\u0438\u043D\u044B\u0439\u0428\u0430\u0440"
+  - "\u041E\u0433\u0434\u0435\u043D\u044B\u0439\u0428\u0430\u0440"
+  - "\u041E\u0431\u043D\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
+  - "\u0412\u043E\u0433\u0434\u043D\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
+  - "\u041F\u043E\u0433\u043D\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
+  - "\u041E\u0433\u043D\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0433"
+  - "\u041A\u043E\u0433\u043D\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
+  - "\u041E\u0433\u043E\u043D\u0435\u043D\u043D\u044B\u0428\u0430\u0440"
+  - "\u041E\u0433\u043E\u043D\u0435\u043D\u044B\u0428\u0430\u0440"
+  - "\u0423\u0447\u0433\u0434\u0435\u043D\u044B\u0439\u0428\u0430\u0440"
+  - "\u041E\u0433\u043D\u0435\u0428\u0430\u0440"
+  manaCost: 75
+  bookImage: {fileID: 0}
+  spellInHandPrefab: {fileID: 7389778017922607859, guid: 9c03b9cc786592f44bb920c7e039f498, type: 3}
+  spellBurstPrefab: {fileID: 0}
+  mainSpellPrefab: {fileID: 7354784787554302670, guid: 4bcd09685c740ff4f9d36613653f5937, type: 3}
+  impactPrefab: {fileID: 0}
+  damageSound: 0
+  invocationIndex: 3
+  clearInHandBeforeAnim: 0
+  echoCount: 0
+  baseDamage: 0
+  canSelfDamage: 0
+  useParticleCollision: 0
+  isDOT: 0
+  hasAreaEffect: 1
+  areaRadius: 5
+  isProjectile: 0
+  lifeTime: 20
+  piercing: 0
+  baseSpeed: 0
+  projCount: 1
+  multiProjDelay: 0
+  spawnMode: 2
+  isBeam: 0
+  isHoming: 0
+  homingRadius: 10
+  homingStrength: 1
+  isChanneling: 0
+  channelDuration: 3

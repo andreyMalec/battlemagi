@@ -18,7 +18,7 @@ public class BaseSpell : NetworkBehaviour {
     private ISpellLifetime lifetime;
 
     public SpellData spellData;
-    public float damageMultiplier = 1;
+    [HideInInspector] public float damageMultiplier = 1;
     private bool movementAuthority;
 
     public override void OnNetworkSpawn() {

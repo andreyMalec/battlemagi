@@ -34,6 +34,7 @@ public class SpellManager : NetworkBehaviour {
         spawnStrategy = spell.spawnMode switch {
             SpawnMode.Arc => new ArcSpawn(15f, spell.multiProjDelay),
             SpawnMode.GroundPoint => new GroundPointSpawn(spell.multiProjDelay),
+            SpawnMode.HitScan => new HitScanSpawn(spell.multiProjDelay),
             _ => new DirectSpawn(spell.multiProjDelay),
         };
         activeSpell.PrepareSpell(spell);

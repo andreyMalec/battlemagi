@@ -12,10 +12,12 @@ public class StraightMovement : ISpellMovement {
     }
 
     public void Initialize() {
-        rb.linearVelocity = spell.transform.forward * data.baseSpeed;
+        if (rb != null)
+            rb.linearVelocity = spell.transform.forward * data.baseSpeed;
     }
 
     public void Tick() {
-        // прямое движение — ничего не делаем
+        if (rb == null)
+            spell.transform.position += spell.transform.forward * (data.baseSpeed * Time.deltaTime);
     }
 }

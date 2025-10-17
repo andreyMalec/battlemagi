@@ -74,7 +74,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
             mana.Value -= s.spell.manaCost;
             mouth.ShutUp();
             castWaiting = true;
-            playerAnimator.CastWaitingAnim(true);
+            playerAnimator.CastWaitingAnim(true, s.spell.castWaitingIndex);
             spellManager.PrepareSpell(s.spell);
         } else {
             if (!noManaSound.isPlaying)
@@ -110,6 +110,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
             castWaiting = false;
             spellManager.CancelSpell();
             recognizedSpell = null;
+            spellEcho = null;
         }
     }
 
@@ -163,21 +164,21 @@ public class PlayerSpellCaster : NetworkBehaviour {
     }
 
     private void OnSpellCasted(bool _) {
-        if (echoCount > 0 && spellEcho.HasValue) {
-            echoCount--;
+        if (!spellEcho.HasValue) return;
+        echoCount--;
+        if (echoCount >= 0)
             StartCoroutine(SpellEcho(spellEcho.Value.spell));
-        }
-
-        if (echoCount < 0)
+        else {
             spellEcho = null;
+        }
     }
 
     private IEnumerator SpellEcho(SpellData spell) {
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.1f);
 
         mouth.ShutUp();
         castWaiting = true;
-        playerAnimator.CastWaitingAnim(true);
+        playerAnimator.CastWaitingAnim(true, spell.castWaitingIndex);
         spellManager.PrepareSpell(spell);
     }
 

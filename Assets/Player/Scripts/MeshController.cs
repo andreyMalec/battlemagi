@@ -3,19 +3,27 @@ using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
 public class MeshController : MonoBehaviour {
-    [Header("IK")] public Rig leftHand;
+    [Header("IK")]
+    public Rig leftHand;
+
+    public Rig rightHand;
     public Rig spine;
     public Transform ikTargetHand;
     public Transform ikTargetSpine;
     [SerializeField] TwoBoneIKConstraint leftHandIkConstraint;
+    [SerializeField] TwoBoneIKConstraint rightHandIkConstraint;
     [SerializeField] TwoBoneIKConstraint headIkConstraint;
     [SerializeField] TwoBoneIKConstraint spineIkConstraint;
 
-    [Header("Refs")] public Transform head = null;
+    [Header("Refs")]
+    public Transform head = null;
+
     public ParticleSystem invocation;
     public GameObject cloak;
 
-    [Header("Ragdoll")] public Collider[] colliders;
+    [Header("Ragdoll")]
+    public Collider[] colliders;
+
     private CharacterJoint[] joints;
     private Rigidbody[] rigidbodies;
 
@@ -26,17 +34,18 @@ public class MeshController : MonoBehaviour {
     public event Action<bool> OnBurst;
 
     private void Awake() {
-        leftHandIkConstraint .data.target = ikTargetHand;
+        leftHandIkConstraint.data.target = ikTargetHand;
+        rightHandIkConstraint.data.target = ikTargetHand;
         headIkConstraint.data.target = ikTargetSpine;
         spineIkConstraint.data.target = ikTargetSpine;
-        
+
         animator = GetComponent<Animator>();
         animator.enabled = false;
         GetComponent<RigBuilder>().Build();
         animator.Rebind();
         animator.enabled = true;
         cloth = cloak.GetComponent<Cloth>();
-        
+
         joints = GetComponentsInChildren<CharacterJoint>();
         rigidbodies = GetComponentsInChildren<Rigidbody>();
 

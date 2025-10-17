@@ -16,8 +16,7 @@ public class PlayerAnimator : NetworkBehaviour {
     private static readonly int CastWaiting = Animator.StringToHash("Cast Waiting");
     private static readonly int Channeling = Animator.StringToHash("Channeling");
     private static readonly int CastSpeed = Animator.StringToHash("CastSpeed");
-    private static readonly int Cast = Animator.StringToHash("Cast");
-    private static readonly int Burst = Animator.StringToHash("Burst");
+    private static readonly int CastWaitingIndex = Animator.StringToHash("CastWaitingIndex");
 
     private static readonly float eps = 0.05f;
     public Transform ikHand;
@@ -25,6 +24,7 @@ public class PlayerAnimator : NetworkBehaviour {
     [SerializeField] private Animator animator;
     private FirstPersonMovement movement;
     private NetworkStatSystem statSystem;
+    private MeshController _meshController;
 
     public float acceleration = 2f;
     public AnimationCurve decelerationCurve;
@@ -45,6 +45,7 @@ public class PlayerAnimator : NetworkBehaviour {
     private void Awake() {
         movement = GetComponent<FirstPersonMovement>();
         statSystem = GetComponent<NetworkStatSystem>();
+        _meshController = GetComponentInChildren<MeshController>();
     }
 
     private void Start() {
@@ -59,14 +60,32 @@ public class PlayerAnimator : NetworkBehaviour {
         AnimateTrigger(Channeling);
     }
 
-    public void CastWaitingAnim(bool waiting) {
+    public void CastWaitingAnim(bool waiting, int index = 0) {
         AnimateBool(CastWaiting, waiting);
-        if (waiting) {
-            ikHand.localPosition = new Vector3(-0.55f, -0.24f, 0.44f);
-            ikHand.localRotation = Quaternion.Euler(0, -90, 0);
-        } else {
-            ikHand.localPosition = ikPos;
-            ikHand.localRotation = ikRot;
+        if (waiting)
+            AnimateFloat(CastWaitingIndex, index);
+        if (index == 0) {
+            _meshController.leftHand.weight = 1;
+            _meshController.rightHand.weight = 0;
+            if (waiting) {
+                ikHand.localPosition = new Vector3(-0.55f, -0.24f, 0.44f);
+                ikHand.localRotation = Quaternion.Euler(0, -90, 0);
+            } else {
+                ikHand.localPosition = ikPos;
+                ikHand.localRotation = ikRot;
+            }
+        }
+
+        if (index == 1) {
+            _meshController.leftHand.weight = 0.5f;
+            _meshController.rightHand.weight = 1f;
+            if (waiting) {
+                ikHand.localPosition = new Vector3(0.09f, -0.22f, 0.27f);
+                ikHand.localRotation = Quaternion.Euler(11.7f, 70.6f, 71.4f);
+            } else {
+                ikHand.localPosition = ikPos;
+                ikHand.localRotation = ikRot;
+            }
         }
     }
 

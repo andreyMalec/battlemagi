@@ -17,6 +17,7 @@ public class SpellData : ScriptableObject {
     public GameObject impactPrefab;
     public DamageSoundType damageSound;
 
+    public int castWaitingIndex = 0;
     public int invocationIndex;
 
     public bool clearInHandBeforeAnim = false;

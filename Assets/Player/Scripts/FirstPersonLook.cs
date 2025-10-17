@@ -99,12 +99,12 @@ public class FirstPersonLook : NetworkBehaviour {
             lookSettings.positionSmoothTime
         );
 
-        Quaternion targetRotation = headBone.rotation * Quaternion.Euler(lookSettings.rotation);
-        firstPersonCamera.rotation = Quaternion.Slerp(
-            firstPersonCamera.rotation,
-            targetRotation,
-            lookSettings.rotationSmoothTime
-        );
+        // Quaternion targetRotation = headBone.rotation * Quaternion.Euler(lookSettings.rotation);
+        // firstPersonCamera.rotation = Quaternion.Slerp(
+        //     firstPersonCamera.rotation,
+        //     targetRotation,
+        //     lookSettings.rotationSmoothTime
+        // );
     }
 
     public void ApplyInitialRotation(Quaternion worldRotation) {
