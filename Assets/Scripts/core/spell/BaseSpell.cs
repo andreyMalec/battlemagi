@@ -69,6 +69,11 @@ public class BaseSpell : NetworkBehaviour {
 
     private void OnTriggerEnter(Collider other) {
         if (!IsServer || other.isTrigger) return;
+        if (other.gameObject.TryGetComponent<ForceField>(out var field)) {
+            // свой купол? игнор
+            if (field.OwnerClientId == OwnerClientId)
+                return;
+        }
 
         damage.OnHit(other);
         OnHit(other);

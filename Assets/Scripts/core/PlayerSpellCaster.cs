@@ -9,6 +9,8 @@ using Debug = UnityEngine.Debug;
 
 [RequireComponent(typeof(SpellManager))]
 public class PlayerSpellCaster : NetworkBehaviour {
+    public bool allowKeySpells = false;
+
     public enum Language {
         En,
         Ru
@@ -71,7 +73,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
             echoCount = s.spell.echoCount;
             if (echoCount > 0)
                 spellEcho = s;
-            mana.Value -= s.spell.manaCost;
+            SpendManaServerRpc(s.spell.manaCost);
             mouth.ShutUp();
             castWaiting = true;
             playerAnimator.CastWaitingAnim(true, s.spell.castWaitingIndex);
@@ -80,6 +82,11 @@ public class PlayerSpellCaster : NetworkBehaviour {
             if (!noManaSound.isPlaying)
                 noManaSound.Play();
         }
+    }
+
+    [ServerRpc]
+    private void SpendManaServerRpc(float amount) {
+        mana.Value -= amount;
     }
 
     private void Update() {
@@ -95,6 +102,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
 
         if (!IsOwner) return;
 
+        UpdateSpellKeys();
         HandleSpellCasting();
         mouth.CanSpeak(!castWaiting && !channeling);
     }
@@ -214,5 +222,15 @@ public class PlayerSpellCaster : NetworkBehaviour {
         base.OnNetworkDespawn();
         if (IsOwner)
             _meshController.OnCast -= OnSpellCasted;
+    }
+
+    private void UpdateSpellKeys() {
+        if (!allowKeySpells) return;
+        for (int i = (int)KeyCode.Alpha0; i <= (int)KeyCode.Alpha9; i++) {
+            if (Input.GetKeyDown((KeyCode)i)) {
+                var spell = SpellDatabase.Instance.spells[i - (int)KeyCode.Alpha0];
+                OnMouthClose(spell.spellWords[0]);
+            }
+        }
     }
 }
