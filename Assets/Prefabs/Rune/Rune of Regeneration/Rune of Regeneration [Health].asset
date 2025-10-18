@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: da3b931fdf914d96aaf44dfab684a311, type: 3}
-  m_Name: Rune of Regeneration
+  m_Name: 'Rune of Regeneration [Health]'
   m_EditorClassIdentifier: Assembly-CSharp::HealthRegenMultiplierEffect
-  effectName: Rune of Regeneration
+  effectName: 'Rune of Regeneration [Health]'
   duration: 20
   color: {r: 0.30980393, g: 1, b: 0.21176472, a: 1}
+  removeOnHit: 1
   multiplier: 20

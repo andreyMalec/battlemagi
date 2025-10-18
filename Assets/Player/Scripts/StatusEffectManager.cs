@@ -23,6 +23,12 @@ public class StatusEffectManager : NetworkBehaviour {
         }
     }
 
+    public void HandleHit() {
+        foreach (var effect in activeEffects.Values.Where(effect => effect.data.removeOnHit)) {
+            RemoveEffect(effect.data.GetType());
+        }
+    }
+
     public void AddEffect(ulong ownerClientId, StatusEffectData effect) {
         if (activeEffects.TryGetValue(effect.GetType(), out var previous)) {
             switch (effect.CompareTo(previous.data)) {

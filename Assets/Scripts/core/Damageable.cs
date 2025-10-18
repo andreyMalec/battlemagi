@@ -79,6 +79,8 @@ public class Damageable : NetworkBehaviour {
                 }
             }
 
+            _effectManager.HandleHit();
+
             if (!immortal && health.Value <= 0 && before > 0) {
                 _isDead = true;
                 foreach (var enemy in _damagedBy) {

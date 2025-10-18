@@ -4,6 +4,7 @@ public abstract class StatusEffectData : ScriptableObject {
     public string effectName;
     public float duration;
     public Color color = new(0, 0, 0, 0);
+    public bool removeOnHit = false;
 
     public abstract StatusEffectRuntime CreateRuntime();
 
