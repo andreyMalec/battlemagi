@@ -118,6 +118,11 @@ public class PlayerSpellCaster : NetworkBehaviour {
             playerAnimator.CastWaitingAnim(false);
             castWaiting = false;
             spellManager.CancelSpell();
+            if (recognizedSpell.HasValue && recognizedSpell.Value.spell.echoCount == 0) {
+                var manaCost = -recognizedSpell.Value.spell.manaCost * _statSystem.Stats.GetFinal(StatType.ManaCost);
+                SpendManaServerRpc(-manaCost);
+            }
+
             recognizedSpell = null;
             spellEcho = null;
         }

@@ -9,12 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a118a1820b95467f9aa491fe1fea19a7, type: 3}
-  m_Name: 'Arcane Overflow [Damage]'
-  m_EditorClassIdentifier: Assembly-CSharp::DamageMultiplierEffect
-  effectName: 'Arcane Overflow [Damage]'
-  duration: 10
-  color: {r: 1, g: 0.45490196, b: 0, a: 1}
+  m_Script: {fileID: 11500000, guid: ca0a0377795444469d2cba078d7f91fb, type: 3}
+  m_Name: 'Mana Storm [ManaRegen]'
+  m_EditorClassIdentifier: Assembly-CSharp::ManaRegenMultiplierEffect
+  effectName: 'Mana Storm [ManaRegen]'
+  duration: 2
+  color: {r: 0.51432323, g: 0, b: 1, a: 1}
   removeOnHit: 0
   onExpire: {fileID: 0}
-  multiplier: 2
+  multiplier: 10

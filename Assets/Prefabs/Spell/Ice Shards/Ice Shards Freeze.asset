@@ -13,4 +13,7 @@ MonoBehaviour:
   m_Name: Ice Shards Freeze
   m_EditorClassIdentifier: Assembly-CSharp::FreezeEffect
   effectName: Frostbite Freeze
-  duration: 2
+  duration: 1.5
+  color: {r: 0, g: 0, b: 0, a: 0}
+  removeOnHit: 0
+  onExpire: {fileID: 0}

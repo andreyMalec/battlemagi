@@ -823,7 +823,7 @@ MonoBehaviour:
   noManaSound: {fileID: 1507093393527865229}
   mouth: {fileID: 3269581595495701639}
   playerAnimator: {fileID: 6425691076356515085}
-  recognitionThreshold: 0.6
+  recognitionThreshold: 0.5
   spellCastKey: 323
   spellCancelKey: 324
   channeling: 0
@@ -1023,7 +1023,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 3
   m_Height: 1.54
-  m_Radius: 0.4
+  m_Radius: 0.44
   m_SlopeLimit: 45
   m_StepOffset: 0.5
   m_SkinWidth: 0.0001

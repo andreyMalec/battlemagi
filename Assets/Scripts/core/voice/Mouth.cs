@@ -44,7 +44,8 @@ public class Mouth : NetworkBehaviour {
         var r = segment.Result;
         if (string.IsNullOrWhiteSpace(r) || r.Contains("[BLANK_AUDIO]") || r.Contains("music") ||
             r.Contains("clicking") || r.Contains("[typing]") ||
-            r.Contains("and the ball lightning", StringComparison.OrdinalIgnoreCase)) return;
+            r.Contains("and the ball lightning", StringComparison.OrdinalIgnoreCase) ||
+            r.Contains("and the air bullet", StringComparison.OrdinalIgnoreCase)) return;
         OnMouthClose?.Invoke(segment.Result);
     }
 }

@@ -712,6 +712,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: IngameDebugConsole
       objectReference: {fileID: 0}
+    - target: {fileID: 132536, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 11452418, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: logItemFontOverride
       value: 
@@ -1500,7 +1504,7 @@ MonoBehaviour:
   singleSegment: 1
   enableTokens: 0
   initialPrompt: firaball, ball lightning, toxic strike, ice shards, chidori, scorching
-    ray, shadow step, blink, force field, air bullet, arcane overflow
+    ray, shadow step, blink, force field, air bullet, mana storm
   stepSec: 0.5
   keepSec: 0
   lengthSec: 3
