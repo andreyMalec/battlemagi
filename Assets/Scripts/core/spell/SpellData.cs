@@ -24,6 +24,8 @@ public class SpellData : ScriptableObject {
 
     public int echoCount = 0;
 
+    public float lifeTime = 20f;
+
     [Header("Damage")]
     public float baseDamage = 10f;
 
@@ -36,10 +38,9 @@ public class SpellData : ScriptableObject {
     [Header("Projectile")]
     public bool isProjectile = true;
 
-    [ShowIf("isProjectile")] public float lifeTime = 20f;
     [ShowIf("isProjectile")] public bool piercing = false;
 
-    [HideIf("isBeam")] [ShowIf("isProjectile")]
+    [ShowIf("isProjectile")]  [HideIf("isBeam")] 
     public float baseSpeed = 20f;
 
     [ShowIf("isProjectile")] public int projCount = 1;

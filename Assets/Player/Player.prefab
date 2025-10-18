@@ -818,6 +818,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSpellCaster
   ShowTopMostFoldoutHeaderGroup: 1
+  allowKeySpells: 1
   language: 0
   noManaSound: {fileID: 1507093393527865229}
   mouth: {fileID: 3269581595495701639}
@@ -828,7 +829,7 @@ MonoBehaviour:
   channeling: 0
   manaRestore: 0.5
   manaRestoreTickInterval: 0.1
-  maxMana: 100
+  maxMana: 125
   mana:
     m_InternalValue: 0
 --- !u!114 &590111089370120790
@@ -1100,7 +1101,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 9611abb8e7f880547b6383ac3cc12a36, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.3
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 0
   Mute: 0

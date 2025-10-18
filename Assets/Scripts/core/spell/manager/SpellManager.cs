@@ -109,7 +109,7 @@ public class SpellManager : NetworkBehaviour {
 
         var spell = SpellDatabase.Instance != null ? SpellDatabase.Instance.GetSpell(spellId) : null;
 
-        if (netObj.TryGetComponent<SpellProjectile>(out var projectile) && spell != null) {
+        if (netObj.TryGetComponent<BaseSpell>(out var projectile) && spell != null) {
             projectile.Initialize(spell, damageMultiplier);
         }
 

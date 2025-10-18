@@ -7,4 +7,5 @@ public enum StatType {
     HealthRegen,
     StaminaRegen,
     ManaRegen,
+    ManaCost,
 }

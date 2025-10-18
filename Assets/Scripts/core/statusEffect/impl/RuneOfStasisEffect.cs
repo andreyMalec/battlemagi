@@ -3,8 +3,6 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName = "StatusEffects/Rune of Stasis")]
 public class RuneOfStasisEffect : StatusEffectData {
-    public RuneOfStasisPostEffect onExpire;
-
     public override StatusEffectRuntime CreateRuntime() {
         return new RuneOfStasisRuntime(this);
     }

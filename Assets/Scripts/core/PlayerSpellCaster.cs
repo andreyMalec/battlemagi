@@ -69,11 +69,12 @@ public class PlayerSpellCaster : NetworkBehaviour {
         var handled = s.similarity >= recognitionThreshold;
         if (!handled) return;
 
-        if (mana.Value >= s.spell.manaCost) {
+        var manaCost = s.spell.manaCost * _statSystem.Stats.GetFinal(StatType.ManaCost);
+        if (mana.Value >= manaCost) {
             echoCount = s.spell.echoCount;
             if (echoCount > 0)
                 spellEcho = s;
-            SpendManaServerRpc(s.spell.manaCost);
+            SpendManaServerRpc(manaCost);
             mouth.ShutUp();
             castWaiting = true;
             playerAnimator.CastWaitingAnim(true, s.spell.castWaitingIndex);

@@ -24,7 +24,7 @@ MonoBehaviour:
   spellWords:
   - AirBullet
   spellWordsRu: []
-  manaCost: 75
+  manaCost: 50
   bookImage: {fileID: 2800000, guid: ccab4863f16749f47a4ee47521812140, type: 3}
   spellInHandPrefab: {fileID: 7389778017922607859, guid: 65f4cb5a67b8d334198770f0f4f09e19, type: 3}
   spellBurstPrefab: {fileID: 1970519832159055978, guid: 55bd6df135435b4488457ad0661638e7, type: 3}
@@ -34,7 +34,7 @@ MonoBehaviour:
   castWaitingIndex: 1
   invocationIndex: 6
   clearInHandBeforeAnim: 0
-  echoCount: 2
+  echoCount: 3
   baseDamage: 40
   canSelfDamage: 0
   useParticleCollision: 0

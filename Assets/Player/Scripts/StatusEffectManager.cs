@@ -10,16 +10,24 @@ public class StatusEffectManager : NetworkBehaviour {
         if (!IsServer) return;
 
         var toRemove = new List<System.Type>();
+        var toAdd = new List<KeyValuePair<ulong, StatusEffectData>>();
         foreach (var effect in activeEffects.Values) {
             effect.OnTick(gameObject, Time.deltaTime);
             if (effect.IsExpired) {
                 effect.OnExpire(gameObject);
                 toRemove.Add(effect.data.GetType());
+                if (effect.data.onExpire != null) {
+                    toAdd.Add(new KeyValuePair<ulong, StatusEffectData>(effect.ownerClientId, effect.data.onExpire));
+                }
             }
         }
 
         foreach (var effect in toRemove) {
             activeEffects.Remove(effect);
+        }
+
+        foreach (var effect in toAdd) {
+            AddEffect(effect.Key, effect.Value);
         }
     }
 

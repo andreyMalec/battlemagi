@@ -2,8 +2,8 @@ using UnityEngine;
 
 public abstract class StatusEffectRuntime {
     public StatusEffectData data;
+    public ulong ownerClientId;
     protected float _timeRemaining;
-    protected ulong _ownerClientId;
 
     public StatusEffectRuntime(StatusEffectData data) {
         this.data = data;
@@ -15,7 +15,7 @@ public abstract class StatusEffectRuntime {
     }
 
     public virtual void OnApply(ulong ownerClientId, GameObject target) {
-        _ownerClientId = ownerClientId;
+        this.ownerClientId = ownerClientId;
         target.GetComponent<PlayerNetwork>().ApplyEffectColorClientRpc(data.color);
     }
 

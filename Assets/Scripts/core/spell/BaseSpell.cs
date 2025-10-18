@@ -59,7 +59,7 @@ public class BaseSpell : NetworkBehaviour {
 
     private void Update() {
         if (movementAuthority) {
-            movement.Tick();
+            movement?.Tick();
         }
 
         if (!IsServer) return;
