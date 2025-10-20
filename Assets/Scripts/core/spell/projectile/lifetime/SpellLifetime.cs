@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class SpellLifetime : ISpellLifetime {
@@ -14,10 +15,11 @@ public class SpellLifetime : ISpellLifetime {
         currentLifeTime = 0f;
     }
 
-    public void Tick() {
+    public float Tick() {
         currentLifeTime += Time.deltaTime;
         if (currentLifeTime >= data.lifeTime)
             Destroy();
+        return Math.Clamp(1 - currentLifeTime / data.lifeTime, 0, 1);
     }
 
     public void Destroy() {

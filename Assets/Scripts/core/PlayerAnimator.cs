@@ -20,6 +20,7 @@ public class PlayerAnimator : NetworkBehaviour {
 
     private static readonly float eps = 0.05f;
     public Transform ikHand;
+    public Transform ikHandRight;
 
     [SerializeField] private Animator animator;
     private FirstPersonMovement movement;
@@ -74,17 +75,24 @@ public class PlayerAnimator : NetworkBehaviour {
                 ikHand.localPosition = ikPos;
                 ikHand.localRotation = ikRot;
             }
+
+            ikHandRight.localPosition = ikHand.localPosition;
+            ikHandRight.localRotation = ikHand.localRotation;
         }
 
         if (index == 1) {
-            _meshController.leftHand.weight = 0.5f;
+            _meshController.leftHand.weight = 1f; //TODO
             _meshController.rightHand.weight = 1f;
             if (waiting) {
-                ikHand.localPosition = new Vector3(0.09f, -0.22f, 0.27f);
-                ikHand.localRotation = Quaternion.Euler(11.7f, 70.6f, 71.4f);
+                ikHand.localPosition = new Vector3(0.14f, -0.225f, 0.23f);
+                ikHand.localRotation = Quaternion.Euler(-192f, -74.6f, -108f);
+                ikHandRight.localPosition = new Vector3(0.08f, -0.178f, 0.252f);
+                ikHandRight.localRotation = Quaternion.Euler(-210f, -82f, -96f);
             } else {
                 ikHand.localPosition = ikPos;
                 ikHand.localRotation = ikRot;
+                ikHandRight.localPosition = ikHand.localPosition;
+                ikHandRight.localRotation = ikHand.localRotation;
             }
         }
     }

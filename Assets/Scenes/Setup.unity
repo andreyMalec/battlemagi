@@ -700,6 +700,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4ba037c71c69a494e9868088676261c4, type: 2}
   - {fileID: 11400000, guid: 28328e15178c8ea4e9047815695e1080, type: 2}
   - {fileID: 11400000, guid: 268e563535dc3864ab0d4983e8696d69, type: 2}
+  - {fileID: 11400000, guid: 94e42977f85589848b57f163493a629b, type: 2}
 --- !u!1001 &1482068162
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1504,7 +1505,7 @@ MonoBehaviour:
   singleSegment: 1
   enableTokens: 0
   initialPrompt: firaball, ball lightning, toxic strike, ice shards, chidori, scorching
-    ray, shadow step, blink, force field, air bullet, mana storm
+    ray, shadow step, blink, force field, air bullet, mana storm, dirt wall
   stepSec: 0.5
   keepSec: 0
   lengthSec: 3
@@ -1542,7 +1543,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28cdf9d512f14b2bac99f1ded2e396f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneLoader
-  waitUntilModelLoaded: 0
+  waitUntilModelLoaded: 1
 --- !u!4 &1941920897
 Transform:
   m_ObjectHideFlags: 0

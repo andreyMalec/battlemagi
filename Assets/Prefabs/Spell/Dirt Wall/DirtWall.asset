@@ -10,18 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bf4989d79519c1349aa400eb4e706e49, type: 3}
-  m_Name: Explosion
+  m_Name: DirtWall
   m_EditorClassIdentifier: Assembly-CSharp::SpellData
-  id: 6
-  name: Explosion
-  description: 'A shimmering dome of condensed magic, bending light and matter alike.
+  id: 9
+  name: Dirt Wall
+  description: 'A surge of geomantic force erupts from the ground, raising a solid
+    barrier of soil and stone.
 
 
-    Deflects
-    incoming projectiles and shields the caster for a short duration.'
+    Blocks incoming attacks and reshapes the battlefield
+    to gain an advantage.'
   nameRu: 
   spellWords:
-  - Explosion
+  - DirtWall
   spellWordsRu:
   - "\u041E\u0433\u043D\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
   - "\u0428\u0430\u0440\u041E\u0433\u043D\u044F"
@@ -38,17 +39,19 @@ MonoBehaviour:
   - "\u041E\u0433\u043E\u043D\u0435\u043D\u044B\u0428\u0430\u0440"
   - "\u0423\u0447\u0433\u0434\u0435\u043D\u044B\u0439\u0428\u0430\u0440"
   - "\u041E\u0433\u043D\u0435\u0428\u0430\u0440"
-  manaCost: 100
-  bookImage: {fileID: 0}
-  spellInHandPrefab: {fileID: 7389778017922607859, guid: 86d49c0a3f1eca84a9fb304716fcb2e6, type: 3}
+  manaCost: 50
+  bookImage: {fileID: 2800000, guid: ed4bb8b28774b0447ab249bc06e6c9b5, type: 3}
+  spellInHandPrefab: {fileID: 0}
   spellBurstPrefab: {fileID: 0}
-  mainSpellPrefab: {fileID: 7354784787554302670, guid: 6ec38424472fa3043acb2f6a7092db3a, type: 3}
+  mainSpellPrefab: {fileID: 7354784787554302670, guid: f6ff8493f4aa5044eaba2da0ded92411, type: 3}
   impactPrefab: {fileID: 0}
   damageSound: 0
   castWaitingIndex: 0
-  invocationIndex: 7
-  clearInHandBeforeAnim: 1
-  echoCount: 0
+  invocationIndex: 8
+  clearInHandBeforeAnim: 0
+  previewMainInHand: 1
+  echoCount: 1
+  lifeTime: 30
   baseDamage: 0
   canSelfDamage: 0
   useParticleCollision: 0
@@ -56,12 +59,13 @@ MonoBehaviour:
   hasAreaEffect: 0
   areaRadius: 10
   isProjectile: 1
-  lifeTime: 10
-  piercing: 0
+  piercing: 1
   baseSpeed: 0
-  projCount: 1
+  projCount: 2
   multiProjDelay: 0
-  spawnMode: 3
+  spawnMode: 5
+  arcAngleStep: 30
+  raycastMaxDistance: 20
   isBeam: 0
   isHoming: 0
   homingRadius: 10

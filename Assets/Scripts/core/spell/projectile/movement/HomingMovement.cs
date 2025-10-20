@@ -26,7 +26,7 @@ public class HomingMovement : ISpellMovement {
 
         for (var i = 0; i < size; i++) {
             var col = homingTargets[i];
-            if (!col.TryGetComponent<Damageable>(out _)) continue;
+            if (!col.TryGetComponent<Player>(out _)) continue;
 
             var netObj = col.GetComponent<NetworkObject>();
             if (netObj.OwnerClientId == spell.OwnerClientId) continue;

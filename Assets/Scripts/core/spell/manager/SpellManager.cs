@@ -32,18 +32,19 @@ public class SpellManager : NetworkBehaviour {
         if (!IsOwner || spell == null) return;
 
         spawnStrategy = spell.spawnMode switch {
-            SpawnMode.Arc => new ArcSpawn(15f, spell.multiProjDelay),
+            SpawnMode.Arc => new ArcSpawn(spell.multiProjDelay),
             SpawnMode.GroundPoint => new GroundPointSpawn(spell.multiProjDelay),
             SpawnMode.HitScan => new HitScanSpawn(spell.multiProjDelay),
             SpawnMode.DirectDown => new DirectDownSpawn(spell.multiProjDelay),
+            SpawnMode.GroundPointArc => new GroundPointArcSpawn(spell.multiProjDelay),
             _ => new DirectSpawn(spell.multiProjDelay),
         };
-        activeSpell.PrepareSpell(spell);
+        activeSpell.PrepareSpell(spell, spawnStrategy);
     }
 
     public void CancelSpell() {
         if (IsOwner) {
-            activeSpell.ClearInHandServerRpc(OwnerClientId);
+            activeSpell.Clear();
         }
 
         spellData = null;
@@ -53,7 +54,7 @@ public class SpellManager : NetworkBehaviour {
         if (spell == null) yield break;
 
         if (IsOwner && spell.clearInHandBeforeAnim) {
-            activeSpell.ClearInHandServerRpc(OwnerClientId);
+            activeSpell.Clear();
         }
 
         spellData = spell;
@@ -62,10 +63,10 @@ public class SpellManager : NetworkBehaviour {
     private void OnSpellCasted(bool _) {
         if (spellData == null) return;
         if (IsOwner && !spellData.clearInHandBeforeAnim) {
-            activeSpell.ClearInHandServerRpc(OwnerClientId);
+            activeSpell.Clear();
         }
 
-        StartCoroutine(spawnStrategy.Spawn(this, spellData));
+        StartCoroutine(spawnStrategy.Spawn(this, spellData, SpawnProjectile));
     }
 
     private void OnBurst(bool _) {
@@ -73,14 +74,15 @@ public class SpellManager : NetworkBehaviour {
         SpawnBurst(spellData.id);
     }
 
-    public void SpawnProjectile(SpellData spell, Vector3 pos, Quaternion rot) {
-        SpawnMainServerRpc(spell.id, pos, rot);
+    private void SpawnProjectile(SpellData spell, Vector3 pos, Quaternion rot, int index) {
+        SpawnMainServerRpc(spell.id, pos, rot, index);
     }
 
     [ServerRpc]
     private void SpawnMainServerRpc(
         int spellId, Vector3 position,
         Quaternion rotation,
+        int index,
         ServerRpcParams serverRpcParams = default
     ) {
         var spell = SpellDatabase.Instance != null ? SpellDatabase.Instance.GetSpell(spellId) : null;
@@ -99,18 +101,18 @@ public class SpellManager : NetworkBehaviour {
         netObj.SpawnWithOwnership(casterId);
         StartCoroutine(DespawnAndDestroyServer(netObj, spell.lifeTime));
         var caster = NetworkManager.Singleton.ConnectedClients[casterId].PlayerObject.GetComponent<NetworkStatSystem>();
-        SpawnMainClientRpc(netObj.NetworkObjectId, spellId, caster.Stats.GetFinal(StatType.SpellDamage));
+        SpawnMainClientRpc(netObj.NetworkObjectId, spellId, caster.Stats.GetFinal(StatType.SpellDamage), index);
     }
 
     [ClientRpc]
-    private void SpawnMainClientRpc(ulong objectId, int spellId, float damageMultiplier) {
+    private void SpawnMainClientRpc(ulong objectId, int spellId, float damageMultiplier, int index) {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(objectId, out var netObj))
             return;
 
         var spell = SpellDatabase.Instance != null ? SpellDatabase.Instance.GetSpell(spellId) : null;
 
         if (netObj.TryGetComponent<BaseSpell>(out var projectile) && spell != null) {
-            projectile.Initialize(spell, damageMultiplier);
+            projectile.Initialize(spell, damageMultiplier, index);
         }
 
         netObj.gameObject.SetActive(true);

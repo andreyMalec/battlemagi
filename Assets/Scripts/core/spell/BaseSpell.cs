@@ -6,6 +6,8 @@ using UnityEngine;
 
 [RequireComponent(typeof(NetworkObject))]
 public class BaseSpell : NetworkBehaviour {
+    public event Action<float> LifetimePercent;
+
     [Header("References")]
     public Rigidbody rb;
 
@@ -28,7 +30,7 @@ public class BaseSpell : NetworkBehaviour {
                             (mode == NetworkTransform.AuthorityModes.Server && IsServer);
     }
 
-    public virtual void Initialize(SpellData data, float damageMulti) {
+    public virtual void Initialize(SpellData data, float damageMulti, int index) {
         spellData = data;
         damageMultiplier = damageMulti;
 
@@ -36,7 +38,7 @@ public class BaseSpell : NetworkBehaviour {
 
         if (movementAuthority || IsServer) {
             if (spellData.isBeam)
-                movement = new BeamMovement(this, rb, spellData);
+                movement = new BeamMovement(this, rb, spellData, index);
             else if (spellData.isHoming)
                 movement = new HomingMovement(this, rb, spellData);
             else
@@ -64,7 +66,7 @@ public class BaseSpell : NetworkBehaviour {
 
         if (!IsServer) return;
 
-        lifetime.Tick();
+        LifetimePercent?.Invoke(lifetime.Tick());
     }
 
     private void OnTriggerEnter(Collider other) {
@@ -86,7 +88,7 @@ public class BaseSpell : NetworkBehaviour {
     }
 
     private void OnTriggerStay(Collider other) {
-        if (!IsServer || other.isTrigger) return;
+        if (!IsServer) return;
 
         damage.OnStay(other);
     }

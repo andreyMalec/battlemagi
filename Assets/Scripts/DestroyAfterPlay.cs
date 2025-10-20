@@ -28,4 +28,19 @@ public class DestroyAfterPlay : MonoBehaviour {
             Destroy(gameObject);
         }
     }
+
+    public static void Play(AudioClip clip, Vector3 position, float volume = 1f) {
+        var go = new GameObject("One shot audio");
+        go.transform.position = position;
+        var source = go.AddComponent<AudioSource>();
+        source.clip = clip;
+        source.spatialBlend = 1.0f;
+        source.volume = volume;
+        source.maxDistance = 15f;
+        source.rolloffMode = AudioRolloffMode.Linear;
+        source.Play();
+
+        var comp = go.AddComponent<DestroyAfterPlay>();
+        comp._audio = source;
+    }
 }

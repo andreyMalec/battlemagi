@@ -7,11 +7,13 @@ public class BeamMovement : ISpellMovement {
     private readonly BaseSpell spell;
     private Rigidbody rb;
     private Transform castPoint;
+    private readonly int _angle;
 
-    public BeamMovement(BaseSpell s, Rigidbody rb, SpellData data) {
+    public BeamMovement(BaseSpell s, Rigidbody rb, SpellData data, int angle) {
         spell = s;
         this.rb = rb;
         this.data = data;
+        _angle = angle;
     }
 
     public void Initialize() {
@@ -28,6 +30,6 @@ public class BeamMovement : ISpellMovement {
     }
 
     public void Tick() {
-        rb.Move(castPoint.position - castPoint.up * 0.5f, castPoint.rotation);
+        rb.Move(castPoint.position - castPoint.up * 0.5f, castPoint.rotation * Quaternion.Euler(0f, _angle, 0f));
     }
 }

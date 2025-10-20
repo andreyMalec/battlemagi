@@ -1,5 +1,5 @@
 public interface ISpellLifetime {
     void Initialize();
-    void Tick();
+    float Tick();
     void Destroy();
 }

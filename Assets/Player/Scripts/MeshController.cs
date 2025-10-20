@@ -9,6 +9,7 @@ public class MeshController : MonoBehaviour {
     public Rig rightHand;
     public Rig spine;
     public Transform ikTargetHand;
+    public Transform ikTargetHandRight;
     public Transform ikTargetSpine;
     [SerializeField] TwoBoneIKConstraint leftHandIkConstraint;
     [SerializeField] TwoBoneIKConstraint rightHandIkConstraint;
@@ -35,7 +36,7 @@ public class MeshController : MonoBehaviour {
 
     private void Awake() {
         leftHandIkConstraint.data.target = ikTargetHand;
-        rightHandIkConstraint.data.target = ikTargetHand;
+        rightHandIkConstraint.data.target = ikTargetHandRight;
         headIkConstraint.data.target = ikTargetSpine;
         spineIkConstraint.data.target = ikTargetSpine;
 

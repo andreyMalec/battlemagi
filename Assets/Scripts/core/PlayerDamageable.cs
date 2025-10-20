@@ -1,0 +1,18 @@
+using UnityEngine;
+
+[RequireComponent(typeof(NetworkStatSystem))]
+[RequireComponent(typeof(StatusEffectManager))]
+public class PlayerDamageable : Damageable {
+    protected override void OnDeath(ulong ownerClientId, ulong fromClientId) {
+        foreach (var enemy in _damagedBy) {
+            if (enemy == fromClientId)
+                PlayerManager.Instance.AddKill(fromClientId);
+            else
+                PlayerManager.Instance.AddAssist(enemy);
+        }
+
+        PlayerManager.Instance.AddDeath(ownerClientId);
+        PlayerSpawner.instance.HandleDeathServerRpc(ownerClientId);
+        Killfeed.Instance?.HandleClientRpc(fromClientId, ownerClientId);
+    }
+}

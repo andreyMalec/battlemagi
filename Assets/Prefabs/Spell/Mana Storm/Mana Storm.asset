@@ -48,7 +48,8 @@ MonoBehaviour:
   damageSound: 0
   castWaitingIndex: 0
   invocationIndex: 7
-  clearInHandBeforeAnim: 1
+  clearInHandBeforeAnim: 0
+  previewMainInHand: 0
   echoCount: 0
   lifeTime: 3
   baseDamage: 0
@@ -63,6 +64,8 @@ MonoBehaviour:
   projCount: 1
   multiProjDelay: 0
   spawnMode: 0
+  arcAngleStep: 15
+  raycastMaxDistance: 50
   isBeam: 0
   isHoming: 0
   homingRadius: 10

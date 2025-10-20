@@ -21,6 +21,7 @@ public class SpellData : ScriptableObject {
     public int invocationIndex;
 
     public bool clearInHandBeforeAnim = false;
+    public bool previewMainInHand = false;
 
     public int echoCount = 0;
 
@@ -40,12 +41,18 @@ public class SpellData : ScriptableObject {
 
     [ShowIf("isProjectile")] public bool piercing = false;
 
-    [ShowIf("isProjectile")]  [HideIf("isBeam")] 
+    [ShowIf("isProjectile")] [HideIf("isBeam")]
     public float baseSpeed = 20f;
 
     [ShowIf("isProjectile")] public int projCount = 1;
     [ShowIf("isProjectile")] public float multiProjDelay = 0.2f;
     [ShowIf("isProjectile")] public SpawnMode spawnMode = SpawnMode.Direct;
+
+    [ShowIf(EConditionOperator.And, "isProjectile", "_isArc")]
+    public float arcAngleStep = 15f;
+
+    [ShowIf(EConditionOperator.And, "isProjectile", "_isRaycast")]
+    public float raycastMaxDistance = 50f;
 
     [HideIf("isHoming")] [ShowIf("isProjectile")]
     public bool isBeam = false;
@@ -65,8 +72,13 @@ public class SpellData : ScriptableObject {
 
     [ShowIf("isChanneling")] public float channelDuration = 3f;
 
+    private bool _isArc = false;
+    private bool _isRaycast = false;
 #if UNITY_EDITOR
     private void OnValidate() {
+        _isArc = spawnMode is SpawnMode.Arc or SpawnMode.GroundPointArc;
+        _isRaycast = spawnMode is SpawnMode.GroundPoint or SpawnMode.GroundPointArc or SpawnMode.HitScan;
+
         if (isDOT)
             hasAreaEffect = false;
         if (hasAreaEffect)

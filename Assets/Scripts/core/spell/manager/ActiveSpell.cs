@@ -1,19 +1,29 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
 public class ActiveSpell : NetworkBehaviour {
+    [HideInInspector] public SpellManager spellManager;
     [HideInInspector] public Transform invocation;
-    private IHandAppearance handAppearance;
+    private IHandAppearance _handAppearance;
+    private ISpellPreview _spellPreview;
 
     private void Awake() {
         invocation = GetComponentInChildren<MeshController>().invocation.transform;
+        spellManager = GetComponent<SpellManager>();
     }
 
-    public void PrepareSpell(SpellData spell) {
+    public void PrepareSpell(SpellData spell, ISpawnStrategy spawnMode) {
         if (!IsOwner || spell == null) return;
 
         Debug.Log($"[SpellManager] Подготавливаем {spell.name}");
+        _spellPreview = spell.previewMainInHand ? new MeshPreview() : new NoPreview();
+        _spellPreview.Show(this, spawnMode, spell);
         ShowInHandServerRpc(spell.id, OwnerClientId);
+    }
+
+    private void Update() {
+        _spellPreview?.Update(this);
     }
 
     [ServerRpc]
@@ -27,14 +37,19 @@ public class ActiveSpell : NetworkBehaviour {
         var manager = client.PlayerObject.GetComponent<ActiveSpell>();
 
         var spell = SpellDatabase.Instance?.GetSpell(spellId);
-        manager.handAppearance = spell?.spellInHandPrefab == null
+        manager._handAppearance = spell?.spellInHandPrefab == null
             ? new NoHandSpawn()
             : new HandSpawn();
-        manager.handAppearance?.Show(manager, spell);
+        manager._handAppearance?.Show(manager, spell);
+    }
+
+    public void Clear() {
+        _spellPreview.Clear(this);
+        ClearServerRpc(OwnerClientId);
     }
 
     [ServerRpc]
-    public void ClearInHandServerRpc(ulong clientId) {
+    private void ClearServerRpc(ulong clientId) {
         ClearInHandClientRpc(clientId);
     }
 
@@ -43,6 +58,6 @@ public class ActiveSpell : NetworkBehaviour {
         if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client)) return;
         var manager = client.PlayerObject.GetComponent<ActiveSpell>();
 
-        manager.handAppearance?.Clear(manager);
+        manager._handAppearance?.Clear(manager);
     }
 }

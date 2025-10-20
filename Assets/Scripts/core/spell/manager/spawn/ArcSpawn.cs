@@ -3,22 +3,26 @@ using System.Collections;
 using UnityEngine;
 
 public class ArcSpawn : ISpawnStrategy {
-    private readonly float angleStep;
     private readonly float delay;
 
-    public ArcSpawn(float angleStep = 15f, float delay = 0f) {
-        this.angleStep = angleStep;
+    public ArcSpawn(float delay = 0f) {
         this.delay = delay;
     }
 
-    public IEnumerator Spawn(SpellManager manager, SpellData spell) {
+    public IEnumerator Spawn(
+        SpellManager manager, 
+        SpellData spell, 
+        Action<SpellData, Vector3, Quaternion, int> onSpawn
+    ) {
+        var angleStep = spell.arcAngleStep;
         Vector3 origin = manager.spellCastPoint.position;
         var projCount = (int)Math.Floor(spell.projCount * manager.statSystem.Stats.GetFinal(StatType.ProjectileCount));
         float startAngle = -((projCount - 1) * angleStep) / 2f;
 
         for (int i = projCount - 1; i >= 0; i--) {
-            Quaternion rot = manager.spellCastPoint.rotation * Quaternion.Euler(0, startAngle + angleStep * i, 0);
-            manager.SpawnProjectile(spell, origin, rot);
+            var angle = startAngle + angleStep * i;
+            Quaternion rot = manager.spellCastPoint.rotation * Quaternion.Euler(0, angle, 0);
+            onSpawn(spell, origin, rot, (int)angle);
 
             if (delay > 0f && i > 0) {
                 yield return new WaitForSeconds(delay);

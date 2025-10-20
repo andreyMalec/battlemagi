@@ -8,8 +8,8 @@ using UnityEngine;
 public class SpellProjectile : BaseSpell {
     private IProjectileImpact impact;
 
-    public override void Initialize(SpellData data, float damageMulti) {
-        base.Initialize(data, damageMulti);
+    public override void Initialize(SpellData data, float damageMulti, int index) {
+        base.Initialize(data, damageMulti, index);
 
         impact = new ImpactEffect(this, spellData);
     }

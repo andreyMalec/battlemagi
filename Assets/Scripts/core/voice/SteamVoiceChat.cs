@@ -59,6 +59,10 @@ public class SteamVoiceChat : NetworkBehaviour {
         streams.Clear();
     }
 
+    public void DisableMicrophone() {
+        SteamUser.VoiceRecord = false;
+    }
+
     private void Update() {
         if (!SteamClient.IsValid) return;
         if (!IsOwner) return;

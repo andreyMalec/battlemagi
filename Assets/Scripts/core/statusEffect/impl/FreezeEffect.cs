@@ -16,12 +16,14 @@ public class FreezeEffect : StatusEffectData {
 
         public override void OnApply(ulong ownerClientId, GameObject target) {
             base.OnApply(ownerClientId, target);
-            target.GetComponent<StateController>().SetFreeze(true);
+            if (target.TryGetComponent<StateController>(out var player))
+                player.SetFreeze(true);
         }
 
         public override void OnExpire(GameObject target) {
             base.OnExpire(target);
-            target.GetComponent<StateController>().SetFreeze(false);
+            if (target.TryGetComponent<StateController>(out var player))
+                player.SetFreeze(false);
         }
     }
 }

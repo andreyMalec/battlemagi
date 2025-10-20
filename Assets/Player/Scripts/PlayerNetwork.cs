@@ -11,6 +11,11 @@ public class PlayerNetwork : NetworkBehaviour {
     [SerializeField] private Camera mainCamera;
     [SerializeField] private MeshController meshController;
 
+    private void Awake() {
+        if (!TryGetComponent<Player>(out _))
+            gameObject.AddComponent<Player>();
+    }
+
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
 

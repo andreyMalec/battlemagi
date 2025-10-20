@@ -88,11 +88,12 @@ public class PlayerSpawner : NetworkBehaviour {
             player.GetComponentInChildren<Freeze>(true).gameObject.SetActive(false);
             player.GetComponent<CharacterController>().enabled = false;
             player.GetComponent<PlayerSpellCaster>().enabled = false;
-            player.GetComponent<SteamVoiceChat>().enabled = false;
             player.GetComponent<FirstPersonMovement>().enabled = false;
             player.GetComponent<FirstPersonLook>().enabled = false;
-            if (NetworkManager.Singleton.LocalClientId == clientId)
+            if (NetworkManager.Singleton.LocalClientId == clientId) {
                 player.GetComponentInChildren<Observer>(true).gameObject.SetActive(true);
+                player.GetComponent<SteamVoiceChat>().DisableMicrophone();
+            }
         }
     }
 
@@ -120,7 +121,6 @@ public class PlayerSpawner : NetworkBehaviour {
         var rotation = spawnPoint.rotation;
 
         GameObject newPlayer = Instantiate(playerPrefab, position, rotation);
-        newPlayer.name = "Player_" + clientId;
         newPlayer.transform.SetPositionAndRotation(position, rotation);
 
         var netObj = newPlayer.GetComponent<NetworkObject>();

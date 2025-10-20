@@ -9,8 +9,6 @@ using Debug = UnityEngine.Debug;
 
 [RequireComponent(typeof(SpellManager))]
 public class PlayerSpellCaster : NetworkBehaviour {
-    public bool allowKeySpells = false;
-
     public enum Language {
         En,
         Ru
@@ -24,7 +22,6 @@ public class PlayerSpellCaster : NetworkBehaviour {
     private SpellManager spellManager;
     public Mouth mouth;
     public PlayerAnimator playerAnimator;
-    public float recognitionThreshold = 0.85f;
 
     public KeyCode spellCastKey = KeyCode.Mouse0;
     public KeyCode spellCancelKey = KeyCode.Mouse1;
@@ -66,7 +63,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
         if (castWaiting) return;
         var s = RecognizeSpell(lastWords);
         recognizedSpell = s;
-        var handled = s.similarity >= recognitionThreshold;
+        var handled = s.similarity >= GameConfig.Instance.recognitionThreshold;
         if (!handled) return;
 
         var manaCost = s.spell.manaCost * _statSystem.Stats.GetFinal(StatType.ManaCost);
@@ -118,8 +115,8 @@ public class PlayerSpellCaster : NetworkBehaviour {
             playerAnimator.CastWaitingAnim(false);
             castWaiting = false;
             spellManager.CancelSpell();
-            if (recognizedSpell.HasValue && recognizedSpell.Value.spell.echoCount == 0) {
-                var manaCost = -recognizedSpell.Value.spell.manaCost * _statSystem.Stats.GetFinal(StatType.ManaCost);
+            if (recognizedSpell.HasValue && recognizedSpell.Value.spell.echoCount == echoCount) {
+                var manaCost = recognizedSpell.Value.spell.manaCost * _statSystem.Stats.GetFinal(StatType.ManaCost);
                 SpendManaServerRpc(-manaCost);
             }
 
@@ -188,7 +185,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
     }
 
     private IEnumerator SpellEcho(SpellData spell) {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.05f);
 
         mouth.ShutUp();
         castWaiting = true;
@@ -231,7 +228,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
     }
 
     private void UpdateSpellKeys() {
-        if (!allowKeySpells) return;
+        if (!GameConfig.Instance.allowKeySpells) return;
         for (int i = (int)KeyCode.Alpha0; i <= (int)KeyCode.Alpha9; i++) {
             if (Input.GetKeyDown((KeyCode)i)) {
                 var spell = SpellDatabase.Instance.spells[i - (int)KeyCode.Alpha0];

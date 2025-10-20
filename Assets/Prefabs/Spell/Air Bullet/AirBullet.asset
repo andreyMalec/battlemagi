@@ -34,20 +34,23 @@ MonoBehaviour:
   castWaitingIndex: 1
   invocationIndex: 6
   clearInHandBeforeAnim: 0
+  previewMainInHand: 0
   echoCount: 3
+  lifeTime: 0.5
   baseDamage: 40
   canSelfDamage: 0
   useParticleCollision: 0
   isDOT: 0
-  hasAreaEffect: 0
-  areaRadius: 5
+  hasAreaEffect: 1
+  areaRadius: 0.5
   isProjectile: 1
-  lifeTime: 0.5
   piercing: 0
   baseSpeed: 0
   projCount: 1
   multiProjDelay: 0
   spawnMode: 3
+  arcAngleStep: 15
+  raycastMaxDistance: 100
   isBeam: 0
   isHoming: 0
   homingRadius: 10

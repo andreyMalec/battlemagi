@@ -1,14 +1,22 @@
 using System;
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
 public class ForceField : NetworkBehaviour {
+    private Renderer _renderer;
+
+    [SerializeField] private float blinkDuration = 0.15f;
+
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
         var playerObj = NetworkManager.ConnectedClients[OwnerClientId].PlayerObject;
         if (playerObj != null && playerObj.TryGetComponent<Collider>(out var playerCollider)) {
             Physics.IgnoreCollision(GetComponent<Collider>(), playerCollider, true);
         }
+
+        _renderer = GetComponentInChildren<Renderer>();
+        GetComponent<BaseSpell>().LifetimePercent += LifetimePercent;
     }
 
     private void OnCollisionEnter(Collision other) {
@@ -25,5 +33,29 @@ public class ForceField : NetworkBehaviour {
         if (!netObj.TryGetComponent<BaseSpell>(out var spell)) return;
         if (netObj.OwnerClientId == OwnerClientId) return;
         spell.DestroySpellServerRpc(netObj.NetworkObjectId);
+    }
+
+    private void LifetimePercent(float percent) {
+        var p = (int)(percent * 100);
+        switch (p) {
+            case 50:
+            case 25:
+            case 12:
+            case 6:
+            case 3:
+                BlinkClientRpc();
+                break;
+        }
+    }
+
+    [ClientRpc]
+    private void BlinkClientRpc() {
+        StartCoroutine(Blink());
+    }
+
+    private IEnumerator Blink() {
+        _renderer.enabled = false;
+        yield return new WaitForSeconds(blinkDuration);
+        _renderer.enabled = true;
     }
 }

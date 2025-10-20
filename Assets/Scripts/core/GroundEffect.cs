@@ -15,22 +15,19 @@ public class GroundEffect : NetworkBehaviour {
     private bool _destroyed = false;
 
     private void OnTriggerStay(Collider other) {
-        if (other.isTrigger) return;
         if (!IsServer) return;
+        if (!other.TryGetComponent<StatusEffectManager>(out var manager)) return;
+        if (oneShot) {
+            var netObj = other.GetComponent<NetworkObject>();
+            if (_affectedIds.Contains(netObj.NetworkObjectId)) return;
+            _affectedIds.Add(netObj.NetworkObjectId);
+        }
 
-        if (other.TryGetComponent<StatusEffectManager>(out var manager)) {
-            if (oneShot) {
-                var netObj = other.GetComponent<NetworkObject>();
-                if (_affectedIds.Contains(netObj.NetworkObjectId)) return;
-                _affectedIds.Add(netObj.NetworkObjectId);
-            }
-
-            var ownerId = OwnerClientId;
-            if (IsOwnedByServer)
-                ownerId = ulong.MaxValue;
-            foreach (var effect in effects) {
-                manager.AddEffect(ownerId, effect);
-            }
+        var ownerId = OwnerClientId;
+        if (IsOwnedByServer)
+            ownerId = ulong.MaxValue;
+        foreach (var effect in effects) {
+            manager.AddEffect(ownerId, effect);
         }
     }
 

@@ -46,8 +46,12 @@ MonoBehaviour:
   mainSpellPrefab: {fileID: 7354784787554302670, guid: c4e07b3a2b5ba2b42ab3b65522b61a45, type: 3}
   impactPrefab: {fileID: 0}
   damageSound: 5
+  castWaitingIndex: 0
   invocationIndex: 5
   clearInHandBeforeAnim: 1
+  previewMainInHand: 0
+  echoCount: 0
+  lifeTime: 5
   baseDamage: 1.5
   canSelfDamage: 1
   useParticleCollision: 1
@@ -55,12 +59,13 @@ MonoBehaviour:
   hasAreaEffect: 0
   areaRadius: 5
   isProjectile: 1
-  lifeTime: 5
   piercing: 1
   baseSpeed: 0
   projCount: 1
   multiProjDelay: 0
-  spawnMode: 0
+  spawnMode: 2
+  arcAngleStep: 30
+  raycastMaxDistance: 50
   isBeam: 1
   isHoming: 0
   homingRadius: 10

@@ -128,6 +128,37 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!1 &1932244337744165737
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6991023923860154135}
+  m_Layer: 0
+  m_Name: Hand IK Target Right
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6991023923860154135
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1932244337744165737}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.4482454, y: -0.34231827, z: -0.45334727, w: 0.69019604}
+  m_LocalPosition: {x: -0.09000015, y: 0.049999952, z: 0.24}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 2934301547977243489}
+  m_LocalEulerAnglesHint: {x: -68.3, y: -10.3, z: -59.6}
 --- !u!1 &2671032359567761218
 GameObject:
   m_ObjectHideFlags: 0
@@ -325,6 +356,7 @@ Transform:
   m_Children:
   - {fileID: 3077521524520137575}
   - {fileID: 5596533096327910552}
+  - {fileID: 6991023923860154135}
   - {fileID: 2929352888958925704}
   m_Father: {fileID: 3580683726391601925}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -708,10 +740,10 @@ GameObject:
   - component: {fileID: 8745711078365152283}
   - component: {fileID: 606083009552804484}
   - component: {fileID: 3595582522434657761}
+  - component: {fileID: 2894542456545687865}
   - component: {fileID: 1874046057587579816}
   - component: {fileID: 1540340668546877596}
   - component: {fileID: 2342397811680414283}
-  - component: {fileID: 1605684253630249884}
   - component: {fileID: 1915652513373438011}
   - component: {fileID: 1507093393527865229}
   - component: {fileID: 5865273710895956458}
@@ -818,12 +850,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSpellCaster
   ShowTopMostFoldoutHeaderGroup: 1
-  allowKeySpells: 1
   language: 0
   noManaSound: {fileID: 1507093393527865229}
   mouth: {fileID: 3269581595495701639}
   playerAnimator: {fileID: 6425691076356515085}
-  recognitionThreshold: 0.5
   spellCastKey: 323
   spellCancelKey: 324
   channeling: 0
@@ -874,6 +904,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimator
   ShowTopMostFoldoutHeaderGroup: 1
   ikHand: {fileID: 5596533096327910552}
+  ikHandRight: {fileID: 6991023923860154135}
   animator: {fileID: 1037760559241335293}
   acceleration: 3
   decelerationCurve:
@@ -1004,6 +1035,28 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 0
   SlerpPosition: 1
+--- !u!114 &2894542456545687865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1b14352e8df4285b10c4f1ce69afe25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerDamageable
+  ShowTopMostFoldoutHeaderGroup: 1
+  maxHealth: 100
+  hpRestore: 0.5
+  immortal: 0
+  invulnerable: 0
+  hp: {fileID: 0}
+  damageAudio: {fileID: 8201634953252771622}
+  damageSoundCooldown: 0.2
+  health:
+    m_InternalValue: 0
 --- !u!143 &1874046057587579816
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1053,28 +1106,6 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5793509697026975924}
   m_Enabled: 1
---- !u!114 &1605684253630249884
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5793509697026975924}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b241855eae74483ba11d6919a92dbfcd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Damageable
-  ShowTopMostFoldoutHeaderGroup: 1
-  maxHealth: 100
-  hpRestore: 0.5
-  immortal: 0
-  invulnerable: 0
-  hp: {fileID: 0}
-  damageAudio: {fileID: 8201634953252771622}
-  damageSoundCooldown: 0.2
-  health:
-    m_InternalValue: 0
 --- !u!114 &1915652513373438011
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2115,6 +2146,10 @@ PrefabInstance:
       propertyPath: ikTargetSpine
       value: 
       objectReference: {fileID: 6404953993623198568}
+    - target: {fileID: 4367675302838354857, guid: 140f34d414a550040b4e2eeb46cce691, type: 3}
+      propertyPath: ikTargetHandRight
+      value: 
+      objectReference: {fileID: 6991023923860154135}
     - target: {fileID: 8493490859233425626, guid: 140f34d414a550040b4e2eeb46cce691, type: 3}
       propertyPath: m_IsActive
       value: 0
