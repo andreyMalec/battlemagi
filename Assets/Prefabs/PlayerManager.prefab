@@ -10,7 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 6117778263866355746}
   - component: {fileID: 5201857223351521743}
+  - component: {fileID: 7140477816920891520}
   - component: {fileID: 4669165845043336081}
+  - component: {fileID: 6002854000391987078}
   m_Layer: 0
   m_Name: PlayerManager
   m_TagString: Untagged
@@ -45,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 468711909
+  GlobalObjectIdHash: 2254842558
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -58,6 +60,21 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &7140477816920891520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6696734347862189425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdcfeb5c05e142949cd99c4cea7f16b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TeamManager
+  ShowTopMostFoldoutHeaderGroup: 1
+  CurrentMode:
+    m_InternalValue: 0
 --- !u!114 &4669165845043336081
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72,3 +89,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerManager2
   ShowTopMostFoldoutHeaderGroup: 1
   debugPlayers: []
+--- !u!114 &6002854000391987078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6696734347862189425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07af858fcf064b6e856a2e3c8303585f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellDatabase
+  spells:
+  - {fileID: 11400000, guid: 5763ea8db7d5fa74281107a26119aac4, type: 2}
+  - {fileID: 11400000, guid: d8af665352a8959419fda43b75dcdbf6, type: 2}
+  - {fileID: 11400000, guid: 12d026afdf710064f806104a86b1c096, type: 2}
+  - {fileID: 11400000, guid: 672d61c7bfe8084488ff712bf14875f3, type: 2}
+  - {fileID: 11400000, guid: a3a1d32846418984eb2e1ebb46d331de, type: 2}
+  - {fileID: 11400000, guid: fe9d04a7cefb61b448b4235eb5afd1d2, type: 2}
+  - {fileID: 11400000, guid: 4ba037c71c69a494e9868088676261c4, type: 2}
+  - {fileID: 11400000, guid: 28328e15178c8ea4e9047815695e1080, type: 2}
+  - {fileID: 11400000, guid: 268e563535dc3864ab0d4983e8696d69, type: 2}
+  - {fileID: 11400000, guid: 94e42977f85589848b57f163493a629b, type: 2}

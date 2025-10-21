@@ -29,7 +29,7 @@ public class HomingMovement : ISpellMovement {
             if (!col.TryGetComponent<Player>(out _)) continue;
 
             var netObj = col.GetComponent<NetworkObject>();
-            if (netObj.OwnerClientId == spell.OwnerClientId) continue;
+            if (!TeamManager.Instance.AreEnemies(netObj.OwnerClientId, spell.OwnerClientId)) continue;
 
             var dir = (col.transform.position - spell.transform.position).normalized;
             dir *= data.homingStrength * data.baseSpeed;

@@ -10,7 +10,10 @@ using Image = UnityEngine.UI.Image;
 
 public class LobbyMembers : MonoBehaviour {
     [SerializeField] private GameObject lobbyMemberPrefab;
-    [SerializeField] private LayoutGroup container;
+    [SerializeField] private LayoutGroup containerTeamRed;
+    [SerializeField] private LayoutGroup containerTeamBlue;
+    [SerializeField] private Button buttonJoinRed;
+    [SerializeField] private Button buttonJoinBlue;
 
     [Header("UI")]
     [SerializeField] private Sprite spriteReady;
@@ -21,6 +24,11 @@ public class LobbyMembers : MonoBehaviour {
     private Dictionary<ulong, MemberItem> lobbyMembers = new Dictionary<ulong, MemberItem>();
 
     private int frame = 0;
+
+    private void OnEnable() {
+        buttonJoinRed.onClick.AddListener(() => { LobbyExt.SetTeam(TeamManager.Team.Red); });
+        buttonJoinBlue.onClick.AddListener(() => { LobbyExt.SetTeam(TeamManager.Team.Blue); });
+    }
 
     public void RequestUpdate() {
         foreach (var member in lobbyMembers.Keys) {
@@ -38,30 +46,47 @@ public class LobbyMembers : MonoBehaviour {
 
     private void Update() {
         frame++;
+        var lobby = LobbyManager.Instance.CurrentLobby;
+        if (!lobby.HasValue) return;
         if (frame % 60 == 0) {
-            var lobby = LobbyManager.Instance.CurrentLobby;
-            if (lobby.HasValue) {
-                foreach (var member in lobby.Value.Members) {
-                    var item = lobbyMembers[member.Id.Value];
-                    var image = member.IsReady() ? spriteReady : spriteNotReady;
-                    item.ready.overrideSprite = image;
-                    var color = member.GetColor();
-                    item.color.material.SetFloat(ColorizeMesh.Hue, color.hue);
-                    item.color.material.SetFloat(ColorizeMesh.Saturation, color.saturation);
-                }
+            foreach (var member in lobby.Value.Members) {
+                var item = lobbyMembers[member.Id.Value];
+                var image = member.IsReady() ? spriteReady : spriteNotReady;
+                item.ready.overrideSprite = image;
+                var color = member.GetColor();
+                item.color.material.SetFloat(ColorizeMesh.Hue, color.hue);
+                item.color.material.SetFloat(ColorizeMesh.Saturation, color.saturation);
+                UpdateTeam(member, item.root);
             }
         }
+
+        var showTeams = TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.TwoTeams;
+        buttonJoinRed.gameObject.SetActive(showTeams);
+        buttonJoinBlue.gameObject.SetActive(showTeams);
+        containerTeamBlue.gameObject.transform.parent.gameObject.SetActive(showTeams);
     }
 
     private MemberItem Create(Friend friend) {
-        var item = Instantiate(lobbyMemberPrefab, container.transform);
-        item.transform.SetParent(container.transform);
+        var team = friend.GetTeam();
+        var container = containerTeamRed.transform;
+        if (team == TeamManager.Team.Blue)
+            container = containerTeamBlue.transform;
+        var item = Instantiate(lobbyMemberPrefab, container);
+        item.transform.SetParent(container);
         var textName = item.GetComponentInChildren<TMP_Text>();
         textName.text = friend.Name;
         var imageColor = item.GetComponentInChildren<RawImage>();
         imageColor.material = new Material(colorShader);
         var imageReady = item.GetComponentInChildren<Image>();
-        return new MemberItem(textName, imageColor, imageReady);
+        return new MemberItem(textName, imageColor, imageReady, item.transform);
+    }
+
+    private void UpdateTeam(Friend friend, Transform item) {
+        var team = friend.GetTeam();
+        var container = containerTeamRed.transform;
+        if (TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.TwoTeams && team == TeamManager.Team.Blue)
+            container = containerTeamBlue.transform;
+        item.SetParent(container, false);
     }
 
     private void Destroy(ulong steamId) {
@@ -99,11 +124,18 @@ public class LobbyMembers : MonoBehaviour {
         public TMP_Text name;
         public RawImage color;
         public Image ready;
+        public Transform root;
 
-        public MemberItem(TMP_Text name, RawImage color, Image ready) {
+        public MemberItem(TMP_Text name, RawImage color, Image ready, Transform root) {
             this.name = name;
             this.color = color;
             this.ready = ready;
+            this.root = root;
         }
+    }
+
+    private void OnDisable() {
+        buttonJoinRed.onClick.RemoveAllListeners();
+        buttonJoinBlue.onClick.RemoveAllListeners();
     }
 }

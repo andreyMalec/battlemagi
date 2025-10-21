@@ -1,10 +1,11 @@
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(NetworkStatSystem))]
 [RequireComponent(typeof(StatusEffectManager))]
 public class PlayerDamageable : Damageable {
     protected override void OnDeath(ulong ownerClientId, ulong fromClientId) {
-        foreach (var enemy in _damagedBy) {
+        foreach (var enemy in _damagedBy.Where(damager => TeamManager.Instance.AreEnemies(ownerClientId, damager))) {
             if (enemy == fromClientId)
                 PlayerManager.Instance.AddKill(fromClientId);
             else

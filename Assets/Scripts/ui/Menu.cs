@@ -26,6 +26,7 @@ public class Menu : MonoBehaviour {
     public Button buttonCopyLobbyId;
     public Button buttonReady;
     public TMP_Dropdown dropdownMap;
+    public TMP_Dropdown dropdownMode;
     public TMP_Text lobbyName;
     public TMP_InputField fieldJoinLobbyId;
     public TMP_InputField fieldLobbyId;
@@ -55,6 +56,7 @@ public class Menu : MonoBehaviour {
         buttonCopyLobbyId.onClick.AddListener(() => StartCoroutine(CopyId()));
         copyButtonText = buttonCopyLobbyId.GetComponentInChildren<TMP_Text>();
         dropdownMap.onValueChanged.AddListener(SubmitMap);
+        dropdownMode.onValueChanged.AddListener(SubmitMode);
 
         fieldJoinLobbyId.onEndEdit.AddListener(id => {
             try {
@@ -69,6 +71,10 @@ public class Menu : MonoBehaviour {
 
     private void SubmitMap(int index) {
         mapIndex = index;
+    }
+
+    private void SubmitMode(int index) {
+        TeamManager.Instance.SetModeServerRpc((TeamManager.TeamMode)index);
     }
 
     private void FixedUpdate() {
@@ -151,7 +157,9 @@ public class Menu : MonoBehaviour {
             lobbyId = lobby.Id.Value;
         }
 
-        dropdownMap.gameObject.SetActive(inLobby && LobbyManager.Instance.IsHost());
+        var showControls = inLobby && LobbyManager.Instance.IsHost();
+        dropdownMap.gameObject.SetActive(showControls);
+        dropdownMode.gameObject.SetActive(showControls);
 
         lobbyMembers.RequestUpdate();
     }

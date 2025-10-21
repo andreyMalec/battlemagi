@@ -16,7 +16,8 @@ public class SceneLoader : MonoBehaviour {
 
     private IEnumerator LoadMainMenu() {
         yield return new WaitUntil(() =>
-            NetworkManager.Singleton != null && (!waitUntilModelLoaded || WhisperHolder.instance.whisper.IsLoaded));
+            NetworkManager.Singleton != null && (WhisperHolder.checkVM() || !waitUntilModelLoaded ||
+                                                 WhisperHolder.instance.whisper.IsLoaded));
         SceneManager.LoadScene("MainMenu");
     }
 }

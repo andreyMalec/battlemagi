@@ -274,6 +274,15 @@ public static class LobbyExt {
             }
         }
     }
+
+    public static TeamManager.Team GetTeam(this Friend member) {
+        var player = PlayerManager.Instance.FindBySteamId(member.Id);
+        return TeamManager.Instance.GetTeam(player?.ClientId);
+    }
+
+    public static void SetTeam(TeamManager.Team team) {
+        TeamManager.Instance.RequestChangeTeamServerRpc(NetworkManager.Singleton.LocalClientId, (int)team);
+    }
 }
 
 public struct PlayerColor {

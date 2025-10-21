@@ -673,34 +673,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1071655363}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
---- !u!1 &1373127844 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6696734347862189425, guid: b390804259226a847b47db240409c0f2, type: 3}
-  m_PrefabInstance: {fileID: 6909515424507128398}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1373127848
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1373127844}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07af858fcf064b6e856a2e3c8303585f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SpellDatabase
-  spells:
-  - {fileID: 11400000, guid: 5763ea8db7d5fa74281107a26119aac4, type: 2}
-  - {fileID: 11400000, guid: d8af665352a8959419fda43b75dcdbf6, type: 2}
-  - {fileID: 11400000, guid: 12d026afdf710064f806104a86b1c096, type: 2}
-  - {fileID: 11400000, guid: 672d61c7bfe8084488ff712bf14875f3, type: 2}
-  - {fileID: 11400000, guid: a3a1d32846418984eb2e1ebb46d331de, type: 2}
-  - {fileID: 11400000, guid: fe9d04a7cefb61b448b4235eb5afd1d2, type: 2}
-  - {fileID: 11400000, guid: 4ba037c71c69a494e9868088676261c4, type: 2}
-  - {fileID: 11400000, guid: 28328e15178c8ea4e9047815695e1080, type: 2}
-  - {fileID: 11400000, guid: 268e563535dc3864ab0d4983e8696d69, type: 2}
-  - {fileID: 11400000, guid: 94e42977f85589848b57f163493a629b, type: 2}
 --- !u!1001 &1482068162
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1543,7 +1515,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28cdf9d512f14b2bac99f1ded2e396f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneLoader
-  waitUntilModelLoaded: 1
+  waitUntilModelLoaded: 0
 --- !u!4 &1941920897
 Transform:
   m_ObjectHideFlags: 0
@@ -1685,10 +1657,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6696734347862189425, guid: b390804259226a847b47db240409c0f2, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1373127848}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b390804259226a847b47db240409c0f2, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

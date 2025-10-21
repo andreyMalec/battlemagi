@@ -11,6 +11,7 @@ public class ColorizeMesh : MonoBehaviour {
     [SerializeField] private Slider sliderSaturation;
     [SerializeField] private TMP_InputField fieldHue;
     [SerializeField] private TMP_InputField fieldSaturation;
+    [SerializeField] private GameObject colorPicker;
 
     [SerializeField] private Renderer _renderer;
     [SerializeField] private RawImage preview;
@@ -73,5 +74,28 @@ public class ColorizeMesh : MonoBehaviour {
             sliderSaturation.value = ss;
             saturation = ss;
         });
+    }
+
+    private void OnEnable() {
+        TeamManager.Instance.MyTeam += MyTeam;
+    }
+
+    private void OnDisable() {
+        TeamManager.Instance.MyTeam -= MyTeam;
+    }
+
+    private void MyTeam(TeamManager.Team team) {
+        if (TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.FreeForAll) {
+            colorPicker.gameObject.SetActive(true);
+        } else {
+            colorPicker.gameObject.SetActive(false);
+            if (team == TeamManager.Team.Blue) {
+                sliderHue.value = 228;
+                sliderSaturation.value = 1;
+            } else {
+                sliderHue.value = 0;
+                sliderSaturation.value = 1;
+            }
+        }
     }
 }
