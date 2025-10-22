@@ -14,7 +14,7 @@ public static class DamageUtils {
             return ulong.MaxValue;
 
         var netObj = other.GetComponent<NetworkObject>();
-        if (!data.canSelfDamage && !TeamManager.Instance.AreEnemies(spell.OwnerClientId, netObj.OwnerClientId))
+        if (!data.canSelfDamage && TeamManager.Instance.AreAllies(spell.OwnerClientId, netObj.OwnerClientId))
             return ulong.MaxValue;
 
         if (excludeClients != null && excludeClients.Contains(netObj.OwnerClientId))

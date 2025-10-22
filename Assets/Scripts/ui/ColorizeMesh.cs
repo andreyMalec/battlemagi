@@ -56,7 +56,7 @@ public class ColorizeMesh : MonoBehaviour {
         saturation = sliderSaturation.value;
 
         sliderHue.onValueChanged.AddListener(h => {
-            fieldHue.text = h.ToString("0.0");
+            fieldHue.text = h.ToString("0");
             hue = h;
         });
         sliderSaturation.onValueChanged.AddListener(s => {
@@ -90,11 +90,11 @@ public class ColorizeMesh : MonoBehaviour {
         } else {
             colorPicker.gameObject.SetActive(false);
             if (team == TeamManager.Team.Blue) {
-                sliderHue.value = 228;
-                sliderSaturation.value = 1;
+                hue = sliderHue.value = 228;
+                saturation = sliderSaturation.value = 0.85f;
             } else {
-                sliderHue.value = 0;
-                sliderSaturation.value = 1;
+                hue = sliderHue.value = 0;
+                saturation = sliderSaturation.value = 0.85f;
             }
         }
     }

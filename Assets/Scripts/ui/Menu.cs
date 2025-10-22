@@ -127,6 +127,8 @@ public class Menu : MonoBehaviour {
     private void LeaveLobby() {
         LobbyManager.Instance.LeaveLobby();
         buttonReady.GetComponent<Image>().color = Color.white;
+        dropdownMap.value = 0;
+        dropdownMode.value = 0;
     }
 
     private void OnEnable() {

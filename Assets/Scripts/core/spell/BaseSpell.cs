@@ -72,8 +72,8 @@ public class BaseSpell : NetworkBehaviour {
     private void OnTriggerEnter(Collider other) {
         if (!IsServer || other.isTrigger) return;
         if (other.gameObject.TryGetComponent<ForceField>(out var field)) {
-            // свой купол? игнор
-            if (field.OwnerClientId == OwnerClientId)
+            // союзный купол? игнор
+            if (TeamManager.Instance.AreAllies(field.OwnerClientId, OwnerClientId))
                 return;
         }
 

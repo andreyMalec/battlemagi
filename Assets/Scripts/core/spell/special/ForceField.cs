@@ -10,9 +10,11 @@ public class ForceField : NetworkBehaviour {
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
-        var playerObj = NetworkManager.ConnectedClients[OwnerClientId].PlayerObject;
-        if (playerObj != null && playerObj.TryGetComponent<Collider>(out var playerCollider)) {
-            Physics.IgnoreCollision(GetComponent<Collider>(), playerCollider, true);
+        foreach (var ally in TeamManager.Instance.FindAllies(OwnerClientId)) {
+            var playerObj = NetworkManager.ConnectedClients[ally].PlayerObject;
+            if (playerObj != null && playerObj.TryGetComponent<Collider>(out var playerCollider)) {
+                Physics.IgnoreCollision(GetComponent<Collider>(), playerCollider, true);
+            }
         }
 
         _renderer = GetComponentInChildren<Renderer>();
@@ -31,7 +33,7 @@ public class ForceField : NetworkBehaviour {
         if (!IsServer) return;
         if (!go.TryGetComponent<NetworkObject>(out var netObj)) return;
         if (!netObj.TryGetComponent<BaseSpell>(out var spell)) return;
-        if (netObj.OwnerClientId == OwnerClientId) return;
+        if (TeamManager.Instance.AreAllies(netObj.OwnerClientId, OwnerClientId)) return;
         spell.DestroySpellServerRpc(netObj.NetworkObjectId);
     }
 
@@ -43,6 +45,7 @@ public class ForceField : NetworkBehaviour {
             case 12:
             case 6:
             case 3:
+            case 1:
                 BlinkClientRpc();
                 break;
         }

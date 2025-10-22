@@ -15,10 +15,10 @@ public class DirtWallVisual : MonoBehaviour {
         _damageable.onDeath += () => {
             DestroyAfterPlay.Play(onDestroy, transform.position);
         };
+        transform.position -= new Vector3(0, height, 0);
     }
 
     private void Start() {
-        transform.position -= new Vector3(0, height, 0);
         StartCoroutine(MoveUp());
     }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -43,6 +44,12 @@ public class TeamManager : NetworkBehaviour {
         _teams.OnListChanged += OnTeamListChanged;
     }
 
+    public void Reset() {
+        if (!IsServer) return;
+        _teams.Clear();
+        CurrentMode.Value = TeamMode.FreeForAll;
+    }
+
     public override void OnNetworkSpawn() {
         if (IsServer) {
             NetworkManager.OnClientConnectedCallback += OnClientConnected;
@@ -50,7 +57,7 @@ public class TeamManager : NetworkBehaviour {
         }
     }
 
-    private void OnDestroy() {
+    public override void OnNetworkDespawn() {
         if (NetworkManager != null) {
             NetworkManager.OnClientConnectedCallback -= OnClientConnected;
             NetworkManager.OnClientDisconnectCallback -= OnClientDisconnected;
@@ -158,9 +165,25 @@ public class TeamManager : NetworkBehaviour {
         return Team.None;
     }
 
+    public List<ulong> FindAllies(ulong clientId) {
+        var result = new List<ulong>();
+        var team = GetTeam(clientId);
+
+        foreach (var entry in _teams) {
+            if (entry.team == team)
+                result.Add(entry.clientId);
+        }
+
+        return result;
+    }
+
     public bool AreEnemies(ulong a, ulong b) {
         if (CurrentMode.Value == TeamMode.FreeForAll)
             return a != b;
         return GetTeam(a) != GetTeam(b);
+    }
+
+    public bool AreAllies(ulong a, ulong b) {
+        return !AreEnemies(a, b);
     }
 }

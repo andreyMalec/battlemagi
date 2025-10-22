@@ -116,7 +116,8 @@ public class PlayerSpawner : NetworkBehaviour {
 
     [ServerRpc]
     private void SpawnPlayerServerRpc(ulong clientId) {
-        var spawnPoint = FindFirstObjectByType<SpawnPoint>().Get();
+        var team = TeamManager.Instance.GetTeam(clientId);
+        var spawnPoint = FindFirstObjectByType<Spawn>().Get(team);
         var position = spawnPoint.position;
         var rotation = spawnPoint.rotation;
 
