@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 1216505758438551160}
   - component: {fileID: 8163904846881621438}
   - component: {fileID: 450571583936688513}
-  - component: {fileID: 1493363260141843403}
   m_Layer: 0
   m_Name: Tester
   m_TagString: Untagged
@@ -135,18 +134,6 @@ MonoBehaviour:
   lookSettings: {fileID: 11400000, guid: 5e09a9892218f1a49acfc9e000c99915, type: 2}
   groundCheck: {fileID: 6803069950537442686}
   mainCamera: {fileID: 8854033999867419295}
---- !u!114 &1493363260141843403
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5056318315711601611}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2382bdbec0054bd2b17e3c11d2d63c9d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ShowCursor
 --- !u!1 &7750010650653659641
 GameObject:
   m_ObjectHideFlags: 0

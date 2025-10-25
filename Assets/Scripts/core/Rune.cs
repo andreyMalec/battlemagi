@@ -17,7 +17,7 @@ public class Rune : NetworkBehaviour {
 
         if (other.TryGetComponent<StatusEffectManager>(out var manager)) {
             var ownerId = OwnerClientId;
-            if (IsOwnedByServer)
+            if (NetworkObject.IsSceneObject == true)
                 ownerId = ulong.MaxValue;
             foreach (var effect in effects) {
                 manager.AddEffect(ownerId, effect);

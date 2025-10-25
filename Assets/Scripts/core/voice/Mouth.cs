@@ -2,13 +2,12 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 using Whisper;
-using Whisper.Utils;
 
 public delegate void OnMouthClose(string lastWords);
 
 public class Mouth : NetworkBehaviour {
     [Header("References")]
-    [SerializeField] private MicrophoneRecord microphoneRecord;
+    [SerializeField] private Voice.MicrophoneRecord microphoneRecord;
 
     private Voice.WhisperManager _whisper;
     private Voice.WhisperStream _stream;
@@ -33,6 +32,13 @@ public class Mouth : NetworkBehaviour {
 
     public void ShutUp() {
         _stream?.ResetStream();
+    }
+
+    public void ChangeVoice() {
+        _stream?.StopStream();
+        microphoneRecord.StopRecord();
+        _stream?.StartStream();
+        microphoneRecord.StartRecord();
     }
 
     public void CanSpeak(bool canSpeak) {

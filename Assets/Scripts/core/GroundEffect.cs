@@ -24,7 +24,7 @@ public class GroundEffect : NetworkBehaviour {
         }
 
         var ownerId = OwnerClientId;
-        if (IsOwnedByServer)
+        if (NetworkObject.IsSceneObject == true)
             ownerId = ulong.MaxValue;
         foreach (var effect in effects) {
             manager.AddEffect(ownerId, effect);
