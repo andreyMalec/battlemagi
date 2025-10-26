@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae012f65d5bc4d2ab17ff4df36859361, type: 3}
   m_Name: 'Rune of Haste [Speed]'
   m_EditorClassIdentifier: Assembly-CSharp::SlowEffect
-  effectName: 'Rune of Haste [Speed]'
+  effectName: Rune of Haste
+  description: x3 movement speed, x2 stamina regen
   duration: 15
   color: {r: 1, g: 0, b: 0, a: 1}
+  removeOnHit: 0
+  onExpire: {fileID: 0}
   multiplier: 3

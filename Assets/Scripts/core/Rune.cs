@@ -23,7 +23,9 @@ public class Rune : NetworkBehaviour {
                 manager.AddEffect(ownerId, effect);
             }
 
-            SoundClientRpc();
+            var toUI = effects.First();
+            OnPickupClientRpc(other.GetComponent<NetworkObject>().OwnerClientId, toUI.effectName, toUI.description,
+                toUI.color);
             _destroyed = true;
             var netObj = GetComponent<NetworkObject>();
             DestroyClientRpc(netObj.NetworkObjectId);
@@ -31,8 +33,12 @@ public class Rune : NetworkBehaviour {
     }
 
     [ClientRpc]
-    private void SoundClientRpc() {
+    private void OnPickupClientRpc(ulong clientId, string effectName, string description, Color color) {
         GetComponentInParent<AudioSource>().Play();
+        if (NetworkManager.LocalClientId == clientId) {
+            var ui = NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerEffectUI>();
+            ui.Show(effectName, description, color);
+        }
     }
 
     [ClientRpc]

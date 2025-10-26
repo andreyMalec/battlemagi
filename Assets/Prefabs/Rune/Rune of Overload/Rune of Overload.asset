@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: Rune of Overload
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileMultiplierEffect
   effectName: Rune of Overload
+  description: x3 projectile count
   duration: 20
   color: {r: 1, g: 0.319, b: 1, a: 1}
+  removeOnHit: 0
+  onExpire: {fileID: 0}
   multiplier: 3

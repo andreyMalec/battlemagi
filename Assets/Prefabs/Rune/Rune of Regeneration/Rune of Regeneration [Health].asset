@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da3b931fdf914d96aaf44dfab684a311, type: 3}
   m_Name: 'Rune of Regeneration [Health]'
   m_EditorClassIdentifier: Assembly-CSharp::HealthRegenMultiplierEffect
-  effectName: 'Rune of Regeneration [Health]'
+  effectName: Rune of Regeneration
+  description: x20 hp and mana regen
   duration: 20
   color: {r: 0.30980393, g: 1, b: 0.21176472, a: 1}
   removeOnHit: 1
+  onExpire: {fileID: 0}
   multiplier: 20
