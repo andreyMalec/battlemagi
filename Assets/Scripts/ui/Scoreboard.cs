@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Scoreboard : MonoBehaviour {
@@ -8,14 +9,16 @@ public class Scoreboard : MonoBehaviour {
     [SerializeField] private GameObject container;
 
     private readonly Dictionary<ulong, ScoreboardItem> _items = new();
-    
-    private Canvas _canvas;
+
+    private CanvasGroup _canvas;
 
     private void OnEnable() {
-        foreach (var player in PlayerManager.Instance.Players()) {
+        var sorted = PlayerManager.Instance.Players()
+            .OrderBy(it => TeamManager.Instance.GetTeam(it.ClientId));
+        foreach (var player in sorted) {
             var item = Instantiate(itemPrefab, container.transform);
             var scoreboardItem = item.GetComponent<ScoreboardItem>();
-            scoreboardItem.UpdateName(player.Name());
+            scoreboardItem.UpdateName(player.Name(), player.SteamId);
             scoreboardItem.UpdateScore(player);
             _items[player.ClientId] = scoreboardItem;
         }
@@ -34,10 +37,10 @@ public class Scoreboard : MonoBehaviour {
     }
 
     private void Awake() {
-        _canvas = GetComponent<Canvas>();
+        _canvas = GetComponent<CanvasGroup>();
     }
 
     private void Update() {
-        _canvas.enabled = Input.GetKey(key);
+        _canvas.alpha = Input.GetKey(key) ? 1 : 0;
     }
 }
