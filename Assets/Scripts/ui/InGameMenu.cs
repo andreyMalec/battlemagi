@@ -106,4 +106,14 @@ public class InGameMenu : MonoBehaviour {
             Cursor.visible = false;
         }
     }
+
+    private void OnDisable() {
+        buttonBack.onClick.RemoveListener(OnBackClick);
+        buttonSettingsSoundBack.onClick.RemoveListener(OnBackClick);
+        buttonSettingsGraphicBack.onClick.RemoveListener(OnBackClick);
+        buttonSettings.onClick.RemoveListener(OnSettingsClick);
+        buttonExit.onClick.RemoveListener(OnExitClick);
+        buttonSettingsGraphic.onClick.RemoveListener(OnSettingsGraphicClick);
+        buttonSettingsSound.onClick.RemoveListener(OnSettingsSoundClick);
+    }
 }

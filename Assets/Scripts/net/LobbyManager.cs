@@ -39,6 +39,7 @@ public class LobbyManager : MonoBehaviour {
     public List<Lobby> AvailableLobbies { get; private set; } = new();
 
     private SteamId? lobbyOwner = null;
+    private bool isHost;
 
     private void Awake() {
         if (Instance == null) Instance = this;
@@ -78,6 +79,7 @@ public class LobbyManager : MonoBehaviour {
     private void OnLobbyCreated(Result result, Lobby lobby) {
         Debug.Log($"[LobbyManager] Lobby created: {result}, id={lobby.Id}");
         if (result == Result.OK) {
+            isHost = true;
             CurrentLobby = lobby;
             lobbyOwner = lobby.Owner.Id;
             State = PlayerState.InLobby;
@@ -97,7 +99,7 @@ public class LobbyManager : MonoBehaviour {
 
         lobby.SendChatString($"{Me.Name} entered lobby {lobby.Id}");
 
-        if (NetworkManager.Singleton.IsHost)
+        if (isHost)
             return;
         NetworkManager.Singleton.gameObject.GetComponent<FacepunchTransport>().targetSteamId = lobby.Owner.Id;
         NetworkManager.Singleton.StartClient();
@@ -202,6 +204,7 @@ public class LobbyManager : MonoBehaviour {
             lobbyOwner = null;
         }
 
+        isHost = false;
         State = PlayerState.Disconnected;
         NetworkManager.Singleton.Shutdown();
     }

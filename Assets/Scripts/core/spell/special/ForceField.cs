@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
 public class ForceField : NetworkBehaviour {
-    private Renderer _renderer;
+    private static readonly int BlinkAlpha = Shader.PropertyToID("_BlinkAlpha");
 
     [SerializeField] private float blinkDuration = 0.15f;
+    private readonly List<Material> _renderMaterials = new();
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
@@ -17,7 +19,12 @@ public class ForceField : NetworkBehaviour {
             }
         }
 
-        _renderer = GetComponentInChildren<Renderer>();
+        foreach (var mat in GetComponentInChildren<Renderer>().materials) {
+            if (mat.HasFloat(BlinkAlpha)) {
+                _renderMaterials.Add(mat);
+            }
+        }
+
         GetComponent<BaseSpell>().LifetimePercent += LifetimePercent;
     }
 
@@ -57,8 +64,36 @@ public class ForceField : NetworkBehaviour {
     }
 
     private IEnumerator Blink() {
-        _renderer.enabled = false;
-        yield return new WaitForSeconds(blinkDuration);
-        _renderer.enabled = true;
+        float startAlpha = .7f;
+        float targetAlpha = 0f;
+        float halfDuration = blinkDuration / 2f;
+        float t = 0f;
+
+        // Плавное исчезновение
+        while (t < halfDuration) {
+            t += Time.deltaTime;
+            float alpha = Mathf.Lerp(startAlpha, targetAlpha, t / halfDuration);
+            foreach (var mat in _renderMaterials) {
+                mat.SetFloat(BlinkAlpha, alpha);
+            }
+
+            yield return null;
+        }
+
+        // Плавное возвращение
+        t = 0f;
+        while (t < halfDuration) {
+            t += Time.deltaTime;
+            float alpha = Mathf.Lerp(targetAlpha, startAlpha, t / halfDuration);
+            foreach (var mat in _renderMaterials) {
+                mat.SetFloat(BlinkAlpha, alpha);
+            }
+
+            yield return null;
+        }
+
+        foreach (var mat in _renderMaterials) {
+            mat.SetFloat(BlinkAlpha, 1f);
+        }
     }
 }

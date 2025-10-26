@@ -22,6 +22,8 @@ public class MicrophoneSettings : MonoBehaviour {
     private float currentLevel;
     private float targetLevel;
 
+    private bool inGame = false;
+
     private void Awake() {
         steamSettings.onClick.AddListener(OpenSteamSettings);
 
@@ -38,12 +40,25 @@ public class MicrophoneSettings : MonoBehaviour {
         microphoneActivity.transform.localScale = Vector3.zero;
     }
 
-    private void Start() {
-        var player = NetworkManager.Singleton.LocalClient?.PlayerObject;
-        if (player != null)
-            mic = player.GetComponentInChildren<MicrophoneRecord>();
+    private void OnEnable() {
+        inGame = NetworkManager.Singleton.IsClient;
+        if (inGame) {
+            var player = NetworkManager.Singleton.LocalClient?.PlayerObject;
+            if (player != null)
+                mic = player.GetComponentInChildren<MicrophoneRecord>();
+        } else {
+            mic = gameObject.AddComponent<MicrophoneRecord>();
+            mic.echo = false;
+            mic.StartRecord();
+        }
 
         InvokeRepeating(nameof(UpdateMicActivity), 0f, updateRate);
+    }
+
+    private void OnDisable() {
+        CancelInvoke(nameof(UpdateMicActivity));
+        if (!inGame)
+            mic.StopRecord();
     }
 
     private void OnMicrophoneChanged(int ind) {
@@ -55,14 +70,15 @@ public class MicrophoneSettings : MonoBehaviour {
         mic.SelectedMicDevice = opt.text == microphoneDefaultLabel ? null : opt.text;
         PlayerPrefs.SetString("Microphone", mic.SelectedMicDevice);
 
-        mic.GetComponentInParent<Mouth>().ChangeVoice();
+        if (inGame)
+            mic.GetComponentInParent<Mouth>().ChangeVoice();
     }
 
     private void UpdateMicActivity() {
         if (microphoneActivity == null || mic == null || !mic.IsRecording)
             return;
 
-        targetLevel = mic.GetAmplitude(); 
+        targetLevel = mic.GetAmplitude();
         currentLevel = Mathf.Lerp(currentLevel, targetLevel, Time.deltaTime * smoothing);
 
         var v = Mathf.Clamp01(currentLevel * sensitivityMultiplier);
