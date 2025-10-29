@@ -7,11 +7,13 @@ public class AudioSettings : MonoBehaviour {
     [SerializeField] private Slider masterSlider;
     [SerializeField] private Slider voiceSlider;
     [SerializeField] private Slider effectSlider;
+    [SerializeField] private Slider musicSlider;
 
     private void Start() {
-        masterSlider.value = PlayerPrefs.GetFloat("VolumeMaster", 1f);
-        voiceSlider.value = PlayerPrefs.GetFloat("VolumeVoice", 1f);
-        effectSlider.value = PlayerPrefs.GetFloat("VolumeEffect", 0.25f);
+        masterSlider.value = PlayerPrefs.GetFloat("MasterVolume", 1f);
+        voiceSlider.value = PlayerPrefs.GetFloat("VoiceVolume", 1f);
+        effectSlider.value = PlayerPrefs.GetFloat("EffectVolume", 0.25f);
+        musicSlider.value = PlayerPrefs.GetFloat("MusicVolume", 0.25f);
 
         ApplyVolume();
     }
@@ -20,6 +22,7 @@ public class AudioSettings : MonoBehaviour {
         SetVolume("MasterVolume", masterSlider.value);
         SetVolume("VoiceVolume", voiceSlider.value);
         SetVolume("EffectVolume", effectSlider.value);
+        SetVolume("MusicVolume", musicSlider.value);
     }
 
     private void SetVolume(string param, float value) {

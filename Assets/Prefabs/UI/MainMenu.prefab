@@ -1736,12 +1736,36 @@ PrefabInstance:
       value: Map
       objectReference: {fileID: 0}
     - target: {fileID: 4263955390756065809, guid: 2e081c99af453564682786ed9e348068, type: 3}
+      propertyPath: m_Options.m_Options.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263955390756065809, guid: 2e081c99af453564682786ed9e348068, type: 3}
       propertyPath: m_Options.m_Options.Array.data[0].m_Text
       value: Lava
       objectReference: {fileID: 0}
     - target: {fileID: 4263955390756065809, guid: 2e081c99af453564682786ed9e348068, type: 3}
       propertyPath: m_Options.m_Options.Array.data[1].m_Text
       value: Mine
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263955390756065809, guid: 2e081c99af453564682786ed9e348068, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[2].m_Text
+      value: Ruins
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263955390756065809, guid: 2e081c99af453564682786ed9e348068, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[2].m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263955390756065809, guid: 2e081c99af453564682786ed9e348068, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[2].m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263955390756065809, guid: 2e081c99af453564682786ed9e348068, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[2].m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263955390756065809, guid: 2e081c99af453564682786ed9e348068, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[2].m_Color.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5380903008458925416, guid: 2e081c99af453564682786ed9e348068, type: 3}
       propertyPath: m_text
@@ -4022,6 +4046,18 @@ PrefabInstance:
     - target: {fileID: 4579888188581326546, guid: 2cc35fc80400a354686136d610f459db, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -25
+      objectReference: {fileID: 0}
+    - target: {fileID: 4659344372806371509, guid: 2cc35fc80400a354686136d610f459db, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4659344372806371509, guid: 2cc35fc80400a354686136d610f459db, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4659344372806371509, guid: 2cc35fc80400a354686136d610f459db, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4694793633807525028, guid: 2cc35fc80400a354686136d610f459db, type: 3}
       propertyPath: m_AnchorMax.y
