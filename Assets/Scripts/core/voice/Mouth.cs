@@ -1,9 +1,10 @@
 using System;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using Whisper;
 
-public delegate void OnMouthClose(string lastWords);
+public delegate void OnMouthClose(string[] lastWords);
 
 public class Mouth : NetworkBehaviour {
     [Header("References")]
@@ -46,12 +47,32 @@ public class Mouth : NetworkBehaviour {
             _stream._isStreaming = canSpeak;
     }
 
-    private void OnSegmentUpdated(WhisperResult segment) {
-        var r = segment.Result;
-        if (string.IsNullOrWhiteSpace(r) || r.Contains("[BLANK_AUDIO]") || r.Contains("music") ||
-            r.Contains("clicking") || r.Contains("[typing]") ||
-            r.Contains("and the ball lightning", StringComparison.OrdinalIgnoreCase) ||
-            r.Contains("and the air bullet", StringComparison.OrdinalIgnoreCase)) return;
-        OnMouthClose?.Invoke(segment.Result);
+    private void OnSegmentUpdated(WhisperResult result) {
+        var r = result.Result.Trim();
+        if (string.IsNullOrWhiteSpace(r) || r.Equals("[BLANK_AUDIO]") || r.Equals("[typing]")) return;
+        var segment = result.Segments[0];
+
+        var tokens = segment.Tokens
+            .Where(t => !t.IsSpecial && ContainsLetter(t.Text))
+            .ToArray();
+
+        var aa = string.Join(", ", tokens.Map(t => $"{t.Text}:{t.Prob}"));
+        Debug.Log($"_____ OnSegmentUpdated \"{r}\" [{aa}]");
+        var words = tokens
+            .Select(t => t.Text.Trim())
+            .Where(w => w.Length > 0)
+            .ToArray();
+
+        if (words.Length > 0)
+            OnMouthClose?.Invoke(words);
+    }
+
+    private static bool ContainsLetter(string s) {
+        if (string.IsNullOrEmpty(s)) return false;
+        foreach (var ch in s) {
+            if (char.IsLetter(ch)) return true; // Unicode-aware
+        }
+
+        return false;
     }
 }
