@@ -5000,7 +5000,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3398515610
+  GlobalObjectIdHash: 3150434508
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -5032,6 +5032,10 @@ MonoBehaviour:
   ps: {fileID: 3209389528046057304}
   spellData: {fileID: 11400000, guid: a3a1d32846418984eb2e1ebb46d331de, type: 2}
   damageMultiplier: 1
+  failSafeLifetimeSec: 20
+  enableStuckDetection: 1
+  stuckPosEpsilon: 0.02
+  stuckTimeSec: 2
 --- !u!114 &2716590686438998688
 MonoBehaviour:
   m_ObjectHideFlags: 0

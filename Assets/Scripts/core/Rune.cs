@@ -26,9 +26,9 @@ public class Rune : NetworkBehaviour {
             var toUI = effects.First();
             OnPickupClientRpc(other.GetComponent<NetworkObject>().OwnerClientId, toUI.effectName, toUI.description,
                 toUI.color);
-            _destroyed = true;
-            var netObj = GetComponent<NetworkObject>();
-            DestroyClientRpc(netObj.NetworkObjectId);
+
+            // server-authoritative despawn
+            DestroySelf();
         }
     }
 
@@ -41,16 +41,18 @@ public class Rune : NetworkBehaviour {
         }
     }
 
-    [ClientRpc]
-    public void DestroyClientRpc(ulong netObjId) {
-        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(netObjId, out var netObj)) {
-            if (IsServer && netObj.IsSpawned) {
-                netObj.Despawn();
-            }
+    [ServerRpc(RequireOwnership = false)]
+    public void DestroyServerRpc() {
+        DestroySelf();
+    }
 
-            if (netObj.gameObject != null) {
-                Destroy(netObj.gameObject);
-            }
+    private void DestroySelf() {
+        if (_destroyed) return;
+        _destroyed = true;
+        if (NetworkObject != null && NetworkObject.IsSpawned) {
+            NetworkObject.Despawn(true);
+        } else {
+            Destroy(gameObject);
         }
     }
 }

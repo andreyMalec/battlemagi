@@ -5210,6 +5210,11 @@ MonoBehaviour:
   renderer: {fileID: 0}
   ps: {fileID: 2265711912472754559}
   spellData: {fileID: 11400000, guid: 5763ea8db7d5fa74281107a26119aac4, type: 2}
+  damageMultiplier: 1
+  failSafeLifetimeSec: 20
+  enableStuckDetection: 1
+  stuckPosEpsilon: 0.02
+  stuckTimeSec: 2
 --- !u!114 &43292176052080342
 MonoBehaviour:
   m_ObjectHideFlags: 0

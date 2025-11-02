@@ -24,6 +24,8 @@ public class SpellDatabase : MonoBehaviour {
                 Debug.LogWarning($"Duplicate SpellData Id {s.id} on {s.name}");
             map[s.id] = s;
         }
+
+        SpellRecognizer.PrewarmFromDatabase();
     }
 
 

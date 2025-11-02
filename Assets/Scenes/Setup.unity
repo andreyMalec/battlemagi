@@ -1476,8 +1476,8 @@ MonoBehaviour:
   noContext: 1
   singleSegment: 1
   enableTokens: 1
-  initialPrompt: firaball, ball lightning, toxic strike, ice shards, chidori, scorching
-    ray, shadow step, blink, force field, air bullet, mana storm, dirt wall
+  initialPrompt: firaball, ball lightning, toxic sphere, ice shards, chidori, scorching
+    ray, shadow step, force field, air bullet, mana storm, dirt wall
   stepSec: 0.5
   keepSec: 0
   lengthSec: 3
@@ -1516,7 +1516,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28cdf9d512f14b2bac99f1ded2e396f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneLoader
-  waitUntilModelLoaded: 0
+  waitUntilModelLoaded: 1
 --- !u!4 &1941920897
 Transform:
   m_ObjectHideFlags: 0

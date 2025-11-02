@@ -259,6 +259,11 @@ MonoBehaviour:
   renderer: {fileID: 1318891264716447179}
   ps: {fileID: 2882634429595563070}
   spellData: {fileID: 11400000, guid: 672d61c7bfe8084488ff712bf14875f3, type: 2}
+  damageMultiplier: 1
+  failSafeLifetimeSec: 20
+  enableStuckDetection: 1
+  stuckPosEpsilon: 0.02
+  stuckTimeSec: 2
 --- !u!33 &8560616871665458569
 MeshFilter:
   m_ObjectHideFlags: 0

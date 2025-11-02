@@ -23,11 +23,32 @@ public class BaseSpell : NetworkBehaviour {
     [HideInInspector] public float damageMultiplier = 1;
     private bool movementAuthority;
 
+    // Failsafe against stuck projectiles
+    [Header("Failsafe")]
+    [SerializeField] private float failSafeLifetimeSec = 20f;
+
+    [Tooltip("Enable server-side stuck detection by position (disabled by default for static spells like walls)")]
+    [SerializeField]
+    private bool enableStuckDetection = false;
+
+    [SerializeField] private float stuckPosEpsilon = 0.02f; // meters
+    [SerializeField] private float stuckTimeSec = 2f;
+
+    private float _serverSpawnTime;
+    private float _lastMovedTime;
+    private Vector3 _lastServerPos;
+    private bool _despawning;
+
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
         var mode = GetComponent<NetworkTransform>().AuthorityMode;
         movementAuthority = (mode == NetworkTransform.AuthorityModes.Owner && IsOwner) ||
                             (mode == NetworkTransform.AuthorityModes.Server && IsServer);
+        if (IsServer) {
+            _serverSpawnTime = Time.time;
+            _lastMovedTime = _serverSpawnTime;
+            _lastServerPos = transform.position;
+        }
     }
 
     public virtual void Initialize(SpellData data, float damageMulti, int index) {
@@ -67,6 +88,22 @@ public class BaseSpell : NetworkBehaviour {
         if (!IsServer) return;
 
         LifetimePercent?.Invoke(lifetime.Tick());
+
+        if (!_despawning && failSafeLifetimeSec > 0f && Time.time - _serverSpawnTime > failSafeLifetimeSec) {
+            ForceDespawn($"Failsafe lifetime exceeded ({failSafeLifetimeSec}s)");
+            return;
+        }
+
+        if (!_despawning && enableStuckDetection && !spellData.isBeam) {
+            var cur = transform.position;
+            if ((cur - _lastServerPos).sqrMagnitude > stuckPosEpsilon * stuckPosEpsilon) {
+                _lastMovedTime = Time.time;
+                _lastServerPos = cur;
+            } else if (Time.time - _lastMovedTime > stuckTimeSec) {
+                ForceDespawn($"Stuck detected: no movement > {stuckTimeSec}s (eps {stuckPosEpsilon})");
+                return;
+            }
+        }
     }
 
     private void OnTriggerEnter(Collider other) {
@@ -103,34 +140,48 @@ public class BaseSpell : NetworkBehaviour {
 
     [ServerRpc(RequireOwnership = false)]
     public void DestroySpellServerRpc(ulong objectId) {
-        DestroySpellClientRpc(objectId);
-        StartCoroutine(WaitAndDestroy(objectId));
+        ForceDespawn();
     }
 
-    private IEnumerator WaitAndDestroy(ulong objectId) {
-        yield return new WaitForSeconds(0.5f);
+    public override void OnNetworkDespawn() {
+        base.OnNetworkDespawn();
+        if (ps != null) {
+            var emission = ps.emission;
+            emission.rateOverTime = 0f;
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
 
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(objectId, out var netObj))
-            yield break;
+        if (coll != null) coll.enabled = false;
+        if (renderer != null) renderer.enabled = false;
+        if (rb != null) rb.isKinematic = true;
+    }
 
-        netObj.Despawn();
-        if (netObj.gameObject != null)
-            Destroy(netObj.gameObject);
+    private void ForceDespawn(string reason = null) {
+        if (_despawning) return;
+        _despawning = true;
+
+        if (!string.IsNullOrEmpty(reason))
+            Debug.LogWarning($"[BaseSpell] Despawning {name}: {reason}");
+
+        // Pre-cleanup visuals on all clients to avoid hanging FX, then despawn
+        PreDespawnCleanupClientRpc();
+
+        if (NetworkObject != null && NetworkObject.IsSpawned) {
+            NetworkObject.Despawn(true);
+        } else {
+            Destroy(gameObject);
+        }
     }
 
     [ClientRpc]
-    private void DestroySpellClientRpc(ulong objectId) {
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(objectId, out var netObj))
-            return;
-        var spell = netObj.GetComponent<BaseSpell>();
-
-        // Отключаем видимые компоненты
-        if (spell.coll != null) spell.coll.enabled = false;
-        if (spell.renderer != null) spell.renderer.enabled = false;
-        if (spell.rb != null) spell.rb.isKinematic = true;
-        if (spell.ps != null) {
-            var emission = spell.ps.emission;
+    private void PreDespawnCleanupClientRpc() {
+        if (coll != null) coll.enabled = false;
+        if (renderer != null) renderer.enabled = false;
+        if (rb != null) rb.isKinematic = true;
+        if (ps != null) {
+            var emission = ps.emission;
             emission.rateOverTime = 0f;
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
     }
 
