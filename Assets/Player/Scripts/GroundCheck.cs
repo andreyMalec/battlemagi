@@ -13,25 +13,52 @@ public class GroundCheck : MonoBehaviour {
     public event System.Action Grounded;
 
     const float OriginOffset = .001f;
-    Vector3 RaycastOrigin => transform.position + Vector3.up * OriginOffset;
     float RaycastDistance => distanceThreshold + OriginOffset;
 
-    void LateUpdate() {
-        // Check if we are grounded now.
-        bool isGroundedNow = Physics.Raycast(RaycastOrigin, Vector3.down, distanceThreshold * 2);
+    // Use the actual character collider geometry for more reliable slope detection
+    private CharacterController _cc;
 
-        // Call event if we were in the air and we are now touching the ground.
+    private void Awake() {
+        _cc = GetComponentInParent<CharacterController>();
+    }
+
+    void LateUpdate() {
+        bool isGroundedNow;
+
+        // Compute probe from the character controller foot ring for robust contact on slopes
+        Vector3 up = _cc.transform.up;
+        Vector3 centerWorld = _cc.transform.TransformPoint(_cc.center);
+        float half = Mathf.Max(_cc.height * 0.5f - _cc.radius, 0f);
+        // foot origin slightly above the foot ring to avoid initial overlap
+        Vector3 footOrigin = centerWorld - up * (half + 0.01f);
+        float radius = Mathf.Max(0.01f, _cc.radius * 0.9f);
+
+        // Primary: short ray from foot center
+        isGroundedNow = Physics.Raycast(footOrigin + up * OriginOffset, Vector3.down, RaycastDistance);
+        // Fallback: spherecast around the foot ring, ignores slope angle limitations
+        if (!isGroundedNow) {
+            isGroundedNow = Physics.SphereCast(footOrigin + up * OriginOffset, radius, Vector3.down, out _, RaycastDistance);
+        }
+
         if (isGroundedNow && !isGrounded) {
             Grounded?.Invoke();
         }
 
-        // Update isGrounded.
         isGrounded = isGroundedNow;
     }
 
     void OnDrawGizmosSelected() {
-        // Draw a line in the Editor to show whether we are touching the ground.
-        Debug.DrawLine(RaycastOrigin, RaycastOrigin + Vector3.down * RaycastDistance,
+        // Visualize the probe from the character controller geometry
+        if (_cc == null) return;
+        Vector3 up = _cc.transform.up;
+        Vector3 centerWorld = _cc.transform.TransformPoint(_cc.center);
+        float half = Mathf.Max(_cc.height * 0.5f - _cc.radius, 0f);
+        Vector3 footOrigin = centerWorld - up * (half + 0.01f);
+        float radius = Mathf.Max(0.01f, _cc.radius * 0.9f);
+
+        Debug.DrawLine(footOrigin + up * OriginOffset, footOrigin + up * OriginOffset + Vector3.down * RaycastDistance,
             isGrounded ? Color.white : Color.red);
+        Gizmos.color = isGrounded ? Color.white : Color.red;
+        Gizmos.DrawWireSphere(footOrigin + up * OriginOffset, radius);
     }
 }

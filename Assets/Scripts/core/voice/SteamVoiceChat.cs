@@ -207,9 +207,14 @@ public class SteamVoiceChat : NetworkBehaviour {
             // Конвертация short → float [-1..1]
             var samples = new float[sampleCount];
             int bi = 0;
+            float vol = PlayersVoiceSettings.Volume(fromSteamId);
             for (int si = 0; si < sampleCount; si++, bi += 2) {
                 short s = (short)(buf[bi] | (buf[bi + 1] << 8));
-                samples[si] = s / 32768f;
+                float f = s / 32768f;
+                // Apply gain
+                float scaled = f * vol;
+                // Soft saturation to avoid hard clipping when vol > 1: y = x / (1 + |x|)
+                samples[si] = scaled / (1f + Mathf.Abs(scaled));
             }
 
             EnqueueSamples(fromSteamId, samples);

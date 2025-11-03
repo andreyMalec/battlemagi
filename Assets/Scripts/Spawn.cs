@@ -7,6 +7,7 @@ using Random = UnityEngine.Random;
 [ExecuteAlways]
 public class Spawn : MonoBehaviour {
     private readonly List<SpawnPoint> _spawnPoints = new();
+    private SpawnPoint _lastSpawnPoint = null;
 
     private void Awake() {
         RefreshSpawnPoints(false);
@@ -59,8 +60,20 @@ public class Spawn : MonoBehaviour {
                 return it.gameObject.activeSelf && (!checkTeam || it.team == team || it.team == TeamManager.Team.None);
             }
         ).ToArray();
-        var random = Random.Range(0, active.Length);
-        Debug.Log($"[SpawnPoint] Get Random in [0, {active.Length}] = {random}");
-        return active[random].transform;
+
+        // try to avoid returning the same spawn point twice in a row
+        int lastIndex = Array.IndexOf(active, _lastSpawnPoint);
+        int idx;
+        if (lastIndex < 0) {
+            idx = Random.Range(0, active.Length);
+        } else {
+            // choose uniformly from [0..N-1] excluding lastIndex without bias
+            int r = Random.Range(0, active.Length - 1);
+            idx = (r >= lastIndex) ? r + 1 : r;
+        }
+        var chosen = active[idx];
+        _lastSpawnPoint = chosen;
+        Debug.Log($"[SpawnPoint] Chose spawn index {idx} (pool size {active.Length}) for team {team}");
+        return chosen.transform;
     }
 }
