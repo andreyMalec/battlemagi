@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7238097125745469840}
   - component: {fileID: 3945837643547665161}
   - component: {fileID: 7658732705350956444}
+  - component: {fileID: 2376508746229529227}
   m_Layer: 0
   m_Name: Spell AirBullet Impact
   m_TagString: Untagged
@@ -155,3 +156,17 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &2376508746229529227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7354784787554302670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f9a0dee1cae43a887779d0c7a3d87b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WaitAndDestroy
+  ShowTopMostFoldoutHeaderGroup: 1
+  delay: 5
