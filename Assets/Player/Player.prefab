@@ -1111,6 +1111,7 @@ GameObject:
   - component: {fileID: 3149046875761574569}
   - component: {fileID: 334994221300718969}
   - component: {fileID: 9038200127585152614}
+  - component: {fileID: 1910116613512503440}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1659,6 +1660,27 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   spellManager: {fileID: 0}
   invocation: {fileID: 0}
+--- !u!135 &1910116613512503440
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.23
+  m_Center: {x: 0, y: 1.68, z: 0}
 --- !u!1 &5894542900604772476
 GameObject:
   m_ObjectHideFlags: 0

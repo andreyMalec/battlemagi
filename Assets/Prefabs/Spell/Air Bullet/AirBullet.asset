@@ -27,9 +27,9 @@ MonoBehaviour:
   manaCost: 50
   bookImage: {fileID: 2800000, guid: ccab4863f16749f47a4ee47521812140, type: 3}
   spellInHandPrefab: {fileID: 7389778017922607859, guid: 65f4cb5a67b8d334198770f0f4f09e19, type: 3}
-  spellBurstPrefab: {fileID: 1970519832159055978, guid: 55bd6df135435b4488457ad0661638e7, type: 3}
+  spellBurstPrefab: {fileID: 0}
   mainSpellPrefab: {fileID: 7354784787554302670, guid: 88e6626084c7ac943b208e2c0a845cf3, type: 3}
-  impactPrefab: {fileID: 0}
+  impactPrefab: {fileID: 7354784787554302670, guid: 1f5a0c11ba5f6a649a18dd3b32c017bd, type: 3}
   damageSound: 6
   castWaitingIndex: 1
   invocationIndex: 6
@@ -39,17 +39,17 @@ MonoBehaviour:
   lifeTime: 0.5
   baseDamage: 40
   canSelfDamage: 0
-  useParticleCollision: 0
+  useParticleCollision: 1
   isDOT: 0
   hasAreaEffect: 1
   areaRadius: 0.5
-  knockbackForce: -5
+  knockbackForce: 0
   isProjectile: 1
-  piercing: 0
-  baseSpeed: 0
+  piercing: 1
+  baseSpeed: 100
   projCount: 1
-  multiProjDelay: 0
-  spawnMode: 3
+  multiProjDelay: 0.07
+  spawnMode: 0
   arcAngleStep: 15
   raycastMaxDistance: 100
   isBeam: 0

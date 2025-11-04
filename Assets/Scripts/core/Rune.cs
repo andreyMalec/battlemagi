@@ -15,7 +15,7 @@ public class Rune : NetworkBehaviour {
         if (_destroyed) return;
         if (!IsServer) return;
 
-        if (other.TryGetComponent<StatusEffectManager>(out var manager)) {
+        if (other.TryGetComponent<Player>(out _) && other.TryGetComponent<StatusEffectManager>(out var manager)) {
             var ownerId = OwnerClientId;
             if (NetworkObject.IsSceneObject == true)
                 ownerId = ulong.MaxValue;
