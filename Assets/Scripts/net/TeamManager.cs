@@ -6,7 +6,8 @@ using UnityEngine;
 public class TeamManager : NetworkBehaviour {
     public enum TeamMode {
         FreeForAll,
-        TwoTeams
+        TwoTeams,
+        CaptureTheFlag
     }
 
     public enum Team {
@@ -30,24 +31,34 @@ public class TeamManager : NetworkBehaviour {
     }
 
     public event Action<Team> MyTeam;
+    public event Action<int, int> OnScoreChanged;
 
     // ========== Sync data ==========
     public NetworkVariable<TeamMode> CurrentMode = new(TeamMode.FreeForAll);
+    public NetworkVariable<int> RedScore = new(0);
+    public NetworkVariable<int> BlueScore = new(0);
     private NetworkList<TeamEntry> _teams;
 
     public static TeamManager Instance { get; private set; }
 
+    public bool isTeamMode => CurrentMode.Value != TeamMode.FreeForAll;
+    
     private void Awake() {
         if (Instance == null) Instance = this;
         DontDestroyOnLoad(gameObject);
         _teams = new NetworkList<TeamEntry>();
         _teams.OnListChanged += OnTeamListChanged;
+
+        RedScore.OnValueChanged += (_, newVal) => OnScoreChanged?.Invoke(newVal, BlueScore.Value);
+        BlueScore.OnValueChanged += (_, newVal) => OnScoreChanged?.Invoke(RedScore.Value, newVal);
     }
 
     public void Reset() {
         if (!IsServer) return;
         _teams.Clear();
         CurrentMode.Value = TeamMode.FreeForAll;
+        RedScore.Value = 0;
+        BlueScore.Value = 0;
     }
 
     public override void OnNetworkSpawn() {
@@ -84,7 +95,7 @@ public class TeamManager : NetworkBehaviour {
     }
 
     private Team AssignTeam(ulong clientId) {
-        if (CurrentMode.Value == TeamMode.FreeForAll)
+        if (!isTeamMode)
             return (Team)clientId; // уникальный ID — каждый сам за себя
 
         // TwoTeams — добавляем в менее заполненную
@@ -107,6 +118,8 @@ public class TeamManager : NetworkBehaviour {
     public void SetModeServerRpc(TeamMode mode) {
         if (!IsServer) return;
         CurrentMode.Value = mode;
+        RedScore.Value = 0;
+        BlueScore.Value = 0;
         RedistributePlayers();
     }
 
@@ -143,12 +156,27 @@ public class TeamManager : NetworkBehaviour {
         var entry = _teams[index];
         if ((int)entry.team == newTeamId)
             return;
-        if (CurrentMode.Value == TeamMode.TwoTeams && (newTeamId < 0 || newTeamId > 1))
+        if (isTeamMode && (newTeamId < 0 || newTeamId > 1))
             return;
         entry.team = (Team)newTeamId;
         _teams[index] = entry;
 
         Debug.Log($"[TeamManager] Player {clientId} switched to team {newTeamId}");
+    }
+
+    // ===============================
+    // CTF Scoring
+    // ===============================
+    public void AddScore(Team team, int delta) {
+        if (!IsServer) return;
+        if (team == Team.Red) RedScore.Value += delta;
+        if (team == Team.Blue) BlueScore.Value += delta;
+    }
+
+    public int GetScore(Team team) {
+        if (team == Team.Red) return RedScore.Value;
+        if (team == Team.Blue) return BlueScore.Value;
+        return 0;
     }
 
     // ===============================
@@ -178,7 +206,7 @@ public class TeamManager : NetworkBehaviour {
     }
 
     public bool AreEnemies(ulong a, ulong b) {
-        if (CurrentMode.Value == TeamMode.FreeForAll)
+        if (!isTeamMode)
             return a != b;
         return GetTeam(a) != GetTeam(b);
     }

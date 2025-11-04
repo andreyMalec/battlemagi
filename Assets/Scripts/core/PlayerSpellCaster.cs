@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
     public SpellRecognizer.Language language = SpellRecognizer.Language.En;
 
     [SerializeField] private AudioSource noManaSound;
+    [SerializeField] private AudioSource disabledSound;
     private NetworkStatSystem _statSystem;
     private MeshController _meshController;
     private SpellManager spellManager;
@@ -58,6 +60,11 @@ public class PlayerSpellCaster : NetworkBehaviour {
 
         var handled = result.similarity >= GameConfig.Instance.recognitionThreshold;
         if (!handled) return;
+        if (DisableWhileCarrying(recognizedSpell)) {
+            disabledSound?.Play();
+            recognizedSpell = null;
+            return;
+        }
 
         var manaCost = result.spell.manaCost * _statSystem.Stats.GetFinal(StatType.ManaCost);
         if (mana.Value >= manaCost) {
@@ -102,7 +109,13 @@ public class PlayerSpellCaster : NetworkBehaviour {
         if (!channeling && Input.GetKeyDown(spellCastKey) && castWaiting) {
             playerAnimator.CastWaitingAnim(false);
             castWaiting = false;
-            CastSpell();
+            if (DisableWhileCarrying(recognizedSpell)) {
+                disabledSound?.Play();
+                CancelSpell();
+            } else {
+                CastSpell();
+            }
+
             recognizedSpell = null;
         } else if (!channeling && Input.GetKeyDown(spellCancelKey) && castWaiting) {
             playerAnimator.CastWaitingAnim(false);
@@ -116,6 +129,16 @@ public class PlayerSpellCaster : NetworkBehaviour {
             recognizedSpell = null;
             spellEcho = null;
         }
+    }
+
+    private void CancelSpell() {
+        spellManager.CancelSpell();
+        if (recognizedSpell.HasValue && recognizedSpell.Value.spell.echoCount == echoCount) {
+            var manaCost = recognizedSpell.Value.spell.manaCost * _statSystem.Stats.GetFinal(StatType.ManaCost);
+            SpendManaServerRpc(-manaCost);
+        }
+
+        spellEcho = null;
     }
 
     private void CastSpell() {
@@ -171,5 +194,10 @@ public class PlayerSpellCaster : NetworkBehaviour {
                 OnMouthClose(tokens);
             }
         }
+    }
+
+    private bool DisableWhileCarrying(RecognizedSpell? spell) {
+        return spell.HasValue && spell.Value.spell.disableWhileCarrying &&
+               CTFFlag.All.Any(f => f.IsCarriedBy(OwnerClientId));
     }
 }

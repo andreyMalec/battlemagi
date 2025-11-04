@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Steamworks;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Steamworks;
 
 public class PlayerSpawner : NetworkBehaviour {
     [SerializeField] private GameObject playerPrefab;
@@ -13,6 +13,7 @@ public class PlayerSpawner : NetworkBehaviour {
     [SerializeField] private GameObject lobbyEnjoyer;
 
     public static PlayerSpawner instance;
+    public static event Action<ulong, Vector3> PlayerDiedServer; // Событие смерти на сервере (кто и где умер)
 
     private List<ulong> toKill = new();
 
@@ -71,6 +72,10 @@ public class PlayerSpawner : NetworkBehaviour {
             var player = client.PlayerObject;
             if (player != null && player.IsSpawned) {
                 Debug.Log($"[PlayerSpawner] Сервер: Игрок {clientId} умирает");
+
+                var pos = player.transform.position;
+                PlayerDiedServer?.Invoke(clientId, pos);
+
                 HandleDeathClientRpc(clientId);
                 if (!toKill.Contains(clientId))
                     toKill.Add(clientId);

@@ -85,7 +85,7 @@ public class ColorizeMesh : MonoBehaviour {
     }
 
     private void MyTeam(TeamManager.Team team) {
-        if (TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.FreeForAll) {
+        if (!TeamManager.Instance.isTeamMode) {
             colorPicker.gameObject.SetActive(true);
         } else {
             colorPicker.gameObject.SetActive(false);

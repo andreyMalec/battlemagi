@@ -60,7 +60,7 @@ public class LobbyMembers : MonoBehaviour {
             }
         }
 
-        var showTeams = TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.TwoTeams;
+        var showTeams = TeamManager.Instance.isTeamMode;
         buttonJoinRed.gameObject.SetActive(showTeams);
         buttonJoinBlue.gameObject.SetActive(showTeams);
         containerTeamBlue.gameObject.transform.parent.gameObject.SetActive(showTeams);
@@ -84,7 +84,7 @@ public class LobbyMembers : MonoBehaviour {
     private void UpdateTeam(Friend friend, Transform item) {
         var team = friend.GetTeam();
         var container = containerTeamRed.transform;
-        if (TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.TwoTeams && team == TeamManager.Team.Blue)
+        if (TeamManager.Instance.isTeamMode && team == TeamManager.Team.Blue)
             container = containerTeamBlue.transform;
         item.SetParent(container, false);
     }

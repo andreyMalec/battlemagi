@@ -22,6 +22,7 @@ public class SpellData : ScriptableObject {
 
     public bool clearInHandBeforeAnim = false;
     public bool previewMainInHand = false;
+    public bool disableWhileCarrying = false;
 
     public int echoCount = 0;
 
