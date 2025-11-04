@@ -12,8 +12,7 @@ public class SpellManager : NetworkBehaviour {
     private SpellData spellData;
 
     private void Awake() {
-        if (!TryGetComponent(out activeSpell))
-            activeSpell = gameObject.AddComponent<ActiveSpell>();
+        activeSpell = GetComponent<ActiveSpell>();
         _meshController = GetComponentInChildren<MeshController>();
         statSystem = GetComponent<NetworkStatSystem>();
     }

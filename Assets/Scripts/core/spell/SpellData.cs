@@ -36,6 +36,8 @@ public class SpellData : ScriptableObject {
     [HideIf("isDOT")] public bool hasAreaEffect = true;
     [ShowIf("hasAreaEffect")] public float areaRadius = 5f;
 
+    public float knockbackForce = 0f;
+
     [Header("Projectile")]
     public bool isProjectile = true;
 

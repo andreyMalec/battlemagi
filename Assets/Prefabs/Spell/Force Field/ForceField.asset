@@ -57,12 +57,15 @@ MonoBehaviour:
   isDOT: 0
   hasAreaEffect: 0
   areaRadius: 10
+  knockbackForce: 0
   isProjectile: 1
   piercing: 0
   baseSpeed: 0
   projCount: 1
   multiProjDelay: 0
   spawnMode: 4
+  arcAngleStep: 15
+  raycastMaxDistance: 50
   isBeam: 0
   isHoming: 0
   homingRadius: 10

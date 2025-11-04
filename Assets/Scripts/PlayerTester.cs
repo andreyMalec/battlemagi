@@ -68,7 +68,5 @@ public class PlayerTester : MonoBehaviour {
         else
             _velocityY += movementSettings.gravity * (_velocityY < 0 ? movementSettings.fallGravityMultiplier : 1f) *
                           Time.deltaTime;
-
-        _velocityY = Mathf.Max(_velocityY, movementSettings.maxFallSpeed);
     }
 }

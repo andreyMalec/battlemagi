@@ -114,6 +114,9 @@ public class BaseSpell : NetworkBehaviour {
                 return;
         }
 
+        if (spellData.knockbackForce != 0)
+            ApplyKnockback();
+
         damage.OnHit(other);
         OnHit(other);
 
@@ -182,6 +185,30 @@ public class BaseSpell : NetworkBehaviour {
             var emission = ps.emission;
             emission.rateOverTime = 0f;
             ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
+    }
+
+    private void ApplyKnockback() {
+        var hits = Physics.OverlapSphere(transform.position, spellData.areaRadius);
+        foreach (var hit in hits) {
+            var dir = (hit.transform.position - transform.position).normalized;
+            var distance = Vector3.Distance(transform.position, hit.transform.position);
+            var areaDamageMulti = 1f - distance / spellData.areaRadius;
+            var knock = spellData.knockbackForce * areaDamageMulti * damageMultiplier;
+            if (hit.TryGetComponent<Rigidbody>(out var hitRb)) {
+                hitRb.AddForce(dir * knock, ForceMode.Impulse);
+            } else {
+                var motor = hit.GetComponentInParent<PlayerPhysics>();
+                if (motor != null) {
+                    var fpm = motor.GetComponent<FirstPersonMovement>();
+                    if (fpm != null) {
+                        var sendParams = new ClientRpcParams {
+                            Send = new ClientRpcSendParams { TargetClientIds = new[] { fpm.OwnerClientId } }
+                        };
+                        fpm.ApplyImpulseClientRpc(dir * knock, sendParams);
+                    }
+                }
+            }
         }
     }
 

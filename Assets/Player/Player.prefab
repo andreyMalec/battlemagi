@@ -1109,6 +1109,8 @@ GameObject:
   - component: {fileID: 3269581595495701639}
   - component: {fileID: 5208608556239358256}
   - component: {fileID: 3149046875761574569}
+  - component: {fileID: 334994221300718969}
+  - component: {fileID: 9038200127585152614}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1628,6 +1630,35 @@ MonoBehaviour:
   title: {fileID: 5747269271916497230}
   description: {fileID: 1151799078343785623}
   duration: 3
+--- !u!114 &334994221300718969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c6d0012fe04f9c4883e05973bcae165, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterMotor
+  _impulseDamping: 5
+  _groundFriction: 8
+--- !u!114 &9038200127585152614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 323d105e963a4d02afd065a9a6e80891, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ActiveSpell
+  ShowTopMostFoldoutHeaderGroup: 1
+  spellManager: {fileID: 0}
+  invocation: {fileID: 0}
 --- !u!1 &5894542900604772476
 GameObject:
   m_ObjectHideFlags: 0

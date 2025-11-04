@@ -18,5 +18,4 @@ public class MovementSettings : ScriptableObject {
 
     [Header("Gravity")] public float gravity = -9.81f;
     public float fallGravityMultiplier = 2.5f;
-    public float maxFallSpeed = -25f;
 }
