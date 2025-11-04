@@ -1497,6 +1497,7 @@ GameObject:
   - component: {fileID: 1941920897}
   - component: {fileID: 1941920896}
   - component: {fileID: 1941920898}
+  - component: {fileID: 1941920899}
   m_Layer: 0
   m_Name: SceneLoader
   m_TagString: Untagged
@@ -1544,6 +1545,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39b463b470d7418b9a9b8e5d79964e30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GraphicsSettingsInitializer
+--- !u!114 &1941920899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1941920895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f18f063634a845c18a39115bf5633dc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SoundsSettingsInitializer
+  mainMixer: {fileID: 24100000, guid: 0dee41fcfd7ec4c429ddbec189e528ae, type: 2}
 --- !u!1 &2018065988
 GameObject:
   m_ObjectHideFlags: 0

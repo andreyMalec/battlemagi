@@ -15,6 +15,7 @@ public class GraphicsSettings : MonoBehaviour {
     [SerializeField] private CanvasGroup fpsLimitGroup;
 
     private Resolution[] resolutions;
+    private List<Vector2Int> uniqueResolutions; // width/height pairs
     private int currentResolutionIndex;
 
     private void Awake() {
@@ -22,23 +23,51 @@ public class GraphicsSettings : MonoBehaviour {
         resolutions = Screen.resolutions;
         resolutionDropdown.ClearOptions();
 
+        // Построим список уникальных по размеру разрешений (игнорируем частоту обновления)
+        uniqueResolutions = new List<Vector2Int>();
+        for (int i = 0; i < resolutions.Length; i++) {
+            var wh = new Vector2Int(resolutions[i].width, resolutions[i].height);
+            if (!uniqueResolutions.Contains(wh)) uniqueResolutions.Add(wh);
+        }
+
+        // Отсортируем по размеру (сначала меньшие)
+        uniqueResolutions = uniqueResolutions
+            .OrderBy(v => v.x)
+            .ThenBy(v => v.y)
+            .ToList();
+
         List<string> options = new List<string>();
         currentResolutionIndex = 0;
 
-        for (int i = 0; i < resolutions.Length; i++) {
-            string option = $"{resolutions[i].width} x {resolutions[i].height}";
+        // Текущий размер окна/экрана
+        int curW = Screen.width;
+        int curH = Screen.height;
+
+        for (int i = 0; i < uniqueResolutions.Count; i++) {
+            var wh = uniqueResolutions[i];
+            string option = $"{wh.x} x {wh.y}";
             options.Add(option);
 
-            if (resolutions[i].width == Screen.currentResolution.width &&
-                resolutions[i].height == Screen.currentResolution.height) {
+            // Выберем текущий индекс по фактическому размеру окна
+            if (wh.x == curW && wh.y == curH) {
                 currentResolutionIndex = i;
             }
         }
 
-        options = options.Distinct().ToList();
-
         resolutionDropdown.AddOptions(options);
-        resolutionDropdown.value = PlayerPrefs.GetInt("ResolutionIndex", currentResolutionIndex);
+
+        // Восстановим сохранённое значение (width/height), при отсутствии — используем текущий
+        int savedW = PlayerPrefs.GetInt("ResolutionWidth", uniqueResolutions[currentResolutionIndex].x);
+        int savedH = PlayerPrefs.GetInt("ResolutionHeight", uniqueResolutions[currentResolutionIndex].y);
+        int savedIndex = currentResolutionIndex;
+        for (int i = 0; i < uniqueResolutions.Count; i++) {
+            if (uniqueResolutions[i].x == savedW && uniqueResolutions[i].y == savedH) {
+                savedIndex = i;
+                break;
+            }
+        }
+
+        resolutionDropdown.value = savedIndex;
 
         // Режим окна
         windowModeDropdown.ClearOptions();
@@ -50,6 +79,7 @@ public class GraphicsSettings : MonoBehaviour {
         vsyncDropdown.AddOptions(new List<string> { "Off", "On" });
         vsyncDropdown.value = PlayerPrefs.GetInt("VSync", 0);
         vsyncDropdown.onValueChanged.AddListener(OnVSyncChanged);
+        OnVSyncChanged(vsyncDropdown.value);
 
         // FPS Limit
         fpsLimitDropdown.ClearOptions();
@@ -65,12 +95,52 @@ public class GraphicsSettings : MonoBehaviour {
     }
 
     private void ApplySettings() {
-        PlayerPrefs.SetInt("ResolutionIndex", resolutionDropdown.value);
-        PlayerPrefs.SetInt("WindowMode", windowModeDropdown.value);
-        PlayerPrefs.SetInt("VSync", vsyncDropdown.value);
-        PlayerPrefs.SetInt("FPSLimit", fpsLimitDropdown.value);
-        PlayerPrefs.Save();
+        // Сохраняем выбор пользователя
+        int selIndex = resolutionDropdown.value;
+        Vector2Int selWH = uniqueResolutions[Mathf.Clamp(selIndex, 0, uniqueResolutions.Count - 1)];
+        int windowModeIndex = windowModeDropdown.value;
+        int vsync = vsyncDropdown.value;
+        int fpsIndex = fpsLimitDropdown.value;
 
-        GraphicsSettingsInitializer.ApplySavedSettings();
+        // Прежние сохранённые значения для сравнения
+        int prevSavedW = PlayerPrefs.GetInt("ResolutionWidth", Screen.width);
+        int prevSavedH = PlayerPrefs.GetInt("ResolutionHeight", Screen.height);
+        int prevWindowMode = PlayerPrefs.GetInt("WindowMode", 0);
+
+        // 1) Режим окна
+        FullScreenMode mode = FullScreenMode.FullScreenWindow;
+        switch (windowModeIndex) {
+            case 0: mode = FullScreenMode.ExclusiveFullScreen; break;
+            case 1: mode = FullScreenMode.FullScreenWindow; break;
+            case 2: mode = FullScreenMode.Windowed; break;
+        }
+
+        // 2) Применяем изменение разрешения/режима только если пользователь изменил выбор относительно сохранённых
+        bool userChangedMode = windowModeIndex != prevWindowMode;
+        bool userChangedSize = selWH.x != prevSavedW || selWH.y != prevSavedH;
+        if (userChangedMode || userChangedSize) {
+            Screen.SetResolution(selWH.x, selWH.y, mode);
+        }
+
+        // 3) VSync
+        QualitySettings.vSyncCount = vsync;
+
+        // 4) FPS Limit
+        switch (fpsIndex) {
+            case 0: Application.targetFrameRate = 30; break;
+            case 1: Application.targetFrameRate = 60; break;
+            case 2: Application.targetFrameRate = 120; break;
+            case 3: Application.targetFrameRate = 144; break;
+            case 4: Application.targetFrameRate = 240; break;
+            case 5: Application.targetFrameRate = -1; break;
+        }
+
+        // 5) Сохраняем новые значения
+        PlayerPrefs.SetInt("ResolutionWidth", selWH.x);
+        PlayerPrefs.SetInt("ResolutionHeight", selWH.y);
+        PlayerPrefs.SetInt("WindowMode", windowModeIndex);
+        PlayerPrefs.SetInt("VSync", vsync);
+        PlayerPrefs.SetInt("FPSLimit", fpsIndex);
+        PlayerPrefs.Save();
     }
 }
