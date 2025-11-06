@@ -209,6 +209,15 @@ public class LobbyManager : MonoBehaviour {
         NetworkManager.Singleton.Shutdown();
     }
 
+    public void RestartLobby() {
+        if (CurrentLobby != null) {
+            var lobby = CurrentLobby.Value;
+            Debug.Log($"[LobbyManager] Restarting lobby {lobby.Id}");
+            lobby.SetMemberData(KeyReady, "0");
+            State = PlayerState.InLobby;
+        }
+    }
+
     #endregion
 }
 

@@ -37,6 +37,7 @@ public class TeamManager : NetworkBehaviour {
     public NetworkVariable<TeamMode> CurrentMode = new(TeamMode.FreeForAll);
     public NetworkVariable<int> RedScore = new(0);
     public NetworkVariable<int> BlueScore = new(0);
+    public NetworkVariable<int> EndChoice = new(0);
     private NetworkList<TeamEntry> _teams;
 
     public static TeamManager Instance { get; private set; }
@@ -53,12 +54,19 @@ public class TeamManager : NetworkBehaviour {
         BlueScore.OnValueChanged += (_, newVal) => OnScoreChanged?.Invoke(RedScore.Value, newVal);
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void SetEndChoiceServerRpc(int choice) {
+        if (!IsServer) return;
+        EndChoice.Value = choice;
+    }
+
     public void Reset() {
         if (!IsServer) return;
-        _teams.Clear();
         CurrentMode.Value = TeamMode.FreeForAll;
         RedScore.Value = 0;
         BlueScore.Value = 0;
+        EndChoice.Value = 0;
+        RedistributePlayers();
     }
 
     public override void OnNetworkSpawn() {

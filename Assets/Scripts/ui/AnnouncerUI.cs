@@ -1,9 +1,10 @@
 using System;
 using System.Collections;
+using Steamworks;
 using TMPro;
 using UnityEngine;
 
-public class CTFAnnouncerUI : MonoBehaviour {
+public class AnnouncerUI : MonoBehaviour {
     [SerializeField] private TMP_Text coloredText;
     [SerializeField] private TMP_Text normalText;
     [SerializeField] private Color blue;
@@ -19,7 +20,26 @@ public class CTFAnnouncerUI : MonoBehaviour {
         CTFAnnouncer.Instance.OnFlagDropped += DropFlag;
         CTFAnnouncer.Instance.OnFlagReturned += ReturnFlag;
         CTFAnnouncer.Instance.OnFlagCaptured += CaptureFlag;
+        GameAnnouncer.Instance.OnTeamWin += TeamWin;
+        GameAnnouncer.Instance.OnPlayerWin += PlayerWin;
         group.alpha = 0;
+    }
+
+    private void PlayerWin(ulong clientId) {
+        var data = PlayerManager.Instance.FindByClientId(clientId);
+        if (!data.HasValue) return;
+        var hsv = new Friend(data.Value.SteamId).GetColor();
+        coloredText.color = Color.HSVToRGB(hsv.hue / 360, hsv.saturation, 0.8f);
+        coloredText.text = data?.Name();
+        normalText.text = " wins the game!";
+        ShowMessage();
+    }
+
+    private void TeamWin(int winTeam) {
+        var team = (TeamManager.Team)winTeam;
+        setColor(team);
+        normalText.text = " wins the game!";
+        ShowMessage();
     }
 
     private void TakeFlag(int flagTeam) {
@@ -77,6 +97,7 @@ public class CTFAnnouncerUI : MonoBehaviour {
             group.alpha = Mathf.Lerp(start, target, time / duration);
             yield return null;
         }
+
         group.alpha = target;
         fadeCoroutine = null;
     }
@@ -86,5 +107,7 @@ public class CTFAnnouncerUI : MonoBehaviour {
         CTFAnnouncer.Instance.OnFlagDropped -= DropFlag;
         CTFAnnouncer.Instance.OnFlagReturned -= ReturnFlag;
         CTFAnnouncer.Instance.OnFlagCaptured -= CaptureFlag;
+        GameAnnouncer.Instance.OnTeamWin -= TeamWin;
+        GameAnnouncer.Instance.OnPlayerWin -= PlayerWin;
     }
 }
