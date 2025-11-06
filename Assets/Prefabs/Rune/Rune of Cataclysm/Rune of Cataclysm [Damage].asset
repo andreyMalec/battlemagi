@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: 'Rune of Cataclysm [Damage]'
   m_EditorClassIdentifier: Assembly-CSharp::DamageMultiplierEffect
   effectName: Rune of Cataclysm
-  description: x4 damage
+  description: x2 damage
   duration: 20
   color: {r: 0.18823531, g: 0.57254905, b: 1, a: 1}
   removeOnHit: 0
   onExpire: {fileID: 0}
-  multiplier: 4
+  multiplier: 2

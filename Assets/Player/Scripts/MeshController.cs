@@ -25,9 +25,28 @@ public class MeshController : MonoBehaviour {
     [Header("Ragdoll")]
     public Collider[] colliders;
 
-    private CharacterJoint[] joints;
-    private Rigidbody[] rigidbodies;
+    [Serializable]
+    public struct RigidbodyEntry {
+        public Rigidbody body;
+        public bool enableDetectCollisions;
+    }
 
+    public RigidbodyEntry[] rigidbodies;
+
+#if UNITY_EDITOR
+    private void OnValidate() {
+        if (rigidbodies == null || rigidbodies.Length == 0) {
+            var found = GetComponentsInChildren<Rigidbody>();
+            rigidbodies = new RigidbodyEntry[found.Length];
+            for (int i = 0; i < found.Length; i++) {
+                rigidbodies[i].body = found[i];
+                rigidbodies[i].enableDetectCollisions = true;
+            }
+        }
+    }
+#endif
+
+    private CharacterJoint[] joints;
     private Animator animator;
     private Cloth cloth;
 
@@ -48,7 +67,6 @@ public class MeshController : MonoBehaviour {
         cloth = cloak.GetComponent<Cloth>();
 
         joints = GetComponentsInChildren<CharacterJoint>();
-        rigidbodies = GetComponentsInChildren<Rigidbody>();
 
         SetRagdoll(false);
     }
@@ -63,14 +81,14 @@ public class MeshController : MonoBehaviour {
     public void SetRagdoll(bool enable) {
         animator.enabled = !enable;
         cloth.enabled = !enable;
-        foreach (var rigidbody in rigidbodies) {
-            rigidbody.detectCollisions = enable;
-            rigidbody.useGravity = enable;
+        foreach (var rbEntry in rigidbodies) {
+            rbEntry.body.useGravity = enable;
+            rbEntry.body.detectCollisions = rbEntry.enableDetectCollisions || enable;
         }
 
-        foreach (var collider in colliders) {
-            collider.enabled = enable;
-        }
+        // foreach (var collider in colliders) {
+        //     collider.enabled = enable;
+        // }
 
         foreach (var joint in joints) {
             joint.enableCollision = enable;

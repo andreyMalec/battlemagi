@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -5,7 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(NetworkObject))]
 [RequireComponent(typeof(Collider))]
 public class CTFFlag : NetworkBehaviour {
-    [SerializeField] public TeamManager.Team team = TeamManager.Team.Red;
+    [SerializeField] public TeamManager.Team team = TeamManager.Team.None;
     [SerializeField] private Renderer[] colorRenderers;
     [SerializeField] private Material redMaterial;
     [SerializeField] private Material blueMaterial;
@@ -30,6 +31,8 @@ public class CTFFlag : NetworkBehaviour {
     private float _autoReturnAt = -1f;
 
     private void Awake() {
+        if (team == TeamManager.Team.None)
+            throw new Exception($"{gameObject.name}: CTFFlagBase has no team assigned");
         _rb = GetComponent<Rigidbody>();
         _basePos = transform.position;
         _baseRot = transform.rotation;
@@ -80,6 +83,7 @@ public class CTFFlag : NetworkBehaviour {
                 ReturnToBase();
                 CTFAnnouncer.Instance?.ReturnFlag(team);
             }
+
             return;
         }
 
@@ -121,6 +125,7 @@ public class CTFFlag : NetworkBehaviour {
             transform.localPosition = carriedLocalOffset;
             transform.localRotation = Quaternion.identity;
         }
+
         // Очистить блок и таймер
         _lastCarrierBlocked = ulong.MaxValue;
         _pickupUnblockTime = 0f;

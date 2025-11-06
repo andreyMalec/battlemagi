@@ -6,30 +6,9 @@ public class GraphicsSettingsInitializer : MonoBehaviour {
     }
 
     public static void ApplySavedSettings() {
-        // ====== Resolution & Window Mode (from saved width/height) ======
-        int savedW;
-        int savedH;
-
-        // Backward compatibility: if width/height not set but old index is present
-        if (PlayerPrefs.HasKey("ResolutionWidth") && PlayerPrefs.HasKey("ResolutionHeight")) {
-            savedW = PlayerPrefs.GetInt("ResolutionWidth");
-            savedH = PlayerPrefs.GetInt("ResolutionHeight");
-        } else if (PlayerPrefs.HasKey("ResolutionIndex")) {
-            Resolution[] all = Screen.resolutions;
-            int resIndex = Mathf.Clamp(PlayerPrefs.GetInt("ResolutionIndex", all.Length - 1), 0,
-                Mathf.Max(0, all.Length - 1));
-            Resolution res = all.Length > 0
-                ? all[resIndex]
-                : new Resolution { width = Screen.width, height = Screen.height };
-            savedW = res.width;
-            savedH = res.height;
-            PlayerPrefs.SetInt("ResolutionWidth", savedW);
-            PlayerPrefs.SetInt("ResolutionHeight", savedH);
-            PlayerPrefs.Save();
-        } else {
-            savedW = Screen.width;
-            savedH = Screen.height;
-        }
+        // ====== Resolution & Window Mode ======
+        int savedW = PlayerPrefs.GetInt("ResolutionWidth", Screen.width);
+        int savedH = PlayerPrefs.GetInt("ResolutionHeight", Screen.height);
 
         int windowModeIndex = PlayerPrefs.GetInt("WindowMode", 0);
         FullScreenMode mode = FullScreenMode.FullScreenWindow;

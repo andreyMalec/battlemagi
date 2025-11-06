@@ -13,6 +13,7 @@ public class PlayerManager : NetworkBehaviour {
         public int Kills;
         public int Deaths;
         public int Assists;
+        public int Flags;
 
         public PlayerData(ulong clientId, ulong steamId) {
             ClientId = clientId;
@@ -20,6 +21,7 @@ public class PlayerManager : NetworkBehaviour {
             Kills = 0;
             Deaths = 0;
             Assists = 0;
+            Flags = 0;
         }
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter {
@@ -28,14 +30,15 @@ public class PlayerManager : NetworkBehaviour {
             serializer.SerializeValue(ref Kills);
             serializer.SerializeValue(ref Deaths);
             serializer.SerializeValue(ref Assists);
+            serializer.SerializeValue(ref Flags);
         }
 
         public bool Equals(PlayerData other) =>
             ClientId == other.ClientId && SteamId == other.SteamId && Kills == other.Kills && Deaths == other.Deaths &&
-            Assists == other.Assists;
+            Assists == other.Assists && Flags == other.Flags;
 
         public override string ToString() {
-            return $"PlayerData({ClientId}, {SteamId}, {Kills}, {Deaths}, {Assists})";
+            return $"PlayerData({ClientId}, {SteamId}, {Flags}, {Kills}, {Deaths}, {Assists})";
         }
 
         public GameObject PlayerObject() {
@@ -226,6 +229,17 @@ public class PlayerManager : NetworkBehaviour {
             if (player.ClientId == clientId) {
                 Debug.Log($"AddAssist for Player_{clientId}");
                 player.Assists++;
+                players[i] = player;
+            }
+        }
+    }
+
+    public void AddFlag(ulong clientId) {
+        for (int i = players.Count - 1; i >= 0; i--) {
+            var player = players[i];
+            if (player.ClientId == clientId) {
+                Debug.Log($"AddFlag for Player_{clientId}");
+                player.Flags++;
                 players[i] = player;
             }
         }

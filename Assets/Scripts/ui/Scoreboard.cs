@@ -7,12 +7,22 @@ public class Scoreboard : MonoBehaviour {
     [SerializeField] private KeyCode key = KeyCode.Tab;
     [SerializeField] private GameObject itemPrefab;
     [SerializeField] private GameObject container;
+    [SerializeField] private GameObject flagText;
+    [SerializeField] private RectTransform nameText;
 
     private readonly Dictionary<ulong, ScoreboardItem> _items = new();
 
     private CanvasGroup _canvas;
 
     private void OnEnable() {
+        if (TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.CaptureTheFlag) {
+            flagText.gameObject.SetActive(true);
+            nameText.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 380f);
+        } else {
+            flagText.gameObject.SetActive(false);
+            nameText.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 530f);
+        }
+
         var sorted = PlayerManager.Instance.Players()
             .OrderBy(it => TeamManager.Instance.GetTeam(it.ClientId));
         foreach (var player in sorted) {

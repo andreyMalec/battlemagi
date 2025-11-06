@@ -102,39 +102,6 @@ public class GraphicsSettings : MonoBehaviour {
         int vsync = vsyncDropdown.value;
         int fpsIndex = fpsLimitDropdown.value;
 
-        // Прежние сохранённые значения для сравнения
-        int prevSavedW = PlayerPrefs.GetInt("ResolutionWidth", Screen.width);
-        int prevSavedH = PlayerPrefs.GetInt("ResolutionHeight", Screen.height);
-        int prevWindowMode = PlayerPrefs.GetInt("WindowMode", 0);
-
-        // 1) Режим окна
-        FullScreenMode mode = FullScreenMode.FullScreenWindow;
-        switch (windowModeIndex) {
-            case 0: mode = FullScreenMode.ExclusiveFullScreen; break;
-            case 1: mode = FullScreenMode.FullScreenWindow; break;
-            case 2: mode = FullScreenMode.Windowed; break;
-        }
-
-        // 2) Применяем изменение разрешения/режима только если пользователь изменил выбор относительно сохранённых
-        bool userChangedMode = windowModeIndex != prevWindowMode;
-        bool userChangedSize = selWH.x != prevSavedW || selWH.y != prevSavedH;
-        if (userChangedMode || userChangedSize) {
-            Screen.SetResolution(selWH.x, selWH.y, mode);
-        }
-
-        // 3) VSync
-        QualitySettings.vSyncCount = vsync;
-
-        // 4) FPS Limit
-        switch (fpsIndex) {
-            case 0: Application.targetFrameRate = 30; break;
-            case 1: Application.targetFrameRate = 60; break;
-            case 2: Application.targetFrameRate = 120; break;
-            case 3: Application.targetFrameRate = 144; break;
-            case 4: Application.targetFrameRate = 240; break;
-            case 5: Application.targetFrameRate = -1; break;
-        }
-
         // 5) Сохраняем новые значения
         PlayerPrefs.SetInt("ResolutionWidth", selWH.x);
         PlayerPrefs.SetInt("ResolutionHeight", selWH.y);
@@ -142,5 +109,7 @@ public class GraphicsSettings : MonoBehaviour {
         PlayerPrefs.SetInt("VSync", vsync);
         PlayerPrefs.SetInt("FPSLimit", fpsIndex);
         PlayerPrefs.Save();
+
+        GraphicsSettingsInitializer.ApplySavedSettings();
     }
 }

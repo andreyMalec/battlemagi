@@ -1,16 +1,19 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
 [RequireComponent(typeof(NetworkObject))]
 [RequireComponent(typeof(Collider))]
 public class CTFFlagBase : NetworkBehaviour {
-    [SerializeField] public TeamManager.Team team = TeamManager.Team.Red;
+    [SerializeField] public TeamManager.Team team = TeamManager.Team.None;
     [SerializeField] private Renderer[] colorRenderers;
     [SerializeField] private Material redMaterial;
     [SerializeField] private Material blueMaterial;
 
     private void Awake() {
         ApplyTeamMaterial();
+        if (team == TeamManager.Team.None)
+            throw new Exception($"{gameObject.name}: CTFFlagBase has no team assigned");
     }
 
     private void ApplyTeamMaterial() {
@@ -36,6 +39,7 @@ public class CTFFlagBase : NetworkBehaviour {
             if (flag.team == team) continue; // only enemy flags captured here
             if (flag.IsCarriedBy(clientId)) {
                 flag.ReturnToBase();
+                PlayerManager.Instance.AddFlag(clientId);
                 TeamManager.Instance.AddScore(team, 1);
                 CTFAnnouncer.Instance?.CaptureFlag(team);
             }

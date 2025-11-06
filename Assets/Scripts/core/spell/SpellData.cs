@@ -34,6 +34,7 @@ public class SpellData : ScriptableObject {
     public bool canSelfDamage = true;
     public bool useParticleCollision = false;
     [HideIf("hasAreaEffect")] public bool isDOT = false;
+    [Min(0.001f)] [ShowIf("isDOT")] public float tickInterval = 1;
     [HideIf("isDOT")] public bool hasAreaEffect = true;
     [ShowIf("hasAreaEffect")] public float areaRadius = 5f;
 
