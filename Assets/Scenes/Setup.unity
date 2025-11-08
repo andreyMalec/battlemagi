@@ -1697,9 +1697,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6696734347862189425, guid: b390804259226a847b47db240409c0f2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6909515424507128418}
-    - targetCorrespondingSourceObject: {fileID: 6696734347862189425, guid: b390804259226a847b47db240409c0f2, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6909515424507128424}
   m_SourcePrefab: {fileID: 100100000, guid: b390804259226a847b47db240409c0f2, type: 3}
 --- !u!1 &6909515424507128399 stripped
 GameObject:
@@ -1849,18 +1846,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameProgressTracker
   ShowTopMostFoldoutHeaderGroup: 1
---- !u!114 &6909515424507128424
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6909515424507128399}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1450065ff35c4f24a5f0540b64769b82, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SpellDataExporter
+  SceneName: 
+  SelectedMap:
+    m_InternalValue: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

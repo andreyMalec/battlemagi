@@ -140,6 +140,7 @@ GameObject:
   - component: {fileID: 5188301568205527674}
   - component: {fileID: 3945837643547665161}
   - component: {fileID: 1506632420762820185}
+  - component: {fileID: 6295535575896761818}
   - component: {fileID: 8560616871665458569}
   - component: {fileID: 1318891264716447179}
   - component: {fileID: 2716590686438998688}
@@ -260,6 +261,19 @@ MonoBehaviour:
   ps: {fileID: 2882634429595563070}
   spellData: {fileID: 11400000, guid: 672d61c7bfe8084488ff712bf14875f3, type: 2}
   damageMultiplier: 1
+--- !u!114 &6295535575896761818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7354784787554302670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d02e6e1fa98043a7ab9f743329005671, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellLifetime
+  ShowTopMostFoldoutHeaderGroup: 1
   failSafeLifetimeSec: 20
   enableStuckDetection: 1
   stuckPosEpsilon: 0.02

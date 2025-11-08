@@ -5042,6 +5042,7 @@ GameObject:
   - component: {fileID: 8126110615948048159}
   - component: {fileID: 6753867480294431476}
   - component: {fileID: 3954586033070919246}
+  - component: {fileID: 5236172882996682256}
   - component: {fileID: 43292176052080342}
   - component: {fileID: 1043442424786372922}
   - component: {fileID: 8232143709006323480}
@@ -5179,7 +5180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 211028211
+  GlobalObjectIdHash: 3179499498
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -5211,6 +5212,19 @@ MonoBehaviour:
   ps: {fileID: 2265711912472754559}
   spellData: {fileID: 11400000, guid: 5763ea8db7d5fa74281107a26119aac4, type: 2}
   damageMultiplier: 1
+--- !u!114 &5236172882996682256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7389778017922607859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d02e6e1fa98043a7ab9f743329005671, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellLifetime
+  ShowTopMostFoldoutHeaderGroup: 1
   failSafeLifetimeSec: 20
   enableStuckDetection: 1
   stuckPosEpsilon: 0.02

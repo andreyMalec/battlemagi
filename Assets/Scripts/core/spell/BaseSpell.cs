@@ -5,9 +5,8 @@ using Unity.Netcode.Components;
 using UnityEngine;
 
 [RequireComponent(typeof(NetworkObject))]
+[RequireComponent(typeof(SpellLifetime))]
 public class BaseSpell : NetworkBehaviour {
-    public event Action<float> LifetimePercent;
-
     [Header("References")]
     public Rigidbody rb;
 
@@ -17,38 +16,18 @@ public class BaseSpell : NetworkBehaviour {
 
     private ISpellMovement movement;
     private ISpellDamage damage;
-    private ISpellLifetime lifetime;
+    private SpellLifetime lifetime;
 
     public SpellData spellData;
     [HideInInspector] public float damageMultiplier = 1;
     private bool movementAuthority;
-
-    // Failsafe against stuck projectiles
-    [Header("Failsafe")]
-    [SerializeField] private float failSafeLifetimeSec = 20f;
-
-    [Tooltip("Enable server-side stuck detection by position (disabled by default for static spells like walls)")]
-    [SerializeField]
-    private bool enableStuckDetection = false;
-
-    [SerializeField] private float stuckPosEpsilon = 0.02f; // meters
-    [SerializeField] private float stuckTimeSec = 2f;
-
-    private float _serverSpawnTime;
-    private float _lastMovedTime;
-    private Vector3 _lastServerPos;
-    private bool _despawning;
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
         var mode = GetComponent<NetworkTransform>().AuthorityMode;
         movementAuthority = (mode == NetworkTransform.AuthorityModes.Owner && IsOwner) ||
                             (mode == NetworkTransform.AuthorityModes.Server && IsServer);
-        if (IsServer) {
-            _serverSpawnTime = Time.time;
-            _lastMovedTime = _serverSpawnTime;
-            _lastServerPos = transform.position;
-        }
+        lifetime = GetComponent<SpellLifetime>();
     }
 
     public virtual void Initialize(SpellData data, float damageMulti, int index) {
@@ -76,33 +55,12 @@ public class BaseSpell : NetworkBehaviour {
         else
             damage = new DirectDamage(this, spellData);
 
-        lifetime = new SpellLifetime(this, spellData);
-        lifetime.Initialize();
+        lifetime.Initialize(this, spellData);
     }
 
     private void Update() {
         if (movementAuthority) {
             movement?.Tick();
-        }
-
-        if (!IsServer) return;
-
-        LifetimePercent?.Invoke(lifetime.Tick());
-
-        if (!_despawning && failSafeLifetimeSec > 0f && Time.time - _serverSpawnTime > failSafeLifetimeSec) {
-            ForceDespawn($"Failsafe lifetime exceeded ({failSafeLifetimeSec}s)");
-            return;
-        }
-
-        if (!_despawning && enableStuckDetection && !spellData.isBeam) {
-            var cur = transform.position;
-            if ((cur - _lastServerPos).sqrMagnitude > stuckPosEpsilon * stuckPosEpsilon) {
-                _lastMovedTime = Time.time;
-                _lastServerPos = cur;
-            } else if (Time.time - _lastMovedTime > stuckTimeSec) {
-                ForceDespawn($"Stuck detected: no movement > {stuckTimeSec}s (eps {stuckPosEpsilon})");
-                return;
-            }
         }
     }
 
@@ -141,53 +99,6 @@ public class BaseSpell : NetworkBehaviour {
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void DestroySpellServerRpc(ulong objectId) {
-        ForceDespawn();
-    }
-
-    public override void OnNetworkDespawn() {
-        base.OnNetworkDespawn();
-        if (ps != null) {
-            var emission = ps.emission;
-            emission.rateOverTime = 0f;
-            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-        }
-
-        if (coll != null) coll.enabled = false;
-        if (renderer != null) renderer.enabled = false;
-        if (rb != null) rb.isKinematic = true;
-    }
-
-    private void ForceDespawn(string reason = null) {
-        if (_despawning) return;
-        _despawning = true;
-
-        if (!string.IsNullOrEmpty(reason))
-            Debug.LogWarning($"[BaseSpell] Despawning {name}: {reason}");
-
-        // Pre-cleanup visuals on all clients to avoid hanging FX, then despawn
-        PreDespawnCleanupClientRpc();
-
-        if (NetworkObject != null && NetworkObject.IsSpawned) {
-            NetworkObject.Despawn(true);
-        } else {
-            Destroy(gameObject);
-        }
-    }
-
-    [ClientRpc]
-    private void PreDespawnCleanupClientRpc() {
-        if (coll != null) coll.enabled = false;
-        if (renderer != null) renderer.enabled = false;
-        if (rb != null) rb.isKinematic = true;
-        if (ps != null) {
-            var emission = ps.emission;
-            emission.rateOverTime = 0f;
-            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-        }
-    }
-
     private void ApplyKnockback() {
         var hits = Physics.OverlapSphere(transform.position, spellData.areaRadius);
         foreach (var hit in hits) {
@@ -209,6 +120,27 @@ public class BaseSpell : NetworkBehaviour {
                     }
                 }
             }
+        }
+    }
+
+    public override void OnNetworkDespawn() {
+        base.OnNetworkDespawn();
+        ClearVisual();
+    }
+
+    [ClientRpc]
+    public void PreDespawnCleanupClientRpc() {
+        ClearVisual();
+    }
+
+    private void ClearVisual() {
+        if (coll != null) coll.enabled = false;
+        if (renderer != null) renderer.enabled = false;
+        if (rb != null) rb.isKinematic = true;
+        if (ps != null) {
+            var emission = ps.emission;
+            emission.rateOverTime = 0f;
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
     }
 

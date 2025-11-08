@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,7 @@ public class GameProgress : NetworkBehaviour {
     private const string game2 = "Game 2";
     private const string test = "Test";
 
-    public string SceneName;
+    public string SceneName = game0;
     public NetworkVariable<int> SelectedMap = new();
 
     private void Awake() {
@@ -41,6 +42,7 @@ public class GameProgress : NetworkBehaviour {
             map = game2;
         SceneName = map;
         SelectedMap.Value = mapIndex;
+        Debug.Log($"[GameProgress] Selected map: {SceneName} mapIndex={mapIndex}");
     }
 
     public void StartMatch() {
@@ -52,7 +54,7 @@ public class GameProgress : NetworkBehaviour {
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
         if (!IsServer) return;
-
+        SelectMap(0);
         TeamManager.Instance.OnScoreChanged += HandleCTFScoreChanged;
         PlayerManager.Instance.OnListChanged += HandlePlayersListChanged;
     }

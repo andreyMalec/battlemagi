@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class HomingMovement : ISpellMovement {
     private readonly SpellData data;
-    private readonly Collider[] homingTargets = new Collider[10];
+    private readonly Collider[] homingTargets = new Collider[32];
     private readonly BaseSpell spell;
     private readonly Rigidbody rb;
     private Vector3 lastDirection;
@@ -21,8 +21,7 @@ public class HomingMovement : ISpellMovement {
 
     public void Tick() {
         if (rb.isKinematic) return;
-        var size = Physics.OverlapSphereNonAlloc(
-            spell.transform.position, data.homingRadius, homingTargets);
+        var size = Physics.OverlapSphereNonAlloc(spell.transform.position, data.homingRadius, homingTargets);
 
         for (var i = 0; i < size; i++) {
             var col = homingTargets[i];
@@ -31,18 +30,15 @@ public class HomingMovement : ISpellMovement {
             var netObj = col.GetComponent<NetworkObject>();
             if (TeamManager.Instance.AreAllies(netObj.OwnerClientId, spell.OwnerClientId)) continue;
 
-            var dir = (col.transform.position - spell.transform.position).normalized;
-            dir *= data.homingStrength * data.baseSpeed;
+            var dir = ((col.transform.position + Vector3.up) - spell.transform.position).normalized;
             lastDirection = dir;
-            lastDirection.y = 0;
 
-            var v = Vector3.Lerp(
-                rb.linearVelocity.normalized,
-                dir,
-                data.homingStrength * Time.deltaTime
-            ) * rb.linearVelocity.magnitude;
-            v.y = 0;
-            rb.linearVelocity = v;
+            var from = rb.linearVelocity.sqrMagnitude > 1e-6f ? rb.linearVelocity.normalized : spell.transform.forward;
+            var to = dir;
+            var t = data.homingStrength * Time.deltaTime;
+            var lerped = from + (to - from) * t;
+            var dirFinal = lerped.normalized;
+            rb.linearVelocity = dirFinal * rb.linearVelocity.magnitude;
             return;
         }
 
