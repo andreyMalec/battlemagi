@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Unity.Netcode;
 
-public class GameProgressTracker : NetworkBehaviour {
+public class GameProgress : NetworkBehaviour {
     // EndChoice mapping (as set from lobby):
     // 0 - first option (3 flags / 15 kills)
     // 1 - second option (5 flags / 30 kills)
@@ -15,7 +15,39 @@ public class GameProgressTracker : NetworkBehaviour {
     public static readonly int[] ctfTargets = new[] { 3, 5, 7 };
     public static readonly int[] killsTargets = new[] { 15, 30, 45 };
 
+    public static GameProgress Instance { get; private set; }
+
     private bool ended = false;
+
+    private const string game0 = "Game";
+    private const string game1 = "Game 3";
+    private const string game2 = "Game 2";
+    private const string test = "Test";
+
+    public string SceneName;
+    public NetworkVariable<int> SelectedMap = new();
+
+    private void Awake() {
+        if (Instance == null) Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+
+    public void SelectMap(int mapIndex) {
+        if (!IsServer) return;
+        var map = game0;
+        if (mapIndex == 1)
+            map = game1;
+        if (mapIndex == 2)
+            map = game2;
+        SceneName = map;
+        SelectedMap.Value = mapIndex;
+    }
+
+    public void StartMatch() {
+        if (!IsServer) return;
+        LobbyManager.Instance.CurrentLobby?.SetJoinable(false);
+        NetworkManager.Singleton.SceneManager.LoadScene(SceneName, LoadSceneMode.Single);
+    }
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();

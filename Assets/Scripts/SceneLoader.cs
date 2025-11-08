@@ -8,9 +8,6 @@ public class SceneLoader : MonoBehaviour {
     public bool waitUntilModelLoaded;
 
     private void Start() {
-        QualitySettings.vSyncCount = 0;
-        Application.targetFrameRate = 120;
-
         StartCoroutine(LoadMainMenu());
     }
 

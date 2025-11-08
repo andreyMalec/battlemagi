@@ -112,7 +112,7 @@ public class PlayerSpawner : NetworkBehaviour {
         List<ulong> clientsCompleted,
         List<ulong> clientsTimedOut
     ) {
-        if (IsHost && sceneName == GameScene.Name) {
+        if (IsHost && sceneName == GameProgress.Instance.SceneName) {
             foreach (var id in clientsCompleted) {
                 SpawnPlayerServerRpc(id);
             }

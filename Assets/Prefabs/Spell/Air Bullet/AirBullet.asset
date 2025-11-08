@@ -42,12 +42,13 @@ MonoBehaviour:
   canSelfDamage: 0
   useParticleCollision: 1
   isDOT: 0
+  tickInterval: 1
   hasAreaEffect: 1
   areaRadius: 0.5
   knockbackForce: 0
   isProjectile: 1
   piercing: 1
-  baseSpeed: 100
+  baseSpeed: 0
   projCount: 1
   multiProjDelay: 0.07
   spawnMode: 0

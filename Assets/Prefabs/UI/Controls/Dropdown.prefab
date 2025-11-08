@@ -1128,6 +1128,7 @@ GameObject:
   - component: {fileID: 5611610314836724264}
   - component: {fileID: 7269660427411014919}
   - component: {fileID: 4263955390756065809}
+  - component: {fileID: 72956846068160463}
   m_Layer: 5
   m_Name: Dropdown
   m_TagString: Untagged
@@ -1257,6 +1258,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_AlphaFadeSpeed: 0.15
+--- !u!114 &72956846068160463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8718642694345362569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6618c65bc9d44b2388f1895795b0b0f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DropdownHelper
+  _arrow: {fileID: 4521503050522967477}
 --- !u!1 &8958359105870185471
 GameObject:
   m_ObjectHideFlags: 0

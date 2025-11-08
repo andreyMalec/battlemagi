@@ -54,8 +54,7 @@ public class TeamManager : NetworkBehaviour {
         BlueScore.OnValueChanged += (_, newVal) => OnScoreChanged?.Invoke(RedScore.Value, newVal);
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void SetEndChoiceServerRpc(int choice) {
+    public void SetEndChoice(int choice) {
         if (!IsServer) return;
         EndChoice.Value = choice;
     }
@@ -119,11 +118,7 @@ public class TeamManager : NetworkBehaviour {
         return red < blue ? Team.Red : Team.Blue;
     }
 
-    // ===============================
-    // SERVER: Переключение режима
-    // ===============================
-    [ServerRpc(RequireOwnership = false)]
-    public void SetModeServerRpc(TeamMode mode) {
+    public void SetMode(TeamMode mode) {
         if (!IsServer) return;
         CurrentMode.Value = mode;
         RedScore.Value = 0;
