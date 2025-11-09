@@ -110,6 +110,12 @@ public class BaseSpell : NetworkBehaviour {
     public override void OnNetworkDespawn() {
         base.OnNetworkDespawn();
         ClearVisual();
+        if (IsServer) {
+            if (spellData != null)
+                SpellInstanceLimiter.Unregister(OwnerClientId, spellData, NetworkObject);
+            else
+                SpellInstanceLimiter.UnregisterByObject(NetworkObject);
+        }
     }
 
     [ClientRpc]

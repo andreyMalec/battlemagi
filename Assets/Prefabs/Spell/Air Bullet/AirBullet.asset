@@ -41,9 +41,10 @@ MonoBehaviour:
   previewMainInHand: 0
   disableWhileCarrying: 0
   echoCount: 3
+  instanceLimit: 0
   lifeTime: 0.5
   baseDamage: 40
-  canSelfDamage: 0
+  canSelfDamage: 1
   useParticleCollision: 1
   isDOT: 0
   tickInterval: 1

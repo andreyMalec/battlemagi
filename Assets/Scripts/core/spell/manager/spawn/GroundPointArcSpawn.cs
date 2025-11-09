@@ -52,14 +52,16 @@ public class GroundPointArcSpawn : ISpawnStrategy {
 
         // Каст вперёд и вниз по поверхности
         if (Physics.Raycast(origin, direction, out var hit, _maxDistance, mask)) {
-            return hit.point + hit.normal * 0.3f;
+            origin = hit.point + hit.normal * 0.3f;
+            if (Physics.Raycast(origin, Vector3.down, out var hit2, _maxDistance, mask)) {
+                return hit2.point + hit2.normal * 0.3f;
+            }
         }
 
         if (Physics.Raycast(origin + direction * _maxDistance, Vector3.down, out hit, _maxDistance, mask)) {
             return hit.point + hit.normal * 0.3f;
         }
 
-        // если ничего не найдено — просто вперёд на maxDistance
         return new Vector3(1000, 0, 0);
     }
 }

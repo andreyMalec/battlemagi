@@ -122,6 +122,7 @@ public class GameProgress : NetworkBehaviour {
             PlayerManager.Instance.ResetScore(player.ClientId);
         }
 
+        SpellInstanceLimiter.Clear();
         NetworkManager.Singleton.SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
         TeamManager.Instance.Reset();
         ended = false;

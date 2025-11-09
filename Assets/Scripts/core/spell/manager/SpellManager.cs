@@ -88,6 +88,9 @@ public class SpellManager : NetworkBehaviour {
         if (spell == null || spell.mainSpellPrefab == null)
             return;
 
+        var casterId = serverRpcParams.Receive.SenderClientId;
+
+        // Instantiate first so NetworkObject exists for limiter bookkeeping.
         GameObject obj = Instantiate(spell.mainSpellPrefab, position, rotation);
         var netObj = obj.GetComponent<NetworkObject>();
         if (netObj == null) {
@@ -96,7 +99,17 @@ public class SpellManager : NetworkBehaviour {
             return;
         }
 
-        var casterId = serverRpcParams.Receive.SenderClientId;
+        // Enforce instance limit (server-side authoritative). Remove older beyond limit before spawning new.
+        if (spell.instanceLimit > 0) {
+            var removed = SpellInstanceLimiter.Register(casterId, spell, netObj);
+            foreach (var old in removed) {
+                if (old == null) continue;
+                if (old.TryGetComponent<SpellLifetime>(out var oldSpell)) {
+                    oldSpell.Destroy();
+                }
+            }
+        }
+
         netObj.SpawnWithOwnership(casterId);
         StartCoroutine(DespawnAndDestroyServer(netObj, spell.lifeTime));
         var caster = NetworkManager.Singleton.ConnectedClients[casterId].PlayerObject.GetComponent<NetworkStatSystem>();

@@ -27,7 +27,7 @@ public class SpellData : ScriptableObject {
     public bool disableWhileCarrying = false;
 
     public int echoCount = 0;
-    // public int instanceLimit = 0;
+    public int instanceLimit = 0;
 
     public float lifeTime = 20f;
 

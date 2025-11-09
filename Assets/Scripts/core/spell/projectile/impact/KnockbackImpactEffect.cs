@@ -3,6 +3,8 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "KnockbackImpact", menuName = "Spells/Spell Impact Effect/Knockback")]
 public class KnockbackImpactEffect : ImpactEffect {
+    [SerializeField] private float rigidbodyForceMultiplier = 100f;
+
     public override GameObject OnImpact(BaseSpell spell, SpellData data) {
         if (data.knockbackForce == 0) return null;
         var radius = data.hasAreaEffect ? data.areaRadius : 1f;
@@ -13,13 +15,14 @@ public class KnockbackImpactEffect : ImpactEffect {
             var areaDamageMulti = 1f - distance / radius;
             var knock = data.knockbackForce * areaDamageMulti * spell.damageMultiplier;
             if (hit.TryGetComponent<Rigidbody>(out var hitRb)) {
-                hitRb.AddForce(dir * knock, ForceMode.Impulse);
+                hitRb.AddForce(dir * (knock * rigidbodyForceMultiplier), ForceMode.Impulse);
             } else {
                 var motor = hit.GetComponentInParent<PlayerPhysics>();
                 if (motor != null) {
                     var fpm = motor.GetComponent<FirstPersonMovement>();
                     if (fpm != null) {
-                        if (!data.canSelfDamage && TeamManager.Instance.AreAllies(spell.OwnerClientId, fpm.OwnerClientId))
+                        if (!data.canSelfDamage &&
+                            TeamManager.Instance.AreAllies(spell.OwnerClientId, fpm.OwnerClientId))
                             continue;
                         var sendParams = new ClientRpcParams {
                             Send = new ClientRpcSendParams { TargetClientIds = new[] { fpm.OwnerClientId } }

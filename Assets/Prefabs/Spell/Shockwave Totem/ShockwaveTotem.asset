@@ -55,6 +55,7 @@ MonoBehaviour:
   previewMainInHand: 1
   disableWhileCarrying: 0
   echoCount: 1
+  instanceLimit: 3
   lifeTime: 10
   baseDamage: 20
   canSelfDamage: 0
@@ -70,7 +71,7 @@ MonoBehaviour:
   projCount: 1
   multiProjDelay: 0
   spawnMode: 5
-  arcAngleStep: 30
+  arcAngleStep: 60
   raycastMaxDistance: 15
   isBeam: 0
   isHoming: 0
