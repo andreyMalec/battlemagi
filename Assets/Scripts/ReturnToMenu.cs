@@ -1,13 +1,11 @@
-using System;
-using Steamworks;
-using Steamworks.Data;
-using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class ReturnToMenu : MonoBehaviour {
+    [SerializeField] private KeyCode key = KeyCode.Keypad0;
+
     private void Update() {
-        if (Input.GetKeyDown(KeyCode.F2)) {
+        if (Input.GetKeyDown(key)) {
             var lobby = LobbyManager.Instance.CurrentLobby;
             if (lobby.HasValue)
                 Leave();

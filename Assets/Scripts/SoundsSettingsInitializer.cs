@@ -13,21 +13,6 @@ public class SoundsSettingsInitializer : MonoBehaviour {
 
     private void ApplyVolume(string param, float defaultValue) {
         float value = PlayerPrefs.GetFloat(param, defaultValue);
-        if (mainMixer == null) return;
-        const float eps = 0.0001f; // avoid log(0)
-
-        float clamped = Mathf.Max(value, eps);
-        float dB;
-
-        if (clamped <= 1f) {
-            // 0..1: normal attenuation (negative dB)
-            dB = Mathf.Log10(clamped) * 20f;
-        } else {
-            float mirrorX = Mathf.Min(clamped, 2f);
-            float t = Mathf.Max(2f - mirrorX, eps);
-            dB = -Mathf.Log10(t) * 20f;
-        }
-
-        mainMixer.SetFloat(param, dB);
+        AudioSettings.ApplyVolume(mainMixer, param, value);
     }
 }

@@ -84,7 +84,8 @@ public class SpellData : ScriptableObject {
 #if UNITY_EDITOR
     private void OnValidate() {
         _isArc = spawnMode is SpawnMode.Arc or SpawnMode.GroundPointArc;
-        _isRaycast = spawnMode is SpawnMode.GroundPoint or SpawnMode.GroundPointArc or SpawnMode.HitScan;
+        _isRaycast = spawnMode is SpawnMode.GroundPoint or SpawnMode.GroundPointArc or SpawnMode.HitScan
+            or SpawnMode.DirectDown;
 
         if (isBeam)
             isHoming = false;

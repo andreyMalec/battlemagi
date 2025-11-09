@@ -71,9 +71,9 @@ public class Damageable : NetworkBehaviour {
             PlayDamageSoundClientRpc((int)sound);
         }
 
-        if (_effectManager.HasEffect(typeof(RuneOfStasisEffect))) {
+        if (_effectManager.HasEffect("Rune of Stasis")) {
             if (health.Value <= 0 && before > 0) {
-                var removed = (RuneOfStasisEffect)_effectManager.RemoveEffect(typeof(RuneOfStasisEffect));
+                var removed = (RuneOfStasisEffect)_effectManager.RemoveEffect("Rune of Stasis");
                 _effectManager.AddEffect(clientId, removed.onExpire);
 
                 return;

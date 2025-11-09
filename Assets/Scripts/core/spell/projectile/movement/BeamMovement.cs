@@ -20,13 +20,6 @@ public class BeamMovement : ISpellMovement {
         if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(spell.OwnerClientId, out var client)) return;
         var player = client.PlayerObject;
         castPoint = player.GetComponent<SpellManager>().spellCastPoint;
-        try {
-            var slow = ScriptableObject.CreateInstance<ChannelingSpellEffect>();
-            slow.duration = data.channelDuration;
-            slow.effectName = "BeamMovement Slow";
-            player.GetComponent<StatusEffectManager>().AddEffect(spell.OwnerClientId, slow);
-        } catch (Exception _) {
-        }
     }
 
     public void Tick() {

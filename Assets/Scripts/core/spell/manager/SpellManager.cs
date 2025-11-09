@@ -10,6 +10,7 @@ public class SpellManager : NetworkBehaviour {
     private MeshController _meshController;
     private ISpawnStrategy spawnStrategy;
     private SpellData spellData;
+    private Coroutine _castCoutine;
 
     private void Awake() {
         activeSpell = GetComponent<ActiveSpell>();
@@ -46,6 +47,20 @@ public class SpellManager : NetworkBehaviour {
             activeSpell.Clear();
         }
 
+        if (_castCoutine != null) {
+            StopCoroutine(_castCoutine);
+        }
+
+        if (spellData?.isChanneling == true) {
+            foreach (var no in NetworkManager.SpawnManager.GetClientOwnedObjects(OwnerClientId)) {
+                if (no.TryGetComponent<BaseSpell>(out var spell) && spell.spellData.id == spellData.id) {
+                    if (spell.TryGetComponent<SpellLifetime>(out var lifetime)) {
+                        lifetime.Destroy();
+                        break;
+                    }
+                }
+            }
+        }
         spellData = null;
     }
 
@@ -65,7 +80,7 @@ public class SpellManager : NetworkBehaviour {
             activeSpell.Clear();
         }
 
-        StartCoroutine(spawnStrategy.Spawn(this, spellData, SpawnProjectile));
+        _castCoutine = StartCoroutine(spawnStrategy.Spawn(this, spellData, SpawnProjectile));
     }
 
     private void OnBurst(bool _) {

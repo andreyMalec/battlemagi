@@ -21,7 +21,7 @@ public class GroundEffect : NetworkBehaviour {
     }
 
     private void OnTriggerStay(Collider other) {
-        if (!IsServer) return;
+        if (!IsServer || other.isTrigger) return;
         if (!other.TryGetComponent<StatusEffectManager>(out var manager)) return;
         if (oneShot) {
             var netObj = other.GetComponent<NetworkObject>();

@@ -14,9 +14,9 @@ public class PlayerAnimator : NetworkBehaviour {
     private static readonly int FallStart = Animator.StringToHash("Fall Start");
     private static readonly int Invocation = Animator.StringToHash("Invocation");
     private static readonly int CastWaiting = Animator.StringToHash("Cast Waiting");
-    private static readonly int Channeling = Animator.StringToHash("Channeling");
     private static readonly int CastSpeed = Animator.StringToHash("CastSpeed");
     private static readonly int CastWaitingIndex = Animator.StringToHash("CastWaitingIndex");
+    private static readonly int CancelChanneling = Animator.StringToHash("CancelChanneling");
 
     private static readonly float eps = 0.05f;
     public Transform ikHand;
@@ -57,10 +57,6 @@ public class PlayerAnimator : NetworkBehaviour {
         ikRot = ikHand.localRotation;
     }
 
-    public void TriggerChanneling() {
-        AnimateTrigger(Channeling);
-    }
-
     public void CastWaitingAnim(bool waiting, int index = 0) {
         AnimateBool(CastWaiting, waiting);
         if (waiting)
@@ -95,6 +91,10 @@ public class PlayerAnimator : NetworkBehaviour {
                 ikHandRight.localRotation = ikHand.localRotation;
             }
         }
+    }
+
+    public void CancelSpellChanneling() {
+        AnimateTrigger(CancelChanneling);
     }
 
     public IEnumerator CastSpell(SpellData spell) {

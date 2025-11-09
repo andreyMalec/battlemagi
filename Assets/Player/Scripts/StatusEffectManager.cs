@@ -4,18 +4,18 @@ using Unity.Netcode;
 using UnityEngine;
 
 public class StatusEffectManager : NetworkBehaviour {
-    private Dictionary<System.Type, StatusEffectRuntime> activeEffects = new();
+    private Dictionary<string, StatusEffectRuntime> activeEffects = new();
 
     void Update() {
         if (!IsServer) return;
 
-        var toRemove = new List<System.Type>();
+        var toRemove = new List<string>();
         var toAdd = new List<KeyValuePair<ulong, StatusEffectData>>();
         foreach (var effect in activeEffects.Values) {
             effect.OnTick(gameObject, Time.deltaTime);
             if (effect.IsExpired) {
                 effect.OnExpire(gameObject);
-                toRemove.Add(effect.data.GetType());
+                toRemove.Add(effect.data.effectName);
                 if (effect.data.onExpire != null) {
                     toAdd.Add(new KeyValuePair<ulong, StatusEffectData>(effect.ownerClientId, effect.data.onExpire));
                 }
@@ -33,12 +33,12 @@ public class StatusEffectManager : NetworkBehaviour {
 
     public void HandleHit() {
         foreach (var effect in activeEffects.Values.Where(effect => effect.data.removeOnHit)) {
-            RemoveEffect(effect.data.GetType());
+            RemoveEffect(effect.data.effectName);
         }
     }
 
     public void AddEffect(ulong ownerClientId, StatusEffectData effect) {
-        if (activeEffects.TryGetValue(effect.GetType(), out var previous)) {
+        if (activeEffects.TryGetValue(effect.effectName, out var previous)) {
             switch (effect.CompareTo(previous.data)) {
                 case StatusEffectData.RESET_TIME:
                     previous.ResetTime();
@@ -56,9 +56,9 @@ public class StatusEffectManager : NetworkBehaviour {
         }
     }
 
-    public StatusEffectData RemoveEffect(System.Type type) {
+    public StatusEffectData RemoveEffect(string type) {
         StatusEffectData removed = null;
-        foreach (var effect in activeEffects.Values.Where(effect => effect.data.GetType() == type)) {
+        foreach (var effect in activeEffects.Values.Where(effect => effect.data.effectName == type)) {
             effect.OnExpire(gameObject);
             removed = effect.data;
         }
@@ -71,11 +71,11 @@ public class StatusEffectManager : NetworkBehaviour {
     private void Apply(ulong ownerClientId, StatusEffectData effect) {
         var runtime = effect.CreateRuntime();
         runtime.OnApply(ownerClientId, gameObject);
-        activeEffects[effect.GetType()] = runtime;
+        activeEffects[effect.effectName] = runtime;
         Debug.Log($"AddEffect {effect.effectName} to {gameObject.name}");
     }
 
-    public bool HasEffect(System.Type type) {
+    public bool HasEffect(string type) {
         return activeEffects.ContainsKey(type);
     }
 }

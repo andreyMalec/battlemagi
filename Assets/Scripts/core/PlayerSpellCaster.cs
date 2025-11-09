@@ -30,8 +30,8 @@ public class PlayerSpellCaster : NetworkBehaviour {
     private float _restoreTick;
     private int echoCount = 0;
     private RecognizedSpell? spellEcho;
-
     private readonly SpellRecognizer _recognizer = new();
+    private Coroutine _channelingCoutine;
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
@@ -117,17 +117,26 @@ public class PlayerSpellCaster : NetworkBehaviour {
             }
 
             recognizedSpell = null;
-        } else if (!channeling && Input.GetKeyDown(spellCancelKey) && castWaiting) {
-            playerAnimator.CastWaitingAnim(false);
-            castWaiting = false;
-            spellManager.CancelSpell();
-            if (recognizedSpell.HasValue && recognizedSpell.Value.spell.echoCount == echoCount) {
-                var manaCost = recognizedSpell.Value.spell.manaCost * _statSystem.Stats.GetFinal(StatType.ManaCost);
-                SpendManaServerRpc(-manaCost);
-            }
+        } else if (Input.GetKeyDown(spellCancelKey)) {
+            if (castWaiting) {
+                playerAnimator.CastWaitingAnim(false);
+                castWaiting = false;
+                spellManager.CancelSpell();
+                if (recognizedSpell.HasValue && recognizedSpell.Value.spell.echoCount == echoCount) {
+                    var manaCost = recognizedSpell.Value.spell.manaCost * _statSystem.Stats.GetFinal(StatType.ManaCost);
+                    SpendManaServerRpc(-manaCost);
+                }
 
-            recognizedSpell = null;
-            spellEcho = null;
+                recognizedSpell = null;
+                spellEcho = null;
+            } else if (channeling) {
+                if (_channelingCoutine != null)
+                    StopCoroutine(_channelingCoutine);
+                playerAnimator.CancelSpellChanneling();
+                spellManager.CancelSpell();
+                spellEcho = null;
+                channeling = false;
+            }
         }
     }
 
@@ -146,6 +155,13 @@ public class PlayerSpellCaster : NetworkBehaviour {
         if (spellEcho.HasValue)
             spell = spellEcho;
         if (!spell.HasValue) return;
+        if (spell.Value.spell.isChanneling) {
+            channeling = true;
+            if (_channelingCoutine != null)
+                StopCoroutine(_channelingCoutine);
+            _channelingCoutine = StartCoroutine(Channel(spell.Value.spell));
+        }
+
         StartCoroutine(playerAnimator.CastSpell(spell.Value.spell));
         StartCoroutine(spellManager.CastSpell(spell.Value.spell));
     }
@@ -158,6 +174,11 @@ public class PlayerSpellCaster : NetworkBehaviour {
         else {
             spellEcho = null;
         }
+    }
+
+    private IEnumerator Channel(SpellData spell) {
+        yield return new WaitForSeconds(spell.channelDuration);
+        channeling = false;
     }
 
     private IEnumerator SpellEcho(SpellData spell) {

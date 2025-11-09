@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bf4989d79519c1349aa400eb4e706e49, type: 3}
-  m_Name: DirtWall
+  m_Name: Flame Dash
   m_EditorClassIdentifier: Assembly-CSharp::SpellData
-  id: 9
-  name: Dirt Wall
-  description: 'A surge of geomantic force erupts from the ground, raising a solid
-    barrier of soil and stone.
+  id: 11
+  name: Flame Dash
+  description: 'Surge forward with blazing speed, leaving a trail of searing flames
+    in your wake.
 
 
-    Blocks incoming attacks and reshapes the battlefield
-    to gain an advantage.'
+    Grants increased movement speed while creating a damaging
+    fiery path.'
   nameRu: 
   spellWords:
-  - DirtWall
+  - FlameDash
   spellWordsRu:
   - "\u041E\u0433\u043D\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
   - "\u0428\u0430\u0440\u041E\u0433\u043D\u044F"
@@ -39,42 +39,43 @@ MonoBehaviour:
   - "\u041E\u0433\u043E\u043D\u0435\u043D\u044B\u0428\u0430\u0440"
   - "\u0423\u0447\u0433\u0434\u0435\u043D\u044B\u0439\u0428\u0430\u0440"
   - "\u041E\u0433\u043D\u0435\u0428\u0430\u0440"
-  manaCost: 25
-  bookImage: {fileID: 2800000, guid: ed4bb8b28774b0447ab249bc06e6c9b5, type: 3}
-  spellInHandPrefab: {fileID: 0}
+  manaCost: 75
+  bookImage: {fileID: 2800000, guid: 97b3c55078bca9940b8b0797e34d6883, type: 3}
+  spellInHandPrefab: {fileID: 7389778017922607859, guid: c15bbb0dfcac1cc439c3f7d773e87cd4, type: 3}
   spellBurstPrefab: {fileID: 0}
-  mainSpellPrefab: {fileID: 7354784787554302670, guid: f6ff8493f4aa5044eaba2da0ded92411, type: 3}
+  mainSpellPrefab: {fileID: 1315042845377307778, guid: 125e95f71f3af6844b6a45cfb37588b2, type: 3}
   impactPrefab: {fileID: 0}
   impactEffects: []
-  buffs: []
-  damageSound: 0
+  buffs:
+  - {fileID: 11400000, guid: 891782de5905dca469ca071963b087d2, type: 2}
+  damageSound: 5
   castWaitingIndex: 0
-  invocationIndex: 8
+  invocationIndex: 7
   clearInHandBeforeAnim: 0
-  previewMainInHand: 1
+  previewMainInHand: 0
   disableWhileCarrying: 0
-  echoCount: 1
-  instanceLimit: 6
-  lifeTime: 30
+  echoCount: 0
+  instanceLimit: 0
+  lifeTime: 10
   baseDamage: 0
   canSelfDamage: 0
   useParticleCollision: 0
   isDOT: 0
   tickInterval: 1
   hasAreaEffect: 0
-  areaRadius: 10
+  areaRadius: 5
   knockbackForce: 0
   isProjectile: 1
   piercing: 1
   baseSpeed: 0
-  projCount: 2
-  multiProjDelay: 0
-  spawnMode: 5
-  arcAngleStep: 30
-  raycastMaxDistance: 20
+  projCount: 20
+  multiProjDelay: 0.2
+  spawnMode: 4
+  arcAngleStep: 15
+  raycastMaxDistance: 50
   isBeam: 0
   isHoming: 0
   homingRadius: 10
   homingStrength: 1
-  isChanneling: 0
-  channelDuration: 3
+  isChanneling: 1
+  channelDuration: 5

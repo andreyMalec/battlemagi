@@ -43,18 +43,18 @@ public class AudioSettings : MonoBehaviour {
         saved = Mathf.Clamp(saved, minValue, maxValue);
 
         slider.value = saved;
-        ApplyVolume(key, saved);
+        ApplyVolume(mainMixer, key, saved);
     }
 
     private void OnSliderChanged(string key, float value) {
         value = Mathf.Clamp(value, minValue, maxValue);
         PlayerPrefs.SetFloat(key, value);
         PlayerPrefs.Save();
-        ApplyVolume(key, value);
+        ApplyVolume(mainMixer, key, value);
     }
 
-    private void ApplyVolume(string param, float value) {
-        if (mainMixer == null) return;
+    public static void ApplyVolume(AudioMixer mixer, string param, float value) {
+        if (mixer == null) return;
         const float eps = 0.0001f; // avoid log(0)
 
         float clamped = Mathf.Max(value, eps);
@@ -69,6 +69,6 @@ public class AudioSettings : MonoBehaviour {
             dB = -Mathf.Log10(t) * 20f;
         }
 
-        mainMixer.SetFloat(param, dB);
+        mixer.SetFloat(param, dB);
     }
 }

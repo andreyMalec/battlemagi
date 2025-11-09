@@ -28,7 +28,7 @@ public class BaseSpell : NetworkBehaviour {
         spellData = data;
         damageMultiplier = damageMulti;
 
-        Debug.Log($"[SpellProjectile] Игрок {OwnerClientId} выпустил {spellData.name}");
+        Debug.Log($"[SpellProjectile] Игрок {OwnerClientId} выпустил {spellData.name}[{NetworkObjectId}]");
 
         if (movementAuthority || IsServer) {
             if (spellData.isBeam)
