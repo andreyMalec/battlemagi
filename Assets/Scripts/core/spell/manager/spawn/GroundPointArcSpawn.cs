@@ -51,12 +51,11 @@ public class GroundPointArcSpawn : ISpawnStrategy {
         int mask = 1 << terrainLayer;
 
         // Каст вперёд и вниз по поверхности
-        if (Physics.Raycast(origin, direction, out var hit, _maxDistance, mask | Physics.DefaultRaycastLayers)) {
+        if (Physics.Raycast(origin, direction, out var hit, _maxDistance, mask)) {
             return hit.point + hit.normal * 0.3f;
         }
 
-        if (Physics.Raycast(origin + direction * _maxDistance, Vector3.down, out hit, _maxDistance,
-                mask | Physics.DefaultRaycastLayers)) {
+        if (Physics.Raycast(origin + direction * _maxDistance, Vector3.down, out hit, _maxDistance, mask)) {
             return hit.point + hit.normal * 0.3f;
         }
 

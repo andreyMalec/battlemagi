@@ -23,6 +23,7 @@ MonoBehaviour:
   nameRu: 
   spellWords:
   - ScorchingRay
+  - Incinerate
   spellWordsRu:
   - "\u041E\u0433\u043D\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
   - "\u0428\u0430\u0440\u041E\u0433\u043D\u044F"
@@ -50,12 +51,14 @@ MonoBehaviour:
   invocationIndex: 5
   clearInHandBeforeAnim: 1
   previewMainInHand: 0
+  disableWhileCarrying: 0
   echoCount: 0
   lifeTime: 5
   baseDamage: 1.5
   canSelfDamage: 1
   useParticleCollision: 1
   isDOT: 0
+  tickInterval: 1
   hasAreaEffect: 0
   areaRadius: 5
   knockbackForce: 0

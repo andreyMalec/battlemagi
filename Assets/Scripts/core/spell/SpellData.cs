@@ -15,6 +15,8 @@ public class SpellData : ScriptableObject {
     public GameObject spellBurstPrefab;
     public GameObject mainSpellPrefab;
     public GameObject impactPrefab;
+    public ImpactEffect[] impactEffects;
+    public StatusEffectData[] buffs;
     public DamageSoundType damageSound;
 
     public int castWaitingIndex = 0;
@@ -25,6 +27,7 @@ public class SpellData : ScriptableObject {
     public bool disableWhileCarrying = false;
 
     public int echoCount = 0;
+    // public int instanceLimit = 0;
 
     public float lifeTime = 20f;
 
@@ -33,9 +36,9 @@ public class SpellData : ScriptableObject {
 
     public bool canSelfDamage = true;
     public bool useParticleCollision = false;
-    [HideIf("hasAreaEffect")] public bool isDOT = false;
+    public bool isDOT = false;
     [Min(0.001f)] [ShowIf("isDOT")] public float tickInterval = 1;
-    [HideIf("isDOT")] public bool hasAreaEffect = true;
+    public bool hasAreaEffect = true;
     [ShowIf("hasAreaEffect")] public float areaRadius = 5f;
 
     public float knockbackForce = 0f;
@@ -82,11 +85,6 @@ public class SpellData : ScriptableObject {
     private void OnValidate() {
         _isArc = spawnMode is SpawnMode.Arc or SpawnMode.GroundPointArc;
         _isRaycast = spawnMode is SpawnMode.GroundPoint or SpawnMode.GroundPointArc or SpawnMode.HitScan;
-
-        if (isDOT)
-            hasAreaEffect = false;
-        if (hasAreaEffect)
-            isDOT = false;
 
         if (isBeam)
             isHoming = false;

@@ -11,11 +11,10 @@ public static class DamageUtils {
         ulong[] excludeClients = null,
         bool applyDistanceMultiplier = false
     ) {
-        var netObj = damageable.GetComponent<NetworkObject>();
-        if (!data.canSelfDamage && TeamManager.Instance.AreAllies(spell.OwnerClientId, netObj.OwnerClientId))
+        if (!data.canSelfDamage && TeamManager.Instance.AreAllies(spell.OwnerClientId, damageable.OwnerClientId))
             return ulong.MaxValue;
 
-        if (excludeClients != null && excludeClients.Contains(netObj.OwnerClientId))
+        if (excludeClients != null && excludeClients.Contains(damageable.OwnerClientId))
             return ulong.MaxValue;
 
         var damageMulti = spell.damageMultiplier;
@@ -28,7 +27,7 @@ public static class DamageUtils {
             damageable.TakeDamage(spell.OwnerClientId, data.baseDamage * damageMulti, data.damageSound);
         }
 
-        return netObj.OwnerClientId;
+        return damageable.OwnerClientId;
     }
 
     public static ulong TryApplyDamage(
@@ -56,10 +55,7 @@ public static class DamageUtils {
             return false;
         }
 
-        var netObj = damageable.GetComponent<NetworkObject>();
-        if (netObj == null) return false;
-
-        owner = netObj.OwnerClientId;
+        owner = damageable.OwnerClientId;
         return true;
     }
 }

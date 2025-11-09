@@ -14,6 +14,12 @@ public class GroundEffect : NetworkBehaviour {
 
     private bool _destroyed = false;
 
+    public void Initialize(List<StatusEffectData> e, float d, bool o) {
+        effects = e;
+        duration = d;
+        oneShot = o;
+    }
+
     private void OnTriggerStay(Collider other) {
         if (!IsServer) return;
         if (!other.TryGetComponent<StatusEffectManager>(out var manager)) return;

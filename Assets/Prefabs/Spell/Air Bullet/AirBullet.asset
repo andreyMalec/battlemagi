@@ -30,6 +30,10 @@ MonoBehaviour:
   spellBurstPrefab: {fileID: 0}
   mainSpellPrefab: {fileID: 7354784787554302670, guid: 88e6626084c7ac943b208e2c0a845cf3, type: 3}
   impactPrefab: {fileID: 7354784787554302670, guid: 1f5a0c11ba5f6a649a18dd3b32c017bd, type: 3}
+  impactEffects:
+  - {fileID: 11400000, guid: 127999936b6a5984b83f2456b3a0af49, type: 2}
+  - {fileID: 11400000, guid: 633ddd55d6ba581418cd4d4ef4f0e621, type: 2}
+  buffs: []
   damageSound: 6
   castWaitingIndex: 1
   invocationIndex: 6

@@ -10,7 +10,7 @@ public class AreaDamage : ISpellDamage {
         data = d;
     }
 
-    public void OnHit(Collider other) {
+    public bool OnEnter(Collider other) {
         // track clients we've already damaged or should skip using a HashSet for fast lookup
         var excludedSet = new HashSet<ulong>();
         ulong[] excludedArray = System.Array.Empty<ulong>();
@@ -32,7 +32,8 @@ public class AreaDamage : ISpellDamage {
         Collider[] buffer = new Collider[32];
         int found;
         while (true) {
-            found = Physics.OverlapSphereNonAlloc(spell.transform.position, data.areaRadius, buffer, ~0, QueryTriggerInteraction.Collide);
+            found = Physics.OverlapSphereNonAlloc(spell.transform.position, data.areaRadius, buffer, ~0,
+                QueryTriggerInteraction.Collide);
             if (found < buffer.Length) break;
             // buffer was too small, grow and retry
             buffer = new Collider[buffer.Length * 2];
@@ -49,8 +50,15 @@ public class AreaDamage : ISpellDamage {
                 excludedArray = new List<ulong>(excludedSet).ToArray();
             }
         }
+
+        return true;
     }
 
-    public void OnStay(Collider other) {
+    public bool OnExit(Collider other) {
+        return false;
+    }
+
+    public bool Update() {
+        return false;
     }
 }

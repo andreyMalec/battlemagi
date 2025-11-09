@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 3819418159909030081}
   - component: {fileID: 2641243179819180305}
   - component: {fileID: 8210015613394022047}
-  - component: {fileID: 5410116271524727158}
+  - component: {fileID: 683341408205008129}
+  - component: {fileID: 6612344003336987394}
   m_Layer: 0
   m_Name: Spell Mana Storm
   m_TagString: Untagged
@@ -203,7 +204,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &5410116271524727158
+--- !u!114 &683341408205008129
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -212,17 +213,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 7354784787554302670}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 513a5630300842348d9d2b78b3e03348, type: 3}
+  m_Script: {fileID: 11500000, guid: bddfb0954ae7446f9b744644736a8bc8, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SpellBuff
+  m_EditorClassIdentifier: Assembly-CSharp::BaseSpell
   ShowTopMostFoldoutHeaderGroup: 1
   rb: {fileID: 0}
-  coll: {fileID: 0}
-  renderer: {fileID: 0}
-  ps: {fileID: 0}
   spellData: {fileID: 11400000, guid: 268e563535dc3864ab0d4983e8696d69, type: 2}
   damageMultiplier: 1
-  effects:
-  - {fileID: 11400000, guid: 9d4f638de66e75c47bc587c8e595bf49, type: 2}
-  - {fileID: 11400000, guid: 77752c8d8cddcb84880bd90d83b0e2e8, type: 2}
-  - {fileID: 11400000, guid: 24b4e565efaad624481f77dd82280913, type: 2}
+--- !u!114 &6612344003336987394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7354784787554302670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d02e6e1fa98043a7ab9f743329005671, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellLifetime
+  ShowTopMostFoldoutHeaderGroup: 1
+  failSafeLifetimeSec: 20
+  enableStuckDetection: 1
+  stuckPosEpsilon: 0.02
+  stuckTimeSec: 2

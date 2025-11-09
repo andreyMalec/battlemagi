@@ -46,6 +46,7 @@ public class MenuStateLobby : MonoBehaviour {
         GameProgress.Instance.SelectedMap.OnValueChanged += MapChanged;
         TeamManager.Instance.CurrentMode.OnValueChanged += TeamModeChanged;
         TeamManager.Instance.EndChoice.OnValueChanged += GameEndChanged;
+        UpdateReadyButton(LobbyManager.Instance.Me.IsReady());
     }
 
     private void MapChanged(int _, int newValue) {
@@ -116,7 +117,11 @@ public class MenuStateLobby : MonoBehaviour {
     }
 
     private void ToggleReady() {
-        if (LobbyManager.Instance.ToggleReady()) {
+        UpdateReadyButton(LobbyManager.Instance.ToggleReady());
+    }
+
+    private void UpdateReadyButton(bool ready) {
+        if (ready) {
             buttonReady.GetComponent<Image>().color = Color.chartreuse;
         } else {
             buttonReady.GetComponent<Image>().color = Color.white;

@@ -54,7 +54,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
     }
 
     private void OnMouthClose(string[] lastWords) {
-        if (castWaiting) return;
+        if (castWaiting || channeling) return;
         var result = _recognizer.Recognize(lastWords, language);
         recognizedSpell = new RecognizedSpell { spell = result.spell, similarity = result.similarity };
 
@@ -185,14 +185,26 @@ public class PlayerSpellCaster : NetworkBehaviour {
 
     private void UpdateSpellKeys() {
         if (!GameConfig.Instance.allowKeySpells) return;
+        SpellData spell = null;
         for (int i = (int)KeyCode.Alpha0; i <= (int)KeyCode.Alpha9; i++) {
             if (Input.GetKeyDown((KeyCode)i)) {
-                var spell = SpellDatabase.Instance.spells[i - (int)KeyCode.Alpha0];
-                var words = language == SpellRecognizer.Language.Ru ? spell.spellWordsRu : spell.spellWords;
-                // emulate recognition tokens by tokenizing the first phrase
-                var tokens = SpellRecognizer.TokenizePhrase(words[0]);
-                OnMouthClose(tokens);
+                spell = SpellDatabase.Instance.spells[i - (int)KeyCode.Alpha0];
             }
+        }
+
+        for (int i = (int)KeyCode.F1; i <= (int)KeyCode.F12; i++) {
+            if (Input.GetKeyDown((KeyCode)i)) {
+                var index = i - (int)KeyCode.F1 + 10;
+                if (index < SpellDatabase.Instance.spells.Count)
+                    spell = SpellDatabase.Instance.spells[index];
+            }
+        }
+
+        if (spell != null) {
+            var words = language == SpellRecognizer.Language.Ru ? spell.spellWordsRu : spell.spellWords;
+            // emulate recognition tokens by tokenizing the first phrase
+            var tokens = SpellRecognizer.TokenizePhrase(words[0]);
+            OnMouthClose(tokens);
         }
     }
 

@@ -1,8 +1,9 @@
 using System.Collections;
 using UnityEngine;
 
-public class DirtWallVisual : MonoBehaviour {
-    [SerializeField] private float height = 3f;
+public class SpawnedMeshVisual : MonoBehaviour {
+    [SerializeField] private Vector3 start = Vector3.zero;
+    [SerializeField] private Vector3 end;
     [SerializeField] private float duration = 1f;
     [SerializeField] private AudioClip onDestroy;
 
@@ -15,7 +16,7 @@ public class DirtWallVisual : MonoBehaviour {
         _damageable.onDeath += () => {
             DestroyAfterPlay.Play(onDestroy, transform.position);
         };
-        transform.position -= new Vector3(0, height, 0);
+        transform.position -= end;
     }
 
     private void Start() {
@@ -28,16 +29,16 @@ public class DirtWallVisual : MonoBehaviour {
     }
 
     private IEnumerator MoveUp() {
-        Vector3 start = transform.position;
-        Vector3 end = start + Vector3.up * height;
+        Vector3 from = transform.position + start;
+        Vector3 to = from + end;
         float t = 0f;
 
         while (t < 1f) {
             t += Time.deltaTime / duration;
-            transform.position = Vector3.Lerp(start, end, t);
+            transform.position = Vector3.Lerp(from, to, t);
             yield return null;
         }
 
-        transform.position = end;
+        transform.position = to;
     }
 }

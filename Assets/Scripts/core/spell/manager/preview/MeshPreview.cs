@@ -6,6 +6,7 @@ public class MeshPreview : ISpellPreview {
     private Color wireColor = Color.cyan;
     private Vector3 scale = Vector3.one;
     private Vector3 position = Vector3.zero;
+    private Quaternion rotation = Quaternion.identity;
 
     private Mesh mesh;
     private Material fillMat;
@@ -37,6 +38,7 @@ public class MeshPreview : ISpellPreview {
         mesh = m.sharedMesh;
         scale = m.gameObject.transform.localScale;
         position = m.gameObject.transform.localPosition;
+        rotation = m.gameObject.transform.localRotation;
         _active = true;
     }
 
@@ -52,7 +54,7 @@ public class MeshPreview : ISpellPreview {
 
     private void Draw(SpellData spell, Vector3 pos, Quaternion rot, int index) {
         RuntimeDrawHelper.Enqueue(() => {
-            Matrix4x4 matrix = Matrix4x4.TRS(pos + position, rot, scale);
+            Matrix4x4 matrix = Matrix4x4.TRS(pos + position, rot * rotation, scale);
 
             // Сначала заливка
             fillMat.SetPass(0);

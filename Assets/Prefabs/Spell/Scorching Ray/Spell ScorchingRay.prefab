@@ -137,7 +137,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7238097125745469840}
   - component: {fileID: 3945837643547665161}
-  - component: {fileID: 1506632420762820185}
+  - component: {fileID: 1384147297306453014}
   - component: {fileID: 6295535575896761818}
   - component: {fileID: 2716590686438998688}
   - component: {fileID: 9222707079392840899}
@@ -194,7 +194,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &1506632420762820185
+--- !u!114 &1384147297306453014
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -203,14 +203,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7354784787554302670}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40582d61350345759bdfe8aa237e9206, type: 3}
+  m_Script: {fileID: 11500000, guid: bddfb0954ae7446f9b744644736a8bc8, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SpellProjectile
+  m_EditorClassIdentifier: Assembly-CSharp::BaseSpell
   ShowTopMostFoldoutHeaderGroup: 1
   rb: {fileID: 673506091917337459}
-  coll: {fileID: 0}
-  renderer: {fileID: 0}
-  ps: {fileID: 0}
   spellData: {fileID: 11400000, guid: 12d026afdf710064f806104a86b1c096, type: 2}
   damageMultiplier: 1
 --- !u!114 &6295535575896761818

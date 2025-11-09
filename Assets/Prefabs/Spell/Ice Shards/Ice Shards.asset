@@ -44,17 +44,22 @@ MonoBehaviour:
   spellBurstPrefab: {fileID: 0}
   mainSpellPrefab: {fileID: 7354784787554302670, guid: 8ba852e80c16a33419c14dc0725da18a, type: 3}
   impactPrefab: {fileID: 1742013225946848, guid: 37a5f388d84f25145b3592c23b96be04, type: 3}
+  impactEffects:
+  - {fileID: 11400000, guid: 169873072559d9a4db21cd41fa73d762, type: 2}
+  buffs: []
   damageSound: 2
   castWaitingIndex: 0
   invocationIndex: 1
   clearInHandBeforeAnim: 1
   previewMainInHand: 0
+  disableWhileCarrying: 0
   echoCount: 0
   lifeTime: 5
   baseDamage: 30
   canSelfDamage: 0
   useParticleCollision: 0
   isDOT: 0
+  tickInterval: 1
   hasAreaEffect: 0
   areaRadius: 0
   knockbackForce: 0

@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 508682260
+  GlobalObjectIdHash: 3459310697
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -74,11 +74,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GroundEffect
   ShowTopMostFoldoutHeaderGroup: 1
-  effects:
-  - {fileID: 11400000, guid: dbf5db1922beb934ea1bfe7f40d3305c, type: 2}
-  - {fileID: 11400000, guid: 010eb141080c27349b66d40d4f1bc5e1, type: 2}
-  duration: 10
-  oneShot: 1
+  effects: []
+  duration: 20
+  oneShot: 0
 --- !u!135 &8198717496042254877
 SphereCollider:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using UnityEngine;
 
 public interface ISpellDamage {
-    void OnHit(Collider other);
-    void OnStay(Collider other); // для DoT
+    bool OnEnter(Collider other);
+    bool OnExit(Collider other);
+    bool Update();
 }

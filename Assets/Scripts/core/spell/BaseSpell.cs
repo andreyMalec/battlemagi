@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
@@ -9,10 +7,6 @@ using UnityEngine;
 public class BaseSpell : NetworkBehaviour {
     [Header("References")]
     public Rigidbody rb;
-
-    public Collider coll;
-    public Renderer renderer;
-    public ParticleSystem ps;
 
     private ISpellMovement movement;
     private ISpellDamage damage;
@@ -56,12 +50,25 @@ public class BaseSpell : NetworkBehaviour {
             damage = new DirectDamage(this, spellData);
 
         lifetime.Initialize(this, spellData);
+
+        if (data.buffs == null || data.buffs.Length == 0) return;
+        var player = NetworkManager.ConnectedClients[OwnerClientId].PlayerObject;
+        if (player == null || !player.TryGetComponent<StatusEffectManager>(out var manager)) return;
+
+        foreach (var effect in data.buffs) {
+            manager.AddEffect(OwnerClientId, effect);
+        }
     }
 
     private void Update() {
         if (movementAuthority) {
             movement?.Tick();
         }
+
+        if (!IsServer) return;
+        var hit = damage.Update();
+        if (hit)
+            ApplyImpact();
     }
 
     private void OnTriggerEnter(Collider other) {
@@ -72,23 +79,17 @@ public class BaseSpell : NetworkBehaviour {
                 return;
         }
 
-        if (spellData.knockbackForce != 0)
-            ApplyKnockback();
-
-        damage.OnHit(other);
-        OnHit(other);
+        damage.OnEnter(other);
+        if (!spellData.isDOT)
+            ApplyImpact();
 
         if (!spellData.piercing)
             lifetime.Destroy();
     }
 
-    protected virtual void OnHit(Collider other) {
-    }
-
-    private void OnTriggerStay(Collider other) {
+    private void OnTriggerExit(Collider other) {
         if (!IsServer) return;
-
-        damage.OnStay(other);
+        damage.OnExit(other);
     }
 
     private void OnParticleCollision(GameObject other) {
@@ -99,27 +100,10 @@ public class BaseSpell : NetworkBehaviour {
         }
     }
 
-    private void ApplyKnockback() {
-        var hits = Physics.OverlapSphere(transform.position, spellData.areaRadius);
-        foreach (var hit in hits) {
-            var dir = (hit.transform.position - transform.position).normalized;
-            var distance = Vector3.Distance(transform.position, hit.transform.position);
-            var areaDamageMulti = 1f - distance / spellData.areaRadius;
-            var knock = spellData.knockbackForce * areaDamageMulti * damageMultiplier;
-            if (hit.TryGetComponent<Rigidbody>(out var hitRb)) {
-                hitRb.AddForce(dir * knock, ForceMode.Impulse);
-            } else {
-                var motor = hit.GetComponentInParent<PlayerPhysics>();
-                if (motor != null) {
-                    var fpm = motor.GetComponent<FirstPersonMovement>();
-                    if (fpm != null) {
-                        var sendParams = new ClientRpcParams {
-                            Send = new ClientRpcSendParams { TargetClientIds = new[] { fpm.OwnerClientId } }
-                        };
-                        fpm.ApplyImpulseClientRpc(dir * knock, sendParams);
-                    }
-                }
-            }
+    private void ApplyImpact() {
+        if (spellData.impactEffects.Length == 0) return;
+        foreach (var impact in spellData.impactEffects) {
+            impact.OnImpact(this, spellData);
         }
     }
 
@@ -134,15 +118,28 @@ public class BaseSpell : NetworkBehaviour {
     }
 
     private void ClearVisual() {
-        if (coll != null) coll.enabled = false;
-        if (renderer != null) renderer.enabled = false;
-        if (rb != null) rb.isKinematic = true;
-        if (ps != null) {
-            var emission = ps.emission;
-            emission.rateOverTime = 0f;
-            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        foreach (var c in GetComponentsInChildren<Collider>()) {
+            c.enabled = false;
         }
+
+        foreach (var c in GetComponentsInChildren<Renderer>()) {
+            c.enabled = false;
+        }
+
+        foreach (var c in GetComponentsInChildren<ParticleSystem>()) {
+            var emission = c.emission;
+            emission.rateOverTime = 0f;
+            c.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
+
+        if (rb != null) rb.isKinematic = true;
     }
+
+#if UNITY_EDITOR
+    private void OnValidate() {
+        rb = GetComponent<Rigidbody>();
+    }
+#endif
 
     private void OnDrawGizmos() {
         if (spellData == null) return;

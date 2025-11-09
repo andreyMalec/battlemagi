@@ -1,25 +1,25 @@
+using System;
+using Unity.Netcode;
 using UnityEngine;
 
-public class ImpactEffect : IProjectileImpact {
-    private readonly SpellData data;
-    private readonly SpellProjectile projectile;
-
-    public ImpactEffect(SpellProjectile p, SpellData d) {
-        projectile = p;
-        data = d;
-    }
-
-    public void OnImpact(Collider other) {
-        if (data.impactPrefab == null) return;
-
-        var t = projectile.transform;
-        // Находим точку удара
+public class ImpactEffect : ScriptableObject {
+    public virtual GameObject OnImpact(BaseSpell spell, SpellData data) {
+        var t = spell.transform;
+        var pos = t.position;
+        var rot = Quaternion.identity;
         if (Physics.Raycast(t.position - t.forward * 0.1f, t.forward, out var hit, 2f)) {
-            var rot = ComputeRotation(hit.normal, t.forward);
-            projectile.SpawnImpactServerRpc(data.id, hit.point, rot, projectile.OwnerClientId);
-        } else {
-            projectile.SpawnImpactServerRpc(data.id, t.position, Quaternion.identity, projectile.OwnerClientId);
+            pos = hit.point;
+            rot = ComputeRotation(hit.normal, t.forward);
         }
+
+        var go = Instantiate(data.impactPrefab, pos, rot);
+        if (go.TryGetComponent<NetworkObject>(out var netObj)) {
+            netObj.SpawnWithOwnership(spell.OwnerClientId);
+        } else {
+            throw new Exception($"[{data.name}] impact prefab must be a NetworkObject");
+        }
+
+        return go;
     }
 
     private Quaternion ComputeRotation(Vector3 normal, Vector3 direction) {

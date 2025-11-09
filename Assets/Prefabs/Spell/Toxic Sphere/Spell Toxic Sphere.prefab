@@ -139,7 +139,7 @@ GameObject:
   - component: {fileID: 642666530271575095}
   - component: {fileID: 5188301568205527674}
   - component: {fileID: 3945837643547665161}
-  - component: {fileID: 1506632420762820185}
+  - component: {fileID: 106015423340153662}
   - component: {fileID: 6295535575896761818}
   - component: {fileID: 8560616871665458569}
   - component: {fileID: 1318891264716447179}
@@ -229,7 +229,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 993181033
+  GlobalObjectIdHash: 1091442676
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -242,7 +242,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &1506632420762820185
+--- !u!114 &106015423340153662
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -251,14 +251,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7354784787554302670}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40582d61350345759bdfe8aa237e9206, type: 3}
+  m_Script: {fileID: 11500000, guid: bddfb0954ae7446f9b744644736a8bc8, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SpellProjectile
+  m_EditorClassIdentifier: Assembly-CSharp::BaseSpell
   ShowTopMostFoldoutHeaderGroup: 1
   rb: {fileID: 5188301568205527674}
-  coll: {fileID: 642666530271575095}
-  renderer: {fileID: 1318891264716447179}
-  ps: {fileID: 2882634429595563070}
   spellData: {fileID: 11400000, guid: 672d61c7bfe8084488ff712bf14875f3, type: 2}
   damageMultiplier: 1
 --- !u!114 &6295535575896761818
@@ -642,11 +639,6 @@ PrefabInstance:
       addedObject: {fileID: 6178309556017497464}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1b85934f3ab9f88409e04178ece71a05, type: 3}
---- !u!198 &2882634429595563070 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 198598745608626540, guid: 1b85934f3ab9f88409e04178ece71a05, type: 3}
-  m_PrefabInstance: {fileID: 3080669112843474258}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3084773739620477400 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4483135165545610, guid: 1b85934f3ab9f88409e04178ece71a05, type: 3}

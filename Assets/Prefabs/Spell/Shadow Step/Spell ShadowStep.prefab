@@ -11,11 +11,12 @@ GameObject:
   - component: {fileID: 6373693747893090069}
   - component: {fileID: 8126110615948048159}
   - component: {fileID: 6753867480294431476}
-  - component: {fileID: 3954586033070919246}
+  - component: {fileID: 8710791992712621265}
   - component: {fileID: 43292176052080342}
   - component: {fileID: 1043442424786372922}
   - component: {fileID: 82142628363801613}
   - component: {fileID: 5475976422363816388}
+  - component: {fileID: 64952027082997896}
   m_Layer: 0
   m_Name: Spell ShadowStep
   m_TagString: Untagged
@@ -160,7 +161,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &3954586033070919246
+--- !u!114 &8710791992712621265
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -169,15 +170,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 7389778017922607859}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40582d61350345759bdfe8aa237e9206, type: 3}
+  m_Script: {fileID: 11500000, guid: bddfb0954ae7446f9b744644736a8bc8, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SpellProjectile
+  m_EditorClassIdentifier: Assembly-CSharp::BaseSpell
   ShowTopMostFoldoutHeaderGroup: 1
   rb: {fileID: 1043442424786372922}
-  coll: {fileID: 0}
-  renderer: {fileID: 0}
-  ps: {fileID: 0}
   spellData: {fileID: 11400000, guid: fe9d04a7cefb61b448b4235eb5afd1d2, type: 2}
+  damageMultiplier: 1
 --- !u!114 &43292176052080342
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -281,3 +280,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShadowStep
   ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &64952027082997896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7389778017922607859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d02e6e1fa98043a7ab9f743329005671, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellLifetime
+  ShowTopMostFoldoutHeaderGroup: 1
+  failSafeLifetimeSec: 20
+  enableStuckDetection: 1
+  stuckPosEpsilon: 0.02
+  stuckTimeSec: 2

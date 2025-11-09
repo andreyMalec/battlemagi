@@ -5041,7 +5041,7 @@ GameObject:
   - component: {fileID: 6373693747893090069}
   - component: {fileID: 8126110615948048159}
   - component: {fileID: 6753867480294431476}
-  - component: {fileID: 3954586033070919246}
+  - component: {fileID: 8522063340636356579}
   - component: {fileID: 5236172882996682256}
   - component: {fileID: 43292176052080342}
   - component: {fileID: 1043442424786372922}
@@ -5180,7 +5180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3179499498
+  GlobalObjectIdHash: 211028211
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -5193,7 +5193,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &3954586033070919246
+--- !u!114 &8522063340636356579
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5202,14 +5202,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7389778017922607859}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40582d61350345759bdfe8aa237e9206, type: 3}
+  m_Script: {fileID: 11500000, guid: bddfb0954ae7446f9b744644736a8bc8, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SpellProjectile
+  m_EditorClassIdentifier: Assembly-CSharp::BaseSpell
   ShowTopMostFoldoutHeaderGroup: 1
   rb: {fileID: 1043442424786372922}
-  coll: {fileID: 8232143709006323480}
-  renderer: {fileID: 0}
-  ps: {fileID: 2265711912472754559}
   spellData: {fileID: 11400000, guid: 5763ea8db7d5fa74281107a26119aac4, type: 2}
   damageMultiplier: 1
 --- !u!114 &5236172882996682256
@@ -5606,11 +5603,6 @@ PrefabInstance:
       addedObject: {fileID: 7382892164457542720}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 900d47d5e41299a489b37c6d69f8db0e, type: 3}
---- !u!198 &2265711912472754559 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 277400967127943803, guid: 900d47d5e41299a489b37c6d69f8db0e, type: 3}
-  m_PrefabInstance: {fileID: 2065158055519974148}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5584891774109822074 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5848327868041191294, guid: 900d47d5e41299a489b37c6d69f8db0e, type: 3}
