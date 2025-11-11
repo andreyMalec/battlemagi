@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1c73412154f04735ac2004b446e9e2b0, type: 3}
-  m_Name: FireDoT
+  m_Name: RuneTrap DoT
   m_EditorClassIdentifier: Assembly-CSharp::DamageOverTimeEffect
-  effectName: DoT Fire
+  effectName: RuneTrap DoT
   description: 
-  duration: 0.2
+  duration: 1
   color: {r: 0, g: 0, b: 0, a: 0}
   removeOnHit: 0
   onExpire: {fileID: 0}
-  dps: 0.1
-  tickInterval: 0
-  damageSound: 5
-  ignoreDamageSoundCooldown: 0
+  dps: 5
+  tickInterval: 0.1
+  damageSound: 7
+  ignoreDamageSoundCooldown: 1
   canSelfDamage: 1

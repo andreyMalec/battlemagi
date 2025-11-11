@@ -1,3 +1,4 @@
+using System;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
@@ -5,6 +6,8 @@ using UnityEngine;
 [RequireComponent(typeof(NetworkObject))]
 [RequireComponent(typeof(SpellLifetime))]
 public class BaseSpell : NetworkBehaviour {
+    private int terrainLayer;
+
     [Header("References")]
     public Rigidbody rb;
 
@@ -22,9 +25,10 @@ public class BaseSpell : NetworkBehaviour {
         movementAuthority = (mode == NetworkTransform.AuthorityModes.Owner && IsOwner) ||
                             (mode == NetworkTransform.AuthorityModes.Server && IsServer);
         lifetime = GetComponent<SpellLifetime>();
+        terrainLayer = LayerMask.NameToLayer("Terrain");
     }
 
-    public virtual void Initialize(SpellData data, float damageMulti, int index) {
+    public void Initialize(SpellData data, float damageMulti, int index) {
         spellData = data;
         damageMultiplier = damageMulti;
 
@@ -51,12 +55,26 @@ public class BaseSpell : NetworkBehaviour {
 
         lifetime.Initialize(this, spellData);
 
-        if (data.buffs == null || data.buffs.Length == 0) return;
-        var player = NetworkManager.ConnectedClients[OwnerClientId].PlayerObject;
-        if (player == null || !player.TryGetComponent<StatusEffectManager>(out var manager)) return;
+        if (data.buffs != null && data.buffs.Length > 0) {
+            var player = NetworkManager.ConnectedClients[OwnerClientId].PlayerObject;
+            if (player != null && player.TryGetComponent<StatusEffectManager>(out var manager)) {
+                foreach (var effect in data.buffs) {
+                    manager.AddEffect(OwnerClientId, effect);
+                }
+            }
+        }
 
-        foreach (var effect in data.buffs) {
-            manager.AddEffect(OwnerClientId, effect);
+        if (spellData.baseSpeed > 0) {
+            if (Physics.Raycast(transform.position - transform.forward * 2, transform.forward, out var hit, 2f,
+                    1 << terrainLayer)) {
+                Debug.Log($"[BaseSpell] Initial raycast hit terrain at {hit.point}");
+                OnTriggerStay(hit.collider);
+            } else if (Physics.Raycast(transform.position, transform.forward, out var hit2, 2f,
+                           1 << terrainLayer)) {
+                Debug.Log($"[BaseSpell] Initial raycast hit2 terrain at {hit2.point}");
+                transform.position = hit2.point;
+                OnTriggerStay(hit2.collider);
+            }
         }
     }
 
@@ -72,10 +90,19 @@ public class BaseSpell : NetworkBehaviour {
     }
 
     private void OnTriggerEnter(Collider other) {
-        if (!IsServer || other.isTrigger) return;
-        if (other.gameObject.TryGetComponent<ForceField>(out var field)) {
+        if (!IsServer || other.isTrigger || !lifetime.IsAlive) return;
+        if (other.TryGetComponent<ForceField>(out var field)) {
             // союзный купол? игнор
-            if (TeamManager.Instance.AreAllies(field.OwnerClientId, OwnerClientId))
+            if (TeamManager.Instance.AreAllies(OwnerClientId, field.OwnerClientId))
+                return;
+        } else if (other.TryGetComponent<ChildCollider>(out _)) {
+            var player = other.GetComponentInParent<Player>();
+            if (!spellData.canSelfDamage &&
+                TeamManager.Instance.AreAllies(OwnerClientId, player.OwnerClientId))
+                return;
+        } else if (other.TryGetComponent<Player>(out var player)) {
+            if (!spellData.canSelfDamage &&
+                TeamManager.Instance.AreAllies(OwnerClientId, player.OwnerClientId))
                 return;
         }
 
@@ -85,6 +112,12 @@ public class BaseSpell : NetworkBehaviour {
 
         if (!spellData.piercing)
             lifetime.Destroy();
+    }
+
+    private void OnTriggerStay(Collider other) {
+        if (!IsServer || other.isTrigger || !lifetime.IsAlive) return;
+        if (other.gameObject.layer != terrainLayer) return;
+        OnTriggerEnter(other);
     }
 
     private void OnTriggerExit(Collider other) {

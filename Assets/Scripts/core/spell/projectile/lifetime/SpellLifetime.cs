@@ -24,6 +24,8 @@ public class SpellLifetime : NetworkBehaviour {
     private Vector3 _lastServerPos;
     private bool _despawning;
 
+    public bool IsAlive => !_despawning;
+
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
 

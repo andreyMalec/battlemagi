@@ -1604,6 +1604,8 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 1dc9ebcf9568ac542acc6afb4e481cbc, type: 3}
   - type: 6
     clip: {fileID: 8300000, guid: 34bdb8f02614eb340b480bfe47609c75, type: 3}
+  - type: 7
+    clip: {fileID: 8300000, guid: b982a126c7e6e2948a9101b0ad5b7922, type: 3}
 --- !u!4 &2018065990
 Transform:
   m_ObjectHideFlags: 0
@@ -1635,6 +1637,14 @@ PrefabInstance:
       propertyPath: InScenePlacedSourceGlobalObjectIdHash
       value: 2254842558
       objectReference: {fileID: 0}
+    - target: {fileID: 6002854000391987078, guid: b390804259226a847b47db240409c0f2, type: 3}
+      propertyPath: spells.Array.size
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 6002854000391987078, guid: b390804259226a847b47db240409c0f2, type: 3}
+      propertyPath: 'spells.Array.data[12]'
+      value: 
+      objectReference: {fileID: 11400000, guid: c4bc4d0194a2ffb40a8e9c7f57378c27, type: 2}
     - target: {fileID: 6117778263866355746, guid: b390804259226a847b47db240409c0f2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

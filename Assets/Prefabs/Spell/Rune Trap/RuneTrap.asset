@@ -10,18 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bf4989d79519c1349aa400eb4e706e49, type: 3}
-  m_Name: Toxic Sphere
+  m_Name: RuneTrap
   m_EditorClassIdentifier: Assembly-CSharp::SpellData
-  id: 3
-  name: Toxic Sphere
-  description: 'A swirling core of decay that poisons the ground it touches.
+  id: 12
+  name: Rune Trap
+  description: 'Ancient runes ignite beneath the feet of the unwary, unleashing a
+    burst of arcane energy.
 
 
-    Creates
-    a lingering toxic pool that slows and damages enemies over time.'
+    Triggers an explosive trap that deals area damage
+    to all enemies who cross its path.'
   nameRu: 
   spellWords:
-  - ToxicSphere
+  - RuneTrap
   spellWordsRu:
   - "\u041E\u0433\u043D\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
   - "\u0428\u0430\u0440\u041E\u0433\u043D\u044F"
@@ -39,39 +40,39 @@ MonoBehaviour:
   - "\u0423\u0447\u0433\u0434\u0435\u043D\u044B\u0439\u0428\u0430\u0440"
   - "\u041E\u0433\u043D\u0435\u0428\u0430\u0440"
   manaCost: 50
-  bookImage: {fileID: 2800000, guid: f040f455d549b614b986d8e801cdb7dd, type: 3}
-  spellInHandPrefab: {fileID: 7389778017922607859, guid: 377453720fd1c914bbdb8d49ae98c40d, type: 3}
+  bookImage: {fileID: 2800000, guid: 8abfa09e974dc424685d2238e47a6df4, type: 3}
+  spellInHandPrefab: {fileID: 0}
   spellBurstPrefab: {fileID: 0}
-  mainSpellPrefab: {fileID: 7354784787554302670, guid: cd275c08be68b2942afa392daa393cbf, type: 3}
-  impactPrefab: {fileID: 1315042845377307778, guid: b48ce577639015d448fd32bdf03334f9, type: 3}
+  mainSpellPrefab: {fileID: 7354784787554302670, guid: 50a80e2420eb74c4783983d581bb3a34, type: 3}
+  impactPrefab: {fileID: 4078764828892429397, guid: 8763ee7013141b344ab6af89ab5e0d24, type: 3}
   impactEffects:
-  - {fileID: 11400000, guid: 9786927cf9c6f2d4c84e7116c09023e4, type: 2}
+  - {fileID: 11400000, guid: 19d8a40a6f57d0544a4ad9159f22bb40, type: 2}
   buffs: []
-  damageSound: 4
+  damageSound: 0
   castWaitingIndex: 0
-  invocationIndex: 2
+  invocationIndex: 8
   clearInHandBeforeAnim: 0
-  previewMainInHand: 0
+  previewMainInHand: 1
   disableWhileCarrying: 0
   echoCount: 0
-  instanceLimit: 0
-  lifeTime: 20
-  baseDamage: 10
+  instanceLimit: 2
+  lifeTime: 40
+  baseDamage: 0
   canSelfDamage: 0
   useParticleCollision: 0
   isDOT: 0
-  tickInterval: 1
-  hasAreaEffect: 1
+  tickInterval: 2
+  hasAreaEffect: 0
   areaRadius: 5
-  knockbackForce: -1
+  knockbackForce: 0
   isProjectile: 1
   piercing: 0
-  baseSpeed: 30
+  baseSpeed: 0
   projCount: 1
-  multiProjDelay: 0.5
-  spawnMode: 0
-  arcAngleStep: 15
-  raycastMaxDistance: 50
+  multiProjDelay: 0
+  spawnMode: 5
+  arcAngleStep: 90
+  raycastMaxDistance: 5
   isBeam: 0
   isHoming: 0
   homingRadius: 10

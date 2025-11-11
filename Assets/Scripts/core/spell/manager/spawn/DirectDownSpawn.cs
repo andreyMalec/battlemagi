@@ -16,7 +16,7 @@ public class DirectDownSpawn : ISpawnStrategy {
         Action<SpellData, Vector3, Quaternion, int> onSpawn
     ) {
         var mask = 1 << terrainLayer;
-        var projCount = (int)Math.Floor(spell.projCount * manager.statSystem.Stats.GetFinal(StatType.ProjectileCount));
+        var projCount = ISpawnStrategy.ProjCount(manager, spell);
         for (int i = 0; i < projCount; i++) {
             Vector3 rayStart = manager.spellCastPoint.position;
             if (Physics.Raycast(rayStart, Vector3.down, out var hit, spell.raycastMaxDistance, mask)) {

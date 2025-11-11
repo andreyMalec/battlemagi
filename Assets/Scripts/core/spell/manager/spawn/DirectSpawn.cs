@@ -14,7 +14,7 @@ public class DirectSpawn : ISpawnStrategy {
         SpellData spell, 
         Action<SpellData, Vector3, Quaternion, int> onSpawn
     ) {
-        var projCount = (int)Math.Floor(spell.projCount * manager.statSystem.Stats.GetFinal(StatType.ProjectileCount));
+        var projCount = ISpawnStrategy.ProjCount(manager, spell);
         for (int i = 0; i < projCount; i++) {
             Vector3 spawnPosition = manager.spellCastPoint.position;
             Quaternion spawnRotation = manager.spellCastPoint.rotation;

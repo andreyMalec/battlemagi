@@ -49,7 +49,7 @@ public class Mouth : NetworkBehaviour {
 
     private void OnSegmentUpdated(WhisperResult result) {
         var r = result.Result.Trim();
-        if (string.IsNullOrWhiteSpace(r) || r.Equals("[BLANK_AUDIO]") || r.Equals("[typing]")) return;
+        if (string.IsNullOrWhiteSpace(r) || r.Equals("[BLANK_AUDIO]") || r.Equals("[typing]") || r.Contains("The End")) return;
         var segment = result.Segments[0];
 
         var tokens = segment.Tokens

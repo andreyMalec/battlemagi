@@ -3,6 +3,8 @@ using Unity.Netcode;
 using UnityEngine;
 
 public class ImpactEffect : ScriptableObject {
+    [SerializeField] private Vector3 positionOffset;
+
     public virtual GameObject OnImpact(BaseSpell spell, SpellData data) {
         var t = spell.transform;
         var pos = t.position;
@@ -12,7 +14,7 @@ public class ImpactEffect : ScriptableObject {
             rot = ComputeRotation(hit.normal, t.forward);
         }
 
-        var go = Instantiate(data.impactPrefab, pos, rot);
+        var go = Instantiate(data.impactPrefab, pos + positionOffset, rot);
         if (go.TryGetComponent<NetworkObject>(out var netObj)) {
             netObj.SpawnWithOwnership(spell.OwnerClientId);
         } else {

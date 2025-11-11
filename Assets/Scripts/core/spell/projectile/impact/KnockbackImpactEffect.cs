@@ -21,9 +21,6 @@ public class KnockbackImpactEffect : ImpactEffect {
                 if (motor != null) {
                     var fpm = motor.GetComponent<FirstPersonMovement>();
                     if (fpm != null) {
-                        if (!data.canSelfDamage &&
-                            TeamManager.Instance.AreAllies(spell.OwnerClientId, fpm.OwnerClientId))
-                            continue;
                         var sendParams = new ClientRpcParams {
                             Send = new ClientRpcSendParams { TargetClientIds = new[] { fpm.OwnerClientId } }
                         };

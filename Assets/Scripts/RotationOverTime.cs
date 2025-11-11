@@ -4,6 +4,7 @@ using UnityEngine;
 /// Simple configurable rotation behaviour.
 /// Allows independent rotation speed on each axis and choice of space.
 /// </summary>
+[ExecuteAlways]
 public class RotationOverTime : MonoBehaviour {
     [Header("Rotation Speed (degrees per second)")]
     [Tooltip("Rotation speed in degrees per second for each axis.")]

@@ -5,6 +5,7 @@ public class DamageOverTimeEffect : StatusEffectData {
     public float dps;
     public float tickInterval = 1f;
     public DamageSoundType damageSound;
+    public bool ignoreDamageSoundCooldown = false;
     public bool canSelfDamage = true;
 
     public override StatusEffectRuntime CreateRuntime() {
@@ -36,7 +37,7 @@ public class DamageOverTimeEffect : StatusEffectData {
                 if (health != null) {
                     if (!_data.canSelfDamage && TeamManager.Instance.AreAllies(ownerClientId, health.OwnerClientId))
                         return;
-                    health.TakeDamage(ownerClientId, _data.dps, _data.damageSound);
+                    health.TakeDamage(ownerClientId, _data.dps, _data.damageSound, _data.ignoreDamageSoundCooldown);
                 }
             }
         }

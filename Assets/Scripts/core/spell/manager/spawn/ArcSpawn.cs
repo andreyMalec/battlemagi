@@ -10,13 +10,13 @@ public class ArcSpawn : ISpawnStrategy {
     }
 
     public IEnumerator Spawn(
-        SpellManager manager, 
-        SpellData spell, 
+        SpellManager manager,
+        SpellData spell,
         Action<SpellData, Vector3, Quaternion, int> onSpawn
     ) {
         var angleStep = spell.arcAngleStep;
         Vector3 origin = manager.spellCastPoint.position;
-        var projCount = (int)Math.Floor(spell.projCount * manager.statSystem.Stats.GetFinal(StatType.ProjectileCount));
+        var projCount = ISpawnStrategy.ProjCount(manager, spell);
         float startAngle = -((projCount - 1) * angleStep) / 2f;
 
         for (int i = projCount - 1; i >= 0; i--) {

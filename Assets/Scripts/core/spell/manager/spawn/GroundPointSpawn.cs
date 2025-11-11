@@ -18,7 +18,7 @@ public class GroundPointSpawn : ISpawnStrategy {
         Action<SpellData, Vector3, Quaternion, int> onSpawn
     ) {
         _maxDistance = spell.raycastMaxDistance;
-        var projCount = (int)Math.Floor(spell.projCount * manager.statSystem.Stats.GetFinal(StatType.ProjectileCount));
+        var projCount = ISpawnStrategy.ProjCount(manager, spell);
         for (int i = 0; i < projCount; i++) {
             Vector3 groundPos = GetGroundPosition(manager.spellCastPoint);
             Quaternion rot = manager.spellCastPoint.rotation;

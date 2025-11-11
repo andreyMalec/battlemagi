@@ -55,10 +55,10 @@ public class Damageable : NetworkBehaviour {
         health.Value = Mathf.Clamp(health.Value, 0, maxHealth);
     }
 
-    public void TakeDamage(ulong fromClientId, float damage, DamageSoundType sound = DamageSoundType.Default) {
+    public void TakeDamage(ulong fromClientId, float damage, DamageSoundType sound = DamageSoundType.Default, bool ignoreSoundCooldown = false) {
         if (!IsServer) return;
         if (invulnerable) return;
-        if (damage < 0 || isDead || !IsSpawned) return;
+        if (damage <= 0 || isDead || !IsSpawned) return;
         var clientId = OwnerClientId;
         var finalDamage = damage * _statSystem.Stats.GetFinal(StatType.DamageReduction);
         Debug.Log($"[Damageable] {name} игрока {clientId} получает урон: {finalDamage} от {fromClientId}");
@@ -66,7 +66,7 @@ public class Damageable : NetworkBehaviour {
             _damagedBy.Add(fromClientId);
         var before = health.Value;
         health.Value -= finalDamage;
-        if (Time.time - _lastDamageSoundTime >= damageSoundCooldown) {
+        if (Time.time - _lastDamageSoundTime >= damageSoundCooldown || ignoreSoundCooldown) {
             _lastDamageSoundTime = Time.time;
             PlayDamageSoundClientRpc((int)sound);
         }

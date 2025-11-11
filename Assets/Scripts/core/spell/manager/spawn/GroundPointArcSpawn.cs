@@ -22,9 +22,7 @@ public class GroundPointArcSpawn : ISpawnStrategy {
         _maxDistance = spell.raycastMaxDistance;
         var angleStep = spell.arcAngleStep;
         Transform castPoint = manager.spellCastPoint;
-        int projCount = Mathf.Max(1,
-            (int)Mathf.Floor(spell.projCount * manager.statSystem.Stats.GetFinal(StatType.ProjectileCount)));
-
+        var projCount = ISpawnStrategy.ProjCount(manager, spell);
         float startAngle = -((projCount - 1) * angleStep) / 2f;
 
         for (int i = projCount - 1; i >= 0; i--) {
