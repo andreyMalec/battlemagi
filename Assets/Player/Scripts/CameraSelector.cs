@@ -8,8 +8,12 @@ public class CameraSelector : MonoBehaviour {
 
     private bool _isFirstPerson = true;
 
-    private void Awake() {
-        _renderer = GetComponentInChildren<MeshController>().cloak.GetComponent<SkinnedMeshRenderer>();
+    public void BindAvatar(MeshController mc) {
+        if (mc == null || mc.cloak == null) {
+            _renderer = null;
+            return;
+        }
+        _renderer = mc.cloak.GetComponent<SkinnedMeshRenderer>();
     }
 
     private void Update() {
@@ -22,6 +26,7 @@ public class CameraSelector : MonoBehaviour {
         firstPersonCamera.SetActive(_isFirstPerson);
         thirdPersonCamera.SetActive(!_isFirstPerson);
 
+        if (_renderer == null) return;
         if (firstPersonCamera.activeSelf)
             _renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
         else

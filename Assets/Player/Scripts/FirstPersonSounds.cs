@@ -1,4 +1,5 @@
 using System;
+using Unity.Netcode.Components;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -8,8 +9,8 @@ public class FirstPersonSounds : MonoBehaviour {
 
     public AudioSource stepsAudio;
     public AudioSource jumpsAudio;
-    public Animator animator;
     public GroundCheck groundCheck;
+    private Animator animator;
 
     [SerializeField] private float stepsPitchFrom = 0.8f;
     [SerializeField] private float stepsPitchTo = 1.2f;
@@ -22,6 +23,10 @@ public class FirstPersonSounds : MonoBehaviour {
     private float lastStep;
     private float lastJump;
 
+    public void BindAvatar(Animator a) {
+        animator = a;
+    }
+
     private void Update() {
         UpdateStep();
         UpdateJump();
@@ -31,6 +36,7 @@ public class FirstPersonSounds : MonoBehaviour {
         if (!groundCheck.isGrounded)
             return;
 
+        if (animator == null) return;
         var step = animator.GetFloat(Footstep);
         if (Math.Abs(step) < 0.00001)
             step = 0f;
@@ -43,6 +49,7 @@ public class FirstPersonSounds : MonoBehaviour {
     }
 
     private void UpdateJump() {
+        if (animator == null) return;
         var jump = animator.GetFloat(Jump);
         if (Math.Abs(jump) < 0.00001)
             jump = 0f;

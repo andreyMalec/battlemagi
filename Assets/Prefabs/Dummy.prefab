@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 5533485296804457294}
   - component: {fileID: 4193405509124416205}
   - component: {fileID: 1021149336119197285}
+  - component: {fileID: 1326903040483868899}
+  - component: {fileID: 8494788474716610380}
   m_Layer: 0
   m_Name: Dummy
   m_TagString: Untagged
@@ -50,7 +52,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 635774725
+  GlobalObjectIdHash: 1548787872
   InScenePlacedSourceGlobalObjectIdHash: 1548787872
   DeferredDespawnTick: 0
   Ownership: 1
@@ -79,11 +81,13 @@ MonoBehaviour:
   maxHealth: 100000000
   hpRestore: 1
   immortal: 1
+  invulnerable: 0
   hp: {fileID: 953732796625237949}
   damageAudio: {fileID: 1021149336119197285}
   damageSoundCooldown: 0.2
   health:
     m_InternalValue: 0
+  isDead: 0
 --- !u!136 &5533485296804457294
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -217,6 +221,32 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1326903040483868899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2900472409879121813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a60bd481fc714fb8b20e472a6e5c1969, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NetworkStatSystem
+  ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &8494788474716610380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2900472409879121813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a60bd481fc714fb8b20e472a6e5c1969, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NetworkStatSystem
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &5717159056719871884
 GameObject:
   m_ObjectHideFlags: 0

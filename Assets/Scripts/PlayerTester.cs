@@ -7,6 +7,9 @@ public class PlayerTester : MonoBehaviour {
     [SerializeField] private GroundCheck groundCheck;
     [SerializeField] private Camera mainCamera;
 
+    public float movementSpeed = 2;
+    public float runSpeed = 5;
+
     private CharacterController _characterController;
     private float _velocityY;
     private Vector2 _currentRotation;
@@ -39,7 +42,7 @@ public class PlayerTester : MonoBehaviour {
     }
 
     private void ApplyMovement(Vector2 input, bool running) {
-        float targetSpeed = running ? movementSettings.runSpeed : movementSettings.speed;
+        float targetSpeed = running ? runSpeed : movementSpeed;
         float speedMultiplier = groundCheck.isGrounded ? 1f : movementSettings.flySpeedMultiplier;
 
         Vector3 moveDirection = transform.TransformDirection(new Vector3(

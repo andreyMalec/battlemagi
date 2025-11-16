@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bc045b45ffe4595b3f2f97f64adb00f, type: 3}
+  m_Name: Keeper
+  m_EditorClassIdentifier: Assembly-CSharp::ArchetypeData
+  id: 4
+  archetypeName: Keeper
+  avatarPrefab: {fileID: 981644347348595763, guid: c640fa22d9e590d458540555bd7819ef, type: 3}
+  bodyShader: {fileID: -6465566751694194690, guid: db403b3419df4d34d90e98e25832bf28, type: 3}
+  cloakShader: {fileID: 0}
+  spells:
+  - {fileID: 11400000, guid: 4ba037c71c69a494e9868088676261c4, type: 2}
+  - {fileID: 11400000, guid: c4bc4d0194a2ffb40a8e9c7f57378c27, type: 2}
+  - {fileID: 11400000, guid: e1acc19637eac3f45a0dae012d996a57, type: 2}
+  maxHealth: 175
+  maxMana: 125
+  maxStamina: 2
+  movementSpeed: 2
+  runSpeed: 4
+  cameraOffset: {x: 0, y: -0.18, z: 0}

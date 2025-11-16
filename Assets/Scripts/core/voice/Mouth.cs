@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
@@ -23,12 +24,20 @@ public class Mouth : NetworkBehaviour {
             _stream.OnSegmentUpdated += OnSegmentUpdated;
             _stream.StartStream();
             microphoneRecord.StartRecord();
+            _stream.UpdatePrompt(_whisper.initialPrompt);
+            Debug.Log($"[Mouth] UpdatePrompt: {_whisper.initialPrompt}");
         }
     }
 
     private void Awake() {
         if (!WhisperHolder.instance.whisper.IsLoaded) return;
         _whisper = WhisperHolder.instance.whisper;
+    }
+
+    public void RestrictWords(List<string> words) {
+        if (!WhisperHolder.instance.whisper.IsLoaded) return;
+        _whisper.initialPrompt = string.Join(", ", words);
+        Debug.Log($"[Mouth] RestrictWords: {_whisper.initialPrompt}");
     }
 
     public void ShutUp() {
@@ -49,7 +58,8 @@ public class Mouth : NetworkBehaviour {
 
     private void OnSegmentUpdated(WhisperResult result) {
         var r = result.Result.Trim();
-        if (string.IsNullOrWhiteSpace(r) || r.Equals("[BLANK_AUDIO]") || r.Equals("[typing]") || r.Contains("The End")) return;
+        if (string.IsNullOrWhiteSpace(r) || r.Equals("[BLANK_AUDIO]") || r.Equals("[typing]") ||
+            r.Contains("The End")|| r.Equals("and Fireball.com.")|| r.Equals("and Fireball.")) return;
         var segment = result.Segments[0];
 
         var tokens = segment.Tokens

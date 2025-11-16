@@ -10,6 +10,8 @@ public class ScoreboardItem : MonoBehaviour {
     [SerializeField] private TMP_Text deathsText;
     [SerializeField] private TMP_Text assistsText;
     [SerializeField] private RawImage colorImage;
+    [SerializeField] private Image archetypeImage;
+    [SerializeField] private Sprite[] spriteArchetypes;
     [SerializeField] private Shader colorShader;
 
     public void UpdateScore(PlayerManager.PlayerData data) {
@@ -17,6 +19,7 @@ public class ScoreboardItem : MonoBehaviour {
         killsText.text = data.Kills.ToString();
         deathsText.text = data.Deaths.ToString();
         assistsText.text = data.Assists.ToString();
+        archetypeImage.overrideSprite = spriteArchetypes[data.Archetype];
     }
 
     public void UpdateName(string playerName, ulong steamId) {

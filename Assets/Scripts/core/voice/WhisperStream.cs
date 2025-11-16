@@ -164,6 +164,10 @@ namespace Voice {
             _microphone = microphone;
         }
 
+        public void UpdatePrompt(string newPrompt) {
+            _param.InferenceParam.InitialPrompt = newPrompt;
+        }
+
         /// <summary>
         /// Start a new streaming transcription. Must be called before
         /// you start adding new audio chunks.

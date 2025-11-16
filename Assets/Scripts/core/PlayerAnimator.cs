@@ -5,7 +5,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(FirstPersonMovement))]
 [RequireComponent(typeof(NetworkStatSystem))]
-[RequireComponent(typeof(PlayerNetwork))]
+[RequireComponent(typeof(Player))]
 public class PlayerAnimator : NetworkBehaviour {
     private static readonly int VelocityZ = Animator.StringToHash("Velocity Z");
     private static readonly int VelocityX = Animator.StringToHash("Velocity X");
@@ -22,10 +22,10 @@ public class PlayerAnimator : NetworkBehaviour {
     public Transform ikHand;
     public Transform ikHandRight;
 
-    [SerializeField] private Animator animator;
+    [HideInInspector] public Animator animator;
+    [HideInInspector] public MeshController meshController;
     private FirstPersonMovement movement;
     private NetworkStatSystem statSystem;
-    private MeshController _meshController;
 
     public float acceleration = 2f;
     public AnimationCurve decelerationCurve;
@@ -43,10 +43,9 @@ public class PlayerAnimator : NetworkBehaviour {
     private Vector3 ikPos;
     private Quaternion ikRot;
 
-    private void Awake() {
+    public override void OnNetworkSpawn() {
         movement = GetComponent<FirstPersonMovement>();
         statSystem = GetComponent<NetworkStatSystem>();
-        _meshController = GetComponentInChildren<MeshController>();
     }
 
     private void Start() {
@@ -62,8 +61,8 @@ public class PlayerAnimator : NetworkBehaviour {
         if (waiting)
             AnimateFloat(CastWaitingIndex, index);
         if (index == 0) {
-            _meshController.leftHand.weight = 1;
-            _meshController.rightHand.weight = 0;
+            meshController.leftHand.weight = 1;
+            meshController.rightHand.weight = 0;
             if (waiting) {
                 ikHand.localPosition = new Vector3(-0.55f, -0.24f, 0.44f);
                 ikHand.localRotation = Quaternion.Euler(0, -90, 0);
@@ -77,8 +76,8 @@ public class PlayerAnimator : NetworkBehaviour {
         }
 
         if (index == 1) {
-            _meshController.leftHand.weight = 1f; //TODO
-            _meshController.rightHand.weight = 1f;
+            meshController.leftHand.weight = 1f; //TODO
+            meshController.rightHand.weight = 1f;
             if (waiting) {
                 ikHand.localPosition = new Vector3(0.14f, -0.225f, 0.23f);
                 ikHand.localRotation = Quaternion.Euler(-192f, -74.6f, -108f);

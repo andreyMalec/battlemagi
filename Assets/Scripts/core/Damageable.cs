@@ -25,7 +25,7 @@ public class Damageable : NetworkBehaviour {
     protected NetworkStatSystem _statSystem;
     protected StatusEffectManager _effectManager;
 
-    public NetworkVariable<float> health = new();
+    public NetworkVariable<float> health = new(0, NetworkVariableReadPermission.Owner);
     public event Action onDeath;
     public bool isDead = false;
 
@@ -55,7 +55,12 @@ public class Damageable : NetworkBehaviour {
         health.Value = Mathf.Clamp(health.Value, 0, maxHealth);
     }
 
-    public void TakeDamage(ulong fromClientId, float damage, DamageSoundType sound = DamageSoundType.Default, bool ignoreSoundCooldown = false) {
+    public void TakeDamage(
+        ulong fromClientId,
+        float damage,
+        DamageSoundType sound = DamageSoundType.Default,
+        bool ignoreSoundCooldown = false
+    ) {
         if (!IsServer) return;
         if (invulnerable) return;
         if (damage <= 0 || isDead || !IsSpawned) return;

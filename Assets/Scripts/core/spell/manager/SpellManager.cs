@@ -6,26 +6,36 @@ public class SpellManager : NetworkBehaviour {
     [SerializeField] public Transform spellCastPoint;
     [SerializeField] private ActiveSpell activeSpell;
     [HideInInspector] public NetworkStatSystem statSystem;
-
     private MeshController _meshController;
     private ISpawnStrategy spawnStrategy;
     private SpellData spellData;
     private Coroutine _castCoutine;
 
-    private void Awake() {
+    public override void OnNetworkSpawn() {
         activeSpell = GetComponent<ActiveSpell>();
-        _meshController = GetComponentInChildren<MeshController>();
         statSystem = GetComponent<NetworkStatSystem>();
     }
 
-    public override void OnNetworkSpawn() {
-        _meshController.OnCast += OnSpellCasted;
-        _meshController.OnBurst += OnBurst;
+    public override void OnNetworkDespawn() {
+        if (_meshController != null) {
+            _meshController.OnCast -= OnSpellCasted;
+            _meshController.OnBurst -= OnBurst;
+        }
     }
 
-    public override void OnNetworkDespawn() {
-        _meshController.OnCast -= OnSpellCasted;
-        _meshController.OnBurst -= OnBurst;
+    public void BindAvatar(MeshController mc) {
+        if (_meshController != null) {
+            _meshController.OnCast -= OnSpellCasted;
+            _meshController.OnBurst -= OnBurst;
+        }
+
+        _meshController = mc;
+        if (_meshController != null) {
+            _meshController.OnCast += OnSpellCasted;
+            _meshController.OnBurst += OnBurst;
+            if (spellCastPoint == null)
+                spellCastPoint = _meshController.invocation;
+        }
     }
 
     public void PrepareSpell(SpellData spell) {
@@ -61,6 +71,7 @@ public class SpellManager : NetworkBehaviour {
                 }
             }
         }
+
         spellData = null;
     }
 

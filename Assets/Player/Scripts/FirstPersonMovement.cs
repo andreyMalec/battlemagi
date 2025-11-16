@@ -12,6 +12,10 @@ public class FirstPersonMovement : NetworkBehaviour {
     public MovementSettings movementSettings;
     public GroundCheck groundCheck;
 
+    public float movementSpeed;
+    public float runSpeed;
+    public float maxStamina;
+
     public bool IsRunning { get; private set; }
     public event System.Action Jumped;
 
@@ -46,7 +50,7 @@ public class FirstPersonMovement : NetworkBehaviour {
         _isJumpingNetwork.OnValueChanged += OnIsJumpingChanged;
 
         if (IsServer) {
-            stamina.Value = movementSettings.maxStamina;
+            stamina.Value = maxStamina;
         }
 
         if (IsOwner) {
@@ -104,14 +108,14 @@ public class FirstPersonMovement : NetworkBehaviour {
             // Восстанавливаем стамину только если кнопка не зажата и лок не выставлен
             // (т.е. пока держат кнопку — стамина не растёт)
             if (!_runKeyHeldServer && !_runLock) {
-                float missing = movementSettings.maxStamina - stamina.Value;
+                float missing = maxStamina - stamina.Value;
                 var staminaRegen = movementSettings.staminaRestore * _statSystem.Stats.GetFinal(StatType.StaminaRegen);
-                float restoreRate = staminaRegen * (missing / movementSettings.maxStamina);
+                float restoreRate = staminaRegen * (missing / maxStamina);
                 stamina.Value += Time.deltaTime * restoreRate;
             }
         }
 
-        stamina.Value = Mathf.Clamp(stamina.Value, 0f, movementSettings.maxStamina);
+        stamina.Value = Mathf.Clamp(stamina.Value, 0f, maxStamina);
 
         // Сервер может сам обновлять состояние бега исходя из флага held/lock/stamina
         UpdateRunningStateServer();
@@ -147,6 +151,7 @@ public class FirstPersonMovement : NetworkBehaviour {
         if (!held) {
             _runLock = false;
         }
+
         UpdateRunningStateServer();
     }
 
@@ -158,7 +163,7 @@ public class FirstPersonMovement : NetworkBehaviour {
     }
 
     private void ApplyMovement(Vector2 input, bool running) {
-        float targetSpeed = running ? movementSettings.runSpeed : movementSettings.speed;
+        float targetSpeed = running ? runSpeed : movementSpeed;
         float speedMultiplier = groundCheck.isGrounded ? 1f : movementSettings.flySpeedMultiplier;
 
         speedMultiplier *= _statSystem.Stats.GetFinal(StatType.MoveSpeed);

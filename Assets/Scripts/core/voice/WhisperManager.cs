@@ -306,6 +306,7 @@ namespace Voice
             _params.EnableTokens = enableTokens;
             _params.TokenTimestamps = tokensTimestamps;
             _params.InitialPrompt = initialPrompt;
+            _params.ThreadsCount = 4;
         }
         
         private WhisperContextParams CreateContextParams()

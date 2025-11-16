@@ -11,9 +11,9 @@ public class PlayerSpellCaster : NetworkBehaviour {
     [SerializeField] private AudioSource disabledSound;
     private NetworkStatSystem _statSystem;
     private MeshController _meshController;
-    private SpellManager spellManager;
-    public Mouth mouth;
-    public PlayerAnimator playerAnimator;
+    private Mouth _mouth;
+    private PlayerAnimator _playerAnimator;
+    private SpellManager _spellManager;
 
     public KeyCode spellCastKey = KeyCode.Mouse0;
     public KeyCode spellCancelKey = KeyCode.Mouse1;
@@ -26,31 +26,50 @@ public class PlayerSpellCaster : NetworkBehaviour {
     [SerializeField] private float manaRestore = 5f;
     [SerializeField] private float manaRestoreTickInterval = 0.5f;
     public float maxMana = 100;
-    public NetworkVariable<float> mana = new();
+    public NetworkVariable<float> mana = new(0, NetworkVariableReadPermission.Owner);
     private float _restoreTick;
     private int echoCount = 0;
     private RecognizedSpell? spellEcho;
-    private readonly SpellRecognizer _recognizer = new();
-    private Coroutine _channelingCoutine;
+    private SpellRecognizer _recognizer;
+    private Coroutine _channelingCoroutine;
+
+    private void Awake() {
+        _statSystem = GetComponent<NetworkStatSystem>();
+        _mouth = GetComponent<Mouth>();
+        _playerAnimator = GetComponent<PlayerAnimator>();
+    }
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
 
         if (IsServer)
             mana.Value = maxMana;
-        if (IsOwner)
-            _meshController.OnCast += OnSpellCasted;
+        if (IsOwner) {
+            var arch = PlayerManager.Instance.FindByClientId(OwnerClientId)!.Value.Archetype;
+            var archetype = ArchetypeDatabase.Instance.GetArchetype(arch);
+            var spells = archetype.spells.ToList();
+            _recognizer = new SpellRecognizer(spells);
+            if (_mouth == null)
+                Debug.Log($"[Mouth] is null on Player_{OwnerClientId}");
+            _mouth.RestrictWords(spells.Map(it => string.Join(", ", it.spellWords)).ToList());
+        }
     }
 
-    private void Awake() {
-        _statSystem = GetComponent<NetworkStatSystem>();
-        _meshController = GetComponentInChildren<MeshController>();
+    public void BindAvatar(MeshController mc) {
+        if (_meshController != null && IsOwner) {
+            _meshController.OnCast -= OnSpellCasted;
+        }
+
+        _meshController = mc;
+        if (_meshController != null && IsOwner) {
+            _meshController.OnCast += OnSpellCasted;
+        }
     }
 
     private void Start() {
         if (!IsOwner) return;
-        spellManager = GetComponent<SpellManager>();
-        mouth.OnMouthClose += OnMouthClose;
+        _spellManager = GetComponent<SpellManager>();
+        _mouth.OnMouthClose += OnMouthClose;
     }
 
     private void OnMouthClose(string[] lastWords) {
@@ -72,10 +91,10 @@ public class PlayerSpellCaster : NetworkBehaviour {
             if (echoCount > 0)
                 spellEcho = recognizedSpell;
             SpendManaServerRpc(manaCost);
-            mouth.ShutUp();
+            _mouth.ShutUp();
             castWaiting = true;
-            playerAnimator.CastWaitingAnim(true, result.spell.castWaitingIndex);
-            spellManager.PrepareSpell(result.spell);
+            _playerAnimator.CastWaitingAnim(true, result.spell.castWaitingIndex);
+            _spellManager.PrepareSpell(result.spell);
         } else {
             if (!noManaSound.isPlaying)
                 noManaSound.Play();
@@ -102,12 +121,12 @@ public class PlayerSpellCaster : NetworkBehaviour {
 
         UpdateSpellKeys();
         HandleSpellCasting();
-        mouth.CanSpeak(!castWaiting && !channeling);
+        _mouth.CanSpeak(!castWaiting && !channeling);
     }
 
     private void HandleSpellCasting() {
         if (!channeling && Input.GetKeyDown(spellCastKey) && castWaiting) {
-            playerAnimator.CastWaitingAnim(false);
+            _playerAnimator.CastWaitingAnim(false);
             castWaiting = false;
             if (DisableWhileCarrying(recognizedSpell)) {
                 disabledSound?.Play();
@@ -119,9 +138,9 @@ public class PlayerSpellCaster : NetworkBehaviour {
             recognizedSpell = null;
         } else if (Input.GetKeyDown(spellCancelKey)) {
             if (castWaiting) {
-                playerAnimator.CastWaitingAnim(false);
+                _playerAnimator.CastWaitingAnim(false);
                 castWaiting = false;
-                spellManager.CancelSpell();
+                _spellManager.CancelSpell();
                 if (recognizedSpell.HasValue && recognizedSpell.Value.spell.echoCount == echoCount) {
                     var manaCost = recognizedSpell.Value.spell.manaCost * _statSystem.Stats.GetFinal(StatType.ManaCost);
                     SpendManaServerRpc(-manaCost);
@@ -130,10 +149,10 @@ public class PlayerSpellCaster : NetworkBehaviour {
                 recognizedSpell = null;
                 spellEcho = null;
             } else if (channeling) {
-                if (_channelingCoutine != null)
-                    StopCoroutine(_channelingCoutine);
-                playerAnimator.CancelSpellChanneling();
-                spellManager.CancelSpell();
+                if (_channelingCoroutine != null)
+                    StopCoroutine(_channelingCoroutine);
+                _playerAnimator.CancelSpellChanneling();
+                _spellManager.CancelSpell();
                 spellEcho = null;
                 channeling = false;
             }
@@ -141,7 +160,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
     }
 
     private void CancelSpell() {
-        spellManager.CancelSpell();
+        _spellManager.CancelSpell();
         if (recognizedSpell.HasValue && recognizedSpell.Value.spell.echoCount == echoCount) {
             var manaCost = recognizedSpell.Value.spell.manaCost * _statSystem.Stats.GetFinal(StatType.ManaCost);
             SpendManaServerRpc(-manaCost);
@@ -157,13 +176,13 @@ public class PlayerSpellCaster : NetworkBehaviour {
         if (!spell.HasValue) return;
         if (spell.Value.spell.isChanneling) {
             channeling = true;
-            if (_channelingCoutine != null)
-                StopCoroutine(_channelingCoutine);
-            _channelingCoutine = StartCoroutine(Channel(spell.Value.spell));
+            if (_channelingCoroutine != null)
+                StopCoroutine(_channelingCoroutine);
+            _channelingCoroutine = StartCoroutine(Channel(spell.Value.spell));
         }
 
-        StartCoroutine(playerAnimator.CastSpell(spell.Value.spell));
-        StartCoroutine(spellManager.CastSpell(spell.Value.spell));
+        StartCoroutine(_playerAnimator.CastSpell(spell.Value.spell));
+        StartCoroutine(_spellManager.CastSpell(spell.Value.spell));
     }
 
     private void OnSpellCasted(bool _) {
@@ -184,10 +203,10 @@ public class PlayerSpellCaster : NetworkBehaviour {
     private IEnumerator SpellEcho(SpellData spell) {
         yield return new WaitForSeconds(0.05f);
 
-        mouth.ShutUp();
+        _mouth.ShutUp();
         castWaiting = true;
-        playerAnimator.CastWaitingAnim(true, spell.castWaitingIndex);
-        spellManager.PrepareSpell(spell);
+        _playerAnimator.CastWaitingAnim(true, spell.castWaitingIndex);
+        _spellManager.PrepareSpell(spell);
     }
 
     struct RecognizedSpell {
@@ -197,11 +216,11 @@ public class PlayerSpellCaster : NetworkBehaviour {
 
     public override void OnNetworkDespawn() {
         base.OnNetworkDespawn();
-        if (IsOwner)
+        if (IsOwner && _meshController != null)
             _meshController.OnCast -= OnSpellCasted;
         // Unsubscribe to avoid leaks/double-calls on respawn
-        if (mouth != null)
-            mouth.OnMouthClose -= OnMouthClose;
+        if (_mouth != null)
+            _mouth.OnMouthClose -= OnMouthClose;
     }
 
     private void UpdateSpellKeys() {

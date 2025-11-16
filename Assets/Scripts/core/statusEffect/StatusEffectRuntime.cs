@@ -16,12 +16,12 @@ public abstract class StatusEffectRuntime {
 
     public virtual void OnApply(ulong ownerClientId, GameObject target) {
         this.ownerClientId = ownerClientId;
-        if (target.TryGetComponent<PlayerNetwork>(out var player))
+        if (target.TryGetComponent<Player>(out var player))
             player.ApplyEffectColorClientRpc(data.color);
     }
 
     public virtual void OnExpire(GameObject target) {
-        if (target.TryGetComponent<PlayerNetwork>(out var player))
+        if (target.TryGetComponent<Player>(out var player))
             player.RemoveEffectColorClientRpc(data.color);
     }
 

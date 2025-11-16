@@ -17,9 +17,14 @@ public class FirstPersonLook : NetworkBehaviour {
     private Vector2 _currentRotation;
     private Vector2 _frameVelocity;
     private Vector3 _positionVelocity;
+    [SerializeField] private Vector3 offset;
 
-    private void Awake() {
-        headBone = GetComponentInChildren<MeshController>()?.head;
+    public void BindAvatar(MeshController mc) {
+        headBone = mc != null ? mc.head : null;
+    }
+
+    public void SetCameraOffset(Vector3 of) {
+        offset = of;
     }
 
     public override void OnNetworkSpawn() {
@@ -89,7 +94,7 @@ public class FirstPersonLook : NetworkBehaviour {
     private void UpdateCameraPosition() {
         if (headBone == null) return;
 
-        Vector3 targetPosition = headBone.position + headBone.TransformDirection(lookSettings.offset);
+        Vector3 targetPosition = headBone.position + offset + headBone.TransformDirection(lookSettings.offset);
         firstPersonCamera.position = Vector3.SmoothDamp(
             firstPersonCamera.position,
             targetPosition,

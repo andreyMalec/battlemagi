@@ -1,4 +1,4 @@
-using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,8 +12,20 @@ public class ColorizeMesh : MonoBehaviour {
     [SerializeField] private TMP_InputField fieldHue;
     [SerializeField] private TMP_InputField fieldSaturation;
     [SerializeField] private GameObject colorPicker;
+    [SerializeField] private Transform avatarRoot;
 
-    [SerializeField] private Renderer _renderer;
+    private Renderer _renderer;
+
+    private new Renderer renderer {
+        get {
+            if (_renderer == null || _renderer.gameObject == null) {
+                _renderer = avatarRoot.GetComponentInChildren<Renderer>(true);
+            }
+
+            return _renderer;
+        }
+    }
+
     [SerializeField] private RawImage preview;
 
     private float _hue = 0;
@@ -22,7 +34,7 @@ public class ColorizeMesh : MonoBehaviour {
         get => _hue;
         set {
             _hue = value;
-            _renderer.material.SetFloat(Hue, value);
+            renderer?.material?.SetFloat(Hue, value);
             preview?.material?.SetFloat(Hue, value);
             needUpdate = true;
         }
@@ -34,7 +46,7 @@ public class ColorizeMesh : MonoBehaviour {
         get => _saturation;
         set {
             _saturation = value;
-            _renderer.material.SetFloat(Saturation, value);
+            renderer?.material?.SetFloat(Saturation, value);
             preview?.material?.SetFloat(Saturation, value);
             needUpdate = true;
         }
@@ -49,6 +61,16 @@ public class ColorizeMesh : MonoBehaviour {
             LobbyExt.SetColor(new PlayerColor(hue, saturation));
             needUpdate = false;
         }
+    }
+
+    public void UpdateRenderer() {
+        StartCoroutine(UpdateRendererCoroutine());
+    }
+
+    private IEnumerator UpdateRendererCoroutine() {
+        yield return new WaitForEndOfFrame();
+        renderer?.material?.SetFloat(Hue, hue);
+        renderer?.material?.SetFloat(Saturation, saturation);
     }
 
     private void Awake() {

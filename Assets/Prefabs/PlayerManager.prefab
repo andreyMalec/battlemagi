@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7140477816920891520}
   - component: {fileID: 4669165845043336081}
   - component: {fileID: 6002854000391987078}
+  - component: {fileID: 5970148196172821219}
   - component: {fileID: 8912031907355082225}
   - component: {fileID: 3160345219686509147}
   - component: {fileID: 4545171593917215837}
@@ -124,6 +125,25 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 94e42977f85589848b57f163493a629b, type: 2}
   - {fileID: 11400000, guid: e1acc19637eac3f45a0dae012d996a57, type: 2}
   - {fileID: 11400000, guid: ea6636b2a2df76e46bce96559dc6d0c7, type: 2}
+  - {fileID: 11400000, guid: c4bc4d0194a2ffb40a8e9c7f57378c27, type: 2}
+--- !u!114 &5970148196172821219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6696734347862189425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13d1ca903e8c4dc4a9774b50fa87e999, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ArchetypeDatabase
+  archetypes:
+  - {fileID: 11400000, guid: 7afad9a3f9d30e34fa57064a653387d7, type: 2}
+  - {fileID: 11400000, guid: cfb6264ed26a34142b5a9ac94c0efa43, type: 2}
+  - {fileID: 11400000, guid: fb11ad2a951401e4f96ffdd6a6b1dcb1, type: 2}
+  - {fileID: 11400000, guid: d9dc263a602a06049871b177e692f0d0, type: 2}
+  - {fileID: 11400000, guid: 11154ddb1d389bd4fbc8fc8baed480ba, type: 2}
 --- !u!114 &8912031907355082225
 MonoBehaviour:
   m_ObjectHideFlags: 0

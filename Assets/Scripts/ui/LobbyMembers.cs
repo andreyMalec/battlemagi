@@ -1,12 +1,8 @@
-using System;
 using System.Collections.Generic;
 using Steamworks;
 using Steamworks.Data;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Color = UnityEngine.Color;
-using Image = UnityEngine.UI.Image;
 
 public class LobbyMembers : MonoBehaviour {
     [SerializeField] private GameObject lobbyMemberPrefab;
@@ -15,13 +11,7 @@ public class LobbyMembers : MonoBehaviour {
     [SerializeField] private Button buttonJoinRed;
     [SerializeField] private Button buttonJoinBlue;
 
-    [Header("UI")]
-    [SerializeField] private Sprite spriteReady;
-
-    [SerializeField] private Sprite spriteNotReady;
-    [SerializeField] private Shader colorShader;
-
-    private Dictionary<ulong, MemberItem> lobbyMembers = new Dictionary<ulong, MemberItem>();
+    private Dictionary<ulong, LobbyMemberItem> lobbyMembers = new Dictionary<ulong, LobbyMemberItem>();
 
     private int frame = 0;
 
@@ -48,14 +38,11 @@ public class LobbyMembers : MonoBehaviour {
         frame++;
         var lobby = LobbyManager.Instance.CurrentLobby;
         if (!lobby.HasValue) return;
-        if (frame % 60 == 0) {
+        if (frame % 30 == 0) {
             foreach (var member in lobby.Value.Members) {
                 var item = lobbyMembers[member.Id.Value];
-                var image = member.IsReady() ? spriteReady : spriteNotReady;
-                item.ready.overrideSprite = image;
-                var color = member.GetColor();
-                item.color.material.SetFloat(ColorizeMesh.Hue, color.hue);
-                item.color.material.SetFloat(ColorizeMesh.Saturation, color.saturation);
+
+                item.UpdateState(member);
                 UpdateTeam(member, item.root);
             }
         }
@@ -66,19 +53,16 @@ public class LobbyMembers : MonoBehaviour {
         containerTeamBlue.gameObject.transform.parent.gameObject.SetActive(showTeams);
     }
 
-    private MemberItem Create(Friend friend) {
+    private LobbyMemberItem Create(Friend friend) {
         var team = friend.GetTeam();
         var container = containerTeamRed.transform;
         if (team == TeamManager.Team.Blue)
             container = containerTeamBlue.transform;
-        var item = Instantiate(lobbyMemberPrefab, container);
-        item.transform.SetParent(container);
-        var textName = item.GetComponentInChildren<TMP_Text>();
-        textName.text = friend.Name;
-        var imageColor = item.GetComponentInChildren<RawImage>();
-        imageColor.material = new Material(colorShader);
-        var imageReady = item.GetComponentInChildren<Image>();
-        return new MemberItem(textName, imageColor, imageReady, item.transform);
+        var go = Instantiate(lobbyMemberPrefab, container);
+        go.transform.SetParent(container);
+        var item = go.GetComponent<LobbyMemberItem>();
+        item.UpdateName(friend.Name, friend.Id);
+        return item;
     }
 
     private void UpdateTeam(Friend friend, Transform item) {
@@ -91,8 +75,8 @@ public class LobbyMembers : MonoBehaviour {
 
     private void Destroy(ulong steamId) {
         if (lobbyMembers.TryGetValue(steamId, out var item)) {
-            Destroy(item.name.transform.parent.gameObject);
-            var tmp = new Dictionary<ulong, MemberItem>();
+            Destroy(item.root.gameObject);
+            var tmp = new Dictionary<ulong, LobbyMemberItem>();
             foreach (var member in lobbyMembers.Keys) {
                 if (member == steamId) continue;
                 tmp[member] = lobbyMembers[member];
@@ -118,20 +102,6 @@ public class LobbyMembers : MonoBehaviour {
 
     private void OnLobbyMemberLeave(Lobby lobby, Friend friend) {
         Destroy(friend.Id.Value);
-    }
-
-    private struct MemberItem {
-        public TMP_Text name;
-        public RawImage color;
-        public Image ready;
-        public Transform root;
-
-        public MemberItem(TMP_Text name, RawImage color, Image ready, Transform root) {
-            this.name = name;
-            this.color = color;
-            this.ready = ready;
-            this.root = root;
-        }
     }
 
     private void OnDisable() {

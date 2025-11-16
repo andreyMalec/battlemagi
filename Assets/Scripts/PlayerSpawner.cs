@@ -8,8 +8,6 @@ using Steamworks;
 
 public class PlayerSpawner : NetworkBehaviour {
     [SerializeField] private GameObject playerPrefab;
-    [SerializeField] private Shader playerBodyShader;
-    [SerializeField] private Shader playerCloakShader;
     [SerializeField] private GameObject lobbyEnjoyer;
 
     public static PlayerSpawner instance;
@@ -128,34 +126,10 @@ public class PlayerSpawner : NetworkBehaviour {
 
         GameObject newPlayer = Instantiate(playerPrefab, position, rotation);
         newPlayer.transform.SetPositionAndRotation(position, rotation);
-
         var netObj = newPlayer.GetComponent<NetworkObject>();
         netObj.SpawnAsPlayerObject(clientId, true);
 
-        var movement = newPlayer.GetComponent<FirstPersonMovement>();
-        movement.spawnPoint.Value = position;
-        Debug.Log($"[PlayerSpawner] Сервер: Player_{clientId} создан в {position}, {rotation}");
-
-        ApplyMaterialClientRpc(clientId, rotation);
-    }
-
-    [ClientRpc]
-    private void ApplyMaterialClientRpc(ulong clientId, Quaternion rotation) {
-        var steamid = PlayerManager.Instance.GetSteamId(clientId);
-        if (!steamid.HasValue) return;
-        var color = new Friend(steamid.Value).GetColor();
-        var bodyMat = new Material(playerBodyShader);
-        bodyMat.SetFloat(ColorizeMesh.Hue, color.hue);
-        bodyMat.SetFloat(ColorizeMesh.Saturation, color.saturation);
-        var cloakMat = new Material(playerCloakShader);
-        cloakMat.SetFloat(ColorizeMesh.Hue, color.hue);
-        cloakMat.SetFloat(ColorizeMesh.Saturation, color.saturation);
-        var player = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
-        player.GetComponentInChildren<MeshBody>().gameObject.GetComponent<SkinnedMeshRenderer>().material = bodyMat;
-        player.GetComponentInChildren<MeshCloak>().gameObject.GetComponent<SkinnedMeshRenderer>().material =
-            cloakMat;
-
-        player.GetComponent<FirstPersonLook>().ApplyInitialRotation(rotation);
+        newPlayer.GetComponent<Player>().Init(clientId, position, rotation);
     }
 
     private void SpawnLobbyEnjoyer(ulong clientId) {

@@ -8,9 +8,12 @@ public class ActiveSpell : NetworkBehaviour {
     private IHandAppearance _handAppearance;
     private ISpellPreview _spellPreview;
 
-    private void Awake() {
-        invocation = GetComponentInChildren<MeshController>().invocation.transform;
-        spellManager = GetComponent<SpellManager>();
+    public override void OnNetworkSpawn() {
+        if (spellManager == null) spellManager = GetComponent<SpellManager>();
+    }
+
+    public void BindAvatar(MeshController mc) {
+        invocation = mc != null ? mc.invocation.transform : null;
     }
 
     public void PrepareSpell(SpellData spell, ISpawnStrategy spawnMode) {

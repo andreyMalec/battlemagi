@@ -1,4 +1,172 @@
+using System;
+using Steamworks;
 using Unity.Netcode;
+using Unity.Netcode.Components;
+using UnityEngine;
+using System.Reflection; // reflection for Awake
 
+[DefaultExecutionOrder(-100)]
 public class Player : NetworkBehaviour {
+    private static readonly int OutlineColor = Shader.PropertyToID("OutlineColor");
+    private static readonly int OutlineAlpha = Shader.PropertyToID("OutlineAlpha");
+
+    [SerializeField] private Behaviour[] scriptsToDisable;
+    [SerializeField] private GameObject[] objectsToDisable;
+    [SerializeField] private Camera mainCamera;
+    private MeshController meshController;
+    private Animator animator;
+
+    private void Awake() {
+        UnityEngine.Debug.Log($" [Player] Awake called on Player_{OwnerClientId}");
+    }
+
+    protected override void OnNetworkPreSpawn(ref NetworkManager networkManager) {
+        base.OnNetworkPreSpawn(ref networkManager);
+
+    }
+
+    private void SpawnAvatar(int arch) {
+        var archetype = ArchetypeDatabase.Instance.GetArchetype(arch);
+        var currentAvatar = Instantiate(archetype.avatarPrefab, transform);
+        meshController = currentAvatar.GetComponent<MeshController>();
+        animator = currentAvatar.GetComponent<Animator>();
+
+        // Bind avatar to dependent components on player
+        var pa = GetComponent<PlayerAnimator>();
+        if (pa != null) {
+            pa.animator = animator;
+            pa.meshController = meshController;
+        }
+
+        var netAnim = GetComponent<NetworkAnimator>();
+        netAnim.Animator = animator;
+        // invoke Awake via reflection to rebuild internal state
+        var m = typeof(NetworkAnimator).GetMethod("Awake",
+            BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+        if (m != null) m.Invoke(netAnim, null);
+
+        var movement = GetComponent<FirstPersonMovement>();
+        movement.movementSpeed = archetype.movementSpeed;
+        movement.runSpeed = archetype.runSpeed;
+        movement.maxStamina = archetype.maxStamina;
+
+        var look = GetComponent<FirstPersonLook>();
+        look.BindAvatar(meshController);
+        look.SetCameraOffset(archetype.cameraOffset);
+
+        var spellMgr = GetComponent<SpellManager>();
+        spellMgr.BindAvatar(meshController);
+        var activeSpell = GetComponent<ActiveSpell>();
+        activeSpell.BindAvatar(meshController);
+        var caster = GetComponent<PlayerSpellCaster>();
+        caster.BindAvatar(meshController);
+        var camSel = GetComponent<CameraSelector>();
+        camSel.BindAvatar(meshController);
+        var fpss = GetComponentInChildren<FirstPersonSounds>();
+        fpss.BindAvatar(animator);
+    }
+
+    public override void OnNetworkSpawn() {
+        base.OnNetworkSpawn();
+        UnityEngine.Debug.Log($" [Player] OnNetworkSpawn called on Player_{OwnerClientId}");
+        
+        var clientId = OwnerClientId;
+        Debug.Log($" [Player] OnNetworkPreSpawn called on Player_{clientId}");
+        var arch = PlayerManager.Instance.FindByClientId(clientId)!.Value.Archetype;
+
+        SpawnAvatar(arch);
+
+        ApplyMaterial(clientId, arch);
+
+        gameObject.name = $"Player_{OwnerClientId}";
+
+        if (IsOwner) {
+            mainCamera.GetComponent<Camera>().depth = 100;
+        } else {
+            foreach (var script in scriptsToDisable) {
+                script.enabled = false;
+            }
+
+            foreach (var obj in objectsToDisable) {
+                obj.SetActive(false);
+            }
+
+            if (!IsOwner && meshController != null) {
+                meshController.leftHand.weight = 0f;
+                meshController.spine.weight *= 3f;
+            }
+            mainCamera.GetComponent<Camera>().enabled = false;
+        }
+    }
+
+    [ClientRpc]
+    public void ApplyEffectColorClientRpc(Color color) {
+        ApplyColor(prev => prev + color);
+    }
+
+    [ClientRpc]
+    public void RemoveEffectColorClientRpc(Color color) {
+        ApplyColor(prev => prev - color);
+    }
+
+    private void ApplyColor(Func<Color, Color> operation) {
+        var materials = GetComponentInChildren<MeshBody>().GetComponent<SkinnedMeshRenderer>().materials;
+        foreach (var material in materials) {
+            if (!material.HasColor(OutlineColor)) continue;
+            var prev = material.GetColor(OutlineColor);
+            var next = operation.Invoke(prev);
+            var alpha = 0f;
+            if (next.a > 0)
+                alpha = 1f;
+            material.SetFloat(OutlineAlpha, alpha);
+            material.SetColor(OutlineColor, next);
+        }
+    }
+
+    public void Init(ulong clientId, Vector3 position, Quaternion rotation) {
+        var arch = PlayerManager.Instance.FindByClientId(clientId)!.Value.Archetype;
+        var archetype = ArchetypeDatabase.Instance.GetArchetype(arch);
+
+        var movement = GetComponent<FirstPersonMovement>();
+        movement.spawnPoint.Value = position;
+        Debug.Log($"[PlayerSpawner] Init Сервер: Player_{clientId} создан в {position}, {rotation}");
+        movement.movementSpeed = archetype.movementSpeed;
+        movement.runSpeed = archetype.runSpeed;
+        movement.maxStamina = archetype.maxStamina;
+        movement.stamina.Value = archetype.maxStamina;
+
+        var damageable = GetComponent<Damageable>();
+        damageable.maxHealth = archetype.maxHealth;
+        damageable.health.Value = archetype.maxHealth;
+
+        var caster = GetComponent<PlayerSpellCaster>();
+        caster.maxMana = archetype.maxMana;
+        caster.mana.Value = archetype.maxMana;
+
+        InitClientRpc(clientId, rotation);
+    }
+
+    [ClientRpc]
+    private void InitClientRpc(ulong clientId, Quaternion rotation) {
+        Debug.Log($" [PlayerSpawner] InitClientRpc Клиент: Инициализация Player_{clientId}");
+        GetComponent<FirstPersonLook>().ApplyInitialRotation(rotation);
+    }
+
+    private void ApplyMaterial(ulong clientId, int arch) {
+        var steamId = PlayerManager.Instance.GetSteamId(clientId);
+        if (!steamId.HasValue) return;
+        var archetype = ArchetypeDatabase.Instance.GetArchetype(arch);
+        var color = new Friend(steamId.Value).GetColor();
+        var bodyMat = new Material(archetype.bodyShader);
+        bodyMat.SetFloat(ColorizeMesh.Hue, color.hue);
+        bodyMat.SetFloat(ColorizeMesh.Saturation, color.saturation);
+        GetComponentInChildren<MeshBody>().gameObject.GetComponent<SkinnedMeshRenderer>().material = bodyMat;
+        if (archetype.cloakShader == null) return;
+        var cloakMat = new Material(archetype.cloakShader);
+        cloakMat.SetFloat(ColorizeMesh.Hue, color.hue);
+        cloakMat.SetFloat(ColorizeMesh.Saturation, color.saturation);
+        var meshCloak = GetComponentInChildren<MeshCloak>();
+        if (meshCloak != null)
+            meshCloak.gameObject.GetComponent<SkinnedMeshRenderer>().material = cloakMat;
+    }
 }

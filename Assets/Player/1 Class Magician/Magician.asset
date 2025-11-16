@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bc045b45ffe4595b3f2f97f64adb00f, type: 3}
+  m_Name: Magician
+  m_EditorClassIdentifier: Assembly-CSharp::ArchetypeData
+  id: 1
+  archetypeName: Magician
+  avatarPrefab: {fileID: 4078554245983839394, guid: 140f34d414a550040b4e2eeb46cce691, type: 3}
+  bodyShader: {fileID: -6465566751694194690, guid: e9425a49c350d4c48a7954d5dd8c73de, type: 3}
+  cloakShader: {fileID: -6465566751694194690, guid: b9c368965073f7e47a6645487b26379e, type: 3}
+  spells:
+  - {fileID: 11400000, guid: 5763ea8db7d5fa74281107a26119aac4, type: 2}
+  - {fileID: 11400000, guid: 672d61c7bfe8084488ff712bf14875f3, type: 2}
+  - {fileID: 11400000, guid: 94e42977f85589848b57f163493a629b, type: 2}
+  maxHealth: 100
+  maxMana: 125
+  maxStamina: 3
+  movementSpeed: 2
+  runSpeed: 5
+  cameraOffset: {x: 0, y: 0, z: 0}

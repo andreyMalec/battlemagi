@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 
 public class SpellBook : MonoBehaviour {
@@ -57,17 +59,28 @@ public class SpellBook : MonoBehaviour {
     private Coroutine pageCoroutine;
 
     private void Start() {
-        if (SpellDatabase.Instance != null)
-            spells = SpellDatabase.Instance.spells;
-        else
-            spells = new List<SpellData>();
-
         // initialize visuals
         ResetBlendShapes();
         UpdateSpellUI();
         SetUIVisibility(false);
         book.enabled = false;
         helperUI.SetActive(false);
+    }
+
+    private List<SpellData> GetSpells() {
+        List<SpellData> list;
+        if (NetworkManager.Singleton.IsClient) {
+            var arch = PlayerManager.Instance.FindByClientId(NetworkManager.Singleton.LocalClientId);
+            if (arch != null) {
+                list = ArchetypeDatabase.Instance.GetArchetype(arch.Value.Archetype).spells.ToList();
+                currentIndex = Math.Clamp(currentIndex, 0, list.Count - 1);
+                return list;
+            }
+        }
+
+        list = SpellDatabase.Instance.spells;
+        currentIndex = Math.Clamp(currentIndex, 0, list.Count - 1);
+        return list;
     }
 
     private void Update() {
@@ -90,6 +103,8 @@ public class SpellBook : MonoBehaviour {
 
     public void Open() {
         if (isVisible) return;
+        spells = GetSpells();
+        UpdateSpellUI();
         if (openCoroutine != null) StopCoroutine(openCoroutine);
         openCoroutine = StartCoroutine(OpenRoutine());
     }

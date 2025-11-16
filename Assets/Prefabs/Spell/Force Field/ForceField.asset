@@ -21,7 +21,7 @@ MonoBehaviour:
     incoming projectiles and shields the caster for a short duration.'
   nameRu: 
   spellWords:
-  - ForceField
+  - Force Field
   spellWordsRu:
   - "\u041E\u0433\u043D\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
   - "\u0428\u0430\u0440\u041E\u0433\u043D\u044F"
@@ -44,6 +44,8 @@ MonoBehaviour:
   spellBurstPrefab: {fileID: 0}
   mainSpellPrefab: {fileID: 7354784787554302670, guid: 4bcd09685c740ff4f9d36613653f5937, type: 3}
   impactPrefab: {fileID: 0}
+  impactEffects: []
+  buffs: []
   damageSound: 0
   castWaitingIndex: 0
   invocationIndex: 7
@@ -51,11 +53,13 @@ MonoBehaviour:
   previewMainInHand: 1
   disableWhileCarrying: 1
   echoCount: 0
+  instanceLimit: 0
   lifeTime: 10
   baseDamage: 0
   canSelfDamage: 0
   useParticleCollision: 0
   isDOT: 0
+  tickInterval: 1
   hasAreaEffect: 0
   areaRadius: 10
   knockbackForce: 0

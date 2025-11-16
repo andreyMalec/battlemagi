@@ -21,7 +21,7 @@ MonoBehaviour:
     the caster forward, evading danger.'
   nameRu: 
   spellWords:
-  - ShadowStep
+  - Shadow step
   spellWordsRu: []
   manaCost: 75
   bookImage: {fileID: 2800000, guid: e839b1b2c39b322419e1c2e161878f39, type: 3}
@@ -29,6 +29,8 @@ MonoBehaviour:
   spellBurstPrefab: {fileID: 1970519832159055978, guid: c03f980547ce3a9479798b66474258e5, type: 3}
   mainSpellPrefab: {fileID: 7389778017922607859, guid: 6dca2ea7606027e40af1aee6baedc003, type: 3}
   impactPrefab: {fileID: 0}
+  impactEffects: []
+  buffs: []
   damageSound: 0
   castWaitingIndex: 0
   invocationIndex: 4
@@ -36,11 +38,13 @@ MonoBehaviour:
   previewMainInHand: 0
   disableWhileCarrying: 1
   echoCount: 0
+  instanceLimit: 0
   lifeTime: 4
   baseDamage: 0
   canSelfDamage: 0
   useParticleCollision: 0
   isDOT: 0
+  tickInterval: 1
   hasAreaEffect: 0
   areaRadius: 5
   knockbackForce: 0

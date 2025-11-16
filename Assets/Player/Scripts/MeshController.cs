@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
@@ -19,11 +20,8 @@ public class MeshController : MonoBehaviour {
     [Header("Refs")]
     public Transform head = null;
 
-    public ParticleSystem invocation;
-    public GameObject cloak;
-
-    [Header("Ragdoll")]
-    public Collider[] colliders;
+    public Transform invocation;
+    [CanBeNull] public GameObject cloak;
 
     [Serializable]
     public struct RigidbodyEntry {
@@ -48,12 +46,33 @@ public class MeshController : MonoBehaviour {
 
     private CharacterJoint[] joints;
     private Animator animator;
-    private Cloth cloth;
+    [CanBeNull] private Cloth cloth;
 
     public event Action<bool> OnCast;
     public event Action<bool> OnBurst;
 
     private void Awake() {
+        if (ikTargetHand == null) {
+            var player = GetComponentInParent<Player>();
+            if (player != null) {
+                ikTargetHand = player.GetComponentInChildren<HandIKTarget>().transform;
+            }
+        }
+
+        if (ikTargetHandRight == null) {
+            var player = GetComponentInParent<Player>();
+            if (player != null) {
+                ikTargetHandRight = player.GetComponentInChildren<HandIKTargetRight>().transform;
+            }
+        }
+
+        if (ikTargetSpine == null) {
+            var player = GetComponentInParent<Player>();
+            if (player != null) {
+                ikTargetSpine = player.GetComponentInChildren<HandIKTargetSpine>().transform;
+            }
+        }
+
         leftHandIkConstraint.data.target = ikTargetHand;
         rightHandIkConstraint.data.target = ikTargetHandRight;
         headIkConstraint.data.target = ikTargetSpine;
@@ -64,7 +83,8 @@ public class MeshController : MonoBehaviour {
         GetComponent<RigBuilder>().Build();
         animator.Rebind();
         animator.enabled = true;
-        cloth = cloak.GetComponent<Cloth>();
+        if (cloak != null)
+            cloth = cloak.GetComponent<Cloth>();
 
         joints = GetComponentsInChildren<CharacterJoint>();
 
@@ -80,15 +100,12 @@ public class MeshController : MonoBehaviour {
 
     public void SetRagdoll(bool enable) {
         animator.enabled = !enable;
-        cloth.enabled = !enable;
+        if (cloth != null)
+            cloth.enabled = !enable;
         foreach (var rbEntry in rigidbodies) {
             rbEntry.body.useGravity = enable;
             rbEntry.body.detectCollisions = rbEntry.enableDetectCollisions || enable;
         }
-
-        // foreach (var collider in colliders) {
-        //     collider.enabled = enable;
-        // }
 
         foreach (var joint in joints) {
             joint.enableCollision = enable;

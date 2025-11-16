@@ -278,8 +278,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSpawner
   ShowTopMostFoldoutHeaderGroup: 1
   playerPrefab: {fileID: 5793509697026975924, guid: 0b399508206f73b48a704aeb2350225e, type: 3}
-  playerBodyShader: {fileID: -6465566751694194690, guid: e9425a49c350d4c48a7954d5dd8c73de, type: 3}
-  playerCloakShader: {fileID: -6465566751694194690, guid: b9c368965073f7e47a6645487b26379e, type: 3}
   lobbyEnjoyer: {fileID: 5191588351995228882, guid: 9e8d2d6992aed994b806624e2811bb1e, type: 3}
 --- !u!4 &505874375
 Transform:
@@ -1464,11 +1462,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6391c609cdb74d368431b5f1d11992cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Voice.WhisperManager
-  logLevel: 2
+  logLevel: 0
   modelPath: 
   isModelPathInStreamingAssets: 1
   initOnAwake: 0
-  useGpu: 1
+  useGpu: 0
   flashAttention: 0
   language: en
   translateToEnglish: 0
@@ -1476,10 +1474,7 @@ MonoBehaviour:
   noContext: 1
   singleSegment: 1
   enableTokens: 1
-  initialPrompt: firaball, ball lightning, toxic sphere, ice shards, chidori, scorching
-    ray, shadow step, force field, air bullet, mana storm, dirt wall, Pain mirror,
-    Shockwave Totem, Spike Trap, Frost Nova, Charged shot, Ember Lash, Flame Dash,
-    Incinerate
+  initialPrompt: 
   stepSec: 0.5
   keepSec: 0
   lengthSec: 3
@@ -1519,7 +1514,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28cdf9d512f14b2bac99f1ded2e396f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneLoader
-  waitUntilModelLoaded: 1
+  waitUntilModelLoaded: 0
 --- !u!4 &1941920897
 Transform:
   m_ObjectHideFlags: 0
@@ -1637,14 +1632,6 @@ PrefabInstance:
       propertyPath: InScenePlacedSourceGlobalObjectIdHash
       value: 2254842558
       objectReference: {fileID: 0}
-    - target: {fileID: 6002854000391987078, guid: b390804259226a847b47db240409c0f2, type: 3}
-      propertyPath: spells.Array.size
-      value: 13
-      objectReference: {fileID: 0}
-    - target: {fileID: 6002854000391987078, guid: b390804259226a847b47db240409c0f2, type: 3}
-      propertyPath: 'spells.Array.data[12]'
-      value: 
-      objectReference: {fileID: 11400000, guid: c4bc4d0194a2ffb40a8e9c7f57378c27, type: 2}
     - target: {fileID: 6117778263866355746, guid: b390804259226a847b47db240409c0f2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

@@ -20,7 +20,7 @@ public class Menu : MonoBehaviour {
     [SerializeField] private Button buttonCredits;
 
     [Header("Character")]
-    [SerializeField] private Animator animator;
+    [SerializeField] private Transform avatarRoot;
 
     private State _state;
 
@@ -69,12 +69,12 @@ public class Menu : MonoBehaviour {
     private void OnStateChanged(LobbyManager.PlayerState state) {
         var newValue = state == LobbyManager.PlayerState.InLobby;
         if (newValue && _state != State.Lobby) {
-            animator.SetTrigger(StandUp);
+            avatarRoot.GetComponentInChildren<Animator>().SetTrigger(StandUp);
             _state = State.Lobby;
         }
 
         if (!newValue && _state == State.Lobby) {
-            animator.SetTrigger(SitDown);
+            avatarRoot.GetComponentInChildren<Animator>().SetTrigger(SitDown);
             _state = State.Main;
         }
 

@@ -14,6 +14,7 @@ public class PlayerManager : NetworkBehaviour {
         public int Deaths;
         public int Assists;
         public int Flags;
+        public int Archetype;
 
         public PlayerData(ulong clientId, ulong steamId) {
             ClientId = clientId;
@@ -22,6 +23,7 @@ public class PlayerManager : NetworkBehaviour {
             Deaths = 0;
             Assists = 0;
             Flags = 0;
+            Archetype = 0;
         }
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter {
@@ -31,14 +33,15 @@ public class PlayerManager : NetworkBehaviour {
             serializer.SerializeValue(ref Deaths);
             serializer.SerializeValue(ref Assists);
             serializer.SerializeValue(ref Flags);
+            serializer.SerializeValue(ref Archetype);
         }
 
         public bool Equals(PlayerData other) =>
             ClientId == other.ClientId && SteamId == other.SteamId && Kills == other.Kills && Deaths == other.Deaths &&
-            Assists == other.Assists && Flags == other.Flags;
+            Assists == other.Assists && Flags == other.Flags && Archetype == other.Archetype;
 
         public override string ToString() {
-            return $"PlayerData({ClientId}, {SteamId}, {Flags}, {Kills}, {Deaths}, {Assists})";
+            return $"PlayerData({ClientId}, {SteamId}, {Archetype}, {Flags}, {Kills}, {Deaths}, {Assists})";
         }
 
         public GameObject PlayerObject() {
@@ -240,6 +243,19 @@ public class PlayerManager : NetworkBehaviour {
             if (player.ClientId == clientId) {
                 Debug.Log($"AddFlag for Player_{clientId}");
                 player.Flags++;
+                players[i] = player;
+            }
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SetArchetypeServerRpc(int archetype, ServerRpcParams rpcParams = default) {
+        var clientId = rpcParams.Receive.SenderClientId;
+        for (int i = players.Count - 1; i >= 0; i--) {
+            var player = players[i];
+            if (player.ClientId == clientId) {
+                Debug.Log($"SetArchetype for Player_{clientId} to {archetype}");
+                player.Archetype = archetype;
                 players[i] = player;
             }
         }

@@ -22,7 +22,7 @@ public class RuneOfStasisPostEffect : StatusEffectData {
                 statSystem.AddModifierServer(StatType.HealthRegen, _data.healthRegenMultiplier);
             }
 
-            target.GetComponent<PlayerNetwork>().ApplyEffectColorClientRpc(_data.color);
+            target.GetComponent<Player>().ApplyEffectColorClientRpc(_data.color);
             target.GetComponent<StateController>().SetFreeze(true);
             target.GetComponent<Damageable>().invulnerable = true;
         }
@@ -34,7 +34,7 @@ public class RuneOfStasisPostEffect : StatusEffectData {
                 statSystem.RemoveModifierServer(StatType.HealthRegen, _data.healthRegenMultiplier);
             }
 
-            target.GetComponent<PlayerNetwork>().RemoveEffectColorClientRpc(_data.color);
+            target.GetComponent<Player>().RemoveEffectColorClientRpc(_data.color);
             target.GetComponent<StateController>().SetFreeze(false);
             target.GetComponent<Damageable>().invulnerable = false;
         }

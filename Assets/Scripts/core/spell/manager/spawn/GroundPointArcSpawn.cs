@@ -60,6 +60,10 @@ public class GroundPointArcSpawn : ISpawnStrategy {
             return hit.point + hit.normal * 0.3f;
         }
 
+        if (Physics.Raycast(origin + Vector3.up, Vector3.down, out hit, _maxDistance, mask)) {
+            return hit.point + hit.normal * 0.3f;
+        }
+
         return new Vector3(1000, 0, 0);
     }
 }

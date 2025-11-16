@@ -21,7 +21,7 @@ MonoBehaviour:
     on impact, dealing area damage around the target.'
   nameRu: "\u041E\u0433\u043D\u0435\u043D\u043D\u044B\u0439 \u0428\u0430\u0440"
   spellWords:
-  - fireball
+  - Fireball
   spellWordsRu:
   - "\u041E\u0433\u043D\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
   - "\u0428\u0430\u0440\u041E\u0433\u043D\u044F"
@@ -55,6 +55,7 @@ MonoBehaviour:
   previewMainInHand: 0
   disableWhileCarrying: 0
   echoCount: 0
+  instanceLimit: 0
   lifeTime: 20
   baseDamage: 75
   canSelfDamage: 1
