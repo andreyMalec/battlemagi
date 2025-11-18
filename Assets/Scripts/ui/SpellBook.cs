@@ -283,7 +283,7 @@ public class SpellBook : MonoBehaviour {
     private void UpdateLeftPage(SpellData spell) {
         if (spell == null || spell.bookImage == null) return;
         spellImage.material.mainTexture = spell.bookImage;
-        spellManaCostText.text = spell.manaCost.ToString("0");
+        spellManaCostText.text = spell.isChanneling ? $"{spell.manaCost:0}/s" : $"{spell.manaCost:0}";
     }
 
     #endregion
@@ -303,7 +303,7 @@ public class SpellBook : MonoBehaviour {
         var s = spell ?? spells[currentIndex];
         spellNameText.text = s.name;
         spellDescriptionText.text = s.description;
-        spellManaCostText.text = s.manaCost.ToString("0");
+        spellManaCostText.text = s.isChanneling ? $"{s.manaCost:0}/s" : $"{s.manaCost:0}";
         if (s.bookImage != null)
             spellImage.material.mainTexture = s.bookImage;
     }

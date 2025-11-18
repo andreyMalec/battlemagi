@@ -59,7 +59,10 @@ public class Player : NetworkBehaviour {
         var activeSpell = GetComponent<ActiveSpell>();
         activeSpell.BindAvatar(meshController);
         var caster = GetComponent<PlayerSpellCaster>();
+        caster.maxMana = archetype.maxMana;
         caster.BindAvatar(meshController);
+        var damageable = GetComponent<Damageable>();
+        damageable.maxHealth = archetype.maxHealth;
         var camSel = GetComponent<CameraSelector>();
         camSel.BindAvatar(meshController);
         var fpss = GetComponentInChildren<FirstPersonSounds>();
@@ -130,17 +133,12 @@ public class Player : NetworkBehaviour {
         var movement = GetComponent<FirstPersonMovement>();
         movement.spawnPoint.Value = position;
         Debug.Log($"[PlayerSpawner] Init Сервер: Player_{clientId} создан в {position}, {rotation}");
-        movement.movementSpeed = archetype.movementSpeed;
-        movement.runSpeed = archetype.runSpeed;
-        movement.maxStamina = archetype.maxStamina;
         movement.stamina.Value = archetype.maxStamina;
 
         var damageable = GetComponent<Damageable>();
-        damageable.maxHealth = archetype.maxHealth;
         damageable.health.Value = archetype.maxHealth;
 
         var caster = GetComponent<PlayerSpellCaster>();
-        caster.maxMana = archetype.maxMana;
         caster.mana.Value = archetype.maxMana;
 
         InitClientRpc(clientId, rotation);
