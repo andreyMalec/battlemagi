@@ -1462,11 +1462,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6391c609cdb74d368431b5f1d11992cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Voice.WhisperManager
-  logLevel: 0
+  logLevel: 2
   modelPath: 
   isModelPathInStreamingAssets: 1
   initOnAwake: 0
-  useGpu: 0
+  useGpu: 1
   flashAttention: 0
   language: en
   translateToEnglish: 0
