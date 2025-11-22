@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -37,6 +38,9 @@ public class MenuStateLobby : MonoBehaviour {
         dropdownMap.onValueChanged.AddListener(SubmitMap);
         dropdownMode.onValueChanged.AddListener(SubmitMode);
         dropdownGameEnd.onValueChanged.AddListener(SubmitEndChoice);
+
+        dropdownMap.options = GameMapDatabase.instance.gameMaps.Map(it => new TMP_Dropdown.OptionData(it.mapName))
+            .ToList();
 
         UpdateGameEndOptions(dropdownMode.value);
         UpdateGameEndTargetText();

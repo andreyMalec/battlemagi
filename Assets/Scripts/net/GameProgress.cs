@@ -21,13 +21,7 @@ public class GameProgress : NetworkBehaviour {
     private bool started = false;
     private bool ended = false;
 
-    private const string game0 = "Game";
-    private const string game1 = "Game 3";
-    private const string game2 = "Game 2";
-    private const string game3 = "Game 4";
-    private const string test = "Test";
-
-    public string SceneName = game0;
+    public string SceneName;
     public NetworkVariable<int> SelectedMap = new();
 
     private void Awake() {
@@ -38,14 +32,7 @@ public class GameProgress : NetworkBehaviour {
     public void SelectMap(int mapIndex) {
         if (!IsServer) return;
         started = false;
-        var map = game0;
-        if (mapIndex == 1)
-            map = game1;
-        if (mapIndex == 2)
-            map = game2;
-        if (mapIndex == 3)
-            map = game3;
-        SceneName = map;
+        SceneName = GameMapDatabase.instance.gameMaps[mapIndex].scene.name;
         SelectedMap.Value = mapIndex;
         Debug.Log($"[GameProgress] Selected map: {SceneName} mapIndex={mapIndex}");
     }
