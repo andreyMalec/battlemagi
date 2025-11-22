@@ -21,10 +21,10 @@ public static class DamageUtils {
         if (applyDistanceMultiplier) {
             var distance = Vector3.Distance(spell.transform.position, other.transform.position);
             var areaDamageMulti = 1f - distance / data.areaRadius;
-            damageable.TakeDamage(spell.OwnerClientId, data.baseDamage * areaDamageMulti * damageMulti,
+            damageable.TakeDamage(data.name, spell.OwnerClientId, data.baseDamage * areaDamageMulti * damageMulti,
                 data.damageSound);
         } else {
-            damageable.TakeDamage(spell.OwnerClientId, data.baseDamage * damageMulti, data.damageSound);
+            damageable.TakeDamage(data.name, spell.OwnerClientId, data.baseDamage * damageMulti, data.damageSound);
         }
 
         return damageable.OwnerClientId;

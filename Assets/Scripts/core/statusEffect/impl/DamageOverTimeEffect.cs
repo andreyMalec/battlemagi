@@ -37,7 +37,13 @@ public class DamageOverTimeEffect : StatusEffectData {
                 if (health != null) {
                     if (!_data.canSelfDamage && TeamManager.Instance.AreAllies(ownerClientId, health.OwnerClientId))
                         return;
-                    health.TakeDamage(ownerClientId, _data.dps, _data.damageSound, _data.ignoreDamageSoundCooldown);
+                    health.TakeDamage(
+                        _data.effectName,
+                        ownerClientId,
+                        _data.dps,
+                        _data.damageSound,
+                        _data.ignoreDamageSoundCooldown
+                    );
                 }
             }
         }

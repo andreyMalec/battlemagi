@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
@@ -143,7 +144,8 @@ public class PlayerSpellCaster : NetworkBehaviour {
                 _playerAnimator.CastWaitingAnim(false);
                 castWaiting = false;
                 _spellManager.CancelSpell();
-                if (recognizedSpell.HasValue && recognizedSpell.Value.spell.echoCount == echoCount && !recognizedSpell.Value.spell.isChanneling) {
+                if (recognizedSpell.HasValue && recognizedSpell.Value.spell.echoCount == echoCount &&
+                    !recognizedSpell.Value.spell.isChanneling) {
                     var manaCost = recognizedSpell.Value.spell.manaCost * _statSystem.Stats.GetFinal(StatType.ManaCost);
                     SpendManaServerRpc(-manaCost);
                 }
@@ -163,7 +165,8 @@ public class PlayerSpellCaster : NetworkBehaviour {
 
     private void CancelSpell() {
         _spellManager.CancelSpell();
-        if (recognizedSpell.HasValue && recognizedSpell.Value.spell.echoCount == echoCount && !recognizedSpell.Value.spell.isChanneling) {
+        if (recognizedSpell.HasValue && recognizedSpell.Value.spell.echoCount == echoCount &&
+            !recognizedSpell.Value.spell.isChanneling) {
             var manaCost = recognizedSpell.Value.spell.manaCost * _statSystem.Stats.GetFinal(StatType.ManaCost);
             SpendManaServerRpc(-manaCost);
         }
@@ -185,6 +188,10 @@ public class PlayerSpellCaster : NetworkBehaviour {
 
         StartCoroutine(_playerAnimator.CastSpell(spell.Value.spell));
         StartCoroutine(_spellManager.CastSpell(spell.Value.spell));
+
+        FirebaseAnalytic.Instance.SendEvent("SpellCasted", new Dictionary<string, object> {
+            { "name", spell.Value.spell.name }
+        });
     }
 
     private void OnSpellCasted(bool _) {
@@ -215,6 +222,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
             yield return new WaitForSeconds(dt);
             elapsed += dt;
         }
+
         channeling = false;
     }
 

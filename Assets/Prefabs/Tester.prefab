@@ -113,7 +113,7 @@ CharacterController:
   serializedVersion: 3
   m_Height: 2
   m_Radius: 0.5
-  m_SlopeLimit: 45
+  m_SlopeLimit: 50
   m_StepOffset: 0.5
   m_SkinWidth: 0.0001
   m_MinMoveDistance: 0.001
@@ -134,6 +134,8 @@ MonoBehaviour:
   lookSettings: {fileID: 11400000, guid: 5e09a9892218f1a49acfc9e000c99915, type: 2}
   groundCheck: {fileID: 6803069950537442686}
   mainCamera: {fileID: 8854033999867419295}
+  movementSpeed: 2
+  runSpeed: 5
 --- !u!1 &7750010650653659641
 GameObject:
   m_ObjectHideFlags: 0

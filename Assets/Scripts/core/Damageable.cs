@@ -56,6 +56,7 @@ public class Damageable : NetworkBehaviour {
     }
 
     public void TakeDamage(
+        string source,
         ulong fromClientId,
         float damage,
         DamageSoundType sound = DamageSoundType.Default,
@@ -90,6 +91,10 @@ public class Damageable : NetworkBehaviour {
         if (!immortal && health.Value <= 0 && before > 0) {
             isDead = true;
             OnDeath(clientId, fromClientId);
+
+            FirebaseAnalytic.Instance.SendEvent("PlayerKilled", new Dictionary<string, object> {
+                { "source", source },
+            });
         }
     }
 

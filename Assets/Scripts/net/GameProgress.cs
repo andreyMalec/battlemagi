@@ -18,11 +18,13 @@ public class GameProgress : NetworkBehaviour {
 
     public static GameProgress Instance { get; private set; }
 
+    private bool started = false;
     private bool ended = false;
 
     private const string game0 = "Game";
     private const string game1 = "Game 3";
     private const string game2 = "Game 2";
+    private const string game3 = "Game 4";
     private const string test = "Test";
 
     public string SceneName = game0;
@@ -35,20 +37,30 @@ public class GameProgress : NetworkBehaviour {
 
     public void SelectMap(int mapIndex) {
         if (!IsServer) return;
+        started = false;
         var map = game0;
         if (mapIndex == 1)
             map = game1;
         if (mapIndex == 2)
             map = game2;
+        if (mapIndex == 3)
+            map = game3;
         SceneName = map;
         SelectedMap.Value = mapIndex;
         Debug.Log($"[GameProgress] Selected map: {SceneName} mapIndex={mapIndex}");
     }
 
     public void StartMatch() {
-        if (!IsServer) return;
+        if (!IsServer || started) return;
         LobbyManager.Instance.CurrentLobby?.SetJoinable(false);
         NetworkManager.Singleton.SceneManager.LoadScene(SceneName, LoadSceneMode.Single);
+        started = true;
+
+        FirebaseAnalytic.Instance.SendEvent("MatchStarted", new Dictionary<string, object> {
+            { "map", SceneName },
+            { "mode", TeamManager.Instance.CurrentMode.Value.ToString() },
+            { "playerCount", LobbyManager.Instance.CurrentLobby!.Value.MemberCount }
+        });
     }
 
     public override void OnNetworkSpawn() {
@@ -106,6 +118,7 @@ public class GameProgress : NetworkBehaviour {
     private IEnumerator EndMatch() {
         if (ended) yield break;
         ended = true;
+        started = false;
         Debug.Log("[GameProgressTracker] Match ended by reaching target");
 
         yield return new WaitForSeconds(10f);

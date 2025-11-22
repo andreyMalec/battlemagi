@@ -10,7 +10,7 @@ public class MenuStateMain : MonoBehaviour {
     [SerializeField] private TMP_InputField fieldJoinLobbyId;
 
     private UInt64 lobbyId = 0;
-    private const int lobbySize = 6;
+    private const int lobbySize = 8;
 
     private void Awake() {
         buttonExit.onClick.AddListener(Application.Quit);

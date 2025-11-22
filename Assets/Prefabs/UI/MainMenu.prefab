@@ -549,14 +549,6 @@ MonoBehaviour:
   containerTeamBlue: {fileID: 7004365296731023940}
   buttonJoinRed: {fileID: 2448006027027934910}
   buttonJoinBlue: {fileID: 2753873179414770992}
-  spriteReady: {fileID: 21300000, guid: 354bbbd127df50a4aa770c8e83203293, type: 3}
-  spriteNotReady: {fileID: 21300000, guid: 37da9607cf0efc94dbe5b78c176c6c7e, type: 3}
-  spriteArchetypes:
-  - {fileID: -2124407593, guid: 22971eee59e296246b8cabdf7c9810b6, type: 3}
-  - {fileID: -1941014954, guid: 22971eee59e296246b8cabdf7c9810b6, type: 3}
-  - {fileID: -1485062009, guid: 22971eee59e296246b8cabdf7c9810b6, type: 3}
-  - {fileID: 689190777, guid: 22971eee59e296246b8cabdf7c9810b6, type: 3}
-  colorShader: {fileID: -6465566751694194690, guid: c315f4ed72580e94d88b3de4c04639ee, type: 3}
 --- !u!1 &1444478249149742624
 GameObject:
   m_ObjectHideFlags: 0
@@ -1964,7 +1956,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4263955390756065809, guid: 2e081c99af453564682786ed9e348068, type: 3}
       propertyPath: m_Options.m_Options.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4263955390756065809, guid: 2e081c99af453564682786ed9e348068, type: 3}
       propertyPath: m_Options.m_Options.Array.data[0].m_Text
@@ -1977,6 +1969,10 @@ PrefabInstance:
     - target: {fileID: 4263955390756065809, guid: 2e081c99af453564682786ed9e348068, type: 3}
       propertyPath: m_Options.m_Options.Array.data[2].m_Text
       value: Ruins
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263955390756065809, guid: 2e081c99af453564682786ed9e348068, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[3].m_Text
+      value: Platform
       objectReference: {fileID: 0}
     - target: {fileID: 4263955390756065809, guid: 2e081c99af453564682786ed9e348068, type: 3}
       propertyPath: m_Options.m_Options.Array.data[2].m_Color.a
@@ -1992,6 +1988,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4263955390756065809, guid: 2e081c99af453564682786ed9e348068, type: 3}
       propertyPath: m_Options.m_Options.Array.data[2].m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263955390756065809, guid: 2e081c99af453564682786ed9e348068, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[3].m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263955390756065809, guid: 2e081c99af453564682786ed9e348068, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[3].m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263955390756065809, guid: 2e081c99af453564682786ed9e348068, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[3].m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263955390756065809, guid: 2e081c99af453564682786ed9e348068, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[3].m_Color.r
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5380903008458925416, guid: 2e081c99af453564682786ed9e348068, type: 3}
