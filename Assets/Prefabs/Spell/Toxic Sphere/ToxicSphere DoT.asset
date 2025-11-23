@@ -10,10 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1c73412154f04735ac2004b446e9e2b0, type: 3}
-  m_Name: LavaDoT
+  m_Name: ToxicSphere DoT
   m_EditorClassIdentifier: Assembly-CSharp::DamageOverTimeEffect
-  effectName: DoT Lava
+  effectName: ToxicSphere DoT
+  description: 
   duration: 0.5
-  dps: 0.3
-  tickInterval: 0
-  damageSound: 5
+  color: {r: 0, g: 0, b: 0, a: 0}
+  removeOnHit: 0
+  onExpire: {fileID: 0}
+  dps: 10
+  tickInterval: 0.5
+  damageSound: 4
+  ignoreDamageSoundCooldown: 0
+  canSelfDamage: 1

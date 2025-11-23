@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 1354406497758117337}
   - component: {fileID: 4907125665301990577}
   - component: {fileID: 2756133427161508686}
+  - component: {fileID: 4823497255030403270}
   m_Layer: 4
   m_Name: Spell Flame Dash
   m_TagString: Untagged
@@ -53,7 +54,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1212328064
+  GlobalObjectIdHash: 1621070429
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -5101,6 +5102,20 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!114 &4823497255030403270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1315042845377307778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 071c49697dd64ebea3d126db418ab67b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SizeOverLifetime
+  ShowTopMostFoldoutHeaderGroup: 1
+  fromPrecent: 0.3
 --- !u!1001 &474760760781703980
 PrefabInstance:
   m_ObjectHideFlags: 0

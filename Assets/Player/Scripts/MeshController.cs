@@ -103,6 +103,7 @@ public class MeshController : MonoBehaviour {
         if (cloth != null)
             cloth.enabled = !enable;
         foreach (var rbEntry in rigidbodies) {
+            rbEntry.body.isKinematic = !enable;
             rbEntry.body.useGravity = enable;
             rbEntry.body.detectCollisions = rbEntry.enableDetectCollisions || enable;
         }

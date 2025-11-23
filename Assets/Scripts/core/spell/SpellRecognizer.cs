@@ -20,7 +20,7 @@ public sealed class SpellRecognizer {
     private readonly int _minTokenLen;
     private readonly bool _useSliding;
     private readonly Action<string> _debug;
-    private readonly List<SpellData> _spells;
+    public readonly List<SpellData> spells;
 
     // Cache for phrase tokenization
     private static readonly Dictionary<string, string[]> s_phraseTokensCache = new();
@@ -35,7 +35,7 @@ public sealed class SpellRecognizer {
         _minTokenLen = Mathf.Max(0, minTokenLen);
         _useSliding = useSlidingWindow;
         _debug = debugLogger;
-        _spells = spells;
+        this.spells = spells;
     }
 
     public RecognizedSpell Recognize(string[] tokens, Language language) {
@@ -45,7 +45,7 @@ public sealed class SpellRecognizer {
             .Where(t => t.Any(char.IsLetter) && t.Length >= _minTokenLen)
             .ToArray();
 
-        var result = _spells
+        var result = spells
             .Select(spell => {
                 var r = new RecognizedSpell { spell = spell };
                 string[] spellWords = language == Language.Ru ? spell.spellWordsRu : spell.spellWords;

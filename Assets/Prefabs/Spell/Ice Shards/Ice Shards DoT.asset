@@ -12,8 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c73412154f04735ac2004b446e9e2b0, type: 3}
   m_Name: Ice Shards DoT
   m_EditorClassIdentifier: Assembly-CSharp::DamageOverTimeEffect
-  effectName: Frostbite DoT
+  effectName: Ice Shards DoT
+  description: 
   duration: 2
+  color: {r: 0, g: 0, b: 0, a: 0}
+  removeOnHit: 0
+  onExpire: {fileID: 0}
   dps: 10
   tickInterval: 0.8
   damageSound: 2
+  ignoreDamageSoundCooldown: 0
+  canSelfDamage: 1

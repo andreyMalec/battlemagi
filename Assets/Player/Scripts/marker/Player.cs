@@ -16,13 +16,12 @@ public class Player : NetworkBehaviour {
     private MeshController meshController;
     private Animator animator;
 
+    private MethodInfo _networkAnimatorAwake;
+
     private void Awake() {
-        UnityEngine.Debug.Log($" [Player] Awake called on Player_{OwnerClientId}");
-    }
-
-    protected override void OnNetworkPreSpawn(ref NetworkManager networkManager) {
-        base.OnNetworkPreSpawn(ref networkManager);
-
+        // invoke Awake via reflection to rebuild internal state
+        _networkAnimatorAwake = typeof(NetworkAnimator).GetMethod("Awake",
+            BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
     }
 
     private void SpawnAvatar(int arch) {
@@ -40,10 +39,7 @@ public class Player : NetworkBehaviour {
 
         var netAnim = GetComponent<NetworkAnimator>();
         netAnim.Animator = animator;
-        // invoke Awake via reflection to rebuild internal state
-        var m = typeof(NetworkAnimator).GetMethod("Awake",
-            BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-        if (m != null) m.Invoke(netAnim, null);
+        _networkAnimatorAwake.Invoke(netAnim, null);
 
         var movement = GetComponent<FirstPersonMovement>();
         movement.movementSpeed = archetype.movementSpeed;
@@ -67,12 +63,14 @@ public class Player : NetworkBehaviour {
         camSel.BindAvatar(meshController);
         var fpss = GetComponentInChildren<FirstPersonSounds>();
         fpss.BindAvatar(animator);
+        var freeze = GetComponentInChildren<Freeze>(true);
+        var footIK = currentAvatar.GetComponent<FootControllerIK>();
+        freeze.BindAvatar(animator, footIK);
     }
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
-        UnityEngine.Debug.Log($" [Player] OnNetworkSpawn called on Player_{OwnerClientId}");
-        
+
         var clientId = OwnerClientId;
         Debug.Log($" [Player] OnNetworkPreSpawn called on Player_{clientId}");
         var arch = PlayerManager.Instance.FindByClientId(clientId)!.Value.Archetype;
@@ -98,6 +96,7 @@ public class Player : NetworkBehaviour {
                 meshController.leftHand.weight = 0f;
                 meshController.spine.weight *= 3f;
             }
+
             mainCamera.GetComponent<Camera>().enabled = false;
         }
     }

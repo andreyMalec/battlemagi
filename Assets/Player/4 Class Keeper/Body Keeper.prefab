@@ -658,8 +658,8 @@ GameObject:
   m_Component:
   - component: {fileID: 492107292381802121}
   - component: {fileID: 5779380755154482419}
-  - component: {fileID: 7272875545378582703}
   - component: {fileID: 5930965485618822393}
+  - component: {fileID: 7272875545378582703}
   - component: {fileID: 4901025117671769385}
   m_Layer: 0
   m_Name: Body Keeper
@@ -711,6 +711,28 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5930965485618822393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 981644347348595763}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fff0960ef4ea6e04eac66b4a7fd2189d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Animation.Rigging::UnityEngine.Animations.Rigging.RigBuilder
+  m_RigLayers:
+  - m_Rig: {fileID: 6235140682614259351}
+    m_Active: 1
+  - m_Rig: {fileID: 3103726091886121735}
+    m_Active: 1
+  - m_Rig: {fileID: 6471239510614723340}
+    m_Active: 1
+  - m_Rig: {fileID: 5452508735575514240}
+    m_Active: 1
+  m_Effectors: []
 --- !u!114 &7272875545378582703
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -759,28 +781,18 @@ MonoBehaviour:
     enableDetectCollisions: 1
   - body: {fileID: 8345726073336567517}
     enableDetectCollisions: 0
---- !u!114 &5930965485618822393
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 981644347348595763}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fff0960ef4ea6e04eac66b4a7fd2189d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Animation.Rigging::UnityEngine.Animations.Rigging.RigBuilder
-  m_RigLayers:
-  - m_Rig: {fileID: 6235140682614259351}
-    m_Active: 1
-  - m_Rig: {fileID: 3103726091886121735}
-    m_Active: 1
-  - m_Rig: {fileID: 6471239510614723340}
-    m_Active: 1
-  - m_Rig: {fileID: 5452508735575514240}
-    m_Active: 1
-  m_Effectors: []
+  colliders:
+  - {fileID: 8133655450362536851}
+  - {fileID: 4851578752740683049}
+  - {fileID: 9014692168085768977}
+  - {fileID: 1944771208657087732}
+  - {fileID: 4745403340966643413}
+  - {fileID: 5098256605268641448}
+  - {fileID: 7761321031765000542}
+  - {fileID: 3008311254274651342}
+  - {fileID: 1730295018557588844}
+  - {fileID: 4005194220511971712}
+  - {fileID: 1188009333769176946}
 --- !u!114 &4901025117671769385
 MonoBehaviour:
   m_ObjectHideFlags: 0

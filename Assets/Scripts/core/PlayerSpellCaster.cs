@@ -252,19 +252,24 @@ public class PlayerSpellCaster : NetworkBehaviour {
     private void UpdateSpellKeys() {
         if (!GameConfig.Instance.allowKeySpells) return;
         SpellData spell = null;
+        var index = -1;
         for (int i = (int)KeyCode.Alpha0; i <= (int)KeyCode.Alpha9; i++) {
             if (Input.GetKeyDown((KeyCode)i)) {
-                spell = SpellDatabase.Instance.spells[i - (int)KeyCode.Alpha0];
+                if (i == (int)KeyCode.Alpha0)
+                    index = 9;
+                else
+                    index = i - (int)KeyCode.Alpha0 - 1;
             }
         }
 
         for (int i = (int)KeyCode.F1; i <= (int)KeyCode.F12; i++) {
             if (Input.GetKeyDown((KeyCode)i)) {
-                var index = i - (int)KeyCode.F1 + 10;
-                if (index < SpellDatabase.Instance.spells.Count)
-                    spell = SpellDatabase.Instance.spells[index];
+                index = i - (int)KeyCode.F1 + 10;
             }
         }
+
+        if (index >= 0 && index < _recognizer.spells.Count)
+            spell = _recognizer.spells[index];
 
         if (spell != null) {
             var words = language == SpellRecognizer.Language.Ru ? spell.spellWordsRu : spell.spellWords;

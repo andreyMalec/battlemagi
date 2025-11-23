@@ -85,6 +85,7 @@ public class ArchetypeAvatar : MonoBehaviour {
         _currentAvatar.transform.localScale = Vector3.one;
         var a = _currentAvatar.GetComponent<Animator>();
         a.runtimeAnimatorController = controller;
+        _currentAvatar.GetComponent<FootControllerIK>().MaxStepHeight = 0.1f;
         if (_isInitialized)
             a.SetBool("Standing", true);
         _isInitialized = true;
