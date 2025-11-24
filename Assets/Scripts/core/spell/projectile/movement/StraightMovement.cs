@@ -12,7 +12,7 @@ public class StraightMovement : ISpellMovement {
     }
 
     public void Initialize() {
-        if (rb != null)
+        if (rb != null && !rb.isKinematic)
             rb.linearVelocity = spell.transform.forward * data.baseSpeed;
     }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +14,10 @@ public class PlayerUI : MonoBehaviour {
         _damageable = GetComponent<Damageable>();
         _caster = GetComponent<PlayerSpellCaster>();
         _movement = GetComponent<FirstPersonMovement>();
+        var ui = GetComponents<UICameraSway>();
+        for(var i = 0; i < ui.Length; i++) {
+            ui[i].Bind(_renderer.uiContainers[i]);
+        }
     }
 
     private void Update() {

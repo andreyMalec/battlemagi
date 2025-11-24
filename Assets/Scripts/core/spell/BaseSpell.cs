@@ -89,6 +89,10 @@ public class BaseSpell : NetworkBehaviour {
             ApplyImpact();
     }
 
+    private void OnCollisionEnter(Collision other) {
+        OnTriggerEnter(other.collider);
+    }   
+
     private void OnTriggerEnter(Collider other) {
         if (!IsServer || other.isTrigger || !lifetime.IsAlive) return;
         if (other.TryGetComponent<ForceField>(out var field)) {
@@ -103,6 +107,9 @@ public class BaseSpell : NetworkBehaviour {
         } else if (other.TryGetComponent<Player>(out var player)) {
             if (!spellData.canSelfDamage &&
                 TeamManager.Instance.AreAllies(OwnerClientId, player.OwnerClientId))
+                return;
+        } else if (other.TryGetComponent<BaseSpell>(out var spell)) {
+            if (spell.spellData.isProjectile)
                 return;
         }
 

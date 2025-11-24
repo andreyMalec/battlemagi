@@ -4,6 +4,10 @@ using UnityEngine;
 [RequireComponent(typeof(NetworkStatSystem))]
 [RequireComponent(typeof(StatusEffectManager))]
 public class PlayerDamageable : Damageable {
+    public override bool IsStructure() {
+        return false;
+    }
+
     protected override void OnDeath(ulong ownerClientId, ulong fromClientId) {
         foreach (var enemy in _damagedBy.Where(damager => TeamManager.Instance.AreEnemies(ownerClientId, damager))) {
             if (enemy == fromClientId)

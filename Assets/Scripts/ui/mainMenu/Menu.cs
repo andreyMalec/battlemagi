@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -69,16 +70,26 @@ public class Menu : MonoBehaviour {
     private void OnStateChanged(LobbyManager.PlayerState state) {
         var newValue = state == LobbyManager.PlayerState.InLobby;
         if (newValue && _state != State.Lobby) {
-            avatarRoot.GetComponentInChildren<Animator>().SetTrigger(StandUp);
+            StartCoroutine(UpdateAvatar(true));
             _state = State.Lobby;
         }
 
         if (!newValue && _state == State.Lobby) {
-            avatarRoot.GetComponentInChildren<Animator>().SetTrigger(SitDown);
+            StartCoroutine(UpdateAvatar(false));
             _state = State.Main;
         }
 
 
         lobbyMembers.RequestUpdate();
+    }
+
+    private IEnumerator UpdateAvatar(bool up) {
+        Animator animator = null;
+        yield return new WaitUntil(() => {
+            animator = avatarRoot.GetComponentInChildren<Animator>();
+            return animator != null;
+        });
+
+        animator.SetTrigger(up ? StandUp : SitDown);
     }
 }

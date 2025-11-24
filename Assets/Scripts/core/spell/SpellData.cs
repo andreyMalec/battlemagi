@@ -33,6 +33,7 @@ public class SpellData : ScriptableObject {
 
     [Header("Damage")]
     public float baseDamage = 10f;
+    public float structureDamageMultiplier = 1f;
 
     public bool canSelfDamage = true;
     public bool useParticleCollision = false;
@@ -46,19 +47,19 @@ public class SpellData : ScriptableObject {
     [Header("Projectile")]
     public bool isProjectile = true;
 
-    [ShowIf("isProjectile")] public bool piercing = false;
+    public bool piercing = false;
 
-    [ShowIf("isProjectile")] [HideIf("isBeam")]
+    [HideIf("isBeam")]
     public float baseSpeed = 20f;
 
-    [ShowIf("isProjectile")] public int projCount = 1;
-    [ShowIf("isProjectile")] public float multiProjDelay = 0.2f;
-    [ShowIf("isProjectile")] public SpawnMode spawnMode = SpawnMode.Direct;
+    public int projCount = 1;
+    public float multiProjDelay = 0.2f;
+    public SpawnMode spawnMode = SpawnMode.Direct;
 
-    [ShowIf(EConditionOperator.And, "isProjectile", "_isArc")]
+    [ShowIf("_isArc")]
     public float arcAngleStep = 15f;
 
-    [ShowIf(EConditionOperator.And, "isProjectile", "_isRaycast")]
+    [ShowIf("_isRaycast")]
     public float raycastMaxDistance = 50f;
 
     [HideIf("isHoming")] [ShowIf("isProjectile")]
@@ -68,10 +69,10 @@ public class SpellData : ScriptableObject {
     [HideIf("isBeam")] [ShowIf("isProjectile")]
     public bool isHoming = false;
 
-    [ShowIf(EConditionOperator.And, "isProjectile", "isHoming")]
+    [ShowIf("isHoming")]
     public float homingRadius = 10f;
 
-    [ShowIf(EConditionOperator.And, "isProjectile", "isHoming")]
+    [ShowIf("isHoming")]
     public float homingStrength = 1f;
 
     [Header("Channeling")]

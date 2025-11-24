@@ -9,7 +9,13 @@ public class Killfeed : NetworkBehaviour {
     [CanBeNull] public static Killfeed Instance;
 
     public override void OnNetworkSpawn() {
+        base.OnNetworkSpawn();
         Instance = this;
+    }
+
+    public override void OnNetworkDespawn() {
+        base.OnNetworkDespawn();
+        Instance = null;
     }
 
     [ClientRpc]

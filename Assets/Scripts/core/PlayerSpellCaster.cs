@@ -27,7 +27,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
     [SerializeField] private float manaRestore = 5f;
     [SerializeField] private float manaRestoreTickInterval = 0.5f;
     public float maxMana = 100;
-    public NetworkVariable<float> mana = new(0, NetworkVariableReadPermission.Owner);
+    public NetworkVariable<float> mana = new();
     private float _restoreTick;
     private int echoCount = 0;
     private RecognizedSpell? spellEcho;

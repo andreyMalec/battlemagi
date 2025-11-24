@@ -19,6 +19,8 @@ public class FirstPersonLook : NetworkBehaviour {
     private Vector3 _positionVelocity;
     [SerializeField] private Vector3 offset;
 
+    public Vector2 ViewRotation => _currentRotation;
+
     public void BindAvatar(MeshController mc) {
         headBone = mc != null ? mc.head : null;
     }

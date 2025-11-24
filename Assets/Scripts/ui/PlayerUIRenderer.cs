@@ -8,4 +8,5 @@ public class PlayerUIRenderer : MonoBehaviour {
     public Image mp;
     public TMP_Text mpText;
     public Image stamina;
+    public RectTransform[] uiContainers;
 }

@@ -32,7 +32,7 @@ public class GameProgress : NetworkBehaviour {
     public void SelectMap(int mapIndex) {
         if (!IsServer) return;
         started = false;
-        SceneName = GameMapDatabase.instance.gameMaps[mapIndex].scene.name;
+        SceneName = GameMapDatabase.instance.gameMaps[mapIndex].sceneName;
         SelectedMap.Value = mapIndex;
         Debug.Log($"[GameProgress] Selected map: {SceneName} mapIndex={mapIndex}");
     }

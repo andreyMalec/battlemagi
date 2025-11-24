@@ -1115,6 +1115,8 @@ GameObject:
   - component: {fileID: 334994221300718969}
   - component: {fileID: 9038200127585152614}
   - component: {fileID: 5412534736573094780}
+  - component: {fileID: 2323875734396528773}
+  - component: {fileID: 7527429836848279379}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1157,7 +1159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2196398029
+  GlobalObjectIdHash: 1910923140
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -1688,6 +1690,44 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2323875734396528773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a899d3d23f944dc39b9b4d0daa60eba7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UICameraSway
+  firstPersonLook: {fileID: 8271153046618425552}
+  positionAmplitudeX: 20
+  positionAmplitudeY: 40
+  rotationAmplitudeYaw: 5
+  rotationAmplitudePitch: 0
+  followSmoothTime: 0.1
+  angularSmoothTime: 0.05
+--- !u!114 &7527429836848279379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a899d3d23f944dc39b9b4d0daa60eba7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UICameraSway
+  firstPersonLook: {fileID: 0}
+  positionAmplitudeX: 10
+  positionAmplitudeY: 20
+  rotationAmplitudeYaw: 2
+  rotationAmplitudePitch: 0
+  followSmoothTime: 0.1
+  angularSmoothTime: 0.05
 --- !u!1 &5894542900604772476
 GameObject:
   m_ObjectHideFlags: 0

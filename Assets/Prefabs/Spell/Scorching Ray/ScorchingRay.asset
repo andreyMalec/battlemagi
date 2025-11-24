@@ -57,15 +57,16 @@ MonoBehaviour:
   echoCount: 0
   instanceLimit: 0
   lifeTime: 5
-  baseDamage: 1.5
+  baseDamage: 0.5
+  structureDamageMultiplier: 3
   canSelfDamage: 1
   useParticleCollision: 1
   isDOT: 0
-  tickInterval: 1
+  tickInterval: 0.5
   hasAreaEffect: 0
   areaRadius: 5
   knockbackForce: 0
-  isProjectile: 1
+  isProjectile: 0
   piercing: 1
   baseSpeed: 0
   projCount: 1

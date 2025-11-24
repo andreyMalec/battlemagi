@@ -25,7 +25,7 @@ public class Damageable : NetworkBehaviour {
     protected NetworkStatSystem _statSystem;
     protected StatusEffectManager _effectManager;
 
-    public NetworkVariable<float> health = new(0, NetworkVariableReadPermission.Owner);
+    public NetworkVariable<float> health = new();
     public event Action onDeath;
     public bool isDead = false;
 
@@ -53,6 +53,10 @@ public class Damageable : NetworkBehaviour {
         }
 
         health.Value = Mathf.Clamp(health.Value, 0, maxHealth);
+    }
+
+    public virtual bool IsStructure() {
+        return true;
     }
 
     public void TakeDamage(
