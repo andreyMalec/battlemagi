@@ -17,9 +17,9 @@ public class CameraSelector : MonoBehaviour {
     }
 
     private void Update() {
-        if (Input.GetKeyDown(KeyCode.F5) && _isFirstPerson) {
+        if (Input.GetKeyDown(KeyCode.P) && _isFirstPerson) {
             _isFirstPerson = false;
-        } else if (Input.GetKeyDown(KeyCode.F5) && !_isFirstPerson) {
+        } else if (Input.GetKeyDown(KeyCode.P) && !_isFirstPerson) {
             _isFirstPerson = true;
         }
 

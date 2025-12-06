@@ -3,6 +3,8 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName = "StatusEffects/Freeze")]
 public class FreezeEffect : StatusEffectData {
+    public bool canSelfFreeze = true;
+
     public override StatusEffectRuntime CreateRuntime() {
         return new FreezeRuntime(this);
     }
@@ -16,8 +18,11 @@ public class FreezeEffect : StatusEffectData {
 
         public override void OnApply(ulong ownerClientId, GameObject target) {
             base.OnApply(ownerClientId, target);
-            if (target.TryGetComponent<StateController>(out var player))
+            if (target.TryGetComponent<StateController>(out var player)) {
+                if (!_data.canSelfFreeze && TeamManager.Instance.AreAllies(ownerClientId, player.OwnerClientId))
+                    return;
                 player.SetFreeze(true);
+            }
         }
 
         public override void OnExpire(GameObject target) {

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
@@ -18,6 +19,10 @@ public class BaseSpell : NetworkBehaviour {
     public SpellData spellData;
     [HideInInspector] public float damageMultiplier = 1;
     private bool movementAuthority;
+
+    // debounce: prevent multiple colliders of the same owner from triggering repeatedly
+    private readonly Dictionary<ulong, float> lastTriggerTimes = new Dictionary<ulong, float>();
+    private float triggerDebounce = 0.02f;
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
@@ -95,6 +100,9 @@ public class BaseSpell : NetworkBehaviour {
 
     private void OnTriggerEnter(Collider other) {
         if (!IsServer || other.isTrigger || !lifetime.IsAlive) return;
+
+        ulong? hitOwner = null;
+
         if (other.TryGetComponent<ForceField>(out var field)) {
             // союзный купол? игнор
             if (TeamManager.Instance.AreAllies(OwnerClientId, field.OwnerClientId))
@@ -104,13 +112,21 @@ public class BaseSpell : NetworkBehaviour {
             if (!spellData.canSelfDamage &&
                 TeamManager.Instance.AreAllies(OwnerClientId, player.OwnerClientId))
                 return;
+            hitOwner = player.OwnerClientId;
         } else if (other.TryGetComponent<Player>(out var player)) {
             if (!spellData.canSelfDamage &&
                 TeamManager.Instance.AreAllies(OwnerClientId, player.OwnerClientId))
                 return;
+            hitOwner = player.OwnerClientId;
         } else if (other.TryGetComponent<BaseSpell>(out var spell)) {
             if (spell.spellData.isProjectile)
                 return;
+        }
+
+        if (hitOwner.HasValue) {
+            if (lastTriggerTimes.TryGetValue(hitOwner.Value, out var last) && Time.time - last < triggerDebounce)
+                return;
+            lastTriggerTimes[hitOwner.Value] = Time.time;
         }
 
         damage.OnEnter(other);
