@@ -7,4 +7,5 @@ public enum DamageSoundType {
     Lava,
     Air,
     Magic,
+    Reflect,
 }

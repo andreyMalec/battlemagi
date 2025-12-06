@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf4989d79519c1349aa400eb4e706e49, type: 3}
+  m_Name: Pain Mirror
+  m_EditorClassIdentifier: Assembly-CSharp::SpellData
+  id: 13
+  name: Pain Mirror
+  description: 'Surrounds the caster in a shimmering barrier that twists incoming
+    agony back at its source.
+
+
+    Reflects a portion of damage taken back to attackers.'
+  nameRu: 
+  spellWords:
+  - Pain Mirror
+  spellWordsRu: []
+  manaCost: 25
+  bookImage: {fileID: 2800000, guid: 4ce76225f9c533a44983bf388778e1fc, type: 3}
+  spellInHandPrefab: {fileID: 7389778017922607859, guid: 77892f013b9287549a57d9293fd47641, type: 3}
+  spellBurstPrefab: {fileID: 0}
+  mainSpellPrefab: {fileID: 7354784787554302670, guid: c1b489972362e9047ac988cf65e076a4, type: 3}
+  impactPrefab: {fileID: 0}
+  impactEffects: []
+  buffs:
+  - {fileID: 11400000, guid: f7e91b9a6512e3445b720ab0b89dda86, type: 2}
+  damageSound: 0
+  castWaitingIndex: 0
+  invocationIndex: 9
+  clearInHandBeforeAnim: 0
+  previewMainInHand: 0
+  disableWhileCarrying: 0
+  echoCount: 0
+  instanceLimit: 0
+  lifeTime: 2
+  baseDamage: 0
+  structureDamageMultiplier: 1
+  canSelfDamage: 0
+  useParticleCollision: 0
+  isDOT: 0
+  tickInterval: 1
+  hasAreaEffect: 0
+  areaRadius: 5
+  knockbackForce: 0
+  isProjectile: 0
+  piercing: 0
+  baseSpeed: 0
+  projCount: 1
+  multiProjDelay: 0
+  spawnMode: 0
+  arcAngleStep: 15
+  raycastMaxDistance: 50
+  isBeam: 0
+  isHoming: 0
+  homingRadius: 10
+  homingStrength: 1
+  isChanneling: 0
+  channelDuration: 3

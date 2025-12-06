@@ -90,6 +90,18 @@ public class Damageable : NetworkBehaviour {
             }
         }
 
+        if (source != "Pain Mirror" && fromClientId != clientId) {
+            if (_effectManager.HasEffect("Pain Mirror")) {
+                var player = NetworkManager.ConnectedClients[fromClientId].PlayerObject;
+                if (player != null) {
+                    var reflectDamage = damage * _statSystem.Stats.GetFinal(StatType.DamageReflection);
+                    player.GetComponent<Damageable>()
+                        .TakeDamage("Pain Mirror", clientId, reflectDamage, DamageSoundType.Reflect,
+                            ignoreSoundCooldown);
+                }
+            }
+        }
+
         _effectManager.HandleHit();
 
         if (!immortal && health.Value <= 0 && before > 0) {

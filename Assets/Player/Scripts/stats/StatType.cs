@@ -8,4 +8,5 @@ public enum StatType {
     StaminaRegen,
     ManaRegen,
     ManaCost,
+    DamageReflection,
 }
