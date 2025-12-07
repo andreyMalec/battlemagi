@@ -24,6 +24,14 @@ public class BaseSpell : NetworkBehaviour {
     private readonly Dictionary<ulong, float> lastTriggerTimes = new Dictionary<ulong, float>();
     private float triggerDebounce = 0.02f;
 
+    private void Awake() {
+        ParticleSystem ps = GetComponent<ParticleSystem>();
+        foreach (var singletonConnectedClient in NetworkManager.Singleton.ConnectedClients) {
+            var player = singletonConnectedClient.Value.PlayerObject;
+            ps?.trigger.AddCollider(player.GetComponent<Collider>());
+        }
+    }
+
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
         var mode = GetComponent<NetworkTransform>().AuthorityMode;
@@ -96,7 +104,7 @@ public class BaseSpell : NetworkBehaviour {
 
     private void OnCollisionEnter(Collision other) {
         OnTriggerEnter(other.collider);
-    }   
+    }
 
     private void OnTriggerEnter(Collider other) {
         if (!IsServer || other.isTrigger || !lifetime.IsAlive) return;
@@ -153,6 +161,36 @@ public class BaseSpell : NetworkBehaviour {
 
         if (spellData.useParticleCollision) {
             OnTriggerEnter(other.gameObject.GetComponent<Collider>());
+        }
+    }
+
+    private void OnParticleTrigger() {
+        if (!spellData.useParticleCollision)
+            return;
+
+        ParticleSystem ps = GetComponent<ParticleSystem>();
+        List<ParticleSystem.Particle> enter = new List<ParticleSystem.Particle>();
+        List<ParticleSystem.Particle> inside = new List<ParticleSystem.Particle>();
+        int numEnter = ps.GetTriggerParticles(ParticleSystemTriggerEventType.Enter, enter);
+        int numIn = ps.GetTriggerParticles(ParticleSystemTriggerEventType.Inside, inside);
+        Debug.Log(
+            $"[BaseSpell] OnParticleTrigger called for spell {spellData.name}; Number of particles Enter: {numEnter}, Inside: {numIn}");
+        for (int i = 0; i < numEnter; i++) {
+            ParticleSystem.Particle p = enter[i];
+            var c = Physics.OverlapSphere(p.position, spellData.areaRadius);
+            Debug.Log($" [BaseSpell] Enter Particle at {p.position} overlaps {c.Length} colliders");
+            for (int j = 0; j < c.Length; j++) {
+                OnTriggerEnter(c[j]);
+            }
+        }
+
+        for (int i = 0; i < numIn; i++) {
+            ParticleSystem.Particle p = inside[i];
+            var c = Physics.OverlapSphere(p.position, spellData.areaRadius);
+            Debug.Log($" [BaseSpell] Inside Particle at {p.position} overlaps {c.Length} colliders");
+            for (int j = 0; j < c.Length; j++) {
+                OnTriggerEnter(c[j]);
+            }
         }
     }
 

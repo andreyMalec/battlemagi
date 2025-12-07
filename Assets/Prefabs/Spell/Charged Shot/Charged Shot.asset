@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf4989d79519c1349aa400eb4e706e49, type: 3}
+  m_Name: Charged Shot
+  m_EditorClassIdentifier: Assembly-CSharp::SpellData
+  id: 15
+  name: Charged Shot
+  description: 'Channels emerald energy into a charged magical arrow, drawn taut
+    with arcane power.
+
+
+    Damage that increases over time can be released at
+    any moment.'
+  nameRu: 
+  spellWords:
+  - Charged Shot
+  spellWordsRu: []
+  manaCost: 25
+  bookImage: {fileID: 2800000, guid: bd1adaa6c7208b64ea6ed7121bee30ee, type: 3}
+  spellInHandPrefab: {fileID: 7389778017922607859, guid: 74dbe7c43ae8ffa4da07ca385b7288df, type: 3}
+  spellBurstPrefab: {fileID: 0}
+  mainSpellPrefab: {fileID: 7354784787554302670, guid: e19676af7516672458e8dc46107dc440, type: 3}
+  impactPrefab: {fileID: 0}
+  impactEffects: []
+  buffs: []
+  damageSound: 0
+  castWaitingIndex: 0
+  invocationIndex: 10
+  clearInHandBeforeAnim: 0
+  previewMainInHand: 0
+  disableWhileCarrying: 0
+  echoCount: 0
+  instanceLimit: 0
+  lifeTime: 20
+  baseDamage: 90
+  structureDamageMultiplier: 1
+  canSelfDamage: 0
+  useParticleCollision: 1
+  isDOT: 0
+  tickInterval: 1
+  hasAreaEffect: 0
+  areaRadius: 1
+  knockbackForce: 0
+  isProjectile: 1
+  piercing: 1
+  baseSpeed: 0
+  projCount: 1
+  multiProjDelay: 0
+  spawnMode: 2
+  arcAngleStep: 15
+  raycastMaxDistance: 50
+  isBeam: 0
+  isHoming: 0
+  homingRadius: 10
+  homingStrength: 1
+  isChanneling: 1
+  channelDuration: 3
+  isCharging: 1

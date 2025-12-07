@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ public class PlayerDamageable : Damageable {
         return false;
     }
 
-    protected override void OnDeath(ulong ownerClientId, ulong fromClientId) {
+    protected override void OnDeath(ulong ownerClientId, ulong fromClientId, string source) {
         foreach (var enemy in _damagedBy.Where(damager => TeamManager.Instance.AreEnemies(ownerClientId, damager))) {
             if (enemy == fromClientId)
                 PlayerManager.Instance.AddKill(fromClientId);
@@ -19,5 +20,9 @@ public class PlayerDamageable : Damageable {
         PlayerManager.Instance.AddDeath(ownerClientId);
         PlayerSpawner.instance.HandleDeathServerRpc(ownerClientId);
         Killfeed.Instance?.HandleClientRpc(fromClientId, ownerClientId);
+
+        FirebaseAnalytic.Instance.SendEvent("PlayerKilled", new Dictionary<string, object> {
+            { "source", source },
+        });
     }
 }

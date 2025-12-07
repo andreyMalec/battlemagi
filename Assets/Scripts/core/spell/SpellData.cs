@@ -78,7 +78,8 @@ public class SpellData : ScriptableObject {
     [Header("Channeling")]
     public bool isChanneling = false;
 
-    [ShowIf("isChanneling")] public float channelDuration = 3f;
+    [ShowIf("isChanneling")] public float channelDuration = 0f;
+    [ShowIf("isChanneling")] public bool isCharging = false;
 
     private bool _isArc = false;
     private bool _isRaycast = false;

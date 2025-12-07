@@ -1100,7 +1100,6 @@ GameObject:
   - component: {fileID: 590111089370120790}
   - component: {fileID: 6425691076356515085}
   - component: {fileID: 8745711078365152283}
-  - component: {fileID: 606083009552804484}
   - component: {fileID: 3595582522434657761}
   - component: {fileID: 2894542456545687865}
   - component: {fileID: 1874046057587579816}
@@ -1110,6 +1109,7 @@ GameObject:
   - component: {fileID: 1507093393527865229}
   - component: {fileID: 5865273710895956458}
   - component: {fileID: 2716919782836391855}
+  - component: {fileID: 4273735624293180111}
   - component: {fileID: 5208608556239358256}
   - component: {fileID: 3149046875761574569}
   - component: {fileID: 334994221300718969}
@@ -1159,7 +1159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1910923140
+  GlobalObjectIdHash: 2196398029
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -1185,6 +1185,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   ShowTopMostFoldoutHeaderGroup: 1
+  isDummy: 0
   scriptsToDisable:
   - {fileID: 8745711078365152283}
   objectsToDisable:
@@ -1343,21 +1344,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HideCloak
   firstPersonCamera: {fileID: 3561322077568356742}
   thirdPersonCamera: {fileID: 5894542900604772476}
---- !u!114 &606083009552804484
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5793509697026975924}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkAnimator
-  ShowTopMostFoldoutHeaderGroup: 1
-  TransitionStateInfoList: []
-  m_Animator: {fileID: 5412534736573094780}
 --- !u!114 &3595582522434657761
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1611,6 +1597,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StateController
   ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &4273735624293180111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db6c6a74e72f4a35a892e6fd0b70ab5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OwnerNetworkAnimator
+  ShowTopMostFoldoutHeaderGroup: 1
+  TransitionStateInfoList: []
+  m_Animator: {fileID: 5412534736573094780}
 --- !u!114 &5208608556239358256
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1702,7 +1703,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a899d3d23f944dc39b9b4d0daa60eba7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UICameraSway
-  firstPersonLook: {fileID: 8271153046618425552}
   positionAmplitudeX: 20
   positionAmplitudeY: 40
   rotationAmplitudeYaw: 5
@@ -1721,7 +1721,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a899d3d23f944dc39b9b4d0daa60eba7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UICameraSway
-  firstPersonLook: {fileID: 0}
   positionAmplitudeX: 10
   positionAmplitudeY: 20
   rotationAmplitudeYaw: 2

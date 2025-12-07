@@ -106,11 +106,7 @@ public class Damageable : NetworkBehaviour {
 
         if (!immortal && health.Value <= 0 && before > 0) {
             isDead = true;
-            OnDeath(clientId, fromClientId);
-
-            FirebaseAnalytic.Instance.SendEvent("PlayerKilled", new Dictionary<string, object> {
-                { "source", source },
-            });
+            OnDeath(clientId, fromClientId, source);
         }
     }
 
@@ -119,7 +115,7 @@ public class Damageable : NetworkBehaviour {
         base.OnNetworkDespawn();
     }
 
-    protected virtual void OnDeath(ulong ownerClientId, ulong fromClientId) {
+    protected virtual void OnDeath(ulong ownerClientId, ulong fromClientId, string source) {
         GetComponent<NetworkObject>().Despawn();
     }
 

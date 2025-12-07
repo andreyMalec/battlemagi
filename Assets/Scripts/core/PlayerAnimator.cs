@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine;
 
 [RequireComponent(typeof(FirstPersonMovement))]
@@ -23,6 +24,7 @@ public class PlayerAnimator : NetworkBehaviour {
     public Transform ikHandRight;
 
     [HideInInspector] public Animator animator;
+    [HideInInspector] public NetworkAnimator networkAnimator;
     [HideInInspector] public MeshController meshController;
     private FirstPersonMovement movement;
     private NetworkStatSystem statSystem;
@@ -203,38 +205,18 @@ public class PlayerAnimator : NetworkBehaviour {
     public void AnimateBool(int key, bool value) {
         if (IsOwner) {
             animator.SetBool(key, value);
-            AnimateBoolServerRpc(key, value);
         }
     }
 
     public void AnimateFloat(int key, float value) {
         if (IsOwner) {
             animator.SetFloat(key, value);
-            AnimateFloatServerRpc(key, value);
         }
     }
 
     public void AnimateTrigger(int key) {
         if (IsOwner) {
-            animator.SetTrigger(key);
-            AnimateTriggerServerRpc(key);
+            networkAnimator.SetTrigger(key);
         }
-    }
-
-//=====================================================
-
-    [ServerRpc]
-    private void AnimateBoolServerRpc(int key, bool value) {
-        animator.SetBool(key, value);
-    }
-
-    [ServerRpc]
-    private void AnimateFloatServerRpc(int key, float value) {
-        animator.SetFloat(key, value);
-    }
-
-    [ServerRpc]
-    private void AnimateTriggerServerRpc(int key) {
-        animator.SetTrigger(key);
     }
 }

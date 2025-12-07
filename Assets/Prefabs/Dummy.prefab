@@ -16,6 +16,11 @@ GameObject:
   - component: {fileID: 1021149336119197285}
   - component: {fileID: 1326903040483868899}
   - component: {fileID: 8494788474716610380}
+  - component: {fileID: 2397251947423944944}
+  - component: {fileID: 3538784120573702453}
+  - component: {fileID: 8737802925096257693}
+  - component: {fileID: 6914325171014047170}
+  - component: {fileID: 3323136958691745063}
   m_Layer: 0
   m_Name: Dummy
   m_TagString: Untagged
@@ -38,6 +43,7 @@ Transform:
   m_Children:
   - {fileID: 365590187492925682}
   - {fileID: 4408034083971616281}
+  - {fileID: 7804185674814367291}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &206089089239990790
@@ -107,7 +113,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.35
   m_Height: 1.73
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
@@ -247,6 +253,112 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkStatSystem
   ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &2397251947423944944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2900472409879121813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 029882e2510c4e8eafed3c4c03800280, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player
+  ShowTopMostFoldoutHeaderGroup: 1
+  isDummy: 1
+  scriptsToDisable: []
+  objectsToDisable: []
+  mainCamera: {fileID: 0}
+--- !u!114 &3538784120573702453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2900472409879121813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkAnimator
+  ShowTopMostFoldoutHeaderGroup: 1
+  TransitionStateInfoList:
+  - IsCrossFadeExit: 0
+    Layer: 4
+    OriginatingState: 180383847
+    DestinationState: -499022955
+    TransitionDuration: 0.14307326
+    TriggerNameHash: 637825243
+    TransitionIndex: 1
+  m_Animator: {fileID: 1102846720902936985}
+--- !u!114 &8737802925096257693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2900472409879121813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39039e24c9c44cda9a15ed3b5f3781f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HandIKTarget
+--- !u!114 &6914325171014047170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2900472409879121813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 831ca2aed8c0412eb5c88a9a7e7f9931, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HandIKTargetRight
+--- !u!114 &3323136958691745063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2900472409879121813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3defbe24a494ba0849601e7aee025a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HandIKTargetSpine
+--- !u!1 &5009993462641517272
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7804185674814367291}
+  m_Layer: 0
+  m_Name: ik
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7804185674814367291
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5009993462641517272}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7351032197673784399}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5717159056719871884
 GameObject:
   m_ObjectHideFlags: 0
@@ -538,9 +650,17 @@ PrefabInstance:
       value: Body
       objectReference: {fileID: 0}
     - target: {fileID: 4367675302838354857, guid: 140f34d414a550040b4e2eeb46cce691, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
+      propertyPath: ikTargetHand
+      value: 
+      objectReference: {fileID: 7804185674814367291}
+    - target: {fileID: 4367675302838354857, guid: 140f34d414a550040b4e2eeb46cce691, type: 3}
+      propertyPath: ikTargetSpine
+      value: 
+      objectReference: {fileID: 7804185674814367291}
+    - target: {fileID: 4367675302838354857, guid: 140f34d414a550040b4e2eeb46cce691, type: 3}
+      propertyPath: ikTargetHandRight
+      value: 
+      objectReference: {fileID: 7804185674814367291}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -549,5 +669,10 @@ PrefabInstance:
 --- !u!4 &365590187492925682 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3734117233152458264, guid: 140f34d414a550040b4e2eeb46cce691, type: 3}
+  m_PrefabInstance: {fileID: 3945410011510152938}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1102846720902936985 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 4147517012472145779, guid: 140f34d414a550040b4e2eeb46cce691, type: 3}
   m_PrefabInstance: {fileID: 3945410011510152938}
   m_PrefabAsset: {fileID: 0}

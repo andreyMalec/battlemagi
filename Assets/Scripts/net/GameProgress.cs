@@ -108,7 +108,7 @@ public class GameProgress : NetworkBehaviour {
         started = false;
         Debug.Log("[GameProgressTracker] Match ended by reaching target");
 
-        yield return new WaitForSeconds(10f);
+        yield return new WaitForSeconds(7f);
         LobbyManager.Instance.CurrentLobby?.SetJoinable(true);
         LobbyManager.Instance.RestartLobby();
         var spawned = NetworkManager.Singleton.SpawnManager.SpawnedObjectsList.ToList();

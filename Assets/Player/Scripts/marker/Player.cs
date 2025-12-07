@@ -10,6 +10,7 @@ public class Player : NetworkBehaviour {
     private static readonly int OutlineColor = Shader.PropertyToID("OutlineColor");
     private static readonly int OutlineAlpha = Shader.PropertyToID("OutlineAlpha");
 
+    [SerializeField] private bool isDummy = false;
     [SerializeField] private Behaviour[] scriptsToDisable;
     [SerializeField] private GameObject[] objectsToDisable;
     [SerializeField] private Camera mainCamera;
@@ -30,16 +31,20 @@ public class Player : NetworkBehaviour {
         meshController = currentAvatar.GetComponent<MeshController>();
         animator = currentAvatar.GetComponent<Animator>();
 
+        var netAnim = GetComponent<NetworkAnimator>();
+        netAnim.Animator = animator;
+        _networkAnimatorAwake.Invoke(netAnim, null);
+
         // Bind avatar to dependent components on player
         var pa = GetComponent<PlayerAnimator>();
         if (pa != null) {
             pa.animator = animator;
+            pa.networkAnimator = netAnim;
             pa.meshController = meshController;
         }
 
-        var netAnim = GetComponent<NetworkAnimator>();
-        netAnim.Animator = animator;
-        _networkAnimatorAwake.Invoke(netAnim, null);
+        if (isDummy)
+            return;
 
         var movement = GetComponent<FirstPersonMovement>();
         movement.movementSpeed = archetype.movementSpeed;
@@ -81,6 +86,9 @@ public class Player : NetworkBehaviour {
 
         gameObject.name = $"Player_{OwnerClientId}";
 
+        if (isDummy)
+            return;
+
         if (IsOwner) {
             mainCamera.GetComponent<Camera>().depth = 100;
         } else {
@@ -95,6 +103,8 @@ public class Player : NetworkBehaviour {
             if (!IsOwner && meshController != null) {
                 meshController.leftHand.weight = 0f;
                 meshController.spine.weight *= 3f;
+                meshController.invocation.localRotation =
+                    Quaternion.Euler(new Vector3(320.634674f, 355.449707f, 39.6077499f));
             }
 
             mainCamera.GetComponent<Camera>().enabled = false;

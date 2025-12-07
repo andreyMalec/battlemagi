@@ -33,6 +33,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
     private RecognizedSpell? spellEcho;
     private SpellRecognizer _recognizer;
     private Coroutine _channelingCoroutine;
+    private float _channelingElapsed;
 
     private void Awake() {
         _statSystem = GetComponent<NetworkStatSystem>();
@@ -95,8 +96,13 @@ public class PlayerSpellCaster : NetworkBehaviour {
             if (!result.spell.isChanneling)
                 SpendManaServerRpc(manaCost);
             _mouth.ShutUp();
-            castWaiting = true;
-            _playerAnimator.CastWaitingAnim(true, result.spell.castWaitingIndex);
+            if (result.spell.isCharging) {
+                CastSpell();
+            } else {
+                castWaiting = true;
+                _playerAnimator.CastWaitingAnim(true, result.spell.castWaitingIndex);
+            }
+
             _spellManager.PrepareSpell(result.spell);
         } else {
             if (!noManaSound.isPlaying)
@@ -143,7 +149,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
             if (castWaiting) {
                 _playerAnimator.CastWaitingAnim(false);
                 castWaiting = false;
-                _spellManager.CancelSpell();
+                _spellManager.CancelSpell(_channelingElapsed);
                 if (recognizedSpell.HasValue && recognizedSpell.Value.spell.echoCount == echoCount &&
                     !recognizedSpell.Value.spell.isChanneling) {
                     var manaCost = recognizedSpell.Value.spell.manaCost * _statSystem.Stats.GetFinal(StatType.ManaCost);
@@ -156,7 +162,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
                 if (_channelingCoroutine != null)
                     StopCoroutine(_channelingCoroutine);
                 _playerAnimator.CancelSpellChanneling();
-                _spellManager.CancelSpell();
+                _spellManager.CancelSpell(_channelingElapsed);
                 spellEcho = null;
                 channeling = false;
             }
@@ -164,7 +170,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
     }
 
     private void CancelSpell() {
-        _spellManager.CancelSpell();
+        _spellManager.CancelSpell(_channelingElapsed);
         if (recognizedSpell.HasValue && recognizedSpell.Value.spell.echoCount == echoCount &&
             !recognizedSpell.Value.spell.isChanneling) {
             var manaCost = recognizedSpell.Value.spell.manaCost * _statSystem.Stats.GetFinal(StatType.ManaCost);
@@ -205,22 +211,30 @@ public class PlayerSpellCaster : NetworkBehaviour {
     }
 
     private IEnumerator Channel(SpellData spell) {
-        float elapsed = 0f;
+        _channelingElapsed = 0f;
         var costPerSecond = spell.manaCost * _statSystem.Stats.GetFinal(StatType.ManaCost);
-        while (elapsed < spell.channelDuration) {
-            var dt = Mathf.Min(manaRestoreTickInterval, spell.channelDuration - elapsed);
+        while (_channelingElapsed < spell.channelDuration) {
+            if (!channeling)
+                yield break;
+
+            var dt = Mathf.Min(manaRestoreTickInterval, spell.channelDuration - _channelingElapsed);
             var costPerTick = costPerSecond * dt;
             if (mana.Value >= costPerTick) {
                 SpendManaServerRpc(costPerTick);
             } else {
                 _playerAnimator.CancelSpellChanneling();
-                _spellManager.CancelSpell();
+                _spellManager.CancelSpell(_channelingElapsed);
                 channeling = false;
                 yield break;
             }
 
             yield return new WaitForSeconds(dt);
-            elapsed += dt;
+            _channelingElapsed += dt;
+        }
+
+        if (spell.isCharging) {
+            _playerAnimator.CancelSpellChanneling();
+            _spellManager.CancelSpell(_channelingElapsed);
         }
 
         channeling = false;

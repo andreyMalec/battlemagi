@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Timers;
 using Unity.Netcode;
 
 public class SpellManager : NetworkBehaviour {
@@ -10,6 +11,7 @@ public class SpellManager : NetworkBehaviour {
     private ISpawnStrategy spawnStrategy;
     private SpellData spellData;
     private Coroutine _castCoutine;
+    private float _lastCastTime;
 
     public override void OnNetworkSpawn() {
         activeSpell = GetComponent<ActiveSpell>();
@@ -52,7 +54,9 @@ public class SpellManager : NetworkBehaviour {
         activeSpell.PrepareSpell(spell, spawnStrategy);
     }
 
-    public void CancelSpell() {
+    public void CancelSpell(float elapsed) {
+        Debug.Log($"CancelSpell elapsed={elapsed}");
+        _lastCastTime = elapsed;
         if (IsOwner) {
             activeSpell.Clear();
         }
@@ -62,11 +66,15 @@ public class SpellManager : NetworkBehaviour {
         }
 
         if (spellData?.isChanneling == true) {
-            foreach (var no in NetworkManager.SpawnManager.GetClientOwnedObjects(OwnerClientId)) {
-                if (no.TryGetComponent<BaseSpell>(out var spell) && spell.spellData.id == spellData.id) {
-                    if (spell.TryGetComponent<SpellLifetime>(out var lifetime)) {
-                        lifetime.Destroy();
-                        break;
+            if (spellData?.isCharging == true) {
+                _castCoutine = StartCoroutine(spawnStrategy.Spawn(this, spellData, SpawnProjectile));
+            } else {
+                foreach (var no in NetworkManager.SpawnManager.GetClientOwnedObjects(OwnerClientId)) {
+                    if (no.TryGetComponent<BaseSpell>(out var spell) && spell.spellData.id == spellData?.id) {
+                        if (spell.TryGetComponent<SpellLifetime>(out var lifetime)) {
+                            lifetime.Destroy();
+                            break;
+                        }
                     }
                 }
             }
@@ -100,7 +108,14 @@ public class SpellManager : NetworkBehaviour {
     }
 
     private void SpawnProjectile(SpellData spell, Vector3 pos, Quaternion rot, int index) {
-        SpawnMainServerRpc(spell.id, pos, rot, index);
+        var channelMulti = 1f;
+        if (spell.isChanneling && spell.isCharging && spell.channelDuration > 0) {
+            channelMulti = _lastCastTime / spell.channelDuration;
+            Debug.Log(
+                $"[SpellManager] Channel multiplier: {channelMulti}, _lastCastTime={_lastCastTime}, channelDuration={spell.channelDuration}");
+        }
+
+        SpawnMainServerRpc(spell.id, pos, rot, index, channelMulti);
     }
 
     [ServerRpc]
@@ -108,6 +123,7 @@ public class SpellManager : NetworkBehaviour {
         int spellId, Vector3 position,
         Quaternion rotation,
         int index,
+        float damageMultiplier = 1f,
         ServerRpcParams serverRpcParams = default
     ) {
         var spell = SpellDatabase.Instance != null ? SpellDatabase.Instance.GetSpell(spellId) : null;
@@ -139,7 +155,8 @@ public class SpellManager : NetworkBehaviour {
         netObj.SpawnWithOwnership(casterId);
         StartCoroutine(DespawnAndDestroyServer(netObj, spell.lifeTime));
         var caster = NetworkManager.Singleton.ConnectedClients[casterId].PlayerObject.GetComponent<NetworkStatSystem>();
-        SpawnMainClientRpc(netObj.NetworkObjectId, spellId, caster.Stats.GetFinal(StatType.SpellDamage), index);
+        SpawnMainClientRpc(netObj.NetworkObjectId, spellId,
+            caster.Stats.GetFinal(StatType.SpellDamage) * damageMultiplier, index);
     }
 
     [ClientRpc]
