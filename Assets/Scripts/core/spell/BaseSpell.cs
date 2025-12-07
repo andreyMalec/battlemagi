@@ -25,10 +25,13 @@ public class BaseSpell : NetworkBehaviour {
     private float triggerDebounce = 0.02f;
 
     private void Awake() {
-        ParticleSystem ps = GetComponent<ParticleSystem>();
+        var ps = GetComponent<ParticleSystem>();
+        if (ps == null) return;
+        var trigger = ps.trigger;
+        if (!trigger.enabled) return;
         foreach (var singletonConnectedClient in NetworkManager.Singleton.ConnectedClients) {
             var player = singletonConnectedClient.Value.PlayerObject;
-            ps?.trigger.AddCollider(player.GetComponent<Collider>());
+            trigger.AddCollider(player.GetComponent<Collider>());
         }
     }
 
