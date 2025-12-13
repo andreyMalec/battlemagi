@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55c0ef097c164105b373602ee47841ee, type: 3}
+  m_Name: EmberLash Attach
+  m_EditorClassIdentifier: Assembly-CSharp::AttachEffect
+  effectName: EmberLash Attach
+  description: 
+  duration: 3
+  color: {r: 1, g: 0.56445307, b: 0, a: 1}
+  removeOnHit: 0
+  onExpire: {fileID: 0}

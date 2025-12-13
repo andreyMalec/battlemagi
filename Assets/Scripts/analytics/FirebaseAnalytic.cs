@@ -60,19 +60,26 @@ public class FirebaseAnalytic : MonoBehaviour {
             }
         };
 
-        string json = MiniJson.Serialize(payload);
+        UnityWebRequest req = null;
+        try {
+            string json = MiniJson.Serialize(payload);
 
-        UnityWebRequest req = new UnityWebRequest(url, "POST");
-        req.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(json));
-        req.downloadHandler = new DownloadHandlerBuffer();
-        req.SetRequestHeader("Content-Type", "application/json");
+            req = new UnityWebRequest(url, "POST");
+            req.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(json));
+            req.downloadHandler = new DownloadHandlerBuffer();
+            req.SetRequestHeader("Content-Type", "application/json");
+        } catch (Exception e) {
+            Debug.LogError($"GA4 ERROR: {req?.error}\n{req?.downloadHandler?.text}");
+        }
 
-        yield return req.SendWebRequest();
+        if (req != null) {
+            yield return req.SendWebRequest();
 
-        if (req.result == UnityWebRequest.Result.Success) {
-            Debug.Log($"GA4 OK: {eventName}");
-        } else {
-            Debug.LogError($"GA4 ERROR: {req.error}\n{req.downloadHandler.text}");
+            if (req.result == UnityWebRequest.Result.Success) {
+                Debug.Log($"GA4 OK: {eventName}");
+            } else {
+                Debug.LogError($"GA4 ERROR: {req.error}\n{req.downloadHandler.text}");
+            }
         }
     }
 }

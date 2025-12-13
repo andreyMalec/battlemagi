@@ -10,6 +10,7 @@ public class PlayerDamageable : Damageable {
     }
 
     protected override void OnDeath(ulong ownerClientId, ulong fromClientId, string source) {
+        NetworkObject.TryRemoveParent();
         foreach (var enemy in _damagedBy.Where(damager => TeamManager.Instance.AreEnemies(ownerClientId, damager))) {
             if (enemy == fromClientId)
                 PlayerManager.Instance.AddKill(fromClientId);

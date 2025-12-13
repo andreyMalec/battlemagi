@@ -2,8 +2,10 @@ using System;
 using UnityEngine;
 
 public class DestroyAfterPlay : MonoBehaviour {
-    private AudioSource _audio;
-    private ParticleSystem _particle;
+    public AudioSource _audio;
+    public ParticleSystem _particle;
+    public float maxDuration = -1f;
+    private float _timer = 0f;
 
     private void Awake() {
         TryGetComponent(out _audio);
@@ -12,6 +14,12 @@ public class DestroyAfterPlay : MonoBehaviour {
 
     private void Update() {
         if (!_audio && !_particle) {
+            Destroy(gameObject);
+            return;
+        }
+
+        _timer += Time.deltaTime;
+        if (maxDuration > 0 && _timer >= maxDuration) {
             Destroy(gameObject);
             return;
         }

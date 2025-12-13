@@ -45,6 +45,7 @@ public class PlayerPhysics : MonoBehaviour {
         Vector3 motion = combinedVelocity * dt;
 
         // Move and capture collisions to clamp external velocity if blocked
+        if (!_controller.enabled) return;
         CollisionFlags flags = _controller.Move(motion);
 
         // Decay external velocity over time
