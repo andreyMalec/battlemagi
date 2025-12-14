@@ -93,6 +93,7 @@ public class PlayerSpawner : NetworkBehaviour {
             player.GetComponent<PlayerSpellCaster>().enabled = false;
             player.GetComponent<FirstPersonMovement>().enabled = false;
             player.GetComponent<FirstPersonLook>().enabled = false;
+            player.GetComponent<Mouth>().enabled = false;
             if (NetworkManager.Singleton.LocalClientId == clientId) {
                 player.GetComponentInChildren<Observer>(true).gameObject.SetActive(true);
                 player.GetComponent<SteamVoiceChat>().DisableMicrophone();

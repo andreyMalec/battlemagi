@@ -3,6 +3,7 @@ using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Voice;
 
 public class SceneLoader : MonoBehaviour {
     public bool waitUntilModelLoaded;
@@ -13,8 +14,7 @@ public class SceneLoader : MonoBehaviour {
 
     private IEnumerator LoadMainMenu() {
         yield return new WaitUntil(() =>
-            NetworkManager.Singleton != null && (WhisperHolder.checkVM() || !waitUntilModelLoaded ||
-                                                 WhisperHolder.instance.whisper.IsLoaded));
+            NetworkManager.Singleton != null && (SpeechToTextHolder.Instance.IsInitialized));
         SceneManager.LoadScene("MainMenu");
     }
 }

@@ -38,6 +38,25 @@ public sealed class SpellRecognizer {
         this.spells = spells;
     }
 
+    public RecognizedSpell Recognize(string words, Language language) {
+        var result = spells
+            .Select(spell => {
+                var r = new RecognizedSpell { spell = spell };
+                string[] spellWords = language == Language.Ru ? spell.spellWordsRu : spell.spellWords;
+
+                r.similarity = spellWords
+                    .Select(phrase => TokenSimilarity(words.ToLowerInvariant(), phrase.ToLowerInvariant()))
+                    .DefaultIfEmpty(0.0)
+                    .Max();
+                return r;
+            })
+            .OrderByDescending(r => r.similarity)
+            .First();
+
+        _debug?.Invoke($"Recognized: {result.spell.name} ~ {result.similarity:0.000}");
+        return result;
+    }
+    
     public RecognizedSpell Recognize(string[] tokens, Language language) {
         var heardTokens = tokens
             .Where(t => !string.IsNullOrWhiteSpace(t))
