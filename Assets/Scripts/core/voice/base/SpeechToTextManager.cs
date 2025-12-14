@@ -10,7 +10,7 @@ namespace Voice {
         void Reset();
 
         bool IsRecording { get; }
-        bool Mute { set; }
+        bool Mute { get; set; }
 
         void StartRecognition(MicrophoneRecord microphone);
 

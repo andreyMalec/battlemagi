@@ -26,6 +26,7 @@ public class Mouth : NetworkBehaviour {
     }
 
     private void OnDisable() {
+        if (!IsOwner) return;
         _manager.StopRecognition();
     }
 
@@ -36,26 +37,29 @@ public class Mouth : NetworkBehaviour {
     }
 
     public void RestrictWords(List<string> words) {
+        if (!IsOwner) return;
         _manager.UpdatePrompt(words);
         Debug.Log($"[Mouth] RestrictWords: {string.Join(", ", words)}");
     }
 
     public void ShutUp() {
-        // _stream?.ResetStream();
+        if (!IsOwner) return;
         _manager.Reset();
     }
 
     public void ChangeVoice() {
+        if (!IsOwner) return;
         _manager.StopRecognition();
         _manager.StartRecognition(microphoneRecord);
     }
 
     public void CanSpeak(bool canSpeak) {
-        _manager.Mute = !canSpeak;
-        if (!canSpeak)
-            ShutUp();
-        // if (_stream != null)
-        //     _stream._isStreaming = canSpeak;
+        if (!IsOwner) return;
+        if (_manager.Mute == canSpeak) {
+            _manager.Mute = !canSpeak;
+            if (!canSpeak)
+                ShutUp();
+        }
     }
 
     private void OnSegmentUpdated(Voice.RecognitionResult result) {
