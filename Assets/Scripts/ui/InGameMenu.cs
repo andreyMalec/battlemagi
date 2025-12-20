@@ -9,6 +9,7 @@ public class InGameMenu : MonoBehaviour {
     [SerializeField] private GameObject stateSettings;
     [SerializeField] private GameObject stateSettingsSound;
     [SerializeField] private GameObject stateSettingsGraphic;
+    [SerializeField] private GameObject stateSettingsGeneral;
 
     [Header("Main")]
     [SerializeField] private GameObject[] hideInMenu;
@@ -24,6 +25,8 @@ public class InGameMenu : MonoBehaviour {
     [SerializeField] private Button buttonSettingsSoundBack;
     [SerializeField] private Button buttonSettingsGraphic;
     [SerializeField] private Button buttonSettingsGraphicBack;
+    [SerializeField] private Button buttonSettingsGeneral;
+    [SerializeField] private Button buttonSettingsGeneralBack;
 
     private State _state;
 
@@ -31,16 +34,19 @@ public class InGameMenu : MonoBehaviour {
         Main,
         SettingsSound,
         SettingsGraphic,
+        SettingsGeneral,
     }
 
     private void OnEnable() {
         buttonBack.onClick.AddListener(OnBackClick);
         buttonSettingsSoundBack.onClick.AddListener(OnBackClick);
         buttonSettingsGraphicBack.onClick.AddListener(OnBackClick);
+        buttonSettingsGeneralBack.onClick.AddListener(OnBackClick);
         buttonSettings.onClick.AddListener(OnSettingsClick);
         buttonExit.onClick.AddListener(OnExitClick);
         buttonSettingsGraphic.onClick.AddListener(OnSettingsGraphicClick);
         buttonSettingsSound.onClick.AddListener(OnSettingsSoundClick);
+        buttonSettingsGeneral.onClick.AddListener(OnSettingsGeneralClick);
     }
 
     private void OnBackClick() {
@@ -57,6 +63,10 @@ public class InGameMenu : MonoBehaviour {
 
     private void OnSettingsSoundClick() {
         _state = State.SettingsSound;
+    }
+
+    private void OnSettingsGeneralClick() {
+        _state = State.SettingsGeneral;
     }
 
     private void OnExitClick() {
@@ -80,10 +90,11 @@ public class InGameMenu : MonoBehaviour {
         stateSettings.gameObject.SetActive(_state != State.Main);
         stateSettingsSound.gameObject.SetActive(_state == State.SettingsSound);
         stateSettingsGraphic.gameObject.SetActive(_state == State.SettingsGraphic);
+        stateSettingsGeneral.gameObject.SetActive(_state == State.SettingsGeneral);
     }
 
     private void ToggleMenu() {
-        if (_state == State.SettingsSound || _state == State.SettingsGraphic) {
+        if (_state == State.SettingsSound || _state == State.SettingsGraphic || _state == State.SettingsGeneral) {
             _state = State.Main;
             return;
         }
@@ -111,9 +122,11 @@ public class InGameMenu : MonoBehaviour {
         buttonBack.onClick.RemoveListener(OnBackClick);
         buttonSettingsSoundBack.onClick.RemoveListener(OnBackClick);
         buttonSettingsGraphicBack.onClick.RemoveListener(OnBackClick);
+        buttonSettingsGeneralBack.onClick.RemoveListener(OnBackClick);
         buttonSettings.onClick.RemoveListener(OnSettingsClick);
         buttonExit.onClick.RemoveListener(OnExitClick);
         buttonSettingsGraphic.onClick.RemoveListener(OnSettingsGraphicClick);
         buttonSettingsSound.onClick.RemoveListener(OnSettingsSoundClick);
+        buttonSettingsGeneral.onClick.RemoveListener(OnSettingsSoundClick);
     }
 }

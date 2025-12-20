@@ -11,16 +11,14 @@ using Vosk;
 
 namespace Voice.Vosk {
     public class VoskHolder : MonoBehaviour, SpeechToTextHolder {
+        public Language Language { get; set; }
         public SpeechToTextManager Manager { get; private set; }
         public bool IsInitialized { get; private set; }
 
         private bool _isInitializing;
 
-        [SerializeField] private string downloadUrl =
-            "https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip";
-
-        [Tooltip("Location of the model, relative to the Streaming Assets folder.")]
-        public string ModelPath = "vosk-model-small-ru-0.22.zip";
+        public string ModelPathEn = "vosk-model-small-en-us-0.15";
+        public string ModelPathRu = "vosk-model-small-ru-0.22";
 
         public float sampleRate = 16_000f;
 
@@ -35,6 +33,7 @@ namespace Voice.Vosk {
             SpeechToTextHolder.Instance = this;
             var vosk = new VoskManager { holder = this };
             Manager = vosk;
+            Language = (Language)PlayerPrefs.GetInt("Language", 0);
             DontDestroyOnLoad(gameObject);
         }
 
@@ -69,7 +68,8 @@ namespace Voice.Vosk {
         public IEnumerator Init() {
             _isInitializing = true;
 
-            string modelPath = Path.Combine(Application.streamingAssetsPath, ModelPath);
+            string modelPath = Path.Combine(Application.streamingAssetsPath,
+                Language == Language.Ru ? ModelPathRu : ModelPathEn);
             Debug.Log("Vosk Loading Model from: " + modelPath);
             _model = new Model(modelPath);
 
@@ -92,8 +92,6 @@ namespace Voice.Vosk {
                 recognizer = new VoskRecognizer(_model, sampleRate, _grammar);
             }
 
-            // recognizer.SetWords(true);
-            // recognizer.SetPartialWords(true);
             recognizer.SetMaxAlternatives(3);
             _recognizerReady = true;
 

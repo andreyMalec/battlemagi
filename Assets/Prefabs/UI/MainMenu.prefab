@@ -1266,8 +1266,11 @@ MonoBehaviour:
   buttonSettingsSoundBack: {fileID: 230027265524994575}
   buttonSettingsGraphic: {fileID: 5418834613610984810}
   buttonSettingsGraphicBack: {fileID: 3837765572995900457}
+  buttonGeneral: {fileID: 512933489785900057}
+  buttonGeneralBack: {fileID: 4478468214566238551}
   stateSettingsSound: {fileID: 4102748260526702296}
   stateSettingsGraphic: {fileID: 9099310699345400788}
+  stateGeneral: {fileID: 3272412960485189250}
 --- !u!1 &6227900575696291239
 GameObject:
   m_ObjectHideFlags: 0
@@ -4504,6 +4507,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -270.0688
       objectReference: {fileID: 0}
+    - target: {fileID: 3206617611725013645, guid: 2cc35fc80400a354686136d610f459db, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -200
+      objectReference: {fileID: 0}
+    - target: {fileID: 3206617611725013645, guid: 2cc35fc80400a354686136d610f459db, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 3334047604682559458, guid: 2cc35fc80400a354686136d610f459db, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -5344,6 +5355,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+--- !u!114 &512933489785900057 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6664348605362587466, guid: 2cc35fc80400a354686136d610f459db, type: 3}
+  m_PrefabInstance: {fileID: 6585049861619895123}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!114 &2049858242078038793 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5120668368296284250, guid: 2cc35fc80400a354686136d610f459db, type: 3}
@@ -5355,6 +5377,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+--- !u!1 &3272412960485189250 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8505955861536730577, guid: 2cc35fc80400a354686136d610f459db, type: 3}
+  m_PrefabInstance: {fileID: 6585049861619895123}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3837765572995900457 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7935536612794052474, guid: 2cc35fc80400a354686136d610f459db, type: 3}
@@ -5371,6 +5398,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7173434019527095691, guid: 2cc35fc80400a354686136d610f459db, type: 3}
   m_PrefabInstance: {fileID: 6585049861619895123}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4478468214566238551 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7297094637440725508, guid: 2cc35fc80400a354686136d610f459db, type: 3}
+  m_PrefabInstance: {fileID: 6585049861619895123}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!114 &5418834613610984810 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1175820669125492281, guid: 2cc35fc80400a354686136d610f459db, type: 3}

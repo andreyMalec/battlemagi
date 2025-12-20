@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Profiling;
 using Debug = UnityEngine.Debug;
 
@@ -12,7 +13,8 @@ namespace Voice.Vosk {
 
         public Action<RecognitionResult> OnSegmentResult { get; set; }
 
-        public void UpdatePrompt(List<string> words) {
+        public void UpdatePrompt(List<string> phrases) {
+            var words = phrases.Map(it => it.Split(" ")).SelectMany(it => it).ToList();
             holder.UpdatePrompt(words);
         }
 
