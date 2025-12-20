@@ -1496,87 +1496,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1855616834}
   m_CullTransparentMesh: 1
---- !u!1 &1870896184
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1870896187}
-  - component: {fileID: 1870896186}
-  - component: {fileID: 1870896188}
-  m_Layer: 0
-  m_Name: WhisperHolder
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1870896186
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1870896184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a18d396b8d7f434f919697993a956a80, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WhisperHolder
-  loadOnStart: 1
-  whisper: {fileID: 1870896188}
-  downloadUrl: https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny.bin
---- !u!4 &1870896187
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1870896184}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1870896188
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1870896184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6391c609cdb74d368431b5f1d11992cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Voice.WhisperManager
-  logLevel: 2
-  modelPath: 
-  isModelPathInStreamingAssets: 1
-  initOnAwake: 0
-  useGpu: 1
-  flashAttention: 0
-  language: en
-  translateToEnglish: 0
-  strategy: 0
-  noContext: 1
-  singleSegment: 1
-  enableTokens: 1
-  initialPrompt: 
-  stepSec: 0.5
-  keepSec: 0
-  lengthSec: 3
-  updatePrompt: 0
-  dropOldBuffer: 1
-  useVad: 1
-  tokensTimestamps: 0
-  audioCtx: 0
 --- !u!1 &1941920895
 GameObject:
   m_ObjectHideFlags: 0
@@ -1712,6 +1631,53 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2057825512
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2057825514}
+  - component: {fileID: 2057825513}
+  m_Layer: 0
+  m_Name: VoskHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2057825513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2057825512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bba4a8375b1e4983991ceb41aeaffe2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Voice.Vosk.VoskHolder
+  downloadUrl: https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip
+  ModelPath: vosk-model-small-en-us-0.15
+  sampleRate: 16000
+--- !u!4 &2057825514
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2057825512}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &6909515424507128398
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1800,9 +1766,9 @@ SceneRoots:
   - {fileID: 1941920897}
   - {fileID: 1521928834}
   - {fileID: 505874375}
-  - {fileID: 1870896187}
   - {fileID: 1482068162}
   - {fileID: 6909515424507128398}
   - {fileID: 2018065990}
   - {fileID: 495474169}
   - {fileID: 429640270}
+  - {fileID: 2057825514}

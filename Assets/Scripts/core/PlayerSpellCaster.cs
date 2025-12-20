@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using Voice;
 
 [RequireComponent(typeof(SpellManager))]
 public class PlayerSpellCaster : NetworkBehaviour {
-    public SpellRecognizer.Language language = SpellRecognizer.Language.En;
-
     [SerializeField] private AudioSource noManaSound;
     [SerializeField] private AudioSource disabledSound;
     private NetworkStatSystem _statSystem;
@@ -50,10 +49,10 @@ public class PlayerSpellCaster : NetworkBehaviour {
             var arch = PlayerManager.Instance.FindByClientId(OwnerClientId)!.Value.Archetype;
             var archetype = ArchetypeDatabase.Instance.GetArchetype(arch);
             var spells = archetype.spells.ToList();
-            _recognizer = new SpellRecognizer(spells);
+            _recognizer = new SpellRecognizer(spells, SpeechToTextHolder.Instance.Language);
             if (_mouth == null)
                 Debug.Log($"[Mouth] is null on Player_{OwnerClientId}");
-            _mouth.RestrictWords(spells.Map(it => string.Join(", ", it.spellWords)).ToList());
+            _mouth.RestrictWords(_recognizer.SpellWords());
         }
     }
 
@@ -76,7 +75,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
 
     private void OnMouthClose(string[] lastWords) {
         if (castWaiting || channeling) return;
-        var result = _recognizer.Recognize(lastWords, language);
+        var result = _recognizer.Recognize(lastWords);
         recognizedSpell = new RecognizedSpell { spell = result.spell, similarity = result.similarity };
 
         var handled = result.similarity >= GameConfig.Instance.recognitionThreshold;
@@ -286,7 +285,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
             spell = _recognizer.spells[index];
 
         if (spell != null) {
-            var words = language == SpellRecognizer.Language.Ru ? spell.spellWordsRu : spell.spellWords;
+            var words = _recognizer.SpellWords();
             // emulate recognition tokens by tokenizing the first phrase
             var tokens = SpellRecognizer.TokenizePhrase(words[0]);
             OnMouthClose(tokens);

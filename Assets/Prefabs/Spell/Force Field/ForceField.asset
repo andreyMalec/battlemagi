@@ -19,25 +19,12 @@ MonoBehaviour:
 
     Deflects
     incoming projectiles and shields the caster for a short duration.'
-  nameRu: 
+  nameRu: "\u0421\u0438\u043B\u043E\u0432\u043E\u0435 \u041F\u043E\u043B\u0435"
   spellWords:
   - Force Field
   spellWordsRu:
-  - "\u041E\u0433\u043D\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
-  - "\u0428\u0430\u0440\u041E\u0433\u043D\u044F"
-  - "\u041E\u0433\u0434\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
-  - "\u041E\u0433\u0434\u0438\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
-  - "\u041E\u0433\u0434\u0438\u043D\u044B\u0439\u0428\u0430\u0440"
-  - "\u041E\u0433\u0434\u0435\u043D\u044B\u0439\u0428\u0430\u0440"
-  - "\u041E\u0431\u043D\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
-  - "\u0412\u043E\u0433\u0434\u043D\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
-  - "\u041F\u043E\u0433\u043D\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
-  - "\u041E\u0433\u043D\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0433"
-  - "\u041A\u043E\u0433\u043D\u0435\u043D\u043D\u044B\u0439\u0428\u0430\u0440"
-  - "\u041E\u0433\u043E\u043D\u0435\u043D\u043D\u044B\u0428\u0430\u0440"
-  - "\u041E\u0433\u043E\u043D\u0435\u043D\u044B\u0428\u0430\u0440"
-  - "\u0423\u0447\u0433\u0434\u0435\u043D\u044B\u0439\u0428\u0430\u0440"
-  - "\u041E\u0433\u043D\u0435\u0428\u0430\u0440"
+  - "\u0421\u0438\u043B\u043E\u0432\u043E\u0435 \u041F\u043E\u043B\u0435"
+  - "\u041F\u043E\u043B\u0435 \u0421\u0438\u043B\u044B"
   manaCost: 75
   bookImage: {fileID: 2800000, guid: 8e5b241e0760fc64aad156b95b35b10d, type: 3}
   spellInHandPrefab: {fileID: 7389778017922607859, guid: 9c03b9cc786592f44bb920c7e039f498, type: 3}
@@ -53,9 +40,10 @@ MonoBehaviour:
   previewMainInHand: 1
   disableWhileCarrying: 1
   echoCount: 0
-  instanceLimit: 0
+  instanceLimit: 1
   lifeTime: 10
   baseDamage: 0
+  structureDamageMultiplier: 1
   canSelfDamage: 0
   useParticleCollision: 0
   isDOT: 0
@@ -70,10 +58,11 @@ MonoBehaviour:
   multiProjDelay: 0
   spawnMode: 4
   arcAngleStep: 15
-  raycastMaxDistance: 50
+  raycastMaxDistance: 2
   isBeam: 0
   isHoming: 0
   homingRadius: 10
   homingStrength: 1
   isChanneling: 0
   channelDuration: 3
+  isCharging: 0

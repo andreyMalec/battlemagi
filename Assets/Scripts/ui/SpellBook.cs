@@ -5,6 +5,7 @@ using System.Linq;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using Voice;
 
 public class SpellBook : MonoBehaviour {
     private const int SHAPE_CLOSED = 0;
@@ -276,7 +277,7 @@ public class SpellBook : MonoBehaviour {
 
     private void UpdateRightPageText(SpellData spell) {
         if (spell == null) return;
-        spellNameText.text = spell.name;
+        spellNameText.text = SpeechToTextHolder.Instance.Language == Language.Ru ? spell.nameRu : spell.name;
         spellDescriptionText.text = spell.description;
     }
 
@@ -301,7 +302,7 @@ public class SpellBook : MonoBehaviour {
         if (spells == null || spells.Count == 0) return;
 
         var s = spell ?? spells[currentIndex];
-        spellNameText.text = s.name;
+        spellNameText.text = SpeechToTextHolder.Instance.Language == Language.Ru ? s.nameRu : s.name;
         spellDescriptionText.text = s.description;
         spellManaCostText.text = s.isChanneling ? $"{s.manaCost:0}/s" : $"{s.manaCost:0}";
         if (s.bookImage != null)

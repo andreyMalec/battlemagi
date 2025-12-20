@@ -19,10 +19,11 @@ MonoBehaviour:
 
 
     Reflects a portion of damage taken back to attackers.'
-  nameRu: 
+  nameRu: "\u0417\u0435\u0440\u043A\u0430\u043B\u043E \u0411\u043E\u043B\u0438"
   spellWords:
   - Pain Mirror
-  spellWordsRu: []
+  spellWordsRu:
+  - "\u0417\u0435\u0440\u043A\u0430\u043B\u043E \u0411\u043E\u043B\u0438"
   manaCost: 25
   bookImage: {fileID: 2800000, guid: 4ce76225f9c533a44983bf388778e1fc, type: 3}
   spellInHandPrefab: {fileID: 7389778017922607859, guid: 77892f013b9287549a57d9293fd47641, type: 3}
@@ -64,3 +65,4 @@ MonoBehaviour:
   homingStrength: 1
   isChanneling: 0
   channelDuration: 3
+  isCharging: 0

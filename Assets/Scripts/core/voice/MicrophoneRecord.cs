@@ -4,7 +4,6 @@ using System.Linq;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
-using Whisper.Utils;
 
 namespace Voice
 {
@@ -146,13 +145,9 @@ namespace Voice
                 _madeLoopLap = true;
                 if (!loop)
                 {
-                    LogUtils.Verbose($"Stopping recording, mic pos returned back to {micPos}");
                     StopRecord();
                     return;
                 }
-                
-                // all cool, we can work in loop
-                LogUtils.Verbose($"Mic made a new loop lap, continue recording.");
             }
             _lastMicPos = micPos;
 
@@ -232,22 +227,22 @@ namespace Voice
             
             // try to get sample for voice detection
             var data = GetMicBufferLast(micPos, vadContextSec);
-            var vad = AudioUtils.SimpleVad(data, _clip.frequency, vadLastSec, vadThd, vadFreqThd);
-
-            // raise event if vad has changed
-            if (vad != IsVoiceDetected)
-            {
-                _vadStopBegin = !vad ? Time.realtimeSinceStartup : (float?) null;
-                IsVoiceDetected = vad;
-                OnVadChanged?.Invoke(vad);   
-            }
-            
-            // update vad indicator
-            if (vadIndicatorImage)
-            {
-                var color = vad ? Color.green : Color.red;
-                vadIndicatorImage.color = color;
-            }
+            // var vad = AudioUtils.SimpleVad(data, _clip.frequency, vadLastSec, vadThd, vadFreqThd);
+            //
+            // // raise event if vad has changed
+            // if (vad != IsVoiceDetected)
+            // {
+            //     _vadStopBegin = !vad ? Time.realtimeSinceStartup : (float?) null;
+            //     IsVoiceDetected = vad;
+            //     OnVadChanged?.Invoke(vad);   
+            // }
+            //
+            // // update vad indicator
+            // if (vadIndicatorImage)
+            // {
+            //     var color = vad ? Color.green : Color.red;
+            //     vadIndicatorImage.color = color;
+            // }
 
             UpdateVadStop();
         }
@@ -318,23 +313,12 @@ namespace Voice
             Microphone.End(RecordStartMicDevice);
             IsRecording = false;
             Destroy(_clip);
-            LogUtils.Verbose($"Stopped microphone recording. Final audio length " +
-                             $"{finalAudio.Length} ({finalAudio.Data.Length} samples)");
 
             // update VAD, no speech with disabled mic
             if (IsVoiceDetected)
             {
                 IsVoiceDetected = false;
                 OnVadChanged?.Invoke(false);   
-            }
-            
-            // play echo sound
-            if (echo)
-            {
-                var echoClip = AudioClip.Create("echo", data.Length,
-                    _clip.channels, _clip.frequency, false);
-                echoClip.SetData(data, 0);
-                PlayAudioAndDestroy.Play(echoClip, Vector3.zero);
             }
 
             // finally, fire event

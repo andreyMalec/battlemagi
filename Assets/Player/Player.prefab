@@ -1295,6 +1295,7 @@ MonoBehaviour:
   ikHand: {fileID: 5596533096327910552}
   ikHandRight: {fileID: 6991023923860154135}
   animator: {fileID: 0}
+  networkAnimator: {fileID: 0}
   meshController: {fileID: 0}
   acceleration: 3
   decelerationCurve:
@@ -2043,21 +2044,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a4c8d32b6d14d40a1aa05e0c760e100, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Voice.MicrophoneRecord
-  maxLengthSec: 3
+  maxLengthSec: 1
   loop: 1
   frequency: 16000
-  chunksLengthSec: 0.5
+  chunksLengthSec: 0.1
   echo: 0
-  useVad: 1
-  vadUpdateRateSec: 0.1
-  vadContextSec: 30
-  vadLastSec: 1.25
+  useVad: 0
+  vadUpdateRateSec: 0.05
+  vadContextSec: 3
+  vadLastSec: 5
   vadThd: 1
   vadFreqThd: 100
   vadIndicatorImage: {fileID: 0}
   vadStop: 0
   dropVadPart: 1
-  vadStopTime: 3
+  vadStopTime: 5
   microphoneDropdown: {fileID: 0}
   microphoneDefaultLabel: Default microphone
 --- !u!1 &6409226882149161985

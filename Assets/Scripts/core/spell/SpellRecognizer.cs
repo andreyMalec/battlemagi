@@ -5,11 +5,6 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 
 public sealed class SpellRecognizer {
-    public enum Language {
-        En,
-        Ru
-    }
-
     public struct RecognizedSpell {
         public SpellData spell;
         public double similarity;
@@ -19,6 +14,7 @@ public sealed class SpellRecognizer {
     private readonly int _maxMergeSpan;
     private readonly int _minTokenLen;
     private readonly bool _useSliding;
+    private readonly Language _language;
     private readonly Action<string> _debug;
     public readonly List<SpellData> spells;
 
@@ -30,15 +26,42 @@ public sealed class SpellRecognizer {
     // Whitelist of phrases allowed to be cached to prevent pollution
     private static HashSet<string> s_knownPhrases;
 
-    public SpellRecognizer(List<SpellData> spells, int maxMergeSpan = 3, int minTokenLen = 1, bool useSlidingWindow = true, Action<string> debugLogger = null) {
+    public SpellRecognizer(
+        List<SpellData> spells, Language language, int maxMergeSpan = 3, int minTokenLen = 1,
+        bool useSlidingWindow = true, Action<string> debugLogger = null
+    ) {
         _maxMergeSpan = Mathf.Max(1, maxMergeSpan);
         _minTokenLen = Mathf.Max(0, minTokenLen);
         _useSliding = useSlidingWindow;
+        _language = language;
         _debug = debugLogger;
         this.spells = spells;
     }
 
-    public RecognizedSpell Recognize(string[] tokens, Language language) {
+    public List<string> SpellWords() {
+        return spells.Map(it => string.Join(", ", _language == Language.Ru ? it.spellWordsRu : it.spellWords)).ToList();
+    }
+
+    public RecognizedSpell Recognize(string words) {
+        var result = spells
+            .Select(spell => {
+                var r = new RecognizedSpell { spell = spell };
+                string[] spellWords = _language == Language.Ru ? spell.spellWordsRu : spell.spellWords;
+
+                r.similarity = spellWords
+                    .Select(phrase => TokenSimilarity(words.ToLowerInvariant(), phrase.ToLowerInvariant()))
+                    .DefaultIfEmpty(0.0)
+                    .Max();
+                return r;
+            })
+            .OrderByDescending(r => r.similarity)
+            .First();
+
+        _debug?.Invoke($"Recognized: {result.spell.name} ~ {result.similarity:0.000}");
+        return result;
+    }
+
+    public RecognizedSpell Recognize(string[] tokens) {
         var heardTokens = tokens
             .Where(t => !string.IsNullOrWhiteSpace(t))
             .Select(t => t.ToLowerInvariant())
@@ -48,7 +71,7 @@ public sealed class SpellRecognizer {
         var result = spells
             .Select(spell => {
                 var r = new RecognizedSpell { spell = spell };
-                string[] spellWords = language == Language.Ru ? spell.spellWordsRu : spell.spellWords;
+                string[] spellWords = _language == Language.Ru ? spell.spellWordsRu : spell.spellWords;
 
                 r.similarity = spellWords
                     .Select(phrase => PhraseAgainstTokensScoreInternal(heardTokens, phrase))
@@ -72,10 +95,12 @@ public sealed class SpellRecognizer {
         foreach (var spell in db.spells) {
             if (spell.spellWords != null)
                 foreach (var p in spell.spellWords)
-                    if (!string.IsNullOrWhiteSpace(p)) set.Add(p);
+                    if (!string.IsNullOrWhiteSpace(p))
+                        set.Add(p);
             if (spell.spellWordsRu != null)
                 foreach (var p in spell.spellWordsRu)
-                    if (!string.IsNullOrWhiteSpace(p)) set.Add(p);
+                    if (!string.IsNullOrWhiteSpace(p))
+                        set.Add(p);
         }
 
         // Build token cache for known phrases
@@ -110,6 +135,7 @@ public sealed class SpellRecognizer {
             if (s_phraseTokensCache.TryGetValue(phrase, out var cached))
                 return cached;
         }
+
         var tokens = s_tokenRegex.Matches(phrase.ToLowerInvariant())
             .Cast<Match>()
             .Select(m => m.Value)
@@ -119,6 +145,7 @@ public sealed class SpellRecognizer {
             if (s_knownPhrases == null || s_knownPhrases.Contains(phrase))
                 s_phraseTokensCache[phrase] = tokens;
         }
+
         return tokens;
     }
 
@@ -132,6 +159,7 @@ public sealed class SpellRecognizer {
             var simpleScore = SlidingWindowAvgScore(heardTokens, phraseTokens);
             return Math.Max(dpScore, simpleScore);
         }
+
         return dpScore;
     }
 
@@ -147,13 +175,17 @@ public sealed class SpellRecognizer {
                     sim = TokenSimilarity(heardTokens[idx], phraseTokens[j]);
                 sum += sim;
             }
+
             var avg = sum / phraseTokens.Length;
             if (avg > best) best = avg;
         }
+
         return best;
     }
 
-    private static double BestConcatenationAlignedScore(string[] heardTokens, string[] phraseTokens, int maxMergeSpan = 3) {
+    private static double BestConcatenationAlignedScore(
+        string[] heardTokens, string[] phraseTokens, int maxMergeSpan = 3
+    ) {
         int H = heardTokens.Length;
         int P = phraseTokens.Length;
         if (H == 0 || P == 0) return 0.0;
@@ -176,6 +208,7 @@ public sealed class SpellRecognizer {
                     int idx = j * stride + t;
                     if (candidate > dp[idx]) dp[idx] = candidate;
                 }
+
                 int idxCur = j * stride + t;
                 int idxLeft = j * stride + (t - 1);
                 if (dp[idxLeft] > dp[idxCur]) dp[idxCur] = dp[idxLeft];
@@ -187,6 +220,7 @@ public sealed class SpellRecognizer {
             double v = dp[P * stride + t];
             if (v > bestSum) bestSum = v;
         }
+
         if (double.IsNegativeInfinity(bestSum)) return 0.0;
         return bestSum / P;
     }
@@ -202,6 +236,7 @@ public sealed class SpellRecognizer {
             s.CopyTo(0, charArray, pos, s.Length);
             pos += s.Length;
         }
+
         return new string(charArray);
     }
 
@@ -237,6 +272,7 @@ public sealed class SpellRecognizer {
             }
             var tmp = prev; prev = curr; curr = tmp;
         }
+
         return prev[m];
     }
 }
