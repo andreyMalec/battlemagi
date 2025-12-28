@@ -159,6 +159,7 @@ GameObject:
   - component: {fileID: 9088427214094788236}
   - component: {fileID: 5422105895369381327}
   - component: {fileID: 3698032596225059758}
+  - component: {fileID: -4927834837307091515}
   m_Layer: 5
   m_Name: LobbyMemberItem
   m_TagString: Untagged
@@ -222,6 +223,101 @@ MonoBehaviour:
   - {fileID: -1485062009, guid: 22971eee59e296246b8cabdf7c9810b6, type: 3}
   - {fileID: 689190777, guid: 22971eee59e296246b8cabdf7c9810b6, type: 3}
   colorShader: {fileID: -6465566751694194690, guid: c315f4ed72580e94d88b3de4c04639ee, type: 3}
+--- !u!114 &-4927834837307091515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6105334199512004519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69beb381e244f92449b8c4cf954630e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.PropertyVariants.GameObjectLocalizer
+  m_TrackedObjects:
+  - rid: 8882217313105870935
+  references:
+    version: 2
+    RefIds:
+    - rid: 8882217313105870935
+      type: {class: TrackedMonoBehaviourObject, ns: UnityEngine.Localization.PropertyVariants.TrackedObjects, asm: Unity.Localization}
+      data:
+        m_Target: {fileID: 3698032596225059758}
+        m_TrackedProperties:
+          items:
+          - rid: 8882217313105870936
+          - rid: 8882217313105870940
+          - rid: 8882217313105870942
+          - rid: 8882217313105870944
+        m_UpdateType: 1
+        m_Changed:
+          m_PersistentCalls:
+            m_Calls: []
+    - rid: 8882217313105870936
+      type: {class: LocalizedAssetProperty, ns: UnityEngine.Localization.PropertyVariants.TrackedProperties, asm: Unity.Localization}
+      data:
+        m_Localized:
+          rid: 8882217313105870937
+        m_PropertyPath: 'spriteArchetypes.Array.data[1]'
+    - rid: 8882217313105870937
+      type: {class: LocalizedSprite, ns: UnityEngine.Localization, asm: Unity.Localization}
+      data:
+        m_TableReference:
+          m_TableCollectionName: GUID:aebff15877df01745a951adf44792a9e
+        m_TableEntryReference:
+          m_KeyId: 8876204032
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+    - rid: 8882217313105870940
+      type: {class: LocalizedAssetProperty, ns: UnityEngine.Localization.PropertyVariants.TrackedProperties, asm: Unity.Localization}
+      data:
+        m_Localized:
+          rid: 8882217313105870941
+        m_PropertyPath: 'spriteArchetypes.Array.data[2]'
+    - rid: 8882217313105870941
+      type: {class: LocalizedSprite, ns: UnityEngine.Localization, asm: Unity.Localization}
+      data:
+        m_TableReference:
+          m_TableCollectionName: GUID:aebff15877df01745a951adf44792a9e
+        m_TableEntryReference:
+          m_KeyId: 293367455744
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+    - rid: 8882217313105870942
+      type: {class: LocalizedAssetProperty, ns: UnityEngine.Localization.PropertyVariants.TrackedProperties, asm: Unity.Localization}
+      data:
+        m_Localized:
+          rid: 8882217313105870943
+        m_PropertyPath: 'spriteArchetypes.Array.data[3]'
+    - rid: 8882217313105870943
+      type: {class: LocalizedSprite, ns: UnityEngine.Localization, asm: Unity.Localization}
+      data:
+        m_TableReference:
+          m_TableCollectionName: GUID:aebff15877df01745a951adf44792a9e
+        m_TableEntryReference:
+          m_KeyId: 375168966656
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+    - rid: 8882217313105870944
+      type: {class: LocalizedAssetProperty, ns: UnityEngine.Localization.PropertyVariants.TrackedProperties, asm: Unity.Localization}
+      data:
+        m_Localized:
+          rid: 8882217313105870945
+        m_PropertyPath: 'spriteArchetypes.Array.data[4]'
+    - rid: 8882217313105870945
+      type: {class: LocalizedSprite, ns: UnityEngine.Localization, asm: Unity.Localization}
+      data:
+        m_TableReference:
+          m_TableCollectionName: GUID:aebff15877df01745a951adf44792a9e
+        m_TableEntryReference:
+          m_KeyId: 426461110272
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
 --- !u!1 &7809073828206860462
 GameObject:
   m_ObjectHideFlags: 0
@@ -291,8 +387,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e600a634320471e4b8ac268cbd788465, type: 2}
-  m_sharedMaterial: {fileID: -4806077374783364768, guid: e600a634320471e4b8ac268cbd788465, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 3f207ffc5d1e2794b87c7b18faf6752d, type: 2}
+  m_sharedMaterial: {fileID: -2550372050140285000, guid: 3f207ffc5d1e2794b87c7b18faf6752d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

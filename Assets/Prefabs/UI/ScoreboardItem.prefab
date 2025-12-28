@@ -67,8 +67,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 0
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e600a634320471e4b8ac268cbd788465, type: 2}
-  m_sharedMaterial: {fileID: -4806077374783364768, guid: e600a634320471e4b8ac268cbd788465, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 3f207ffc5d1e2794b87c7b18faf6752d, type: 2}
+  m_sharedMaterial: {fileID: -2550372050140285000, guid: 3f207ffc5d1e2794b87c7b18faf6752d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -203,8 +203,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 0
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e600a634320471e4b8ac268cbd788465, type: 2}
-  m_sharedMaterial: {fileID: -4806077374783364768, guid: e600a634320471e4b8ac268cbd788465, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 3f207ffc5d1e2794b87c7b18faf6752d, type: 2}
+  m_sharedMaterial: {fileID: -2550372050140285000, guid: 3f207ffc5d1e2794b87c7b18faf6752d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -358,6 +358,7 @@ GameObject:
   - component: {fileID: 2427446959450440346}
   - component: {fileID: 5924825746853803770}
   - component: {fileID: 7106205844362067171}
+  - component: {fileID: 2862471370653410929}
   m_Layer: 5
   m_Name: ScoreboardItem
   m_TagString: Untagged
@@ -443,6 +444,101 @@ MonoBehaviour:
   - {fileID: -1485062009, guid: 22971eee59e296246b8cabdf7c9810b6, type: 3}
   - {fileID: 689190777, guid: 22971eee59e296246b8cabdf7c9810b6, type: 3}
   colorShader: {fileID: -6465566751694194690, guid: c315f4ed72580e94d88b3de4c04639ee, type: 3}
+--- !u!114 &2862471370653410929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6103231177384157580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69beb381e244f92449b8c4cf954630e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.PropertyVariants.GameObjectLocalizer
+  m_TrackedObjects:
+  - rid: 8882217313105870949
+  references:
+    version: 2
+    RefIds:
+    - rid: 8882217313105870949
+      type: {class: TrackedMonoBehaviourObject, ns: UnityEngine.Localization.PropertyVariants.TrackedObjects, asm: Unity.Localization}
+      data:
+        m_Target: {fileID: 7106205844362067171}
+        m_TrackedProperties:
+          items:
+          - rid: 8882217313105870950
+          - rid: 8882217313105870952
+          - rid: 8882217313105870954
+          - rid: 8882217313105870956
+        m_UpdateType: 1
+        m_Changed:
+          m_PersistentCalls:
+            m_Calls: []
+    - rid: 8882217313105870950
+      type: {class: LocalizedAssetProperty, ns: UnityEngine.Localization.PropertyVariants.TrackedProperties, asm: Unity.Localization}
+      data:
+        m_Localized:
+          rid: 8882217313105870951
+        m_PropertyPath: 'spriteArchetypes.Array.data[1]'
+    - rid: 8882217313105870951
+      type: {class: LocalizedSprite, ns: UnityEngine.Localization, asm: Unity.Localization}
+      data:
+        m_TableReference:
+          m_TableCollectionName: GUID:aebff15877df01745a951adf44792a9e
+        m_TableEntryReference:
+          m_KeyId: 8876204032
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+    - rid: 8882217313105870952
+      type: {class: LocalizedAssetProperty, ns: UnityEngine.Localization.PropertyVariants.TrackedProperties, asm: Unity.Localization}
+      data:
+        m_Localized:
+          rid: 8882217313105870953
+        m_PropertyPath: 'spriteArchetypes.Array.data[2]'
+    - rid: 8882217313105870953
+      type: {class: LocalizedSprite, ns: UnityEngine.Localization, asm: Unity.Localization}
+      data:
+        m_TableReference:
+          m_TableCollectionName: GUID:aebff15877df01745a951adf44792a9e
+        m_TableEntryReference:
+          m_KeyId: 293367455744
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+    - rid: 8882217313105870954
+      type: {class: LocalizedAssetProperty, ns: UnityEngine.Localization.PropertyVariants.TrackedProperties, asm: Unity.Localization}
+      data:
+        m_Localized:
+          rid: 8882217313105870955
+        m_PropertyPath: 'spriteArchetypes.Array.data[3]'
+    - rid: 8882217313105870955
+      type: {class: LocalizedSprite, ns: UnityEngine.Localization, asm: Unity.Localization}
+      data:
+        m_TableReference:
+          m_TableCollectionName: GUID:aebff15877df01745a951adf44792a9e
+        m_TableEntryReference:
+          m_KeyId: 375168966656
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+    - rid: 8882217313105870956
+      type: {class: LocalizedAssetProperty, ns: UnityEngine.Localization.PropertyVariants.TrackedProperties, asm: Unity.Localization}
+      data:
+        m_Localized:
+          rid: 8882217313105870957
+        m_PropertyPath: 'spriteArchetypes.Array.data[4]'
+    - rid: 8882217313105870957
+      type: {class: LocalizedSprite, ns: UnityEngine.Localization, asm: Unity.Localization}
+      data:
+        m_TableReference:
+          m_TableCollectionName: GUID:aebff15877df01745a951adf44792a9e
+        m_TableEntryReference:
+          m_KeyId: 426461110272
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
 --- !u!1 &7390000366241189077
 GameObject:
   m_ObjectHideFlags: 0
@@ -510,8 +606,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 0
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e600a634320471e4b8ac268cbd788465, type: 2}
-  m_sharedMaterial: {fileID: -4806077374783364768, guid: e600a634320471e4b8ac268cbd788465, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 3f207ffc5d1e2794b87c7b18faf6752d, type: 2}
+  m_sharedMaterial: {fileID: -2550372050140285000, guid: 3f207ffc5d1e2794b87c7b18faf6752d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -646,8 +742,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: PlayerName
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e600a634320471e4b8ac268cbd788465, type: 2}
-  m_sharedMaterial: {fileID: -4806077374783364768, guid: e600a634320471e4b8ac268cbd788465, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 3f207ffc5d1e2794b87c7b18faf6752d, type: 2}
+  m_sharedMaterial: {fileID: -2550372050140285000, guid: 3f207ffc5d1e2794b87c7b18faf6752d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -782,8 +878,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 0
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e600a634320471e4b8ac268cbd788465, type: 2}
-  m_sharedMaterial: {fileID: -4806077374783364768, guid: e600a634320471e4b8ac268cbd788465, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 3f207ffc5d1e2794b87c7b18faf6752d, type: 2}
+  m_sharedMaterial: {fileID: -2550372050140285000, guid: 3f207ffc5d1e2794b87c7b18faf6752d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

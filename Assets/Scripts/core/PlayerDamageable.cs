@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 
 [RequireComponent(typeof(NetworkStatSystem))]
@@ -21,7 +22,14 @@ public class PlayerDamageable : Damageable {
         PlayerManager.Instance.AddDeath(ownerClientId);
         PlayerSpawner.instance.HandleDeathServerRpc(ownerClientId);
         Killfeed.Instance?.HandleClientRpc(fromClientId, ownerClientId);
+        var sendParams = new ClientRpcParams {
+            Send = new ClientRpcSendParams { TargetClientIds = new[] { ownerClientId } }
+        };
+        PlayerKilledClientRpc(source, sendParams);
+    }
 
+    [ClientRpc]
+    private void PlayerKilledClientRpc(string source, ClientRpcParams _ = default) {
         FirebaseAnalytic.Instance.SendEvent("PlayerKilled", new Dictionary<string, object> {
             { "source", source },
         });

@@ -277,14 +277,15 @@ public class SpellBook : MonoBehaviour {
 
     private void UpdateRightPageText(SpellData spell) {
         if (spell == null) return;
-        spellNameText.text = SpeechToTextHolder.Instance.Language == Language.Ru ? spell.nameRu : spell.name;
-        spellDescriptionText.text = spell.description;
+        spellNameText.text = R.String($"spell.name.{spell.name}");
+        spellDescriptionText.text = R.String($"spell.description.{spell.name}");
     }
 
     private void UpdateLeftPage(SpellData spell) {
         if (spell == null || spell.bookImage == null) return;
         spellImage.material.mainTexture = spell.bookImage;
-        spellManaCostText.text = spell.isChanneling ? $"{spell.manaCost:0}/s" : $"{spell.manaCost:0}";
+        spellManaCostText.text =
+            spell.isChanneling ? $"{spell.manaCost:0}/{R.String("perSecond")}" : $"{spell.manaCost:0}";
     }
 
     #endregion
@@ -302,9 +303,9 @@ public class SpellBook : MonoBehaviour {
         if (spells == null || spells.Count == 0) return;
 
         var s = spell ?? spells[currentIndex];
-        spellNameText.text = SpeechToTextHolder.Instance.Language == Language.Ru ? s.nameRu : s.name;
-        spellDescriptionText.text = s.description;
-        spellManaCostText.text = s.isChanneling ? $"{s.manaCost:0}/s" : $"{s.manaCost:0}";
+        spellNameText.text = R.String($"spell.name.{s.name}");
+        spellDescriptionText.text = R.String($"spell.description.{s.name}");
+        spellManaCostText.text = s.isChanneling ? $"{s.manaCost:0}/{R.String("perSecond")}" : $"{s.manaCost:0}";
         if (s.bookImage != null)
             spellImage.material.mainTexture = s.bookImage;
     }

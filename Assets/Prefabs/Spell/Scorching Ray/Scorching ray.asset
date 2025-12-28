@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf4989d79519c1349aa400eb4e706e49, type: 3}
+  m_Name: Scorching ray
+  m_EditorClassIdentifier: Assembly-CSharp::SpellData
+  id: 2
+  name: Scorching ray
+  description: 'A focused stream of flame that burns through flesh, will, and shadow
+    alike.
+
+
+    Channels a continuous beam of fire; caster is slowed while maintaining
+    it.'
+  nameRu: "\u041E\u043F\u0430\u043B\u044F\u044E\u0449\u0438\u0439 \u041B\u0443\u0447"
+  spellWords:
+  - Scorching Ray
+  spellWordsRu:
+  - "\u041E\u043F\u0430\u043B\u044F\u044E\u0449\u0438\u0439 \u041B\u0443\u0447"
+  - "\u041E\u0431\u0436\u0438\u0433\u0430\u044E\u0449\u0438\u0439 \u041B\u0443\u0447"
+  manaCost: 10
+  bookImage: {fileID: 2800000, guid: 7663bfc2c85b7324b81396f95c7cdbda, type: 3}
+  spellInHandPrefab: {fileID: 7389778017922607859, guid: b24841a049b8fd843ad123b7c03fb2b6, type: 3}
+  spellBurstPrefab: {fileID: 0}
+  mainSpellPrefab: {fileID: 7354784787554302670, guid: c4e07b3a2b5ba2b42ab3b65522b61a45, type: 3}
+  impactPrefab: {fileID: 0}
+  impactEffects: []
+  buffs:
+  - {fileID: 11400000, guid: 8ad0d91d71667254f8f0ec10686ee04a, type: 2}
+  damageSound: 5
+  castWaitingIndex: 0
+  invocationIndex: 5
+  clearInHandBeforeAnim: 1
+  previewMainInHand: 0
+  disableWhileCarrying: 0
+  echoCount: 0
+  instanceLimit: 0
+  lifeTime: 5
+  baseDamage: 3
+  structureDamageMultiplier: 0.75
+  canSelfDamage: 1
+  useParticleCollision: 1
+  isDOT: 0
+  tickInterval: 0.5
+  hasAreaEffect: 0
+  areaRadius: 5
+  knockbackForce: 0
+  isProjectile: 0
+  piercing: 1
+  baseSpeed: 0
+  projCount: 1
+  multiProjDelay: 0
+  spawnMode: 2
+  arcAngleStep: 30
+  raycastMaxDistance: 50
+  isBeam: 1
+  isHoming: 0
+  homingRadius: 10
+  homingStrength: 1
+  isChanneling: 1
+  channelDuration: 3.5
+  isCharging: 0

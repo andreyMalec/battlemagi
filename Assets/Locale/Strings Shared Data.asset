@@ -1,0 +1,178 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: Strings Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: Strings
+  m_TableCollectionNameGuidString: c3b5de118d8d8cd44a4e6571eab00fc3
+  m_Entries:
+  - m_Id: 1187412713472
+    m_Key: mainMenu.makeLobby
+    m_Metadata:
+      m_Items: []
+  - m_Id: 259033719119872
+    m_Key: mainMenu.joinLobby
+    m_Metadata:
+      m_Items: []
+  - m_Id: 259341451010048
+    m_Key: mainMenu.inputLobbyId
+    m_Metadata:
+      m_Items: []
+  - m_Id: 259608728838144
+    m_Key: mainMenu.settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 259978511261696
+    m_Key: mainMenu.credits
+    m_Metadata:
+      m_Items: []
+  - m_Id: 260726372442112
+    m_Key: mainMenu.exit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 261006908465152
+    m_Key: lobbyMenu.invite
+    m_Metadata:
+      m_Items: []
+  - m_Id: 261187703939072
+    m_Key: menu.back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 261374434353152
+    m_Key: lobbyMenu.ready
+    m_Metadata:
+      m_Items: []
+  - m_Id: 261583675596800
+    m_Key: lobbyMenu.copy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 261867898413056
+    m_Key: lobbyMenu.map
+    m_Metadata:
+      m_Items: []
+  - m_Id: 262024610193408
+    m_Key: lobbyMenu.mode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 262276859830272
+    m_Key: lobbyMenu.teamRed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 262348125249536
+    m_Key: lobbyMenu.teamBlue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 262747968249856
+    m_Key: settings.buttonGraphics
+    m_Metadata:
+      m_Items: []
+  - m_Id: 262909390233600
+    m_Key: settings.buttonSounds
+    m_Metadata:
+      m_Items: []
+  - m_Id: 263032430141440
+    m_Key: settings.buttonGeneral
+    m_Metadata:
+      m_Items: []
+  - m_Id: 263304481087488
+    m_Key: settings.soundsTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 263496102060032
+    m_Key: settings.soundsMaster
+    m_Metadata:
+      m_Items: []
+  - m_Id: 264025486139392
+    m_Key: settings.soundsVoice
+    m_Metadata:
+      m_Items: []
+  - m_Id: 264174643978240
+    m_Key: 'settings.soundsEffect
+
+'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 264537178644480
+    m_Key: settings.soundsMusic
+    m_Metadata:
+      m_Items: []
+  - m_Id: 264662730940416
+    m_Key: settings.microphoneTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 264811725201408
+    m_Key: settings.microphoneRecognition
+    m_Metadata:
+      m_Items: []
+  - m_Id: 265092043120640
+    m_Key: settings.microphoneActivity
+    m_Metadata:
+      m_Items: []
+  - m_Id: 265193645940736
+    m_Key: settings.microphoneVoice
+    m_Metadata:
+      m_Items: []
+  - m_Id: 265302509101056
+    m_Key: settings.microphoneVoiceSteam
+    m_Metadata:
+      m_Items: []
+  - m_Id: 265547032829952
+    m_Key: settings.graphicsTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 265694848491520
+    m_Key: settings.graphicsDisplay
+    m_Metadata:
+      m_Items: []
+  - m_Id: 265965620174848
+    m_Key: settings.graphicsResolution
+    m_Metadata:
+      m_Items: []
+  - m_Id: 266181014462464
+    m_Key: settings.graphicsFPS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 266423990493184
+    m_Key: settings.apply
+    m_Metadata:
+      m_Items: []
+  - m_Id: 266547441442816
+    m_Key: settings.generalTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 266757873868800
+    m_Key: settings.generalLanguage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 267114897219584
+    m_Key: inGameMenu.buttonBack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 267483412963328
+    m_Key: inGameMenu.buttonExit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 271066795614208
+    m_Key: setup.loading
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 8882217134156415209
+  references:
+    version: 2
+    RefIds:
+    - rid: 8882217134156415209
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1766237666986

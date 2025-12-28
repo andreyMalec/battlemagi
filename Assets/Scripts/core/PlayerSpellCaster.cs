@@ -285,7 +285,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
             spell = _recognizer.spells[index];
 
         if (spell != null) {
-            var words = _recognizer.SpellWords();
+            var words = SpeechToTextHolder.Instance.Language == Language.Ru ? spell.spellWordsRu : spell.spellWords;
             // emulate recognition tokens by tokenizing the first phrase
             var tokens = SpellRecognizer.TokenizePhrase(words[0]);
             OnMouthClose(tokens);

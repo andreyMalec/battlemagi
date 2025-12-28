@@ -31,48 +31,53 @@ public class AnnouncerUI : MonoBehaviour {
         var hsv = new Friend(data.Value.SteamId).GetColor();
         coloredText.color = Color.HSVToRGB(hsv.hue / 360, hsv.saturation, 0.8f);
         coloredText.text = data?.Name();
-        normalText.text = " wins the game!";
+        normalText.text = R.String("announcer.playerWin");
         ShowMessage();
     }
 
     private void TeamWin(int winTeam) {
         var team = (TeamManager.Team)winTeam;
         setColor(team);
-        normalText.text = " wins the game!";
+        normalText.text = R.String("announcer.teamWin");
         ShowMessage();
     }
 
     private void TakeFlag(int flagTeam) {
         var team = (TeamManager.Team)flagTeam;
-        setColor(team);
-        normalText.text = " flag taken";
+        setColor(team, true);
+        normalText.text = R.String("announcer.flagTaken");
         ShowMessage();
     }
 
     private void DropFlag(int flagTeam) {
         var team = (TeamManager.Team)flagTeam;
-        setColor(team);
-        normalText.text = " flag dropped";
+        setColor(team, true);
+        normalText.text = R.String("announcer.flagDropped");
         ShowMessage();
     }
 
     private void ReturnFlag(int flagTeam) {
         var team = (TeamManager.Team)flagTeam;
-        setColor(team);
-        normalText.text = " flag returned";
+        setColor(team, true);
+        normalText.text = R.String("announcer.flagReturned");
         ShowMessage();
     }
 
     private void CaptureFlag(int scoringTeam) {
         var team = (TeamManager.Team)scoringTeam;
         setColor(team);
-        normalText.text = " team scores!";
+        normalText.text = R.String("announcer.teamScores");
         ShowMessage();
     }
 
-    private void setColor(TeamManager.Team team) {
-        coloredText.color = team == TeamManager.Team.Blue ? blue : red;
-        coloredText.text = $"{team}";
+    private void setColor(TeamManager.Team team, bool forFlag = false) {
+        if (team == TeamManager.Team.Red) {
+            coloredText.color = red;
+            coloredText.text = R.String(forFlag ? "announcer.teamRedFlag" : "announcer.teamRed");
+        } else if (team == TeamManager.Team.Blue) {
+            coloredText.color = blue;
+            coloredText.text = R.String(forFlag ? "announcer.teamBlueFlag" : "announcer.teamBlue");
+        }
     }
 
     private void ShowMessage() {

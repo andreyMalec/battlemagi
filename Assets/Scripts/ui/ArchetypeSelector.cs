@@ -32,7 +32,7 @@ public class ArchetypeSelector : MonoBehaviour {
     private void UpdateLabel() {
         if (label == null || avatar == null) return;
         var data = avatar.CurrentArchetype;
-        label.text = data != null ? data.archetypeName : "—";
+        label.text = data != null ? R.String($"class.{data.archetypeName}") : "—";
 
         GetComponentInParent<ColorizeMesh>().UpdateRenderer();
         if (PlayerManager.Instance != null)

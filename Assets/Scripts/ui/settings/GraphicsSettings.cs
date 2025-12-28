@@ -1,7 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 
 public class GraphicsSettings : MonoBehaviour {
@@ -69,24 +72,33 @@ public class GraphicsSettings : MonoBehaviour {
 
         resolutionDropdown.value = savedIndex;
 
+        vsyncDropdown.onValueChanged.AddListener(OnVSyncChanged);
+
+        applyButton.onClick.AddListener(ApplySettings);
+    }
+
+    private void OnEnable() {
         // Режим окна
         windowModeDropdown.ClearOptions();
-        windowModeDropdown.AddOptions(new List<string> { "Fullscreen", "Borderless", "Windowed" });
+        var fullscreen = R.String("settings.fullscreen");
+        var borderless = R.String("settings.borderless");
+        var windowed = R.String("settings.windowed");
+        windowModeDropdown.AddOptions(new List<string> { fullscreen, borderless, windowed });
         windowModeDropdown.value = PlayerPrefs.GetInt("WindowMode", 0);
 
         // VSync
         vsyncDropdown.ClearOptions();
-        vsyncDropdown.AddOptions(new List<string> { "Off", "On" });
+        var off = R.String("settings.off");
+        var on = R.String("settings.on");
+        vsyncDropdown.AddOptions(new List<string> { off, on });
         vsyncDropdown.value = PlayerPrefs.GetInt("VSync", 0);
-        vsyncDropdown.onValueChanged.AddListener(OnVSyncChanged);
         OnVSyncChanged(vsyncDropdown.value);
 
         // FPS Limit
         fpsLimitDropdown.ClearOptions();
-        fpsLimitDropdown.AddOptions(new List<string> { "30", "60", "120", "144", "240", "Unlimited" });
+        var unlimited = R.String("settings.unlimited");
+        fpsLimitDropdown.AddOptions(new List<string> { "30", "60", "120", "144", "240", unlimited });
         fpsLimitDropdown.value = PlayerPrefs.GetInt("FPSLimit", 1);
-
-        applyButton.onClick.AddListener(ApplySettings);
     }
 
     private void OnVSyncChanged(int ind) {
@@ -110,6 +122,6 @@ public class GraphicsSettings : MonoBehaviour {
         PlayerPrefs.SetInt("FPSLimit", fpsIndex);
         PlayerPrefs.Save();
 
-        GraphicsSettingsInitializer.ApplySavedSettings();
+        SettingsInitializer.ApplySavedSettings();
     }
 }

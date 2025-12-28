@@ -255,7 +255,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 75ca036a82f0b2f4e88e79593505817c, type: 2}
   - {fileID: 11400000, guid: b8b0a25ad3d2d654387d77b53d703fbd, type: 2}
   - {fileID: 11400000, guid: dd1a780a3c3f060438c7c1ac2df307cc, type: 2}
-  - {fileID: 11400000, guid: db38dd9a798dc64429780a5ec74cc391, type: 2}
 --- !u!4 &429640270
 Transform:
   m_ObjectHideFlags: 0
@@ -1371,6 +1370,7 @@ GameObject:
   - component: {fileID: 1855616835}
   - component: {fileID: 1855616837}
   - component: {fileID: 1855616836}
+  - component: {fileID: 1855616838}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -1419,8 +1419,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Loading model... Please wait
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e600a634320471e4b8ac268cbd788465, type: 2}
-  m_sharedMaterial: {fileID: -4806077374783364768, guid: e600a634320471e4b8ac268cbd788465, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 3f207ffc5d1e2794b87c7b18faf6752d, type: 2}
+  m_sharedMaterial: {fileID: -2550372050140285000, guid: 3f207ffc5d1e2794b87c7b18faf6752d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1496,6 +1496,44 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1855616834}
   m_CullTransparentMesh: 1
+--- !u!114 &1855616838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1855616834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69beb381e244f92449b8c4cf954630e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.PropertyVariants.GameObjectLocalizer
+  m_TrackedObjects:
+  - rid: 8882217150482219174
+  references:
+    version: 2
+    RefIds:
+    - rid: 8882217150482219174
+      type: {class: TrackedUGuiGraphic, ns: UnityEngine.Localization.PropertyVariants.TrackedObjects, asm: Unity.Localization}
+      data:
+        m_Target: {fileID: 1855616836}
+        m_TrackedProperties:
+          items:
+          - rid: 8882217150482219175
+        m_UpdateType: 0
+    - rid: 8882217150482219175
+      type: {class: LocalizedStringProperty, ns: UnityEngine.Localization.PropertyVariants.TrackedProperties, asm: Unity.Localization}
+      data:
+        m_Localized:
+          m_TableReference:
+            m_TableCollectionName: GUID:c3b5de118d8d8cd44a4e6571eab00fc3
+          m_TableEntryReference:
+            m_KeyId: 271066795614208
+            m_Key: 
+          m_FallbackState: 0
+          m_WaitForCompletion: 0
+          m_LocalVariables: []
+        m_PropertyPath: m_text
 --- !u!1 &1941920895
 GameObject:
   m_ObjectHideFlags: 0
@@ -1660,8 +1698,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bba4a8375b1e4983991ceb41aeaffe2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Voice.Vosk.VoskHolder
-  downloadUrl: https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip
-  ModelPath: vosk-model-small-en-us-0.15
+  ModelPathEn: vosk-model-small-en-us-0.15
+  ModelPathRu: vosk-model-small-ru-0.22
   sampleRate: 16000
 --- !u!4 &2057825514
 Transform:
@@ -1694,14 +1732,6 @@ PrefabInstance:
       propertyPath: InScenePlacedSourceGlobalObjectIdHash
       value: 2254842558
       objectReference: {fileID: 0}
-    - target: {fileID: 6002854000391987078, guid: b390804259226a847b47db240409c0f2, type: 3}
-      propertyPath: spells.Array.size
-      value: 17
-      objectReference: {fileID: 0}
-    - target: {fileID: 6002854000391987078, guid: b390804259226a847b47db240409c0f2, type: 3}
-      propertyPath: 'spells.Array.data[16]'
-      value: 
-      objectReference: {fileID: 11400000, guid: f1ea5e92331903844851b7ded79baed3, type: 2}
     - target: {fileID: 6117778263866355746, guid: b390804259226a847b47db240409c0f2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

@@ -39,11 +39,7 @@ public class MenuStateLobby : MonoBehaviour {
         dropdownMode.onValueChanged.AddListener(SubmitMode);
         dropdownGameEnd.onValueChanged.AddListener(SubmitEndChoice);
 
-        dropdownMap.options = GameMapDatabase.instance.gameMaps.Map(it => new TMP_Dropdown.OptionData(it.mapName))
-            .ToList();
-
         UpdateGameEndOptions(dropdownMode.value);
-        UpdateGameEndTargetText();
     }
 
     private void OnEnable() {
@@ -51,6 +47,17 @@ public class MenuStateLobby : MonoBehaviour {
         TeamManager.Instance.CurrentMode.OnValueChanged += TeamModeChanged;
         TeamManager.Instance.EndChoice.OnValueChanged += GameEndChanged;
         UpdateReadyButton(LobbyManager.Instance.Me.IsReady());
+
+        dropdownMode.ClearOptions();
+        var freeForAll = R.String("gameMode.freeForAll");
+        var teamDeathmatch = R.String("gameMode.teamDeathmatch");
+        var captureTheFlag = R.String("gameMode.captureTheFlag");
+        dropdownMode.AddOptions(new List<string> { freeForAll, teamDeathmatch, captureTheFlag });
+
+        dropdownMap.options = GameMapDatabase.instance.gameMaps
+            .Map(it => new TMP_Dropdown.OptionData(R.String($"map.{it.mapName}")))
+            .ToList();
+        UpdateGameEndTargetText();
     }
 
     private void MapChanged(int _, int newValue) {
@@ -71,7 +78,8 @@ public class MenuStateLobby : MonoBehaviour {
 
         fieldLobbyId.text = lobby?.Id.ToString();
         readyCount = lobby.ReadyCount();
-        lobbyName.text = $"Players {lobby?.MemberCount}/{lobby?.MaxMembers}; Ready {readyCount}";
+        var playersCount = $"{lobby?.MemberCount}/{lobby?.MaxMembers}";
+        lobbyName.text = R.String("lobby.players", playersCount, readyCount.ToString());
         if (readyCount == lobby?.MemberCount) {
             StartGame();
         }
@@ -117,7 +125,9 @@ public class MenuStateLobby : MonoBehaviour {
 
     private void UpdateGameEndTargetText() {
         int modeIndex = dropdownMode.value;
-        gameEndTarget.text = modeIndex == (int)TeamManager.TeamMode.CaptureTheFlag ? $"Flags to Win" : $"Kills to Win";
+        gameEndTarget.text = modeIndex == (int)TeamManager.TeamMode.CaptureTheFlag
+            ? R.String("lobby.targetFlags")
+            : R.String("lobby.targetKills");
     }
 
     private void ToggleReady() {

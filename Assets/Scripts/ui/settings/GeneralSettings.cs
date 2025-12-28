@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 using Voice;
 
@@ -27,6 +29,8 @@ public class GeneralSettings : MonoBehaviour {
         PlayerPrefs.SetInt("Language", languageIndex);
         PlayerPrefs.Save();
 
+        var values = Enum.GetValues(typeof(Language)).Cast<Language>().ToList();
+        LocalizationSettings.Instance.SetSelectedLocale(Locale.CreateLocale(values[languageIndex].ToString().ToLower()));
         SpeechToTextHolder.Instance.Language = (Language)languageIndex;
         StartCoroutine(SpeechToTextHolder.Instance.Init());
     }

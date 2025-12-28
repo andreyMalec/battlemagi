@@ -1,0 +1,367 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: CodeStr_en
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 87ea077c5cdac1d4796757f31f22ea04, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 15834554368
+    m_Localized: Fullscreen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 133333786624
+    m_Localized: Borderless
+    m_Metadata:
+      m_Items: []
+  - m_Id: 290544689152
+    m_Localized: Windowed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1480795889664
+    m_Localized: Unlimited
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1563729862656
+    m_Localized: Off
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1613591748608
+    m_Localized: On
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7480273805312
+    m_Localized: ' wins the game!'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7588482654208
+    m_Localized: ' wins the game!'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7677569671168
+    m_Localized: Red
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7711652585472
+    m_Localized: Blue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8017740308480
+    m_Localized: ' flag taken'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8132060258304
+    m_Localized: Red
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8385064869888
+    m_Localized: Blue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510361313280
+    m_Localized: ' flag dropped'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8599624491008
+    m_Localized: ' flag returned'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9010032943104
+    m_Localized: ' team scores!'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13714385281024
+    m_Localized: Players %s1; Ready %s2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15218378809344
+    m_Localized: Flags to Win
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15241900466176
+    m_Localized: Kills to Win
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17009262731264
+    m_Localized: Deathmatch
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17019974983680
+    m_Localized: Team Deathmatch
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17022588035072
+    m_Localized: Capture The Flag
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18825975177216
+    m_Localized: Lava
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18895403491328
+    m_Localized: Mine
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18933324193792
+    m_Localized: Platform
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18947786153984
+    m_Localized: Ruins
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19346454749184
+    m_Localized: Archmage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19409805516800
+    m_Localized: Magician
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19433780158464
+    m_Localized: Ranger
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19446514065408
+    m_Localized: Pyromancer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19457813520384
+    m_Localized: Keeper
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21401412050944
+    m_Localized: s
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21466067247104
+    m_Localized: Air bullet
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21915063296000
+    m_Localized: 'A burst of compressed air shaped into a deadly projectile of pure
+      pressure.
+
+
+      Fires instantly toward the target, striking with invisible
+      force and high speed.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22025000198144
+    m_Localized: Ball lightning
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22116264058880
+    m_Localized: 'A living spark of storm, roaming restlessly in search of prey.
+
+
+      Slowly
+      pursues the nearest enemy and shocks them on contact.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22242802016256
+    m_Localized: Charged shot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22296577187840
+    m_Localized: 'Channels emerald energy into a charged magical arrow, drawn taut
+      with arcane power.
+
+
+      Damage that increases over time can be released
+      at any moment.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22393297838080
+    m_Localized: Dirt wall
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22428156698624
+    m_Localized: 'A surge of geomantic force erupts from the ground, raising a solid
+      barrier of soil and stone.
+
+
+      Blocks incoming attacks and reshapes the
+      battlefield to gain an advantage.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22608121700352
+    m_Localized: Ember lash
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22646143066112
+    m_Localized: 'A searing lava whip lashes out, ensnaring nearby foes in molten
+      chains of fire.
+
+
+      Captures enemies around the caster and deals gradual
+      burning damage over time.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22767836602368
+    m_Localized: Fireball
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22834450538496
+    m_Localized: 'A blazing sphere hurled forward, erupting in a wave of heat and
+      ash.
+
+
+      Explodes on impact, dealing area damage around the target.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22909906067456
+    m_Localized: Flame dash
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22932710498304
+    m_Localized: 'Surge forward with blazing speed, leaving a trail of searing flames
+      in your wake.
+
+
+      Grants increased movement speed while creating a damaging
+      fiery path.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23079586635776
+    m_Localized: Force field
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23116743974912
+    m_Localized: 'A shimmering dome of condensed magic, bending light and matter
+      alike.
+
+
+      Deflects incoming projectiles and shields the caster for a short
+      duration.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23269026570240
+    m_Localized: Frost nova
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23270830120960
+    m_Localized: 'Frozen winds erupt in a swirling blizzard of snow, bursting outward
+      with a chilling embrace.
+
+
+      Deals area damage, freezes and slows enemies
+      caught in a snow whirlwind.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23475373744128
+    m_Localized: Ice shards
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23478402031616
+    m_Localized: 'Razor shards of frozen air that pierce the ground and bind foes
+      in frost.
+
+
+      Leaves icy spikes that freeze nearby enemies who step too
+      close.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23667326066688
+    m_Localized: Mana storm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23685189607424
+    m_Localized: 'A reckless surge of raw mana that floods the  body with destructive
+      energy.
+
+
+      Increases spell power and reduces mana cost, but constantly
+      drains mana while active.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23698972090368
+    m_Localized: Pain mirror
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23949078437888
+    m_Localized: 'Surrounds the caster in a shimmering barrier that twists incoming
+      agony back at its source.
+
+
+      Reflects a portion of damage taken back to
+      attackers.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24115806216192
+    m_Localized: Rune trap
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24117731401728
+    m_Localized: 'Ancient runes ignite beneath the feet of the unwary, unleashing
+      a burst of arcane energy.
+
+
+      Triggers an explosive trap that deals area
+      damage to all enemies who cross its path.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24260392263680
+    m_Localized: Scorching ray
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24261986099200
+    m_Localized: 'A focused stream of flame that burns through flesh, will, and shadow
+      alike.
+
+
+      Channels a continuous beam of fire; caster is slowed while maintaining
+      it.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24356471185408
+    m_Localized: Shadow step
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24358052438016
+    m_Localized: 'The caster slips between moments, stepping through darkness unseen.
+
+
+      Teleports
+      the caster forward, evading danger.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24521626099712
+    m_Localized: Shockwave totem
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24534003490816
+    m_Localized: 'Summons a totem that emits shockwaves, striking nearby foes.
+
+
+      Inflicts
+      damage and pushes enemies back in bursts.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24655256625152
+    m_Localized: Toxic sphere
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24657462829056
+    m_Localized: 'A swirling core of decay that poisons the ground it touches.
+
+
+      Creates
+      a lingering toxic pool that slows and damages enemies over time.'
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

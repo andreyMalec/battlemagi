@@ -1,0 +1,292 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: CodeStr Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: CodeStr
+  m_TableCollectionNameGuidString: 87ea077c5cdac1d4796757f31f22ea04
+  m_Entries:
+  - m_Id: 15834554368
+    m_Key: settings.fullscreen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 133333786624
+    m_Key: settings.borderless
+    m_Metadata:
+      m_Items: []
+  - m_Id: 290544689152
+    m_Key: settings.windowed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1480795889664
+    m_Key: settings.unlimited
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1563729862656
+    m_Key: settings.off
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1613591748608
+    m_Key: settings.on
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7677569671168
+    m_Key: announcer.teamRed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7711652585472
+    m_Key: announcer.teamBlue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8132060258304
+    m_Key: announcer.teamRedFlag
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8385064869888
+    m_Key: announcer.teamBlueFlag
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7588482654208
+    m_Key: announcer.teamWin
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7480273805312
+    m_Key: announcer.playerWin
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8017740308480
+    m_Key: announcer.flagTaken
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510361313280
+    m_Key: announcer.flagDropped
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8599624491008
+    m_Key: announcer.flagReturned
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9010032943104
+    m_Key: announcer.teamScores
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13714385281024
+    m_Key: lobby.players
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15218378809344
+    m_Key: lobby.targetFlags
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15241900466176
+    m_Key: lobby.targetKills
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17009262731264
+    m_Key: gameMode.freeForAll
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17019974983680
+    m_Key: gameMode.teamDeathmatch
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17022588035072
+    m_Key: gameMode.captureTheFlag
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18825975177216
+    m_Key: map.Lava
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18895403491328
+    m_Key: map.Mine
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18933324193792
+    m_Key: map.Platform
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18947786153984
+    m_Key: map.Ruins
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19346454749184
+    m_Key: class.Archmage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19409805516800
+    m_Key: class.Magician
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19433780158464
+    m_Key: class.Ranger
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19446514065408
+    m_Key: class.Pyromancer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19457813520384
+    m_Key: class.Keeper
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21401412050944
+    m_Key: perSecond
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21466067247104
+    m_Key: spell.name.Air bullet
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21915063296000
+    m_Key: spell.description.Air bullet
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22025000198144
+    m_Key: spell.name.Balllightning
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22116264058880
+    m_Key: spell.description.Balllightning
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22242802016256
+    m_Key: spell.name.Charged shot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22296577187840
+    m_Key: spell.description.Charged shot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22393297838080
+    m_Key: spell.name.Dirt wall
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22428156698624
+    m_Key: spell.description.Dirt wall
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22608121700352
+    m_Key: spell.name.Ember lash
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22646143066112
+    m_Key: spell.description.Ember lash
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22767836602368
+    m_Key: spell.name.Fireball
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22834450538496
+    m_Key: spell.description.Fireball
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22909906067456
+    m_Key: spell.name.Flame dash
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22932710498304
+    m_Key: spell.description.Flame dash
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23079586635776
+    m_Key: spell.name.Force field
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23116743974912
+    m_Key: spell.description.Force field
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23269026570240
+    m_Key: spell.name.Frost nova
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23270830120960
+    m_Key: spell.description.Frost nova
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23475373744128
+    m_Key: spell.name.Ice shards
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23478402031616
+    m_Key: spell.description.Ice shards
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23667326066688
+    m_Key: spell.name.Mana storm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23685189607424
+    m_Key: spell.description.Mana storm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23698972090368
+    m_Key: spell.name.Pain mirror
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23949078437888
+    m_Key: spell.description.Pain mirror
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24115806216192
+    m_Key: spell.name.Rune trap
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24117731401728
+    m_Key: spell.description.Rune trap
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24260392263680
+    m_Key: spell.name.Scorching ray
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24261986099200
+    m_Key: spell.description.Scorching ray
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24356471185408
+    m_Key: spell.name.Shadow step
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24358052438016
+    m_Key: spell.description.Shadow step
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24521626099712
+    m_Key: spell.name.Shockwave totem
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24534003490816
+    m_Key: spell.description.Shockwave totem
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24655256625152
+    m_Key: spell.name.Toxic sphere
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24657462829056
+    m_Key: spell.description.Toxic sphere
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 8882217150482219176
+  references:
+    version: 2
+    RefIds:
+    - rid: 8882217150482219176
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1766302965280

@@ -93,11 +93,33 @@ public class GameProgress : NetworkBehaviour {
         int endChoice = TeamManager.Instance.EndChoice.Value;
         int target = endChoice >= 0 && endChoice < killsTargets.Length ? killsTargets[endChoice] : killsTargets[0];
 
-        foreach (var p in players) {
-            if (p.Kills >= target) {
-                GameAnnouncer.Instance.PlayerWin(p.ClientId);
+        if (TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.TwoTeams) {
+            var redKills = 0;
+            var blueKills = 0;
+            foreach (var p in players) {
+                if (TeamManager.Instance.GetTeam(p.ClientId) == TeamManager.Team.Red)
+                    redKills += p.Kills;
+                else if (TeamManager.Instance.GetTeam(p.ClientId) == TeamManager.Team.Blue)
+                    blueKills += p.Kills;
+            }
+
+            if (redKills >= target) {
+                GameAnnouncer.Instance.TeamWin(TeamManager.Team.Red);
                 StartCoroutine(EndMatch());
                 return;
+            }
+
+            if (blueKills >= target) {
+                GameAnnouncer.Instance.TeamWin(TeamManager.Team.Blue);
+                StartCoroutine(EndMatch());
+            }
+        } else {
+            foreach (var p in players) {
+                if (p.Kills >= target) {
+                    GameAnnouncer.Instance.PlayerWin(p.ClientId);
+                    StartCoroutine(EndMatch());
+                    return;
+                }
             }
         }
     }
