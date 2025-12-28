@@ -1,4 +1,5 @@
 using System.Collections;
+using System.IO;
 
 namespace Voice {
     public interface SpeechToTextHolder {
@@ -9,5 +10,9 @@ namespace Voice {
         public bool IsInitialized { get; }
 
         public IEnumerator Init();
+
+        public static bool RunningOnVM() {
+            return File.Exists($"C:\\Users\\Public\\Documents\\vm.detect");
+        }
     }
 }

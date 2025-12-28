@@ -16,7 +16,7 @@ public class Mouth : NetworkBehaviour {
 
     public event OnMouthClose OnMouthClose;
 
-    public override async void OnNetworkSpawn() {
+    public override  void OnNetworkSpawn() {
         base.OnNetworkSpawn();
         if (!IsOwner) return;
         if (microphoneRecord != null && _holder.IsInitialized) {
@@ -27,6 +27,7 @@ public class Mouth : NetworkBehaviour {
 
     private void OnDisable() {
         if (!IsOwner) return;
+        if (!_holder.IsInitialized) return;
         _manager.StopRecognition();
     }
 
@@ -38,23 +39,27 @@ public class Mouth : NetworkBehaviour {
 
     public void RestrictWords(List<string> words) {
         if (!IsOwner) return;
+        if (!_holder.IsInitialized) return;
         _manager.UpdatePrompt(words);
         Debug.Log($"[Mouth] RestrictWords: {string.Join(", ", words)}");
     }
 
     public void ShutUp() {
         if (!IsOwner) return;
+        if (!_holder.IsInitialized) return;
         _manager.Reset();
     }
 
     public void ChangeVoice() {
         if (!IsOwner) return;
+        if (!_holder.IsInitialized) return;
         _manager.StopRecognition();
         _manager.StartRecognition(microphoneRecord);
     }
 
     public void CanSpeak(bool canSpeak) {
         if (!IsOwner) return;
+        if (!_holder.IsInitialized) return;
         if (_manager.Mute == canSpeak) {
             _manager.Mute = !canSpeak;
             if (!canSpeak)

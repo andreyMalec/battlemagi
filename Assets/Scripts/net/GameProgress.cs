@@ -29,6 +29,15 @@ public class GameProgress : NetworkBehaviour {
         DontDestroyOnLoad(gameObject);
     }
 
+    public void SetKeyCast(bool allowed) {
+        SetKeyCastClientRpc(allowed);
+    }
+
+    [ClientRpc]
+    private void SetKeyCastClientRpc(bool allowed) {
+        GameConfig.Instance.allowKeySpells = allowed;
+    }
+
     public void SelectMap(int mapIndex) {
         if (!IsServer) return;
         started = false;

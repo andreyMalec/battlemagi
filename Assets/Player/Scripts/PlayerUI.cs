@@ -1,15 +1,18 @@
 using System;
 using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerUI : MonoBehaviour {
+public class PlayerUI : NetworkBehaviour {
     private PlayerUIRenderer _renderer;
     private Damageable _damageable;
     private PlayerSpellCaster _caster;
     private FirstPersonMovement _movement;
 
-    private void Awake() {
+    public override void OnNetworkSpawn() {
+        base.OnNetworkSpawn();
+        if (!IsOwner) return;
         _renderer = FindFirstObjectByType<PlayerUIRenderer>();
         _damageable = GetComponent<Damageable>();
         _caster = GetComponent<PlayerSpellCaster>();
@@ -22,7 +25,7 @@ public class PlayerUI : MonoBehaviour {
 
     private void Update() {
         if (_renderer == null) return;
-        if (!_damageable.IsOwner) return;
+        if (!IsOwner) return;
 
         var hp = Math.Clamp(_damageable.health.Value / _damageable.maxHealth, 0, 1);
         _renderer.hp.transform.localScale = new Vector3(hp, 1, 1);

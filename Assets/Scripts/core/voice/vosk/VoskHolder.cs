@@ -38,7 +38,7 @@ namespace Voice.Vosk {
         }
 
         private void Start() {
-            if (checkVM()) return;
+            if (SpeechToTextHolder.RunningOnVM()) return;
 
             try {
                 if (_isInitializing) {
@@ -59,10 +59,6 @@ namespace Voice.Vosk {
 
         private void Update() {
             Manager.Update(Time.deltaTime);
-        }
-
-        public static bool checkVM() {
-            return File.Exists($"C:\\Users\\Public\\Documents\\vm.detect");
         }
 
         public IEnumerator Init() {

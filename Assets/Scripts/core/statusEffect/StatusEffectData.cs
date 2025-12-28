@@ -2,6 +2,7 @@ using UnityEngine;
 
 public abstract class StatusEffectData : ScriptableObject {
     public string effectName;
+    public string title;
     public string description;
     public float duration;
     public Color color = new(0, 0, 0, 0);

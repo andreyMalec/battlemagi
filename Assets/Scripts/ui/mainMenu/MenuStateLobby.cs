@@ -14,6 +14,7 @@ public class MenuStateLobby : MonoBehaviour {
     [SerializeField] private TMP_Dropdown dropdownMap;
     [SerializeField] private TMP_Dropdown dropdownMode;
     [SerializeField] private TMP_Dropdown dropdownGameEnd;
+    [SerializeField] private TMP_Dropdown dropdownKeyCast;
     [SerializeField] private TMP_Text gameEndTarget;
     [SerializeField] private TMP_Text lobbyName;
     [SerializeField] private TMP_InputField fieldLobbyId;
@@ -24,11 +25,13 @@ public class MenuStateLobby : MonoBehaviour {
     private DropdownHelper _dropdownMapHelper;
     private DropdownHelper _dropdownModeHelper;
     private DropdownHelper _dropdownGameEndHelper;
+    private DropdownHelper _dropdownKeyCastHelper;
 
     private void Awake() {
         _dropdownMapHelper = dropdownMap.GetComponent<DropdownHelper>();
         _dropdownModeHelper = dropdownMode.GetComponent<DropdownHelper>();
         _dropdownGameEndHelper = dropdownGameEnd.GetComponent<DropdownHelper>();
+        _dropdownKeyCastHelper = dropdownKeyCast.GetComponent<DropdownHelper>();
 
         buttonBackToMain.onClick.AddListener(LeaveLobby);
         buttonInvite.onClick.AddListener(InviteFriends);
@@ -38,6 +41,7 @@ public class MenuStateLobby : MonoBehaviour {
         dropdownMap.onValueChanged.AddListener(SubmitMap);
         dropdownMode.onValueChanged.AddListener(SubmitMode);
         dropdownGameEnd.onValueChanged.AddListener(SubmitEndChoice);
+        dropdownKeyCast.onValueChanged.AddListener(SubmitKeyCast);
 
         UpdateGameEndOptions(dropdownMode.value);
     }
@@ -57,6 +61,10 @@ public class MenuStateLobby : MonoBehaviour {
         dropdownMap.options = GameMapDatabase.instance.gameMaps
             .Map(it => new TMP_Dropdown.OptionData(R.String($"map.{it.mapName}")))
             .ToList();
+        dropdownKeyCast.options = new List<TMP_Dropdown.OptionData>() {
+            new(R.String("lobby.keyCast.disabled")),
+            new(R.String("lobby.keyCast.enabled")),
+        };
         UpdateGameEndTargetText();
     }
 
@@ -84,10 +92,13 @@ public class MenuStateLobby : MonoBehaviour {
             StartGame();
         }
 
+        dropdownKeyCast.value = GameConfig.Instance.allowKeySpells ? 1 : 0;
+
         var showControls = LobbyManager.Instance.IsHost();
         _dropdownMapHelper.SetInteractable(showControls);
         _dropdownModeHelper.SetInteractable(showControls);
         _dropdownGameEndHelper.SetInteractable(showControls);
+        _dropdownKeyCastHelper.SetInteractable(showControls);
     }
 
     private void StartGame() {
@@ -107,6 +118,10 @@ public class MenuStateLobby : MonoBehaviour {
     private void SubmitEndChoice(int index) {
         TeamManager.Instance.SetEndChoice(index);
         UpdateGameEndTargetText();
+    }
+
+    private void SubmitKeyCast(int index) {
+        GameProgress.Instance.SetKeyCast(index == 1);
     }
 
     private void UpdateGameEndOptions(int modeIndex) {

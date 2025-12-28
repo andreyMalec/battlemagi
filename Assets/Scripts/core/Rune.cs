@@ -24,7 +24,10 @@ public class Rune : NetworkBehaviour {
             }
 
             var toUI = effects.First();
-            OnPickupClientRpc(other.GetComponent<NetworkObject>().OwnerClientId, toUI.effectName, toUI.description,
+            OnPickupClientRpc(
+                other.GetComponent<NetworkObject>().OwnerClientId,
+                R.String(toUI.title),
+                R.String(toUI.description),
                 toUI.color);
 
             // server-authoritative despawn

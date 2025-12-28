@@ -13,6 +13,14 @@ MonoBehaviour:
   m_Name: Killbox
   m_EditorClassIdentifier: Assembly-CSharp::DamageOverTimeEffect
   effectName: Killbox
+  title: 
+  description: 
   duration: 10
+  color: {r: 0, g: 0, b: 0, a: 0}
+  removeOnHit: 0
+  onExpire: {fileID: 0}
   dps: 1000
   tickInterval: 0
+  damageSound: 9
+  ignoreDamageSoundCooldown: 0
+  canSelfDamage: 1

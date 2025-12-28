@@ -252,7 +252,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameMapDatabase
   gameMaps:
   - {fileID: 11400000, guid: 641d821c9184b1449a1d8dfd25e5b49a, type: 2}
-  - {fileID: 11400000, guid: 75ca036a82f0b2f4e88e79593505817c, type: 2}
   - {fileID: 11400000, guid: b8b0a25ad3d2d654387d77b53d703fbd, type: 2}
   - {fileID: 11400000, guid: dd1a780a3c3f060438c7c1ac2df307cc, type: 2}
 --- !u!4 &429640270
@@ -1654,6 +1653,8 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: b982a126c7e6e2948a9101b0ad5b7922, type: 3}
   - type: 8
     clip: {fileID: 8300000, guid: fde0e89674b1c7747964f1c7c23598e7, type: 3}
+  - type: 9
+    clip: {fileID: 8300000, guid: 08e60f15eacf34c408258fb9b4de4f63, type: 3}
 --- !u!4 &2018065990
 Transform:
   m_ObjectHideFlags: 0

@@ -14,7 +14,7 @@ public class SceneLoader : MonoBehaviour {
 
     private IEnumerator LoadMainMenu() {
         yield return new WaitUntil(() =>
-            NetworkManager.Singleton != null && (SpeechToTextHolder.Instance.IsInitialized));
+            NetworkManager.Singleton != null && (SpeechToTextHolder.Instance.IsInitialized || SpeechToTextHolder.RunningOnVM()));
         SceneManager.LoadScene("MainMenu");
     }
 }
