@@ -43,7 +43,7 @@ public class TeamManager : NetworkBehaviour {
     public static TeamManager Instance { get; private set; }
 
     public bool isTeamMode => CurrentMode.Value != TeamMode.FreeForAll;
-    
+
     private void Awake() {
         if (Instance == null) Instance = this;
         DontDestroyOnLoad(gameObject);
@@ -68,17 +68,27 @@ public class TeamManager : NetworkBehaviour {
         RedistributePlayers();
     }
 
-    public override void OnNetworkSpawn() {
-        if (IsServer) {
-            NetworkManager.OnClientConnectedCallback += OnClientConnected;
-            NetworkManager.OnClientDisconnectCallback += OnClientDisconnected;
+    private void Start() {
+        NetworkManager.Singleton.OnConnectionEvent += OnConnectionEvent;
+    }
+
+    public override void OnDestroy() {
+        base.OnDestroy();
+
+        if (NetworkManager.Singleton != null) {
+            NetworkManager.Singleton.OnConnectionEvent -= OnConnectionEvent;
         }
     }
 
-    public override void OnNetworkDespawn() {
-        if (NetworkManager != null) {
-            NetworkManager.OnClientConnectedCallback -= OnClientConnected;
-            NetworkManager.OnClientDisconnectCallback -= OnClientDisconnected;
+    private void OnConnectionEvent(NetworkManager arg1, ConnectionEventData arg2) {
+        if (!IsServer) return;
+
+        if (arg2.EventType == ConnectionEvent.ClientDisconnected) {
+            OnClientDisconnected(arg2.ClientId);
+        }
+
+        if (arg2.EventType == ConnectionEvent.ClientConnected) {
+            OnClientConnected(arg2.ClientId);
         }
     }
 

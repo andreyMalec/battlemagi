@@ -57,7 +57,7 @@ public class ColorizeMesh : MonoBehaviour {
 
     private void Update() {
         frame++;
-        if (needUpdate && frame % 60 == 0) {
+        if (needUpdate && frame % 10 == 0) {
             LobbyExt.SetColor(new PlayerColor(hue, saturation));
             needUpdate = false;
         }

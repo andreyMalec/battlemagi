@@ -16,8 +16,16 @@ public class LobbyMembers : MonoBehaviour {
     private int frame = 0;
 
     private void OnEnable() {
-        buttonJoinRed.onClick.AddListener(() => { LobbyExt.SetTeam(TeamManager.Team.Red); });
-        buttonJoinBlue.onClick.AddListener(() => { LobbyExt.SetTeam(TeamManager.Team.Blue); });
+        buttonJoinRed.onClick.AddListener(JoinRed);
+        buttonJoinBlue.onClick.AddListener(JoinBlue);
+    }
+
+    private void JoinRed() {
+        LobbyExt.SetTeam(TeamManager.Team.Red);
+    }
+
+    private void JoinBlue() {
+        LobbyExt.SetTeam(TeamManager.Team.Blue);
     }
 
     public void RequestUpdate() {
@@ -38,7 +46,7 @@ public class LobbyMembers : MonoBehaviour {
         frame++;
         var lobby = LobbyManager.Instance.CurrentLobby;
         if (!lobby.HasValue) return;
-        if (frame % 30 == 0) {
+        if (frame % 5 == 0) {
             foreach (var member in lobby.Value.Members) {
                 var item = lobbyMembers[member.Id.Value];
 
@@ -105,7 +113,7 @@ public class LobbyMembers : MonoBehaviour {
     }
 
     private void OnDisable() {
-        buttonJoinRed.onClick.RemoveAllListeners();
-        buttonJoinBlue.onClick.RemoveAllListeners();
+        buttonJoinRed.onClick.RemoveListener(JoinRed);
+        buttonJoinBlue.onClick.RemoveListener(JoinBlue);
     }
 }
