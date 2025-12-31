@@ -48,8 +48,8 @@ public class GameProgress : NetworkBehaviour {
 
     public void StartMatch() {
         if (!IsServer || started) return;
-        LobbyManager.Instance.CurrentLobby?.SetJoinable(false);
         NetworkManager.Singleton.SceneManager.LoadScene(SceneName, LoadSceneMode.Single);
+        LobbyManager.Instance.GameStarted();
         started = true;
 
         FirebaseAnalytic.Instance.SendEvent("MatchStarted", new Dictionary<string, object> {

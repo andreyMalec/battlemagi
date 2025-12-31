@@ -23,6 +23,7 @@ public class LobbyMemberItem : MonoBehaviour, IPointerEnterHandler, IPointerExit
     [SerializeField] private Sprite[] spriteArchetypes;
     [SerializeField] private Shader colorShader;
     private ulong _steamId;
+    private bool _isMe;
 
     void Awake() {
         if (backgroundRaycast != null)
@@ -32,7 +33,8 @@ public class LobbyMemberItem : MonoBehaviour, IPointerEnterHandler, IPointerExit
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
-        SetHover(true);
+        if (!_isMe)
+            SetHover(true);
     }
 
     public void OnPointerExit(PointerEventData eventData) {
@@ -57,6 +59,7 @@ public class LobbyMemberItem : MonoBehaviour, IPointerEnterHandler, IPointerExit
     }
 
     public void UpdateState(Friend member) {
+        _isMe = member.IsMe;
         var image = member.IsReady() ? spriteReady : spriteNotReady;
         readyImage.overrideSprite = image;
         var color = member.GetColor();

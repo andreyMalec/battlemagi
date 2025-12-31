@@ -41,7 +41,7 @@ public class MicrophoneSettings : MonoBehaviour {
     }
 
     private void OnEnable() {
-        inGame = NetworkManager.Singleton.IsClient;
+        inGame = LobbyManager.Instance.State == LobbyManager.PlayerState.InGame;
         if (inGame) {
             var player = NetworkManager.Singleton.LocalClient?.PlayerObject;
             if (player != null)

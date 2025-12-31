@@ -192,6 +192,11 @@ public class LobbyManager : MonoBehaviour {
         return true;
     }
 
+    public void GameStarted() {
+        _state = PlayerState.InGame;
+        CurrentLobby?.SetJoinable(false);
+    }
+
     /**
      * Покинуть текущее лобби
      */
@@ -212,6 +217,7 @@ public class LobbyManager : MonoBehaviour {
     public void RestartLobby() {
         if (CurrentLobby != null) {
             var lobby = CurrentLobby.Value;
+            lobby.SetJoinable(true);
             Debug.Log($"[LobbyManager] Restarting lobby {lobby.Id}");
             lobby.SetMemberData(KeyReady, "0");
             State = PlayerState.InLobby;
