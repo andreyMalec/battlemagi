@@ -13,13 +13,14 @@ MonoBehaviour:
   m_Name: FlameDash DoT
   m_EditorClassIdentifier: Assembly-CSharp::DamageOverTimeEffect
   effectName: FlameDash DoT
+  title: 
   description: 
   duration: 0.5
   color: {r: 0, g: 0, b: 0, a: 0}
   removeOnHit: 0
   onExpire: {fileID: 0}
-  dps: 2
-  tickInterval: 0.2
+  dps: 3
+  tickInterval: 0.1
   damageSound: 5
   ignoreDamageSoundCooldown: 0
   canSelfDamage: 0

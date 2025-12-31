@@ -47,9 +47,6 @@ public class MenuStateLobby : MonoBehaviour {
     }
 
     private void OnEnable() {
-        GameProgress.Instance.SelectedMap.OnValueChanged += MapChanged;
-        TeamManager.Instance.CurrentMode.OnValueChanged += TeamModeChanged;
-        TeamManager.Instance.EndChoice.OnValueChanged += GameEndChanged;
         UpdateReadyButton(LobbyManager.Instance.Me.IsReady());
 
         dropdownMode.ClearOptions();
@@ -68,16 +65,16 @@ public class MenuStateLobby : MonoBehaviour {
         UpdateGameEndTargetText();
     }
 
-    private void MapChanged(int _, int newValue) {
-        dropdownMap.captionText.text = dropdownMap.options[newValue].text;
+    private void UpdateMap() {
+        dropdownMap.captionText.text = dropdownMap.options[GameProgress.Instance.SelectedMap.Value].text;
     }
 
-    private void TeamModeChanged(TeamManager.TeamMode _, TeamManager.TeamMode newValue) {
-        dropdownMode.captionText.text = dropdownMode.options[(int)newValue].text;
+    private void UpdateTeamMode() {
+        dropdownMode.captionText.text = dropdownMode.options[(int)TeamManager.Instance.CurrentMode.Value].text;
     }
 
-    private void GameEndChanged(int _, int newValue) {
-        dropdownGameEnd.captionText.text = dropdownGameEnd.options[newValue].text;
+    private void UpdateGameEnd() {
+        dropdownGameEnd.captionText.text = dropdownGameEnd.options[TeamManager.Instance.EndChoice.Value].text;
     }
 
     private void FixedUpdate() {
@@ -99,6 +96,10 @@ public class MenuStateLobby : MonoBehaviour {
         _dropdownModeHelper.SetInteractable(showControls);
         _dropdownGameEndHelper.SetInteractable(showControls);
         _dropdownKeyCastHelper.SetInteractable(showControls);
+        UpdateGameEndTargetText();
+        UpdateMap();
+        UpdateTeamMode();
+        UpdateGameEnd();
     }
 
     private void StartGame() {
@@ -112,12 +113,10 @@ public class MenuStateLobby : MonoBehaviour {
     private void SubmitMode(int index) {
         TeamManager.Instance.SetMode((TeamManager.TeamMode)index);
         UpdateGameEndOptions(index);
-        UpdateGameEndTargetText();
     }
 
     private void SubmitEndChoice(int index) {
         TeamManager.Instance.SetEndChoice(index);
-        UpdateGameEndTargetText();
     }
 
     private void SubmitKeyCast(int index) {
@@ -173,11 +172,5 @@ public class MenuStateLobby : MonoBehaviour {
         copyButtonText.text = "OK";
         yield return new WaitForSeconds(1);
         copyButtonText.text = "Copy";
-    }
-
-    private void OnDisable() {
-        GameProgress.Instance.SelectedMap.OnValueChanged -= MapChanged;
-        TeamManager.Instance.CurrentMode.OnValueChanged -= TeamModeChanged;
-        TeamManager.Instance.EndChoice.OnValueChanged -= GameEndChanged;
     }
 }

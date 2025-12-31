@@ -83,6 +83,9 @@ public class ArchetypeAvatar : MonoBehaviour {
         _currentAvatar.transform.localPosition = Vector3.zero;
         _currentAvatar.transform.localRotation = Quaternion.identity;
         _currentAvatar.transform.localScale = Vector3.one;
+        var cloth = _currentAvatar.GetComponentInChildren<Cloth>();
+        if (cloth != null)
+            cloth.enabled = false;
         var a = _currentAvatar.GetComponent<Animator>();
         a.runtimeAnimatorController = controller;
         _currentAvatar.GetComponent<FootControllerIK>().MaxStepHeight = 0.1f;

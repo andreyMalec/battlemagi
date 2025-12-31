@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca0a0377795444469d2cba078d7f91fb, type: 3}
+  m_Name: 'ManaStorm [ManaDegen]'
+  m_EditorClassIdentifier: Assembly-CSharp::ManaRegenMultiplierEffect
+  effectName: 'ManaStorm [ManaDegen]'
+  title: 
+  description: 
+  duration: 20
+  color: {r: 1, g: 0.45490196, b: 0, a: 1}
+  removeOnHit: 0
+  onExpire: {fileID: 11400000, guid: b579753b794a17a46aff6e8611a45288, type: 2}
+  multiplier: -2
