@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: ToxicSphere Slow
   m_EditorClassIdentifier: Assembly-CSharp::SlowEffect
   effectName: ToxicSphere Slow
+  title: 
   description: 
-  duration: 0.5
+  duration: 0.75
   color: {r: 0, g: 0, b: 0, a: 0}
   removeOnHit: 0
   onExpire: {fileID: 0}
-  multiplier: 0.5
+  multiplier: 0.3

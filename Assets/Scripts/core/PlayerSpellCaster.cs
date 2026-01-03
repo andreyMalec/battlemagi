@@ -23,7 +23,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
     private bool castWaiting = false;
     [HideInInspector] public bool channeling = false;
 
-    [SerializeField] private float manaRestore = 5f;
+    public float manaRestore = 5f;
     [SerializeField] private float manaRestoreTickInterval = 0.5f;
     public float maxMana = 100;
     public NetworkVariable<float> mana = new();

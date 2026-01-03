@@ -27,10 +27,9 @@ public class Player : NetworkBehaviour {
 
     private void SpawnAvatar(int arch) {
         var archetype = ArchetypeDatabase.Instance.GetArchetype(arch);
-        var currentAvatar = Instantiate(archetype.avatarPrefab, transform);
+        var currentAvatar = Instantiate(archetype.avatarPrefab, transform); //TODO crash
         meshController = currentAvatar.GetComponent<MeshController>();
         animator = currentAvatar.GetComponent<Animator>();
-
         var netAnim = GetComponent<NetworkAnimator>();
         netAnim.Animator = animator;
         _networkAnimatorAwake.Invoke(netAnim, null);
@@ -50,6 +49,7 @@ public class Player : NetworkBehaviour {
         movement.movementSpeed = archetype.movementSpeed;
         movement.runSpeed = archetype.runSpeed;
         movement.maxStamina = archetype.maxStamina;
+        movement.jumpStrength = archetype.jumpStrength;
 
         var look = GetComponent<FirstPersonLook>();
         look.BindAvatar(meshController);
@@ -61,9 +61,11 @@ public class Player : NetworkBehaviour {
         activeSpell.BindAvatar(meshController);
         var caster = GetComponent<PlayerSpellCaster>();
         caster.maxMana = archetype.maxMana;
+        caster.manaRestore = archetype.manaRegen;
         caster.BindAvatar(meshController);
         var damageable = GetComponent<Damageable>();
         damageable.maxHealth = archetype.maxHealth;
+        damageable.hpRestore = archetype.healthRegen;
         var camSel = GetComponent<CameraSelector>();
         camSel.BindAvatar(meshController);
         var fpss = GetComponentInChildren<FirstPersonSounds>();
@@ -71,6 +73,8 @@ public class Player : NetworkBehaviour {
         var freeze = GetComponentInChildren<Freeze>(true);
         var footIK = currentAvatar.GetComponent<FootControllerIK>();
         freeze.BindAvatar(animator, footIK);
+        var cam = GetComponentInChildren<FpsCameraClip>(true);
+        cam.head = meshController.head;
     }
 
     public override void OnNetworkSpawn() {

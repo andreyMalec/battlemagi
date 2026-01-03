@@ -22,9 +22,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 12d026afdf710064f806104a86b1c096, type: 2}
   - {fileID: 11400000, guid: f1ea5e92331903844851b7ded79baed3, type: 2}
   - {fileID: 11400000, guid: ea6636b2a2df76e46bce96559dc6d0c7, type: 2}
-  maxHealth: 150
+  maxHealth: 125
   maxMana: 100
   maxStamina: 4
-  movementSpeed: 2
-  runSpeed: 5
+  movementSpeed: 6
+  runSpeed: 2
+  healthRegen: 4
+  manaRegen: 0.5
+  jumpStrength: 2
   cameraOffset: {x: 0, y: -0.08, z: 0}

@@ -29,14 +29,16 @@ public class PlayerAnimator : NetworkBehaviour {
     private FirstPersonMovement movement;
     private NetworkStatSystem statSystem;
 
-    public float acceleration = 2f;
+    public float acceleration = 3f;
     public AnimationCurve decelerationCurve;
 
     private float velocityZ = 0f;
     private float velocityX = 0f;
 
     private bool isRunning => movement.IsRunning;
-    private float maxVelocity => (isRunning ? 2f : 0.5f) * statSystem.Stats.GetFinal(StatType.MoveSpeed);
+
+    // private float maxVelocity => (2f) * statSystem.Stats.GetFinal(StatType.MoveSpeed);
+    private float maxVelocity => (isRunning ? 0.5f : 2f) * statSystem.Stats.GetFinal(StatType.MoveSpeed);
 
     private bool jumpStart = false;
     private bool fallStart = false;
@@ -153,7 +155,7 @@ public class PlayerAnimator : NetworkBehaviour {
     }
 
     private float decelerate(float value) {
-        return decelerationCurve.Evaluate(Math.Abs(value));
+        return decelerationCurve.Evaluate(Math.Abs(value)) * 1.5f;
     }
 
     private float applyPositive(bool keyPressed, float velocity) {

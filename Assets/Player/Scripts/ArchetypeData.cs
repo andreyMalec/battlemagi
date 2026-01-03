@@ -13,5 +13,8 @@ public class ArchetypeData : ScriptableObject {
     public float maxStamina = 3f;
     public float movementSpeed = 2f;
     public float runSpeed = 5f;
+    public float healthRegen = 3f;
+    public float manaRegen = 0.5f;
+    public float jumpStrength = 2f;
     public Vector3 cameraOffset;
 }

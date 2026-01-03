@@ -49,19 +49,23 @@ public class PlayerSpawner : NetworkBehaviour {
     private IEnumerator HandleDeath(ulong clientId) {
         Debug.Log($"[PlayerSpawner] Сервер: Ждем перед тем как удалить игрока {clientId}");
         yield return new WaitForSeconds(5);
-        DestroyClientServerRpc(clientId);
+        if (DestroyClient(clientId)) {
+            yield return new WaitForEndOfFrame();
+            SpawnPlayer(clientId);
+        }
     }
 
-    [ServerRpc]
-    private void DestroyClientServerRpc(ulong clientId) {
+    private bool DestroyClient(ulong clientId) {
         if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client)) {
             var playerObj = client.PlayerObject;
             playerObj.Despawn();
             if (playerObj != null)
                 Destroy(playerObj.gameObject);
 
-            SpawnPlayerServerRpc(clientId);
+            return true;
         }
+
+        return false;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -117,6 +121,7 @@ public class PlayerSpawner : NetworkBehaviour {
                 SpawnPlayerServerRpc(id);
             }
         }
+
         if (sceneName == "MainMenu") {
             foreach (var id in clientsCompleted) {
                 SpawnLobbyEnjoyer(id);
@@ -126,6 +131,11 @@ public class PlayerSpawner : NetworkBehaviour {
 
     [ServerRpc]
     private void SpawnPlayerServerRpc(ulong clientId) {
+        SpawnPlayer(clientId);
+    }
+
+    private void SpawnPlayer(ulong clientId) {
+        //TODO crash here NPE
         var team = TeamManager.Instance.GetTeam(clientId);
         var spawnPoint = FindFirstObjectByType<Spawn>().Get(team);
         var position = spawnPoint.position;

@@ -61,7 +61,7 @@ public class PlayerTester : MonoBehaviour {
     }
 
     private void PerformJump() {
-        _velocityY = Mathf.Sqrt(movementSettings.jumpStrength * -2f * movementSettings.gravity);
+        _velocityY = Mathf.Sqrt(2 * -2f * movementSettings.gravity);
     }
 
     private void ApplyGravity() {

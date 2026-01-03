@@ -6,6 +6,7 @@ using UnityEngine;
 using Steamworks;
 using Steamworks.Data;
 using Unity.Netcode;
+using System.Globalization;
 
 public class LobbyManager : MonoBehaviour {
     public static readonly string KeyReady = "Ready";
@@ -272,10 +273,10 @@ public static class LobbyExt {
             if (lobby.HasValue) {
                 var color = lobby.Value.GetMemberData(member, LobbyManager.KeyColor);
                 if (string.IsNullOrEmpty(color))
-                    color = "78,0;0,5";
+                    color = "78.0;0.5";
                 var split = color.Split(";");
-                var h = float.Parse(split[0]);
-                var s = float.Parse(split[1]);
+                var h = float.Parse(split[0], CultureInfo.InvariantCulture);
+                var s = float.Parse(split[1], CultureInfo.InvariantCulture);
                 return new PlayerColor(h, s);
             }
         }
@@ -287,7 +288,9 @@ public static class LobbyExt {
         if (LobbyManager.Instance.CurrentLobby != null) {
             var lobby = LobbyManager.Instance.CurrentLobby;
             if (lobby.HasValue) {
-                var c = $"{color.hue};{color.saturation}";
+                var h = color.hue.ToString(CultureInfo.InvariantCulture);
+                var s = color.saturation.ToString(CultureInfo.InvariantCulture);
+                var c = $"{h};{s}";
                 lobby.Value.SetMemberData(LobbyManager.KeyColor, c);
             }
         }

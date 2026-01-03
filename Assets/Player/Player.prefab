@@ -346,6 +346,7 @@ GameObject:
   - component: {fileID: 285234915288116296}
   - component: {fileID: 3684824733104456915}
   - component: {fileID: 7594489981059989853}
+  - component: {fileID: 5039131445357911111}
   m_Layer: 0
   m_Name: First Person Camera
   m_TagString: MainCamera
@@ -404,7 +405,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.05
+  near clip plane: 0.04
   far clip plane: 1000
   field of view: 80
   orthographic: 0
@@ -488,6 +489,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 729c3504fa58330489414fd6bd2178ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FullOpaqueVFX.CameraShake
+--- !u!114 &5039131445357911111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3561322077568356742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67ae19e700ea45538d9b25ab850b76cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FpsCameraClip
+  head: {fileID: 0}
+  radius: 0.1
+  wallMask:
+    serializedVersion: 2
+    m_Bits: 192
 --- !u!1 &3592863415251667902
 GameObject:
   m_ObjectHideFlags: 0
@@ -801,7 +819,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2196398029
+  GlobalObjectIdHash: 1910923140
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -848,6 +866,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   movementSettings: {fileID: 11400000, guid: 99067fe211a078d4bbfdb64adec90669, type: 2}
   groundCheck: {fileID: 6466238404988819252}
+  jumpStrength: 0
   movementSpeed: 0
   runSpeed: 0
   maxStamina: 0
@@ -1226,6 +1245,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 824eb303d2104240b1225884229c593f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerUI
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!114 &2716919782836391855
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1345,7 +1365,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a899d3d23f944dc39b9b4d0daa60eba7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UICameraSway
-  ShowTopMostFoldoutHeaderGroup: 1
   positionAmplitudeX: 20
   positionAmplitudeY: 40
   rotationAmplitudeYaw: 5
@@ -1364,7 +1383,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a899d3d23f944dc39b9b4d0daa60eba7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UICameraSway
-  ShowTopMostFoldoutHeaderGroup: 1
   positionAmplitudeX: 10
   positionAmplitudeY: 20
   rotationAmplitudeYaw: 2

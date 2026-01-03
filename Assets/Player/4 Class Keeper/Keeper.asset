@@ -25,6 +25,9 @@ MonoBehaviour:
   maxHealth: 175
   maxMana: 125
   maxStamina: 2
-  movementSpeed: 2
-  runSpeed: 4
+  movementSpeed: 4
+  runSpeed: 1.5
+  healthRegen: 3
+  manaRegen: 0.5
+  jumpStrength: 3
   cameraOffset: {x: 0, y: -0.18, z: 0}

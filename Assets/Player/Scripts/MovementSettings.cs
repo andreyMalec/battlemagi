@@ -11,7 +11,6 @@ public class MovementSettings : ScriptableObject {
     public float flySpeedMultiplier = 0.5f;
 
     [Header("Jumping")]
-    public float jumpStrength = 2f;
 
     public float jumpDelay = 0.5f;
     public float jumpCooldown = 1f;

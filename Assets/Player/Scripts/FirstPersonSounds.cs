@@ -11,6 +11,7 @@ public class FirstPersonSounds : MonoBehaviour {
     public AudioSource jumpsAudio;
     public GroundCheck groundCheck;
     private Animator animator;
+    private FirstPersonMovement movement;
 
     [SerializeField] private float stepsPitchFrom = 0.8f;
     [SerializeField] private float stepsPitchTo = 1.2f;
@@ -23,6 +24,10 @@ public class FirstPersonSounds : MonoBehaviour {
     private float lastStep;
     private float lastJump;
 
+    private void Awake() {
+        movement = GetComponentInParent<FirstPersonMovement>();
+    }
+
     public void BindAvatar(Animator a) {
         animator = a;
     }
@@ -30,6 +35,7 @@ public class FirstPersonSounds : MonoBehaviour {
     private void Update() {
         UpdateStep();
         UpdateJump();
+        stepsAudio.volume = movement.IsRunning ? 0.4f : 1f;
     }
 
     private void UpdateStep() {

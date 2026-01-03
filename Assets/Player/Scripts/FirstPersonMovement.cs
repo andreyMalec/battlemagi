@@ -12,6 +12,7 @@ public class FirstPersonMovement : NetworkBehaviour {
     public MovementSettings movementSettings;
     public GroundCheck groundCheck;
 
+    public float jumpStrength;
     public float movementSpeed;
     public float runSpeed;
     public float maxStamina;
@@ -92,6 +93,7 @@ public class FirstPersonMovement : NetworkBehaviour {
             }
         }
 
+        return;
         // 2) Серверная логика стамины и состояния бега
         if (!IsServer) return;
 
@@ -195,7 +197,7 @@ public class FirstPersonMovement : NetworkBehaviour {
     private IEnumerator ApplyJumpForce() {
         Jumped?.Invoke();
         yield return new WaitForSeconds(movementSettings.jumpDelay);
-        _physics.Jump(movementSettings.jumpStrength);
+        _physics.Jump(jumpStrength);
         JumpServerRpc(false);
     }
 

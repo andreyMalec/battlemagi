@@ -59,6 +59,15 @@ public class Damageable : NetworkBehaviour {
         return true;
     }
 
+    public void Suicide() {
+        SuicideServerRpc();
+    }
+
+    [ServerRpc]
+    private void SuicideServerRpc() {
+        TakeDamage("Suicide", OwnerClientId, 9999f, DamageSoundType.Fall);
+    }
+
     public void TakeDamage(
         string source,
         ulong fromClientId,
