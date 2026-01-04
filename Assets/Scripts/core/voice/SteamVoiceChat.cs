@@ -76,7 +76,9 @@ public class SteamVoiceChat : NetworkBehaviour {
                     SteamId me = SteamClient.SteamId;
 
                     var i = new List<ulong>();
-                    foreach (var member in LobbyManager.Instance.CurrentLobby?.Members) {
+                    var lobby = LobbyManager.Instance.CurrentLobby;
+                    if (lobby == null) return;
+                    foreach (var member in lobby.Value.Members) {
                         if (member.Id == me) continue;
                         SteamNetworking.SendP2PPacket(member.Id, buf, compressedBytes, 0, P2PSend.Unreliable);
                         i.Add(member.Id);

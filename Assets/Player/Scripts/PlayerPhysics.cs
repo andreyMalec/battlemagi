@@ -57,6 +57,12 @@ public class PlayerPhysics : MonoBehaviour {
         _externalVelocity += impulse;
     }
 
+    public void ApplyImpulseWithoutSnap(Vector3 impulse) {
+        var xz = new Vector3(impulse.x, 0, impulse.z);
+        ApplyImpulse(xz);
+        Jump(impulse.y);
+    }
+
     // Jump by setting vertical velocity derived from settings gravity
     public void Jump(float jumpStrength) {
         // v = sqrt(strength * -2 * g)

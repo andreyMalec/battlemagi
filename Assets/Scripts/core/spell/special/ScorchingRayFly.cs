@@ -12,12 +12,9 @@ public class ScorchingRayFly : NetworkBehaviour {
         var forwardOnPlane = Vector3.ProjectOnPlane(forward, Vector3.up);
         if (Vector3.Angle(forward, forwardOnPlane) < angle) return;
 
-        var player = NetworkManager.Singleton.LocalClient.PlayerObject;
-        if (player != null && player.IsSpawned && player.TryGetComponent<FirstPersonMovement>(out var movement)) {
-            var sendParams = new ClientRpcParams {
-                Send = new ClientRpcSendParams { TargetClientIds = new[] { movement.OwnerClientId } }
-            };
-            movement.ApplyImpulseClientRpc(-forward * force, sendParams);
+        var player = NetworkManager.LocalClient.PlayerObject;
+        if (player != null && player.IsSpawned && player.TryGetComponent<PlayerPhysics>(out var physics)) {
+            physics.ApplyImpulse(-forward * force);
         }
     }
 }
