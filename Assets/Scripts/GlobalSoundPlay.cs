@@ -3,7 +3,7 @@ using Unity.Netcode;
 using UnityEngine;
 
 public class GlobalSoundPlay : MonoBehaviour {
-    [SerializeField] private AudioSource audio;
+    [SerializeField] private AudioSource audioSource;
     [SerializeField] private bool parentToPlayer = false;
     [SerializeField] private float maxDuration = -1f;
 
@@ -20,16 +20,16 @@ public class GlobalSoundPlay : MonoBehaviour {
         }
 
         var source = go.AddComponent<AudioSource>();
-        source.clip = audio.clip;
-        source.outputAudioMixerGroup = audio.outputAudioMixerGroup;
-        source.spatialBlend = audio.spatialBlend;
-        source.volume = audio.volume;
-        source.maxDistance = audio.maxDistance;
-        source.rolloffMode = audio.rolloffMode;
-        source.loop = audio.loop;
-        if (audio.rolloffMode == AudioRolloffMode.Custom)
+        source.clip = audioSource.clip;
+        source.outputAudioMixerGroup = audioSource.outputAudioMixerGroup;
+        source.spatialBlend = audioSource.spatialBlend;
+        source.volume = audioSource.volume;
+        source.maxDistance = audioSource.maxDistance;
+        source.rolloffMode = audioSource.rolloffMode;
+        source.loop = audioSource.loop;
+        if (audioSource.rolloffMode == AudioRolloffMode.Custom)
             source.SetCustomCurve(AudioSourceCurveType.CustomRolloff,
-                audio.GetCustomCurve(AudioSourceCurveType.CustomRolloff));
+                audioSource.GetCustomCurve(AudioSourceCurveType.CustomRolloff));
         source.Play();
 
         var comp = go.AddComponent<DestroyAfterPlay>();

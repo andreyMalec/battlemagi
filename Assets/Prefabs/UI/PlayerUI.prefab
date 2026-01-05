@@ -89,7 +89,6 @@ GameObject:
   - component: {fileID: 2267762133010197497}
   - component: {fileID: 6360413405817439844}
   - component: {fileID: 3386095652909399358}
-  - component: {fileID: -1808855331452089290}
   - component: {fileID: 4932701602093786508}
   m_Layer: 5
   m_Name: PlayerUI
@@ -223,18 +222,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ReturnToMenu
   key: 256
---- !u!114 &-1808855331452089290
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 464983565747420828}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a58f9b0df26a41a4a2d2d69ec82c02f2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RuntimeDrawHelper
 --- !u!114 &4932701602093786508
 MonoBehaviour:
   m_ObjectHideFlags: 0

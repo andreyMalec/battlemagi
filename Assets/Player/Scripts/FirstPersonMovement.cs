@@ -92,35 +92,6 @@ public class FirstPersonMovement : NetworkBehaviour {
                 HandleOwnerInput();
             }
         }
-
-        return;
-        // 2) Серверная логика стамины и состояния бега
-        if (!IsServer) return;
-
-        // Если игрок бежит — тратим стамину
-        if (_isRunningNetwork.Value) {
-            stamina.Value -= Time.deltaTime * movementSettings.staminaUsage;
-            if (stamina.Value <= MinStaminaThreshold) {
-                stamina.Value = 0f;
-                // Отключаем бег и ставим лок: запрещаем авто-возобновление, пока не отпущена клавиша
-                _isRunningNetwork.Value = false;
-                _runLock = true;
-            }
-        } else {
-            // Восстанавливаем стамину только если кнопка не зажата и лок не выставлен
-            // (т.е. пока держат кнопку — стамина не растёт)
-            if (!_runKeyHeldServer && !_runLock) {
-                float missing = maxStamina - stamina.Value;
-                var staminaRegen = movementSettings.staminaRestore * _statSystem.Stats.GetFinal(StatType.StaminaRegen);
-                float restoreRate = staminaRegen * (missing / maxStamina);
-                stamina.Value += Time.deltaTime * restoreRate;
-            }
-        }
-
-        stamina.Value = Mathf.Clamp(stamina.Value, 0f, maxStamina);
-
-        // Сервер может сам обновлять состояние бега исходя из флага held/lock/stamina
-        UpdateRunningStateServer();
     }
 
     private void HandleOwnerInput() {

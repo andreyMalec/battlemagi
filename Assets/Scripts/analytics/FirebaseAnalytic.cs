@@ -69,6 +69,7 @@ public class FirebaseAnalytic : MonoBehaviour {
             req.downloadHandler = new DownloadHandlerBuffer();
             req.SetRequestHeader("Content-Type", "application/json");
         } catch (Exception e) {
+            Debug.Log(e);
             Debug.LogError($"GA4 ERROR: {req?.error}\n{req?.downloadHandler?.text}");
         }
 

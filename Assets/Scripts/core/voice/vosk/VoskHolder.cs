@@ -26,7 +26,6 @@ namespace Voice.Vosk {
 
         private Model _model;
         private string _grammar;
-        private bool _recognizerReady;
         private List<string> _keyPhrases;
 
         private void Awake() {
@@ -79,7 +78,6 @@ namespace Voice.Vosk {
         }
 
         public void UpdatePrompt(List<string> words) {
-            _recognizerReady = false;
             UpdateGrammar(words);
             //Only detect defined keywords if they are specified.
             if (string.IsNullOrEmpty(_grammar)) {
@@ -89,7 +87,6 @@ namespace Voice.Vosk {
             }
 
             recognizer.SetMaxAlternatives(3);
-            _recognizerReady = true;
 
             Debug.Log("[VoskHolder] Recognizer ready");
         }

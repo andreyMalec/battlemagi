@@ -16,8 +16,8 @@ public class Credits : MonoBehaviour {
         try {
             var attribution = File.ReadAllText(path);
             text.text += attribution;
-        } catch (Exception _) {
-            // ignored
+        } catch (Exception e) {
+            Debug.Log(e);
         }
     }
 
