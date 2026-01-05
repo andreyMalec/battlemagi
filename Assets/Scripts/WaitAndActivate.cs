@@ -3,6 +3,7 @@ using UnityEngine;
 public class WaitAndActivate : MonoBehaviour {
     [SerializeField] private float delay = 5f;
     [SerializeField] private Behaviour[] components;
+    [SerializeField] private GameObject[] objects;
     [SerializeField] private Collider[] colliders;
 
     private void OnEnable() {
@@ -22,6 +23,14 @@ public class WaitAndActivate : MonoBehaviour {
             foreach (var obj in colliders) {
                 if (obj != null) {
                     obj.enabled = true;
+                }
+            }
+        }
+
+        if (objects != null && objects.Length > 0) {
+            foreach (var obj in objects) {
+                if (obj != null) {
+                    obj.SetActive(true);
                 }
             }
         }

@@ -16,7 +16,7 @@ public class SpawnedMeshVisual : MonoBehaviour {
         _damageable.onDeath += () => {
             DestroyAfterPlay.Play(onDestroy, transform.position);
         };
-        transform.position -= end;
+        transform.position -= transform.TransformDirection(end);
     }
 
     private void Start() {
@@ -29,8 +29,8 @@ public class SpawnedMeshVisual : MonoBehaviour {
     }
 
     private IEnumerator MoveUp() {
-        Vector3 from = transform.position + start;
-        Vector3 to = from + end;
+        Vector3 from = transform.position + transform.TransformDirection(start);
+        Vector3 to = from + transform.TransformDirection(end);
         float t = 0f;
 
         while (t < 1f) {

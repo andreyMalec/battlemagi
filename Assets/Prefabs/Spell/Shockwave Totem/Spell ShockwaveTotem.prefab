@@ -106,7 +106,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7432870713269914684
 Transform:
   m_ObjectHideFlags: 0
@@ -4942,7 +4942,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4817187195410722558
 Transform:
   m_ObjectHideFlags: 0
@@ -9807,6 +9807,7 @@ GameObject:
   - component: {fileID: 6354676771944456627}
   - component: {fileID: 7700664026882272468}
   - component: {fileID: 7523492087006011441}
+  - component: {fileID: 8513036930816197730}
   m_Layer: 0
   m_Name: Spell ShockwaveTotem
   m_TagString: Untagged
@@ -9865,7 +9866,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7354784787554302670}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bddfb0954ae7446f9b744644736a8bc8, type: 3}
   m_Name: 
@@ -9986,8 +9987,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DirtWallVisual
   start: {x: 0, y: 0, z: 0}
-  end: {x: 0, y: 0, z: 0}
-  duration: 0
+  end: {x: 0, y: -10, z: 0}
+  duration: 0.4
   onDestroy: {fileID: 8300000, guid: b1539921015dbe749968460b566fb52a, type: 3}
 --- !u!114 &1163428395993184920
 MonoBehaviour:
@@ -10388,7 +10389,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7354784787554302670}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17394d04a2984d3e867a68a40a396e62, type: 3}
   m_Name: 
@@ -10399,6 +10400,28 @@ MonoBehaviour:
   audioSources:
   - {fileID: 7700664026882272468}
   interval: 2
+--- !u!114 &8513036930816197730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7354784787554302670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3612db052dc649828c9c27b433ed3035, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WaitAndActivate
+  delay: 0.4
+  components:
+  - {fileID: 7523492087006011441}
+  - {fileID: 8707571656721696334}
+  - {fileID: 9222707079392840899}
+  objects:
+  - {fileID: 6987061924582802873}
+  - {fileID: 2039026307521546200}
+  - {fileID: 9020518059328530254}
+  colliders: []
 --- !u!1 &9020518059328530254
 GameObject:
   m_ObjectHideFlags: 0
@@ -10416,7 +10439,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5328990805559919197
 Transform:
   m_ObjectHideFlags: 0

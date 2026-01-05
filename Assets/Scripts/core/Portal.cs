@@ -155,7 +155,7 @@ public class Portal : MonoBehaviour {
     private void OnTriggerEnter(Collider other) {
         if (!DamageUtils.TryGetOwnerFromCollider(other, out var player, out var owner))
             return;
-        if (!player.IsOwner)
+        if (!player.IsOwner || !player.TryGetComponent<Player>(out _))
             return;
         if (_nextAllowedTime.TryGetValue(owner, out var nextTime) && Time.time < nextTime)
             return;

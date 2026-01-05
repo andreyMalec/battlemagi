@@ -254,7 +254,8 @@ public class PlayerSpellCaster : NetworkBehaviour {
     }
 
     private void HandleSpellCasting() {
-        if (_input.CancelPressedThisFrame()) {
+        var castCharging = _input.CastPressedThisFrame() && _state.SpellToCast()?.isCharging == true;
+        if (_input.CancelPressedThisFrame() || castCharging) {
             HandleCancel();
             return;
         }
