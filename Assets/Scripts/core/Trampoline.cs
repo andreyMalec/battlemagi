@@ -5,7 +5,6 @@ using UnityEngine;
 public class Trampoline : MonoBehaviour {
     [SerializeField] private Transform vector;
     [SerializeField] private float force = 20;
-    [SerializeField] private float duration = .1f;
     [SerializeField] private AudioClip[] jumpSound;
     [SerializeField] private AudioSource audioSource;
 
@@ -14,7 +13,7 @@ public class Trampoline : MonoBehaviour {
     private void OnTriggerEnter(Collider other) {
         if (DamageUtils.TryGetOwnerFromCollider(other, out var damageable, out var owner) &&
             !_affected.Contains(owner)) {
-            var physics = damageable.GetComponent<PlayerPhysics>();
+            if (!damageable.TryGetComponent<PlayerPhysics>(out var physics)) return;
             _affected.Add(owner);
             audioSource.Play(jumpSound);
             StartCoroutine(ApplyImpulse(owner, physics));
@@ -22,17 +21,8 @@ public class Trampoline : MonoBehaviour {
     }
 
     private IEnumerator ApplyImpulse(ulong owner, PlayerPhysics physics) {
-        var elapsed = 0f;
-
-        while (elapsed < duration) {
-            if (!physics) {
-                break;
-            }
-
-            physics.ApplyImpulseWithoutSnap(vector.up * force);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
+        physics.ApplyImpulseWithoutSnap(new Vector3(vector.up.x * 4, vector.up.y, vector.up.z * 4) * force);
+        yield return null;
 
         _affected.Remove(owner);
     }

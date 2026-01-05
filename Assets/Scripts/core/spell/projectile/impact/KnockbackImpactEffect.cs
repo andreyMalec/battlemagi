@@ -14,7 +14,7 @@ public class KnockbackImpactEffect : ImpactEffect {
             var distance = Vector3.Distance(spell.transform.position, hit.transform.position);
             var areaDamageMulti = 1f - distance / radius;
             var knock = data.knockbackForce * areaDamageMulti * spell.damageMultiplier;
-            if (hit.TryGetComponent<Rigidbody>(out var hitRb)) {
+            if (hit.TryGetComponent<Rigidbody>(out var hitRb) && !hit.TryGetComponent<BaseSpell>(out _)) {
                 hitRb.AddForce(dir * (knock * rigidbodyForceMultiplier), ForceMode.Impulse);
             } else {
                 var motor = hit.GetComponentInParent<PlayerPhysics>();

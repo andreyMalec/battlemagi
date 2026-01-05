@@ -6,7 +6,7 @@ using UnityEngine;
 public class StatusEffectManager : NetworkBehaviour {
     private Dictionary<string, StatusEffectRuntime> activeEffects = new();
 
-    void Update() {
+    void FixedUpdate() {
         if (!IsServer) return;
 
         var toRemove = new List<string>();

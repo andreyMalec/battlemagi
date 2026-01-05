@@ -7,6 +7,7 @@ public class DamageOverTimeEffect : StatusEffectData {
     public DamageSoundType damageSound;
     public bool ignoreDamageSoundCooldown = false;
     public bool canSelfDamage = true;
+    public bool percentDamage = false;
 
     public override StatusEffectRuntime CreateRuntime() {
         return new DamageOverTimeRuntime(this);
@@ -40,7 +41,7 @@ public class DamageOverTimeEffect : StatusEffectData {
                     health.TakeDamage(
                         _data.effectName,
                         ownerClientId,
-                        _data.dps,
+                        _data.percentDamage ? health.maxHealth * _data.dps : _data.dps,
                         _data.damageSound,
                         _data.ignoreDamageSoundCooldown
                     );

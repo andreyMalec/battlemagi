@@ -94,7 +94,7 @@ public class BaseSpell : NetworkBehaviour {
         }
     }
 
-    private void Update() {
+    private void FixedUpdate() {
         if (movementAuthority) {
             movement?.Tick();
         }

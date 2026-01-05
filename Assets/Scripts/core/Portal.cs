@@ -49,7 +49,7 @@ public class Portal : MonoBehaviour {
         ReleaseRenderTexture();
     }
 
-    private void LateUpdate() {
+    private void FixedUpdate() {
         ProcessTeleports();
 
         var viewer = Camera.main;

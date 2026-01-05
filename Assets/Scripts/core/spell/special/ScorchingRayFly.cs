@@ -5,7 +5,7 @@ public class ScorchingRayFly : NetworkBehaviour {
     [SerializeField] private float force = 0.75f;
     [SerializeField] private float angle = 60;
 
-    private void Update() {
+    private void FixedUpdate() {
         if (!IsOwner) return;
 
         var forward = transform.forward;
