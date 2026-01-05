@@ -5,8 +5,7 @@ using UnityEngine;
 public class SpellData : ScriptableObject {
     public int id;
     public string name;
-    [Multiline(5)] public string description;
-    public string nameRu;
+    public bool enabled = true;
     public string[] spellWords;
     public string[] spellWordsRu;
     public float manaCost = 50;
@@ -33,6 +32,7 @@ public class SpellData : ScriptableObject {
 
     [Header("Damage")]
     public float baseDamage = 10f;
+
     public float structureDamageMultiplier = 1f;
 
     public bool canSelfDamage = true;
@@ -49,18 +49,19 @@ public class SpellData : ScriptableObject {
 
     public bool piercing = false;
 
-    [HideIf("isBeam")]
-    public float baseSpeed = 20f;
+    [HideIf("isBeam")] public float baseSpeed = 20f;
 
     public int projCount = 1;
     public float multiProjDelay = 0.2f;
     public SpawnMode spawnMode = SpawnMode.Direct;
+    public bool useAlternativeSpawnMode = false;
+    [ShowIf("useAlternativeSpawnMode")] public SpawnMode alternativeSpawnMode = SpawnMode.Direct;
 
-    [ShowIf("_isArc")]
-    public float arcAngleStep = 15f;
+    [ShowIf("_isForward")] public Vector3 forwardStep = Vector3.zero;
+    [ShowIf("_isForward")] public Vector3 forwardAngle = Vector3.zero;
+    [ShowIf("_isArc")] public float arcAngleStep = 15f;
 
-    [ShowIf("_isRaycast")]
-    public float raycastMaxDistance = 50f;
+    [ShowIf("_isRaycast")] public float raycastMaxDistance = 50f;
 
     [HideIf("isHoming")] [ShowIf("isProjectile")]
     public bool isBeam = false;
@@ -69,11 +70,9 @@ public class SpellData : ScriptableObject {
     [HideIf("isBeam")] [ShowIf("isProjectile")]
     public bool isHoming = false;
 
-    [ShowIf("isHoming")]
-    public float homingRadius = 10f;
+    [ShowIf("isHoming")] public float homingRadius = 10f;
 
-    [ShowIf("isHoming")]
-    public float homingStrength = 1f;
+    [ShowIf("isHoming")] public float homingStrength = 1f;
 
     [Header("Channeling")]
     public bool isChanneling = false;
@@ -83,11 +82,17 @@ public class SpellData : ScriptableObject {
 
     private bool _isArc = false;
     private bool _isRaycast = false;
+    private bool _isForward = false;
 #if UNITY_EDITOR
     private void OnValidate() {
-        _isArc = spawnMode is SpawnMode.Arc or SpawnMode.GroundPointArc;
+        _isArc = spawnMode is SpawnMode.Arc or SpawnMode.GroundPointArc ||
+                 alternativeSpawnMode is SpawnMode.Arc or SpawnMode.GroundPointArc;
         _isRaycast = spawnMode is SpawnMode.GroundPoint or SpawnMode.GroundPointArc or SpawnMode.HitScan
-            or SpawnMode.DirectDown;
+                         or SpawnMode.DirectDown ||
+                     alternativeSpawnMode is SpawnMode.GroundPoint or SpawnMode.GroundPointArc or SpawnMode.HitScan
+                         or SpawnMode.DirectDown;
+        _isForward = spawnMode is SpawnMode.GroundPointForward ||
+                     alternativeSpawnMode is SpawnMode.GroundPointForward;
 
         if (isBeam)
             isHoming = false;

@@ -79,7 +79,7 @@ public class SpellBook : MonoBehaviour {
             }
         }
 
-        list = SpellDatabase.Instance.spells;
+        list = SpellDatabase.Instance.spells.Filter(it => it.enabled).ToList();
         currentIndex = Math.Clamp(currentIndex, 0, list.Count - 1);
         return list;
     }

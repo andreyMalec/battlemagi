@@ -9,9 +9,13 @@ public class SpellManager : NetworkBehaviour {
     [HideInInspector] public NetworkStatSystem statSystem;
     private MeshController _meshController;
     private ISpawnStrategy spawnStrategy;
+    private ISpawnStrategy defaultSpawnStrategy;
+    private ISpawnStrategy alternativeSpawnStrategy;
     private SpellData spellData;
     private Coroutine _castCoutine;
     private float _lastCastTime;
+
+    public static bool alternativeSpawn = false;
 
     public override void OnNetworkSpawn() {
         activeSpell = GetComponent<ActiveSpell>();
@@ -43,15 +47,27 @@ public class SpellManager : NetworkBehaviour {
     public void PrepareSpell(SpellData spell) {
         if (!IsOwner || spell == null) return;
 
-        spawnStrategy = spell.spawnMode switch {
-            SpawnMode.Arc => new ArcSpawn(spell.multiProjDelay),
-            SpawnMode.GroundPoint => new GroundPointSpawn(spell.multiProjDelay),
-            SpawnMode.HitScan => new HitScanSpawn(spell.multiProjDelay),
-            SpawnMode.DirectDown => new DirectDownSpawn(spell.multiProjDelay),
-            SpawnMode.GroundPointArc => new GroundPointArcSpawn(spell.multiProjDelay),
-            _ => new DirectSpawn(spell.multiProjDelay),
-        };
+        defaultSpawnStrategy = SelectSpawnStrategy(spell.spawnMode, spell.multiProjDelay);
+        alternativeSpawnStrategy = SelectSpawnStrategy(spell.alternativeSpawnMode, spell.multiProjDelay);
+        spawnStrategy = alternativeSpawn && spell.useAlternativeSpawnMode ? alternativeSpawnStrategy : defaultSpawnStrategy;
         activeSpell.PrepareSpell(spell, spawnStrategy);
+    }
+
+    private ISpawnStrategy SelectSpawnStrategy(SpawnMode spawnMode, float multiProjDelay) {
+        return spawnMode switch {
+            SpawnMode.Arc => new ArcSpawn(multiProjDelay),
+            SpawnMode.GroundPoint => new GroundPointSpawn(multiProjDelay),
+            SpawnMode.HitScan => new HitScanSpawn(multiProjDelay),
+            SpawnMode.DirectDown => new DirectDownSpawn(multiProjDelay),
+            SpawnMode.GroundPointArc => new GroundPointArcSpawn(multiProjDelay),
+            SpawnMode.GroundPointForward => new GroundPointForwardSpawn(multiProjDelay),
+            _ => new DirectSpawn(multiProjDelay),
+        };
+    }
+
+    public void ChangeSpawnMode() {
+        spawnStrategy = alternativeSpawn ? alternativeSpawnStrategy : defaultSpawnStrategy;
+        activeSpell.ChangeStrategy(spawnStrategy);
     }
 
     public void CancelSpell(float elapsed) {

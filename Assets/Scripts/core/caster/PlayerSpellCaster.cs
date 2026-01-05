@@ -19,6 +19,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
 
     public KeyCode spellCastKey = KeyCode.Mouse0;
     public KeyCode spellCancelKey = KeyCode.Mouse1;
+    public KeyCode alternateSpawnKey = KeyCode.F;
 
     [HideInInspector] public bool channeling = false;
 
@@ -96,10 +97,18 @@ public class PlayerSpellCaster : NetworkBehaviour {
         HandleSpellKeys();
         HandleSpellCasting();
 
+        if (Input.GetKeyDown(alternateSpawnKey) && _state.SpellToCast()?.useAlternativeSpawnMode == true) {
+            SpellManager.alternativeSpawn = !SpellManager.alternativeSpawn;
+            _spellManager.ChangeSpawnMode();
+        }
+
         _recognition.CanSpeak(!_state.CastWaiting && !_state.Channeling);
     }
 
     private bool IsPrimalManaLocked() {
+        var spell = _state.SpellToCast();
+        if (spell != null && _state.EchoCount < spell.echoCount)
+            return false;
         return primalMana.Value > 0f;
     }
 

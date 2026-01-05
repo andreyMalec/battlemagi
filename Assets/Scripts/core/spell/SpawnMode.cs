@@ -5,4 +5,5 @@ public enum SpawnMode {
     HitScan,
     DirectDown,
     GroundPointArc,
+    GroundPointForward,
 }

@@ -7,6 +7,7 @@ public class ActiveSpell : NetworkBehaviour {
     [HideInInspector] public Transform invocation;
     private IHandAppearance _handAppearance;
     private ISpellPreview _spellPreview;
+    private SpellData _spell;
 
     public override void OnNetworkSpawn() {
         if (spellManager == null) spellManager = GetComponent<SpellManager>();
@@ -18,11 +19,16 @@ public class ActiveSpell : NetworkBehaviour {
 
     public void PrepareSpell(SpellData spell, ISpawnStrategy spawnMode) {
         if (!IsOwner || spell == null) return;
-
+        _spell = spell;
         Debug.Log($"[SpellManager] Подготавливаем {spell.name}");
-        _spellPreview = spell.previewMainInHand ? new MeshPreview() : new NoPreview();
-        _spellPreview.Show(this, spawnMode, spell);
+        ChangeStrategy(spawnMode);
         ShowInHandServerRpc(spell.id, OwnerClientId);
+    }
+
+    public void ChangeStrategy(ISpawnStrategy spawnMode) {
+        _spellPreview?.Clear(this);
+        _spellPreview = _spell.previewMainInHand ? new MeshPreview() : new NoPreview();
+        _spellPreview.Show(this, spawnMode, _spell);
     }
 
     private void Update() {
