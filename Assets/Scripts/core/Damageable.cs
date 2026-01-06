@@ -68,6 +68,17 @@ public class Damageable : NetworkBehaviour {
         TakeDamage("Suicide", OwnerClientId, 9999f, DamageSoundType.Fall);
     }
 
+    public void TakeHeal(
+        string source,
+        float heal
+    ) {
+        if (!IsServer) return;
+        if (heal <= 0 || isDead || !IsSpawned) return;
+        var clientId = OwnerClientId;
+        Debug.Log($"[Damageable] {name} игрока {clientId} получает лечение: {heal} от {source}");
+        health.Value = Mathf.Clamp(health.Value + heal, 0, maxHealth);
+    }
+
     public void TakeDamage(
         string source,
         ulong fromClientId,

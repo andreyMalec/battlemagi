@@ -14,13 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpellData
   id: 8
   name: Mana storm
-  description: 'A reckless surge of raw mana that floods the  body with destructive
-    energy.
-
-
-    Increases spell power and reduces mana cost, but constantly drains
-    mana while active.'
-  nameRu: "\u041C\u0430\u043D\u0430 \u0428\u0442\u043E\u0440\u043C"
+  enabled: 0
   spellWords:
   - Mana Storm
   spellWordsRu:
@@ -60,6 +54,10 @@ MonoBehaviour:
   projCount: 1
   multiProjDelay: 0
   spawnMode: 0
+  useAlternativeSpawnMode: 0
+  alternativeSpawnMode: 0
+  forwardStep: {x: 0, y: 0, z: 0}
+  forwardAngle: {x: 0, y: 0, z: 0}
   arcAngleStep: 15
   raycastMaxDistance: 50
   isBeam: 0
