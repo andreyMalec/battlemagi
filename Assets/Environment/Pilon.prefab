@@ -474,6 +474,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RigidbodyDamageable
   ShowTopMostFoldoutHeaderGroup: 1
   maxHealth: 100
+  maxArmor: 50
   hpRestore: 0
   immortal: 0
   invulnerable: 0
@@ -481,6 +482,8 @@ MonoBehaviour:
   damageAudio: {fileID: 0}
   damageSoundCooldown: 0.2
   health:
+    m_InternalValue: 0
+  armor:
     m_InternalValue: 0
   isDead: 0
   _rigidbody: {fileID: 2479902439462099427}

@@ -8778,7 +8778,7 @@ MonoBehaviour:
     meshQuery:
       layers: 33554440
       maskAndChannels: 8
-    surfaceParameter: 51420
+    surfaceParameter: 51176
     meshQueryIndex: 1
     subMeshQueryIndex: 0
     geometryHashValue: -4318792920520652416
@@ -10968,7 +10968,7 @@ MonoBehaviour:
     meshQuery:
       layers: 33554440
       maskAndChannels: 8
-    surfaceParameter: 51420
+    surfaceParameter: 51176
     meshQueryIndex: 1
     subMeshQueryIndex: 0
     geometryHashValue: -4318792920520652416
@@ -11068,6 +11068,75 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4264089699603017509, guid: 64ef2d9c7e42ec24eae9fb2318fef3f1, type: 3}
   m_PrefabInstance: {fileID: 273792060}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &276388136
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8570435428822963942, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1042786794
+      objectReference: {fileID: 0}
+    - target: {fileID: 8570435428822963942, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8570435428822963942, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2286535003
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 234.048
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 5.111
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 161.029
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.8670192
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.006647336
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.49820578
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.0049574766
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0.943
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 59.764
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -0.113
+      objectReference: {fileID: 0}
+    - target: {fileID: 8888296576667898284, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_Name
+      value: ArmorSpawn
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
 --- !u!1001 &289841038
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16191,7 +16260,7 @@ MonoBehaviour:
     meshQuery:
       layers: 16777223
       maskAndChannels: 234881031
-    surfaceParameter: 53012
+    surfaceParameter: 51000
     meshQueryIndex: 0
     subMeshQueryIndex: 0
     geometryHashValue: -535706037906002414
@@ -21836,7 +21905,7 @@ MonoBehaviour:
     meshQuery:
       layers: 16777223
       maskAndChannels: 234881031
-    surfaceParameter: 56480
+    surfaceParameter: 51612
     meshQueryIndex: 7
     subMeshQueryIndex: 0
     geometryHashValue: -7592761399111864191
@@ -27561,6 +27630,75 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &701845010
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8570435428822963942, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 15880932
+      objectReference: {fileID: 0}
+    - target: {fileID: 8570435428822963942, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8570435428822963942, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2286535003
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 274.683
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 20.392
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 168.716
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.8453612
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.006433567
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.53413093
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.0052319104
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0.943
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 64.572
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -0.113
+      objectReference: {fileID: 0}
+    - target: {fileID: 8888296576667898284, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_Name
+      value: ArmorSpawn (1)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
 --- !u!1 &703200850
 GameObject:
   m_ObjectHideFlags: 0
@@ -41966,7 +42104,7 @@ MonoBehaviour:
     meshQuery:
       layers: 16777223
       maskAndChannels: 234881031
-    surfaceParameter: 55616
+    surfaceParameter: 50478
     meshQueryIndex: 5
     subMeshQueryIndex: 0
     geometryHashValue: 2744642069020098674
@@ -48429,7 +48567,7 @@ MonoBehaviour:
     meshQuery:
       layers: 16777223
       maskAndChannels: 234881031
-    surfaceParameter: 55840
+    surfaceParameter: 50812
     meshQueryIndex: 8
     subMeshQueryIndex: 0
     geometryHashValue: 4871689476979033953
@@ -54470,6 +54608,75 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4264089699603017509, guid: 64ef2d9c7e42ec24eae9fb2318fef3f1, type: 3}
   m_PrefabInstance: {fileID: 1479687338}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1487968267
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8570435428822963942, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 230411092
+      objectReference: {fileID: 0}
+    - target: {fileID: 8570435428822963942, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8570435428822963942, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2286535003
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 231.969
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 16.808
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 197.099
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.86209667
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.006598448
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.50667614
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.0050223647
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0.943
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 60.887
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -0.113
+      objectReference: {fileID: 0}
+    - target: {fileID: 8888296576667898284, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_Name
+      value: ArmorSpawn (3)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
 --- !u!1 &1491847093
 GameObject:
   m_ObjectHideFlags: 0
@@ -74035,6 +74242,75 @@ MonoBehaviour:
     - EdgeIndices: 0e0000000f0000001000000011000000
       TexGenIndex: 4
     Generation: 43
+--- !u!1001 &1966487008
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8570435428822963942, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3999612417
+      objectReference: {fileID: 0}
+    - target: {fileID: 8570435428822963942, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8570435428822963942, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2286535003
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 270.51
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 14.563
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 200.432
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.8453612
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.006433567
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.53413093
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.0052319104
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0.943
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 64.572
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829864031521416944, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -0.113
+      objectReference: {fileID: 0}
+    - target: {fileID: 8888296576667898284, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
+      propertyPath: m_Name
+      value: ArmorSpawn (2)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ce90773b68678fd4a804d65be77f92a6, type: 3}
 --- !u!1001 &1976291859
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -76092,7 +76368,7 @@ MonoBehaviour:
     meshQuery:
       layers: 16777223
       maskAndChannels: 234881031
-    surfaceParameter: 52270
+    surfaceParameter: 51262
     meshQueryIndex: 6
     subMeshQueryIndex: 0
     geometryHashValue: -3243859719945855261
@@ -81420,3 +81696,7 @@ SceneRoots:
   - {fileID: 1218923349}
   - {fileID: 320555810}
   - {fileID: 999927148}
+  - {fileID: 276388136}
+  - {fileID: 701845010}
+  - {fileID: 1966487008}
+  - {fileID: 1487968267}

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class PlayerUIRenderer : MonoBehaviour {
     public Image hp;
     public TMP_Text hpText;
+    public RectTransform armor;
     public Image mp;
     public Image primalMp;
     public TMP_Text mpText;

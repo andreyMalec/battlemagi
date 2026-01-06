@@ -10,6 +10,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(StatusEffectManager))]
 public class Damageable : NetworkBehaviour {
     [SerializeField] public float maxHealth = 100f;
+    [SerializeField] public float maxArmor = 50f;
     [SerializeField] public float hpRestore = 1f;
     [SerializeField] protected bool immortal = false;
     [SerializeField] public bool invulnerable = false;
@@ -26,6 +27,7 @@ public class Damageable : NetworkBehaviour {
     protected StatusEffectManager _effectManager;
 
     public NetworkVariable<float> health = new();
+    public NetworkVariable<float> armor = new();
     public event Action onDeath;
     public bool isDead = false;
 
@@ -37,8 +39,10 @@ public class Damageable : NetworkBehaviour {
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
 
-        if (IsServer)
+        if (IsServer) {
             health.Value = maxHealth;
+            armor.Value = 0;
+        }
     }
 
     private void Update() {
@@ -53,6 +57,7 @@ public class Damageable : NetworkBehaviour {
         }
 
         health.Value = Mathf.Clamp(health.Value, 0, maxHealth);
+        armor.Value = Mathf.Clamp(armor.Value, 0, maxArmor);
     }
 
     public virtual bool IsStructure() {
@@ -89,20 +94,33 @@ public class Damageable : NetworkBehaviour {
         if (!IsServer) return;
         if (invulnerable) return;
         if (damage <= 0 || isDead || !IsSpawned) return;
+
         var clientId = OwnerClientId;
         var finalDamage = damage * _statSystem.Stats.GetFinal(StatType.DamageReduction);
         Debug.Log($"[Damageable] {name} игрока {clientId} получает урон: {finalDamage} от {fromClientId}");
+
         if (!_damagedBy.Contains(fromClientId) && clientId != fromClientId)
             _damagedBy.Add(fromClientId);
-        var before = health.Value;
-        health.Value -= finalDamage;
+
+        var beforeHp = health.Value;
+
+        var damageLeft = finalDamage;
+        if (armor.Value > 0f) {
+            var armorBefore = armor.Value;
+            armor.Value = Mathf.Max(0f, armor.Value - damageLeft);
+            damageLeft = Mathf.Max(0f, damageLeft - armorBefore);
+        }
+
+        if (damageLeft > 0f)
+            health.Value -= damageLeft;
+
         if (Time.time - _lastDamageSoundTime >= damageSoundCooldown || ignoreSoundCooldown) {
             _lastDamageSoundTime = Time.time;
             PlayDamageSoundClientRpc((int)sound);
         }
 
         if (_effectManager.HasEffect("Rune of Stasis")) {
-            if (health.Value <= 0 && before > 0) {
+            if (health.Value <= 0 && beforeHp > 0) {
                 var removed = (RuneOfStasisEffect)_effectManager.RemoveEffect("Rune of Stasis");
                 _effectManager.AddEffect(clientId, removed.onExpire);
 
@@ -124,7 +142,7 @@ public class Damageable : NetworkBehaviour {
 
         _effectManager.HandleHit();
 
-        if (!immortal && health.Value <= 0 && before > 0) {
+        if (!immortal && health.Value <= 0 && beforeHp > 0) {
             isDead = true;
             OnDeath(clientId, fromClientId, source);
         }

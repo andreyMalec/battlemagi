@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 773711194671744667}
   - component: {fileID: 7936457337921939150}
   - component: {fileID: 7833834479398272189}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Trampoline Up
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -50,7 +50,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Trampoline
   vector: {fileID: 702685407555686702}
   force: 20
-  duration: 0.1
   jumpSound:
   - {fileID: 8300000, guid: a63278b0483a83b4b9b5c50c034954f3, type: 3}
   - {fileID: 8300000, guid: cb044e2c713ec8c4a972b95ad2cae845, type: 3}
@@ -184,7 +183,7 @@ GameObject:
   - component: {fileID: 702685407555686702}
   - component: {fileID: 8115757070441443930}
   - component: {fileID: 2828235339000996541}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Vector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5022,7 +5021,7 @@ GameObject:
   - component: {fileID: 8573390045229600651}
   - component: {fileID: 4554983276561610031}
   - component: {fileID: 2548952181050072550}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6606906639219041686}
   - component: {fileID: 303567707784821041}
   - component: {fileID: 6947208530669493739}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Spell Toxic Sphere Impact
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -306,6 +306,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Puff
       objectReference: {fileID: 0}
+    - target: {fileID: 1599718021928974, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1890613005357938, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4777701302679384, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.24
@@ -407,6 +415,14 @@ PrefabInstance:
     - target: {fileID: 1253122874872384, guid: f68c55851f485c240952b4b45648adda, type: 3}
       propertyPath: m_Name
       value: RadiationCloud
+      objectReference: {fileID: 0}
+    - target: {fileID: 1253122874872384, guid: f68c55851f485c240952b4b45648adda, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1966930690408756, guid: f68c55851f485c240952b4b45648adda, type: 3}
+      propertyPath: m_Layer
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4594767808127368, guid: f68c55851f485c240952b4b45648adda, type: 3}
       propertyPath: m_LocalPosition.x
