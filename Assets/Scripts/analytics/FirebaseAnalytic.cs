@@ -63,6 +63,7 @@ public class FirebaseAnalytic : MonoBehaviour {
         UnityWebRequest req = null;
         try {
             string json = MiniJson.Serialize(payload);
+            Debug.Log("_________________ Firebase Analytic Event: " + json);
 
             req = new UnityWebRequest(url, "POST");
             req.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(json));

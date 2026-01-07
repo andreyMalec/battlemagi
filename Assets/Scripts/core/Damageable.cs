@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEditor;
 using UnityEngine;
@@ -23,6 +24,7 @@ public class Damageable : NetworkBehaviour {
     protected float _lastDamageSoundTime;
     protected float _restoreTick;
     protected List<ulong> _damagedBy = new();
+    protected List<DamageInfo> _damagedBySource = new();
     protected NetworkStatSystem _statSystem;
     protected StatusEffectManager _effectManager;
 
@@ -101,6 +103,7 @@ public class Damageable : NetworkBehaviour {
 
         if (!_damagedBy.Contains(fromClientId) && clientId != fromClientId)
             _damagedBy.Add(fromClientId);
+        _damagedBySource.Add(new DamageInfo { damage = damage, source = source });
 
         var beforeHp = health.Value;
 
@@ -164,6 +167,17 @@ public class Damageable : NetworkBehaviour {
         var clip = AudioManager.Instance.GetDamageSound(type);
         if (clip != null) {
             damageAudio.PlayOneShot(clip);
+        }
+    }
+
+    [Serializable]
+    protected struct DamageInfo : INetworkSerializable {
+        public float damage;
+        public FixedString128Bytes source;
+
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter {
+            serializer.SerializeValue(ref damage);
+            serializer.SerializeValue(ref source);
         }
     }
 }

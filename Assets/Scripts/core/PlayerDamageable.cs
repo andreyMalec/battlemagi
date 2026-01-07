@@ -25,13 +25,29 @@ public class PlayerDamageable : Damageable {
         var sendParams = new ClientRpcParams {
             Send = new ClientRpcSendParams { TargetClientIds = new[] { ownerClientId } }
         };
-        PlayerKilledClientRpc(source, sendParams);
+
+        var damageSource = _damagedBySource
+            .GroupBy(x => x.source.ToString())
+            .Select(g => new DamageInfo {
+                source = g.Key,
+                damage = g.Sum(x => x.damage)
+            })
+            .OrderByDescending(x => x.damage)
+            .ToArray();
+        PlayerKilledClientRpc(source, damageSource, sendParams);
     }
 
     [ClientRpc]
-    private void PlayerKilledClientRpc(string source, ClientRpcParams _ = default) {
+    private void PlayerKilledClientRpc(string source, DamageInfo[] damagedBy, ClientRpcParams _ = default) {
+        foreach (var entry in damagedBy) {
+            FirebaseAnalytic.Instance.SendEvent("PlayerDamaged", new Dictionary<string, object> {
+                { "source", entry.source },
+                { "damage", $"{entry.damage:0}" }
+            });
+        }
+
         FirebaseAnalytic.Instance.SendEvent("PlayerKilled", new Dictionary<string, object> {
-            { "source", source },
+            { "source", source }
         });
     }
 }
