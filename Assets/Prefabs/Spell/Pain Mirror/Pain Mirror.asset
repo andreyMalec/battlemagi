@@ -14,18 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpellData
   id: 13
   name: Pain mirror
-  description: 'Surrounds the caster in a shimmering barrier that twists incoming
-    agony back at its source.
-
-
-    Reflects a portion of damage taken back to attackers.'
-  nameRu: "\u0417\u0435\u0440\u043A\u0430\u043B\u043E \u0411\u043E\u043B\u0438"
+  enabled: 1
   spellWords:
   - Pain Mirror
   spellWordsRu:
   - "\u0417\u0435\u0440\u043A\u0430\u043B\u043E \u0411\u043E\u043B\u0438"
   manaCost: 25
-  bookImage: {fileID: 2800000, guid: 4ce76225f9c533a44983bf388778e1fc, type: 3}
+  bookImage: {fileID: 2800000, guid: 7fe29a51a2669814687f891e84830aeb, type: 3}
   spellInHandPrefab: {fileID: 7389778017922607859, guid: 77892f013b9287549a57d9293fd47641, type: 3}
   spellBurstPrefab: {fileID: 0}
   mainSpellPrefab: {fileID: 7354784787554302670, guid: c1b489972362e9047ac988cf65e076a4, type: 3}
@@ -57,6 +52,10 @@ MonoBehaviour:
   projCount: 1
   multiProjDelay: 0
   spawnMode: 0
+  useAlternativeSpawnMode: 0
+  alternativeSpawnMode: 0
+  forwardStep: {x: 0, y: 0, z: 0}
+  forwardAngle: {x: 0, y: 0, z: 0}
   arcAngleStep: 15
   raycastMaxDistance: 50
   isBeam: 0

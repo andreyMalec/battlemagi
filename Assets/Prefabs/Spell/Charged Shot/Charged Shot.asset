@@ -14,19 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpellData
   id: 15
   name: Charged shot
-  description: 'Channels emerald energy into a charged magical arrow, drawn taut
-    with arcane power.
-
-
-    Damage that increases over time can be released at any
-    moment.'
-  nameRu: "\u0417\u0430\u0440\u044F\u0436\u0435\u043D\u043D\u044B\u0439 \u0412\u044B\u0441\u0442\u0440\u0435\u043B"
+  enabled: 1
   spellWords:
   - Charged Shot
   spellWordsRu:
   - "\u0417\u0430\u0440\u044F\u0436\u0435\u043D\u043D\u044B\u0439 \u0412\u044B\u0441\u0442\u0440\u0435\u043B"
   manaCost: 25
-  bookImage: {fileID: 2800000, guid: bd1adaa6c7208b64ea6ed7121bee30ee, type: 3}
+  bookImage: {fileID: 2800000, guid: 0d883a0ffad308546a35fe766203e77a, type: 3}
   spellInHandPrefab: {fileID: 7389778017922607859, guid: 74dbe7c43ae8ffa4da07ca385b7288df, type: 3}
   spellBurstPrefab: {fileID: 0}
   mainSpellPrefab: {fileID: 7354784787554302670, guid: e19676af7516672458e8dc46107dc440, type: 3}
@@ -57,6 +51,10 @@ MonoBehaviour:
   projCount: 1
   multiProjDelay: 0
   spawnMode: 2
+  useAlternativeSpawnMode: 0
+  alternativeSpawnMode: 0
+  forwardStep: {x: 0, y: 0, z: 0}
+  forwardAngle: {x: 0, y: 0, z: 0}
   arcAngleStep: 15
   raycastMaxDistance: 50
   isBeam: 0
