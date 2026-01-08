@@ -11,4 +11,5 @@ public class PlayerUIRenderer : MonoBehaviour {
     public TMP_Text mpText;
     public Image stamina;
     public RectTransform[] uiContainers;
+    public RectTransform effectsContainer;
 }

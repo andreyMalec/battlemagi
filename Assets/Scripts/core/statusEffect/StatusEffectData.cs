@@ -5,6 +5,7 @@ public abstract class StatusEffectData : ScriptableObject {
     public string title;
     public string description;
     public float duration;
+    public Sprite icon;
     public Color color = new(0, 0, 0, 0);
     public bool removeOnHit = false;
     public StatusEffectData onExpire;

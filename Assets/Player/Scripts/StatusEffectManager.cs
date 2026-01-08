@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class StatusEffectManager : NetworkBehaviour {
     private Dictionary<string, StatusEffectRuntime> activeEffects = new();
+    public List<DurationEffect> ActiveEffects = new();
 
     void FixedUpdate() {
         if (!IsServer) return;
@@ -29,6 +30,16 @@ public class StatusEffectManager : NetworkBehaviour {
         foreach (var effect in toAdd) {
             AddEffect(effect.Key, effect.Value);
         }
+    }
+
+    private void Update() {
+        ActiveEffects = activeEffects.Values
+            .Filter(it => it.data.icon != null && !it.IsExpired)
+            .Map(it => new DurationEffect {
+                icon = it.data.icon,
+                remains = it._timeRemaining
+            })
+            .ToList();
     }
 
     public void HandleHit() {
@@ -77,5 +88,10 @@ public class StatusEffectManager : NetworkBehaviour {
 
     public bool HasEffect(string type) {
         return activeEffects.ContainsKey(type);
+    }
+
+    public struct DurationEffect {
+        public Sprite icon;
+        public float remains;
     }
 }

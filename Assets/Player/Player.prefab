@@ -777,6 +777,7 @@ GameObject:
   - component: {fileID: 5412534736573094780}
   - component: {fileID: 2323875734396528773}
   - component: {fileID: 7527429836848279379}
+  - component: {fileID: 61866278598921742}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -917,6 +918,7 @@ MonoBehaviour:
   disabledSound: {fileID: 1507093393527865229}
   spellCastKey: 323
   spellCancelKey: 324
+  alternateSpawnKey: 102
   channeling: 0
   manaRestore: 0.5
   manaRestoreTickInterval: 0.1
@@ -1068,6 +1070,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerDamageable
   ShowTopMostFoldoutHeaderGroup: 1
   maxHealth: 100
+  maxArmor: 50
+  armorEffect: 0.75
   hpRestore: 0.5
   immortal: 0
   invulnerable: 0
@@ -1075,6 +1079,8 @@ MonoBehaviour:
   damageAudio: {fileID: 8201634953252771622}
   damageSoundCooldown: 0.2
   health:
+    m_InternalValue: 0
+  armor:
     m_InternalValue: 0
   isDead: 0
 --- !u!143 &1874046057587579816
@@ -1249,6 +1255,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerUI
   ShowTopMostFoldoutHeaderGroup: 1
+  effectItemPrefab: {fileID: 4735756117888980395, guid: d6778ef7c29d49f47a90fa31074d697b, type: 3}
 --- !u!114 &2716919782836391855
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1390,6 +1397,24 @@ MonoBehaviour:
   positionAmplitudeY: 20
   rotationAmplitudeYaw: 2
   rotationAmplitudePitch: 0
+  followSmoothTime: 0.1
+  angularSmoothTime: 0.05
+--- !u!114 &61866278598921742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a899d3d23f944dc39b9b4d0daa60eba7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UICameraSway
+  positionAmplitudeX: 10
+  positionAmplitudeY: 10
+  rotationAmplitudeYaw: 2
+  rotationAmplitudePitch: 0.2
   followSmoothTime: 0.1
   angularSmoothTime: 0.05
 --- !u!1 &5894542900604772476
@@ -2231,6 +2256,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4480249090821297801, guid: 02e2f2c9ea735674f8b9868257d1e2a4, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5394291565036808623, guid: 02e2f2c9ea735674f8b9868257d1e2a4, type: 3}
       propertyPath: m_Name
       value: EffectsUI
@@ -2243,6 +2272,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: -2550372050140285000, guid: 3f207ffc5d1e2794b87c7b18faf6752d, type: 2}
+    - target: {fileID: 9084727007643689808, guid: 02e2f2c9ea735674f8b9868257d1e2a4, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
