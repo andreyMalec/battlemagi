@@ -14,11 +14,16 @@ public class AudioSettings : MonoBehaviour {
 
     [SerializeField] private float maxValue = 1.5f;
 
+    public const float MasterVolume = 1f;
+    public const float VoiceVolume = 1.5f;
+    public const float EffectVolume = 0.25f;
+    public const float MusicVolume = 0.05f;
+
     private void Start() {
-        SetupSlider(masterSlider, "MasterVolume", 1f);
-        SetupSlider(voiceSlider, "VoiceVolume", 1f);
-        SetupSlider(effectSlider, "EffectVolume", 0.25f);
-        SetupSlider(musicSlider, "MusicVolume", 0.25f);
+        SetupSlider(masterSlider, "MasterVolume", MasterVolume);
+        SetupSlider(voiceSlider, "VoiceVolume", VoiceVolume);
+        SetupSlider(effectSlider, "EffectVolume", EffectVolume);
+        SetupSlider(musicSlider, "MusicVolume", MusicVolume);
     }
 
     private void OnEnable() {
