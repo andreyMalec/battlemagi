@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class ColorizeMesh : MonoBehaviour {
     public static readonly int Hue = Shader.PropertyToID("Hue");
     public static readonly int Saturation = Shader.PropertyToID("Saturation");
+    public static readonly int Value = Shader.PropertyToID("Value");
 
     [SerializeField] private Slider sliderHue;
     [SerializeField] private Slider sliderSaturation;
@@ -27,6 +28,19 @@ public class ColorizeMesh : MonoBehaviour {
     }
 
     [SerializeField] private RawImage preview;
+
+    private bool _contrastColors = false;
+
+    public bool contrastColors {
+        get => _contrastColors;
+        set {
+            _contrastColors = value;
+            renderer?.material?.SetFloat(Value, _value);
+            preview?.material?.SetFloat(Value, _value);
+        }
+    }
+
+    private float _value => _contrastColors ? 1f : 0.2f;
 
     private float _hue = 0;
 
@@ -71,11 +85,13 @@ public class ColorizeMesh : MonoBehaviour {
         yield return new WaitForEndOfFrame();
         renderer?.material?.SetFloat(Hue, hue);
         renderer?.material?.SetFloat(Saturation, saturation);
+        renderer?.material?.SetFloat(Value, _value);
     }
 
     private void Awake() {
         hue = sliderHue.value;
         saturation = sliderSaturation.value;
+        _contrastColors = PlayerPrefs.GetInt("ContrastColors", 0) == 1;
 
         sliderHue.onValueChanged.AddListener(h => {
             fieldHue.text = h.ToString("0");
@@ -119,5 +135,9 @@ public class ColorizeMesh : MonoBehaviour {
                 saturation = sliderSaturation.value = 0.85f;
             }
         }
+    }
+
+    public static float CalculateValue() {
+        return PlayerPrefs.GetInt("ContrastColors", 0) == 1 ? 1f : 0.2f;
     }
 }

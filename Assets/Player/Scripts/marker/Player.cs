@@ -171,6 +171,7 @@ public class Player : NetworkBehaviour {
         var bodyMat = new Material(archetype.bodyShader);
         bodyMat.SetFloat(ColorizeMesh.Hue, color.hue);
         bodyMat.SetFloat(ColorizeMesh.Saturation, color.saturation);
+        bodyMat.SetFloat(ColorizeMesh.Value, ColorizeMesh.CalculateValue());
         GetComponentInChildren<MeshBody>().gameObject.GetComponent<SkinnedMeshRenderer>().material = bodyMat;
         if (archetype.cloakShader == null) return;
         var cloakMat = new Material(archetype.cloakShader);

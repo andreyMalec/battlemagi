@@ -12,6 +12,8 @@ public class GeneralSettings : MonoBehaviour {
     [Header("UI Elements")]
     [SerializeField] private TMP_Dropdown languageDropdown;
 
+    [SerializeField] private TMP_Dropdown contrastColorsDropdown;
+
     [SerializeField] private Button applyButton;
 
     private void Awake() {
@@ -24,13 +26,29 @@ public class GeneralSettings : MonoBehaviour {
         languageDropdown.value = languageIndex;
     }
 
+    private void OnEnable() {
+        contrastColorsDropdown.ClearOptions();
+        var off = R.String("settings.off");
+        var on = R.String("settings.on");
+        contrastColorsDropdown.AddOptions(new List<string> { off, on });
+        contrastColorsDropdown.value = PlayerPrefs.GetInt("ContrastColors", 0);
+    }
+
     private void ApplySettings() {
         int languageIndex = languageDropdown.value;
+        int contrastColorsIndex = contrastColorsDropdown.value;
         PlayerPrefs.SetInt("Language", languageIndex);
+        PlayerPrefs.SetInt("ContrastColors", contrastColorsIndex);
         PlayerPrefs.Save();
 
+        var colorizeMesh = FindFirstObjectByType<ColorizeMesh>();
+        if (colorizeMesh != null) {
+            colorizeMesh.contrastColors = contrastColorsIndex == 1;
+        }
+
         var values = Enum.GetValues(typeof(Language)).Cast<Language>().ToList();
-        LocalizationSettings.Instance.SetSelectedLocale(Locale.CreateLocale(values[languageIndex].ToString().ToLower()));
+        LocalizationSettings.Instance.SetSelectedLocale(
+            Locale.CreateLocale(values[languageIndex].ToString().ToLower()));
         SpeechToTextHolder.Instance.Language = (Language)languageIndex;
         StartCoroutine(SpeechToTextHolder.Instance.Init());
     }

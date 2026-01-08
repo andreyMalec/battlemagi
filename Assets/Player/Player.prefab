@@ -2216,6 +2216,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2934301547977243489}
     m_Modifications:
+    - target: {fileID: 2987356091954791567, guid: 02e2f2c9ea735674f8b9868257d1e2a4, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 3027699357822140822, guid: 02e2f2c9ea735674f8b9868257d1e2a4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2264,6 +2268,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: EffectsUI
       objectReference: {fileID: 0}
+    - target: {fileID: 5394291565036808623, guid: 02e2f2c9ea735674f8b9868257d1e2a4, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 5502024964603606174, guid: 02e2f2c9ea735674f8b9868257d1e2a4, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -2272,6 +2280,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: -2550372050140285000, guid: 3f207ffc5d1e2794b87c7b18faf6752d, type: 2}
+    - target: {fileID: 9063925581789471907, guid: 02e2f2c9ea735674f8b9868257d1e2a4, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 9084727007643689808, guid: 02e2f2c9ea735674f8b9868257d1e2a4, type: 3}
       propertyPath: m_hasFontAssetChanged
       value: 0
