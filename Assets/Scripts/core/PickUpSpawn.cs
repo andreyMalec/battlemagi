@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -44,5 +45,16 @@ public class PickUpSpawn : NetworkBehaviour {
         }
 
         return null;
+    }
+
+    private void OnDrawGizmos() {
+        if (pickUps == null || pickUps.Count == 0) return;
+        var prefab = pickUps.Randomize();
+        if (prefab == null) return;
+        var filter = prefab.GetComponentInChildren<MeshFilter>();
+        var obj = filter.gameObject;
+        var m = filter.sharedMesh;
+        Gizmos.DrawMesh(m, spawnPoint.transform.position, transform.localRotation * obj.transform.localRotation ,
+            obj.transform.localScale);
     }
 }

@@ -13,13 +13,15 @@ MonoBehaviour:
   m_Name: Lava DoT
   m_EditorClassIdentifier: Assembly-CSharp::DamageOverTimeEffect
   effectName: Lava DoT
+  title: 
   description: 
   duration: 0.5
   color: {r: 0, g: 0, b: 0, a: 0}
   removeOnHit: 0
   onExpire: {fileID: 0}
-  dps: 0.3
+  dps: 0.7
   tickInterval: 0
   damageSound: 5
   ignoreDamageSoundCooldown: 0
   canSelfDamage: 1
+  percentDamage: 0

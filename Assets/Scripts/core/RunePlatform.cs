@@ -53,6 +53,7 @@ public class RunePlatform : NetworkBehaviour {
         if (parentNetObj != null && parentNetObj.IsSpawned) {
             netObj.TrySetParent(parentNetObj, worldPositionStays: true);
         }
+
         _durationTimer = 0f;
     }
 
@@ -72,4 +73,17 @@ public class RunePlatform : NetworkBehaviour {
 
         return null;
     }
+
+#if UNITY_EDITOR
+    private GameObject prefab;
+
+    private void OnDrawGizmos() {
+        if (prefab == null)
+            prefab = runes.Randomize();
+        var filter = prefab.GetComponentInChildren<MeshFilter>();
+        var obj = filter.gameObject;
+        var m = filter.sharedMesh;
+        Gizmos.DrawMesh(m, spawnPoint.transform.position, obj.transform.localRotation, obj.transform.localScale);
+    }
+#endif
 }

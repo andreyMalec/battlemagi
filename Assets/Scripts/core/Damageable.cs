@@ -12,6 +12,7 @@ using UnityEngine.UI;
 public class Damageable : NetworkBehaviour {
     [SerializeField] public float maxHealth = 100f;
     [SerializeField] public float maxArmor = 50f;
+    [SerializeField] public float armorEffect = 0.75f;
     [SerializeField] public float hpRestore = 1f;
     [SerializeField] protected bool immortal = false;
     [SerializeField] public bool invulnerable = false;
@@ -107,15 +108,16 @@ public class Damageable : NetworkBehaviour {
 
         var beforeHp = health.Value;
 
-        var damageLeft = finalDamage;
+        var hpDamage = finalDamage;
         if (armor.Value > 0f) {
-            var armorBefore = armor.Value;
-            armor.Value = Mathf.Max(0f, armor.Value - damageLeft);
-            damageLeft = Mathf.Max(0f, damageLeft - armorBefore);
+            var armorDamageTarget = finalDamage * armorEffect;
+            var armorDamageApplied = Mathf.Min(armor.Value, armorDamageTarget);
+            armor.Value -= armorDamageApplied;
+            hpDamage = finalDamage - armorDamageApplied;
         }
 
-        if (damageLeft > 0f)
-            health.Value -= damageLeft;
+        if (hpDamage > 0f)
+            health.Value -= hpDamage;
 
         if (Time.time - _lastDamageSoundTime >= damageSoundCooldown || ignoreSoundCooldown) {
             _lastDamageSoundTime = Time.time;

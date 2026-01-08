@@ -14,13 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpellData
   id: 7
   name: Air bullet
-  description: 'A burst of compressed air shaped into a deadly projectile of pure
-    pressure.
-
-
-    Fires instantly toward the target, striking with invisible force
-    and high speed.'
-  nameRu: "\u0412\u043E\u0437\u0434\u0443\u0448\u043D\u0430\u044F \u041F\u0443\u043B\u044F"
+  enabled: 1
   spellWords:
   - Air Bullet
   spellWordsRu:
@@ -46,7 +40,7 @@ MonoBehaviour:
   lifeTime: 0.5
   baseDamage: 55
   structureDamageMultiplier: 1
-  canSelfDamage: 1
+  canSelfDamage: 0
   useParticleCollision: 1
   isDOT: 0
   tickInterval: 1
@@ -59,6 +53,10 @@ MonoBehaviour:
   projCount: 1
   multiProjDelay: 0.07
   spawnMode: 0
+  useAlternativeSpawnMode: 0
+  alternativeSpawnMode: 0
+  forwardStep: {x: 0, y: 0, z: 0}
+  forwardAngle: {x: 0, y: 0, z: 0}
   arcAngleStep: 15
   raycastMaxDistance: 100
   isBeam: 0

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -211,5 +212,9 @@ public class Portal : MonoBehaviour {
         var left = Quaternion.AngleAxis(-headAngle, axis) * (-dir);
         Gizmos.DrawLine(end, end + right * headLength);
         Gizmos.DrawLine(end, end + left * headLength);
+    }
+
+    private void OnDrawGizmosSelected() {
+        Gizmos.DrawLine(transform.position, linked.transform.position);
     }
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Map", menuName = "Game/Map")]
 public class GameMap : ScriptableObject {
     public string mapName;
+    public bool activeCTF = true;
     public string sceneName;
 
 #if UNITY_EDITOR

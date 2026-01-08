@@ -27,6 +27,8 @@ public class MenuStateLobby : MonoBehaviour {
     private DropdownHelper _dropdownGameEndHelper;
     private DropdownHelper _dropdownKeyCastHelper;
 
+    private bool _ignoreMapChange;
+
     private void Awake() {
         _dropdownMapHelper = dropdownMap.GetComponent<DropdownHelper>();
         _dropdownModeHelper = dropdownMode.GetComponent<DropdownHelper>();
@@ -55,14 +57,25 @@ public class MenuStateLobby : MonoBehaviour {
         var captureTheFlag = R.String("gameMode.captureTheFlag");
         dropdownMode.AddOptions(new List<string> { freeForAll, teamDeathmatch, captureTheFlag });
 
-        dropdownMap.options = GameMapDatabase.instance.gameMaps
-            .Map(it => new TMP_Dropdown.OptionData(R.String($"map.{it.mapName}")))
-            .ToList();
+        dropdownMap.options = BuildMapOptions(dropdownMode.value);
         dropdownKeyCast.options = new List<TMP_Dropdown.OptionData>() {
             new(R.String("lobby.keyCast.disabled")),
             new(R.String("lobby.keyCast.enabled")),
         };
         UpdateGameEndTargetText();
+    }
+
+    private List<TMP_Dropdown.OptionData> BuildMapOptions(int modeIndex) {
+        var isCtf = modeIndex == (int)TeamManager.TeamMode.CaptureTheFlag;
+        return GameMapDatabase.instance.gameMaps
+            .Map(it => {
+                var text = R.String($"map.{it.mapName}");
+                var option = new TMP_Dropdown.OptionData(text);
+                if (isCtf && !it.activeCTF)
+                    option.text=$"~{text}~";
+                return option;
+            })
+            .ToList();
     }
 
     private void UpdateMap() {
@@ -107,12 +120,41 @@ public class MenuStateLobby : MonoBehaviour {
     }
 
     private void SubmitMap(int index) {
+        if (_ignoreMapChange) return;
+
+        if (dropdownMode.value == (int)TeamManager.TeamMode.CaptureTheFlag) {
+            if (!GameMapDatabase.instance.gameMaps[index].activeCTF) {
+                _ignoreMapChange = true;
+                dropdownMap.value = GameProgress.Instance.SelectedMap.Value;
+                _ignoreMapChange = false;
+                return;
+            }
+        }
+
         GameProgress.Instance.SelectMap(index);
     }
 
     private void SubmitMode(int index) {
         TeamManager.Instance.SetMode((TeamManager.TeamMode)index);
         UpdateGameEndOptions(index);
+
+        dropdownMap.options = BuildMapOptions(index);
+
+        if (index == (int)TeamManager.TeamMode.CaptureTheFlag) {
+            var current = GameProgress.Instance.SelectedMap.Value;
+            var maps = GameMapDatabase.instance.gameMaps;
+            if (!maps[current].activeCTF) {
+                var next = Array.FindIndex(maps, m => m.activeCTF);
+                if (next >= 0) {
+                    GameProgress.Instance.SelectMap(next);
+                    _ignoreMapChange = true;
+                    dropdownMap.value = next;
+                    _ignoreMapChange = false;
+                }
+            }
+        }
+
+        UpdateMap();
     }
 
     private void SubmitEndChoice(int index) {

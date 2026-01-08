@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3124932418
+  GlobalObjectIdHash: 3018005838
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -95,7 +95,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.47
+  m_Radius: 0.56
   m_Center: {x: 0, y: 0.000000029802322, z: 0}
 --- !u!1 &7559005444715730433
 GameObject:
@@ -108,6 +108,7 @@ GameObject:
   - component: {fileID: 6688347181596542758}
   - component: {fileID: 2875570836581565804}
   - component: {fileID: 1159873025245491600}
+  - component: {fileID: 6820201259307302245}
   m_Layer: 2
   m_Name: Mesh
   m_TagString: Untagged
@@ -123,7 +124,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7559005444715730433}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0.0055882763, y: -0.7070847, z: -0.7070847, w: -0.0055882763}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 30, y: 30, z: 30}
   m_ConstrainProportionsScale: 1
@@ -186,6 +187,21 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7559005444715730433}
   m_Mesh: {fileID: -1272481795433867914, guid: 1c9b7389b5ac1584e958a1f33120b7b3, type: 3}
+--- !u!114 &6820201259307302245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7559005444715730433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e2d126d13f64c48bc42a2069fed116b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RotationOverTime
+  rotationSpeed: {x: 0, y: 0, z: 120}
+  rotationSpace: 1
+  isActive: 1
 --- !u!1001 &3049186422528558351
 PrefabInstance:
   m_ObjectHideFlags: 0

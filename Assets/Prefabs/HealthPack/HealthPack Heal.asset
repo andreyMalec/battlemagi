@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: HealthPack Heal
   m_EditorClassIdentifier: Assembly-CSharp::HealthPackEffect
   effectName: HealthPack Heal
-  title: 
-  description: 
+  title: health.title
+  description: health.description
   duration: 0.1
-  color: {r: 0, g: 0, b: 0, a: 0}
+  color: {r: 1, g: 0, b: 0, a: 1}
   removeOnHit: 0
   onExpire: {fileID: 11400000, guid: 1622259a40b59e7419f4c00f86679825, type: 2}
   amount: 25

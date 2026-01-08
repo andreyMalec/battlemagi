@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Armor Effect
   m_EditorClassIdentifier: Assembly-CSharp::ArmorEffect
   effectName: Armor
-  title: 
-  description: 
+  title: armor.title
+  description: armor.description
   duration: 0.1
-  color: {r: 0, g: 0, b: 0, a: 0}
+  color: {r: 0.8066038, g: 0.9845655, b: 1, a: 1}
   removeOnHit: 0
   onExpire: {fileID: 0}
-  amount: 15
+  amount: 10
