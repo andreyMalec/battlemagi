@@ -7,9 +7,16 @@ using UnityEngine;
 public class PickUpSpawn : NetworkBehaviour {
     [SerializeField] private List<PickUp> pickUps;
     [SerializeField] private float restoreTime = 15f;
+    [SerializeField] private bool spawnAtStart = false;
     [SerializeField] private Transform spawnPoint;
 
     private float _restoreTimer;
+
+    private void Awake() {
+        if (spawnAtStart) {
+            _restoreTimer += restoreTime;
+        }
+    }
 
     private void Update() {
         if (!IsServer) return;
@@ -54,7 +61,7 @@ public class PickUpSpawn : NetworkBehaviour {
         var filter = prefab.GetComponentInChildren<MeshFilter>();
         var obj = filter.gameObject;
         var m = filter.sharedMesh;
-        Gizmos.DrawMesh(m, spawnPoint.transform.position, transform.localRotation * obj.transform.localRotation ,
+        Gizmos.DrawMesh(m, spawnPoint.transform.position, transform.localRotation * obj.transform.localRotation,
             obj.transform.localScale);
     }
 }

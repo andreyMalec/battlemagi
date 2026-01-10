@@ -39,6 +39,7 @@ public class PlayerUI : NetworkBehaviour {
 
     public override void OnNetworkDespawn() {
         base.OnNetworkDespawn();
+        if (!IsOwner) return;
         _renderer.armor.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _armorBarWidth);
     }
 
