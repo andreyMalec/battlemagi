@@ -53,7 +53,7 @@ public class SpellLifetime : NetworkBehaviour {
         if (!IsServer) return;
 
         if (!_despawning && failSafeLifetimeSec > 0f && Time.time - _serverSpawnTime > failSafeLifetimeSec) {
-            DestroySpellServerRpc($"Failsafe lifetime exceeded ({failSafeLifetimeSec}s)");
+            Destroy($"Failsafe lifetime exceeded ({failSafeLifetimeSec}s)");
             return;
         }
 
@@ -63,18 +63,13 @@ public class SpellLifetime : NetworkBehaviour {
                 _lastMovedTime = Time.time;
                 _lastServerPos = cur;
             } else if (Time.time - _lastMovedTime > stuckTimeSec) {
-                DestroySpellServerRpc($"Stuck detected: no movement > {stuckTimeSec}s (eps {stuckPosEpsilon})");
+                Destroy($"Stuck detected: no movement > {stuckTimeSec}s (eps {stuckPosEpsilon})");
                 return;
             }
         }
     }
 
-    public void Destroy() {
-        DestroySpellServerRpc();
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void DestroySpellServerRpc(string reason = null) {
+    public void Destroy(string reason = null) {
         if (_despawning) return;
         _despawning = true;
 

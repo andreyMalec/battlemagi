@@ -83,7 +83,7 @@ public class Damageable : NetworkBehaviour {
         if (!IsServer) return;
         if (heal <= 0 || isDead || !IsSpawned) return;
         var clientId = OwnerClientId;
-        Debug.Log($"[Damageable] {name} игрока {clientId} получает лечение: {heal} от {source}");
+        Debug.Log($"[Damageable] {name} игрока {(PlayerId)clientId} получает лечение: {heal} от {source}");
         health.Value = Mathf.Clamp(health.Value + heal, 0, maxHealth);
     }
 
@@ -100,7 +100,7 @@ public class Damageable : NetworkBehaviour {
 
         var clientId = OwnerClientId;
         var finalDamage = damage * _statSystem.Stats.GetFinal(StatType.DamageReduction);
-        Debug.Log($"[Damageable] {name} игрока {clientId} получает урон: {finalDamage} от {fromClientId}");
+        Debug.Log($"[Damageable] {name} игрока {(PlayerId)clientId} получает урон: {finalDamage} от {(PlayerId)fromClientId}");
 
         if (!_damagedBy.Contains(fromClientId) && clientId != fromClientId)
             _damagedBy.Add(fromClientId);
@@ -135,12 +135,14 @@ public class Damageable : NetworkBehaviour {
 
         if (source != "Pain Mirror" && fromClientId != clientId) {
             if (_effectManager.HasEffect("Pain Mirror")) {
-                var player = NetworkManager.ConnectedClients[fromClientId].PlayerObject;
-                if (player != null) {
-                    var reflectDamage = damage * _statSystem.Stats.GetFinal(StatType.DamageReflection);
-                    player.GetComponent<Damageable>()
-                        .TakeDamage("Pain Mirror", clientId, reflectDamage, DamageSoundType.Reflect,
-                            ignoreSoundCooldown);
+                if (NetworkManager.ConnectedClients.TryGetValue(fromClientId, out var client)) {
+                    var player = client.PlayerObject;
+                    if (player != null) {
+                        var reflectDamage = damage * _statSystem.Stats.GetFinal(StatType.DamageReflection);
+                        player.GetComponent<Damageable>()
+                            .TakeDamage("Pain Mirror", clientId, reflectDamage, DamageSoundType.Reflect,
+                                ignoreSoundCooldown);
+                    }
                 }
             }
         }

@@ -22,6 +22,10 @@ public class PlayerDamageable : Damageable {
         PlayerManager.Instance.AddDeath(ownerClientId);
         PlayerSpawner.instance.HandleDeathServerRpc(ownerClientId);
         Killfeed.Instance?.HandleClientRpc(fromClientId, ownerClientId);
+        SendAnalytics(ownerClientId, source);
+    }
+
+    private void SendAnalytics(ulong ownerClientId, string source) {
         var sendParams = new ClientRpcParams {
             Send = new ClientRpcSendParams { TargetClientIds = new[] { ownerClientId } }
         };

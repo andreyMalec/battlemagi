@@ -293,7 +293,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellLifetime
   ShowTopMostFoldoutHeaderGroup: 1
-  failSafeLifetimeSec: 20
-  enableStuckDetection: 1
+  failSafeLifetimeSec: 3
+  enableStuckDetection: 0
   stuckPosEpsilon: 0.02
-  stuckTimeSec: 2
+  stuckTimeSec: 3

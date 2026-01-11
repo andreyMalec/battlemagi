@@ -58,11 +58,10 @@ public class PlayerSpawner : NetworkBehaviour {
     private bool DestroyClient(ulong clientId) {
         if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client)) {
             var playerObj = client.PlayerObject;
-            playerObj.Despawn();
-            if (playerObj != null)
-                Destroy(playerObj.gameObject);
-
-            return true;
+            if (playerObj != null && playerObj.TryGetComponent<Player>(out _)) {
+                playerObj.Despawn(true);
+                return true;
+            }
         }
 
         return false;
@@ -115,10 +114,10 @@ public class PlayerSpawner : NetworkBehaviour {
         List<ulong> clientsCompleted,
         List<ulong> clientsTimedOut
     ) {
-        if (!IsHost) return;
+        if (!IsServer) return;
         if (sceneName == GameProgress.Instance.SceneName) {
             foreach (var id in clientsCompleted) {
-                SpawnPlayerServerRpc(id);
+                SpawnPlayer(id);
             }
         }
 
@@ -129,15 +128,16 @@ public class PlayerSpawner : NetworkBehaviour {
         }
     }
 
-    [ServerRpc]
-    private void SpawnPlayerServerRpc(ulong clientId) {
-        SpawnPlayer(clientId);
-    }
-
     private void SpawnPlayer(ulong clientId) {
         //TODO crash here NPE
         var team = TeamManager.Instance.GetTeam(clientId);
-        var spawnPoint = FindFirstObjectByType<Spawn>().Get(team);
+        var spawn = FindFirstObjectByType<Spawn>();
+        if (spawn == null) {
+            Debug.LogError($"[PlayerSpawner] Сервер: Ошибка! Не найден объект Spawn для спавна игрока {clientId} (Возможно сцена сменилась на не игровую)");
+            return;
+        }
+        Debug.Log($"[PlayerSpawner] Сервер: Спавним игрока {clientId} в команде {team}");
+        var spawnPoint = spawn.Get(team);
         var position = spawnPoint.position;
         var rotation = spawnPoint.rotation;
 

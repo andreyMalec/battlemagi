@@ -20,7 +20,7 @@ public class ActiveSpell : NetworkBehaviour {
     public void PrepareSpell(SpellData spell, ISpawnStrategy spawnMode) {
         if (!IsOwner || spell == null) return;
         _spell = spell;
-        Debug.Log($"[SpellManager] Подготавливаем {spell.name}");
+        Debug.Log($"[SpellManager] {gameObject.name} Подготавливаем {spell.name}");
         ChangeStrategy(spawnMode);
         ShowInHandServerRpc(spell.id, OwnerClientId);
     }

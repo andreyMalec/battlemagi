@@ -94,6 +94,7 @@ public class GameProgress : NetworkBehaviour {
 
     private void HandlePlayersListChanged(List<PlayerManager.PlayerData> players) {
         if (!IsServer) return;
+        if (ended) return;
         if (TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.CaptureTheFlag) {
             // in CTF we rely on team scores, not individual kills
             return;

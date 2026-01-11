@@ -18,7 +18,7 @@ public class PickUp : NetworkBehaviour {
         if (other.TryGetComponent<Player>(out _) && other.TryGetComponent<StatusEffectManager>(out var manager)) {
             var ownerId = OwnerClientId;
             if (NetworkObject.IsSceneObject == true)
-                ownerId = ulong.MaxValue;
+                ownerId = PlayerId.EnvironmentId;
             foreach (var effect in effects) {
                 manager.AddEffect(ownerId, effect);
             }

@@ -14,8 +14,8 @@ public class Killfeed : NetworkBehaviour {
     }
 
     public override void OnNetworkDespawn() {
-        base.OnNetworkDespawn();
         Instance = null;
+        base.OnNetworkDespawn();
     }
 
     [ClientRpc]

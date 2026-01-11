@@ -8,13 +8,13 @@ public class HandSpawn : IHandAppearance {
         obj.transform.localPosition = Vector3.zero;
         obj.transform.localRotation = Quaternion.identity;
 
-        Debug.Log($"[SpellManager] Проявляем {spell.name} в руке заклинателя");
+        Debug.Log($"[SpellManager] Проявляем {spell.name} в руке {manager.gameObject.name}");
     }
 
     public void Clear(ActiveSpell manager) {
         for (int i = 0; i < manager.invocation.childCount; i++) {
             Object.Destroy(manager.invocation.GetChild(i).gameObject);
         }
-        Debug.Log("[SpellManager] Убираем заклинание из руки");
+        Debug.Log($"[SpellManager] Убираем заклинание из руки {manager.gameObject.name}");
     }
 }

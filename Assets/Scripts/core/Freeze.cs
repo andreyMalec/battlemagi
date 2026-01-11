@@ -23,7 +23,7 @@ public class Freeze : MonoBehaviour {
     }
 
     private void OnEnable() {
-        Debug.Log("Игрок замерз");
+        Debug.Log($"Игрок {_movement.gameObject.name} замерз");
         _movement.enabled = false;
         _caster.enabled = false;
         _look.enabled = false;
@@ -33,7 +33,7 @@ public class Freeze : MonoBehaviour {
     }
 
     private void OnDisable() {
-        Debug.Log("Игрок оттаял");
+        Debug.Log($"Игрок {_movement.gameObject.name} оттаял");
         _movement.enabled = true;
         _caster.enabled = true;
         _look.enabled = true;

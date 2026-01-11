@@ -38,19 +38,4 @@ public class NetworkStatSystem : NetworkBehaviour {
         if (!IsServer) return;
         Stats.RemoveModifier(type, multiplier);
     }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void RequestStatsServerRpc(ServerRpcParams rpcParams = default) {
-        if (!IsServer) return;
-        SendStatsClientRpc(new StatSnapshot(Stats.GetAllFinals()), rpcParams.Receive.SenderClientId);
-    }
-
-    [ClientRpc]
-    private void SendStatsClientRpc(StatSnapshot snapshot, ulong targetClientId) {
-        if (NetworkManager.Singleton.LocalClientId != targetClientId) return;
-
-        Stats.ClearAll();
-        foreach (var kv in snapshot.ToDictionary())
-            Stats.AddModifier(kv.Key, kv.Value);
-    }
 }

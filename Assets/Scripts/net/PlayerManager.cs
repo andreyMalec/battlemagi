@@ -146,13 +146,14 @@ public class PlayerManager : NetworkBehaviour {
             return;
         }
 
-        if (!IsServer) return;
-
         for (int i = players.Count - 1; i >= 0; i--) {
             var player = players[i];
             if (player.ClientId == clientId) {
-                Debug.Log($"[Server] Removing player ClientId={clientId}");
-                players.RemoveAt(i);
+                if (IsServer) {
+                    Debug.Log($"[Server] Removing player ClientId={clientId}");
+                    players.RemoveAt(i);
+                }
+
                 OnPlayerRemoved?.Invoke(player);
             }
         }

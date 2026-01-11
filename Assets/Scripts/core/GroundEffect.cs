@@ -24,42 +24,28 @@ public class GroundEffect : NetworkBehaviour {
         if (!IsServer || other.isTrigger) return;
         if (!other.TryGetComponent<StatusEffectManager>(out var manager)) return;
         if (oneShot) {
-            var netObj = other.GetComponent<NetworkObject>();
-            if (_affectedIds.Contains(netObj.NetworkObjectId)) return;
-            _affectedIds.Add(netObj.NetworkObjectId);
+            if (_affectedIds.Contains(manager.OwnerClientId)) return;
+            _affectedIds.Add(manager.OwnerClientId);
         }
 
         var ownerId = OwnerClientId;
         if (NetworkObject.IsSceneObject == true)
-            ownerId = ulong.MaxValue;
+            ownerId = PlayerId.EnvironmentId;
         foreach (var effect in effects) {
             manager.AddEffect(ownerId, effect);
         }
     }
 
     private void Update() {
-        if (_destroyed) return;
-        if (duration < 0) return;
+        if (!IsServer) return;
+        if (_destroyed || duration < 0) return;
 
         _tickTimer += Time.deltaTime;
         if (_tickTimer >= duration) {
-            if (IsServer) {
-                _destroyed = true;
-                var netObj = GetComponent<NetworkObject>();
-                DestroyClientRpc(netObj.NetworkObjectId);
-            }
-        }
-    }
-
-    [ClientRpc]
-    private void DestroyClientRpc(ulong netObjId) {
-        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(netObjId, out var netObj)) {
-            if (IsServer && netObj.IsSpawned) {
-                netObj.Despawn();
-            }
-
-            if (netObj.gameObject != null) {
-                Destroy(netObj.gameObject);
+            _destroyed = true;
+            var netObj = GetComponent<NetworkObject>();
+            if (netObj.IsSpawned) {
+                netObj.Despawn(true);
             }
         }
     }
