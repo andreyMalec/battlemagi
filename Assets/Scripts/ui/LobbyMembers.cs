@@ -48,8 +48,7 @@ public class LobbyMembers : MonoBehaviour {
         if (!lobby.HasValue) return;
         if (frame % 5 == 0) {
             foreach (var member in lobby.Value.Members) {
-                var item = lobbyMembers[member.Id.Value];
-
+                if (!lobbyMembers.TryGetValue(member.Id.Value, out var item)) continue;
                 item.UpdateState(member);
                 UpdateTeam(member, item.root);
             }

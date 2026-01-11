@@ -1609,6 +1609,7 @@ GameObject:
   - component: {fileID: 8374525490317279253}
   - component: {fileID: 6985143289661218323}
   - component: {fileID: 1154473518401471420}
+  - component: {fileID: 8374525490317279254}
   m_Layer: 0
   m_Name: PlayerManager
   m_TagString: Untagged
@@ -1885,6 +1886,25 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &8374525490317279254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 219572210219601727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7db1b305f81746d0910e05be027d911a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatusEffectDatabase
+  effects:
+  - {fileID: 11400000, guid: 0b0d28140a35b3f43bd7300a90c5be8a, type: 2}
+  - {fileID: 11400000, guid: 04b810f621b3b014c9235f5cbd4f9044, type: 2}
+  - {fileID: 11400000, guid: 065aa89ca25e1d2499399ccd52c2e711, type: 2}
+  - {fileID: 11400000, guid: 82529b97000466e4381a111391436040, type: 2}
+  - {fileID: 11400000, guid: 46562114083608b449e69d5b0a913bf0, type: 2}
+  - {fileID: 11400000, guid: 4f1f429942a4c144a905c8fbd82635a5, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -1,11 +1,46 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
 public class StatusEffectManager : NetworkBehaviour {
+    private struct NetDurationEffect : INetworkSerializable, System.IEquatable<NetDurationEffect> {
+        public FixedString64Bytes effectName;
+        public float remains;
+
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter {
+            serializer.SerializeValue(ref effectName);
+            serializer.SerializeValue(ref remains);
+        }
+
+        public bool Equals(NetDurationEffect other) {
+            return effectName.Equals(other.effectName) && remains.Equals(other.remains);
+        }
+    }
+
     private Dictionary<string, StatusEffectRuntime> activeEffects = new();
     public List<DurationEffect> ActiveEffects = new();
+
+    private NetworkList<NetDurationEffect> _synced;
+    private bool _loggedMissingCatalog;
+    private NetworkList<NetDurationEffect>.OnListChangedDelegate _onSyncedChanged;
+
+    private void Awake() {
+        _synced = new NetworkList<NetDurationEffect>();
+        _onSyncedChanged = _ => RebuildActiveEffectsFromSynced();
+    }
+
+    public override void OnNetworkSpawn() {
+        base.OnNetworkSpawn();
+        _synced.OnListChanged += _onSyncedChanged;
+        RebuildActiveEffectsFromSynced();
+    }
+
+    public override void OnNetworkDespawn() {
+        _synced.OnListChanged -= _onSyncedChanged;
+        base.OnNetworkDespawn();
+    }
 
     void FixedUpdate() {
         if (!IsServer) return;
@@ -30,16 +65,8 @@ public class StatusEffectManager : NetworkBehaviour {
         foreach (var effect in toAdd) {
             AddEffect(effect.Key, effect.Value);
         }
-    }
 
-    private void Update() {
-        ActiveEffects = activeEffects.Values
-            .Filter(it => it.data.icon != null && !it.IsExpired)
-            .Map(it => new DurationEffect {
-                icon = it.data.icon,
-                remains = it._timeRemaining
-            })
-            .ToList();
+        SyncForClients();
     }
 
     public void HandleHit() {
@@ -65,6 +92,9 @@ public class StatusEffectManager : NetworkBehaviour {
         } else {
             Apply(ownerClientId, effect);
         }
+
+        if (IsServer)
+            SyncForClients();
     }
 
     public StatusEffectData RemoveEffect(string type) {
@@ -75,6 +105,9 @@ public class StatusEffectManager : NetworkBehaviour {
         }
 
         activeEffects = activeEffects.FilterKeys(effect => effect != type);
+
+        if (IsServer)
+            SyncForClients();
 
         return removed;
     }
@@ -88,6 +121,30 @@ public class StatusEffectManager : NetworkBehaviour {
 
     public bool HasEffect(string type) {
         return activeEffects.ContainsKey(type);
+    }
+
+    private void SyncForClients() {
+        _synced.Clear();
+        foreach (var effect in activeEffects.Values) {
+            if (effect.IsExpired) continue;
+            _synced.Add(new NetDurationEffect {
+                effectName = effect.data.effectName,
+                remains = effect._timeRemaining
+            });
+        }
+    }
+
+    private void RebuildActiveEffectsFromSynced() {
+        var list = new List<DurationEffect>();
+        var db = StatusEffectDatabase.Instance.GetMap();
+        foreach (var e in _synced) {
+            if (!db.TryGetValue(e.effectName.ToString(), out var data))
+                continue;
+            if (data.icon == null) continue;
+            list.Add(new DurationEffect { icon = data.icon, remains = e.remains });
+        }
+
+        ActiveEffects = list;
     }
 
     public struct DurationEffect {

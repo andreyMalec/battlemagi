@@ -14,12 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpellData
   id: 0
   name: Balllightning
-  description: 'A living spark of storm, roaming restlessly in search of prey.
-
-
-    Slowly
-    pursues the nearest enemy and shocks them on contact.'
-  nameRu: "\u0428\u0430\u0440\u043E\u0432\u0430\u044F \u041C\u043E\u043B\u043D\u0438\u044F"
+  enabled: 1
   spellWords:
   - Ball Lightning
   - ball light
@@ -47,16 +42,20 @@ MonoBehaviour:
   canSelfDamage: 0
   useParticleCollision: 0
   isDOT: 1
-  tickInterval: 0.025
+  tickInterval: 0.03
   hasAreaEffect: 0
   areaRadius: 5
   knockbackForce: 0
   isProjectile: 1
   piercing: 1
-  baseSpeed: 5
+  baseSpeed: 6.25
   projCount: 1
   multiProjDelay: 0
   spawnMode: 2
+  useAlternativeSpawnMode: 0
+  alternativeSpawnMode: 0
+  forwardStep: {x: 0, y: 0, z: 0}
+  forwardAngle: {x: 0, y: 0, z: 0}
   arcAngleStep: 30
   raycastMaxDistance: 50
   isBeam: 0
