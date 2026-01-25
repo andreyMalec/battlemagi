@@ -149,9 +149,9 @@ public class Damageable : NetworkBehaviour {
 
         _effectManager.HandleHit();
 
-        if (!immortal && health.Value <= 0 && beforeHp > 0) {
-            isDead = true;
+        if (!immortal && health.Value <= 0 && beforeHp >= 0) {
             OnDeath(clientId, fromClientId, source);
+            isDead = true;
         }
     }
 

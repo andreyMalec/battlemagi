@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
@@ -42,6 +43,19 @@ public class BaseSpell : NetworkBehaviour {
                             (mode == NetworkTransform.AuthorityModes.Server && IsServer);
         lifetime = GetComponent<SpellLifetime>();
         terrainLayer = LayerMask.NameToLayer("Terrain");
+
+        foreach (var ally in TeamManager.Instance.FindAllies(OwnerClientId)) {
+            var dictionary = NetworkManager.SpawnManager.OwnershipToObjectsTable[ally];
+            foreach (var (_, netObj) in dictionary) {
+                if (netObj == null || !netObj.IsSpawned || !netObj.TryGetComponent<ForceField>(out var ff)) continue;
+                var ffCollider = ff.GetComponentsInChildren<Collider>().FirstOrDefault(c => !c.isTrigger);
+                var myCollider = GetComponentsInChildren<Collider>().FirstOrDefault(c => !c.isTrigger);
+
+                if (ffCollider != null && myCollider != null) {
+                    Physics.IgnoreCollision(myCollider, ffCollider, true);
+                }
+            }
+        }
     }
 
     public void Initialize(SpellData data, float damageMulti, int index) {
@@ -102,14 +116,14 @@ public class BaseSpell : NetworkBehaviour {
         if (!IsServer) return;
         var hit = damage.Update();
         if (hit)
-            ApplyImpact();
+            ApplyImpact(true);
     }
 
     private void OnCollisionEnter(Collision other) {
         OnTriggerEnter(other.collider);
     }
 
-    private void OnTriggerEnter(Collider other) {
+    public void OnTriggerEnter(Collider other) {
         if (!IsServer || other.isTrigger || !lifetime.IsAlive) return;
 
         ulong? hitOwner = null;
@@ -140,9 +154,9 @@ public class BaseSpell : NetworkBehaviour {
             lastTriggerTimes[hitOwner.Value] = Time.time;
         }
 
-        damage.OnEnter(other);
+        var damageApplied = damage.OnEnter(other);
         if (!spellData.isDOT)
-            ApplyImpact();
+            ApplyImpact(damageApplied);
 
         if (!spellData.piercing)
             lifetime.Destroy();
@@ -197,10 +211,10 @@ public class BaseSpell : NetworkBehaviour {
         }
     }
 
-    private void ApplyImpact() {
+    private void ApplyImpact(bool damageApplied) {
         if (spellData.impactEffects.Length == 0) return;
         foreach (var impact in spellData.impactEffects) {
-            impact.OnImpact(this, spellData);
+            impact.OnImpact(this, spellData, damageApplied);
         }
     }
 

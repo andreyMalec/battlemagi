@@ -5,7 +5,7 @@ using UnityEngine;
 public class ImpactEffect : ScriptableObject {
     [SerializeField] private Vector3 positionOffset;
 
-    public virtual GameObject OnImpact(BaseSpell spell, SpellData data) {
+    public virtual GameObject OnImpact(BaseSpell spell, SpellData data, bool damageApplied) {
         var t = spell.transform;
         var pos = t.position;
         var rot = Quaternion.identity;

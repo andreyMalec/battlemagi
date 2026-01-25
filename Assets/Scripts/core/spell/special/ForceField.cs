@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -8,7 +9,13 @@ public class ForceField : NetworkBehaviour {
     private static readonly int BlinkAlpha = Shader.PropertyToID("_BlinkAlpha");
 
     [SerializeField] private float blinkDuration = 0.15f;
+    [SerializeField] private ParticleSystem damage;
+    private BaseSpell baseSpell;
     private readonly List<Material> _renderMaterials = new();
+
+    private void Awake() {
+        baseSpell = GetComponent<BaseSpell>();
+    }
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
@@ -16,6 +23,20 @@ public class ForceField : NetworkBehaviour {
             var playerObj = NetworkManager.ConnectedClients[ally].PlayerObject;
             if (playerObj != null && playerObj.TryGetComponent<Collider>(out var playerCollider)) {
                 Physics.IgnoreCollision(GetComponent<Collider>(), playerCollider, true);
+            }
+        }
+
+        foreach (var ally in TeamManager.Instance.FindAllies(OwnerClientId)) {
+            var dictionary = NetworkManager.SpawnManager.OwnershipToObjectsTable[ally];
+            foreach (var (_, netObj) in dictionary) {
+                if (netObj == null || !netObj.IsSpawned || !netObj.TryGetComponent<BaseSpell>(out var bs)) continue;
+                if (netObj.gameObject == gameObject) continue;
+                var bsCollider = bs.GetComponentsInChildren<Collider>().FirstOrDefault(c => !c.isTrigger);
+                var myCollider = GetComponentsInChildren<Collider>().FirstOrDefault(c => !c.isTrigger);
+
+                if (bsCollider != null && myCollider != null) {
+                    Physics.IgnoreCollision(myCollider, bsCollider, true);
+                }
             }
         }
 
@@ -42,6 +63,21 @@ public class ForceField : NetworkBehaviour {
         if (!netObj.TryGetComponent<SpellLifetime>(out var spell)) return;
         if (TeamManager.Instance.AreAllies(netObj.OwnerClientId, OwnerClientId)) return;
         spell.Destroy();
+        var spellData = baseSpell.spellData;
+
+        var colliders = Physics.OverlapSphere(transform.position, spellData.areaRadius);
+        foreach (var c in colliders) {
+            if (c.gameObject == gameObject) continue;
+            baseSpell.OnTriggerEnter(c);
+        }
+
+        DamageClientRpc();
+    }
+
+    [ClientRpc]
+    private void DamageClientRpc() {
+        damage.gameObject.SetActive(true);
+        damage.Play();
     }
 
     private void LifetimePercent(float percent) {

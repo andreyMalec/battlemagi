@@ -67,8 +67,7 @@ public class PlayerSpawner : NetworkBehaviour {
         return false;
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void HandleDeathServerRpc(ulong clientId) {
+    public void HandleDeathServer(ulong clientId) {
         if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client)) {
             var player = client.PlayerObject;
             if (player != null && player.IsSpawned) {

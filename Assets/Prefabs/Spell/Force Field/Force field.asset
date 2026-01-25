@@ -14,12 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpellData
   id: 6
   name: Force field
-  description: 'A shimmering dome of condensed magic, bending light and matter alike.
-
-
-    Deflects
-    incoming projectiles and shields the caster for a short duration.'
-  nameRu: "\u0421\u0438\u043B\u043E\u0432\u043E\u0435 \u041F\u043E\u043B\u0435"
+  enabled: 1
   spellWords:
   - Force Field
   spellWordsRu:
@@ -42,7 +37,7 @@ MonoBehaviour:
   echoCount: 0
   instanceLimit: 1
   lifeTime: 10
-  baseDamage: 0
+  baseDamage: 50
   structureDamageMultiplier: 1
   canSelfDamage: 0
   useParticleCollision: 0
@@ -52,11 +47,15 @@ MonoBehaviour:
   areaRadius: 10
   knockbackForce: 0
   isProjectile: 0
-  piercing: 0
+  piercing: 1
   baseSpeed: 0
   projCount: 1
   multiProjDelay: 0
   spawnMode: 4
+  useAlternativeSpawnMode: 0
+  alternativeSpawnMode: 0
+  forwardStep: {x: 0, y: 0, z: 0}
+  forwardAngle: {x: 0, y: 0, z: 0}
   arcAngleStep: 15
   raycastMaxDistance: 2
   isBeam: 0

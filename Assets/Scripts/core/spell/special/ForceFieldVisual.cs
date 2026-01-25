@@ -19,7 +19,7 @@ public class ForceFieldVisual : MonoBehaviour {
     }
 
     private void RenderBack(Collider other, bool renderBack) {
-        other.gameObject.TryGetComponent<FirstPersonMovement>(out var player);
+        other.gameObject.TryGetComponent<Player>(out var player);
         if (player == null) return;
         if (NetworkManager.Singleton.LocalClient.ClientId != player.OwnerClientId) return;
         foreach (var material in _meshRenderer.materials) {

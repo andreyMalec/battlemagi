@@ -20,7 +20,7 @@ public class PlayerDamageable : Damageable {
         }
 
         PlayerManager.Instance.AddDeath(ownerClientId);
-        PlayerSpawner.instance.HandleDeathServerRpc(ownerClientId);
+        PlayerSpawner.instance.HandleDeathServer(ownerClientId);
         Killfeed.Instance?.HandleClientRpc(fromClientId, ownerClientId);
         SendAnalytics(ownerClientId, source);
     }

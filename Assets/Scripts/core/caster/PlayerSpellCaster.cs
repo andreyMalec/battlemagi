@@ -91,6 +91,24 @@ public class PlayerSpellCaster : NetworkBehaviour {
             _effectManager.AddEffect(OwnerClientId, primalManaStatus);
     }
 
+    public void RestoreEcho(ulong targetClientId) {
+        if (!IsServer) return;
+        var sendParams = new ClientRpcParams {
+            Send = new ClientRpcSendParams { TargetClientIds = new[] { targetClientId } }
+        };
+        RestoreEchoClientRpc(sendParams);
+    }
+
+    [ClientRpc]
+    private void RestoreEchoClientRpc(ClientRpcParams clientRpcParams = default) {
+        if (!IsOwner) return;
+        var spell = _state.SpellToCast();
+        if (spell == null) return;
+        _state.EchoCount += 1;
+        Debug.Log(
+            $" [PlayerSpellCaster] Игрок {OwnerClientId} восстанавливает эхо для {spell.name}. Осталось эхо: {_state.EchoCount}");
+    }
+
     private void Update() {
         if (!IsOwner) return;
 
@@ -115,6 +133,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
     private void CancelSpell() {
         _spellManager.CancelSpell(_state.ChannelingElapsed);
         _state.SpellEcho = null;
+        _state.EchoSpentMana = false;
     }
 
     private void CastSpell() {
@@ -127,8 +146,9 @@ public class PlayerSpellCaster : NetworkBehaviour {
             if (_channelingCoroutine != null)
                 StopCoroutine(_channelingCoroutine);
             _channelingCoroutine = StartCoroutine(Channel(spell));
-        } else if (_state.EchoCount == spell.echoCount) {
+        } else if (_state.EchoCount == spell.echoCount && !_state.EchoSpentMana) {
             SpendManaServerRpc(_manaController.CostPerSecond(spell));
+            _state.EchoSpentMana = true;
         }
 
         StartCoroutine(_playerAnimator.CastSpell(spell));
@@ -144,8 +164,10 @@ public class PlayerSpellCaster : NetworkBehaviour {
         _state.EchoCount--;
         if (_state.EchoCount >= 0)
             StartCoroutine(SpellEcho(_state.SpellEcho));
-        else
+        else {
             _state.SpellEcho = null;
+            _state.EchoSpentMana = false;
+        }
     }
 
     private IEnumerator Channel(SpellData spell) {
@@ -300,6 +322,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
 
             _state.RecognizedSpell = null;
             _state.SpellEcho = null;
+            _state.EchoSpentMana = false;
             return;
         }
 
@@ -310,6 +333,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
         _playerAnimator.CancelSpellChanneling();
         _spellManager.CancelSpell(_state.ChannelingElapsed);
         _state.SpellEcho = null;
+        _state.EchoSpentMana = false;
         _state.Channeling = false;
         channeling = false;
     }

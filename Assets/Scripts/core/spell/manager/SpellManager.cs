@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Timers;
 using Unity.Netcode;
@@ -49,7 +50,9 @@ public class SpellManager : NetworkBehaviour {
 
         defaultSpawnStrategy = SelectSpawnStrategy(spell.spawnMode, spell.multiProjDelay);
         alternativeSpawnStrategy = SelectSpawnStrategy(spell.alternativeSpawnMode, spell.multiProjDelay);
-        spawnStrategy = alternativeSpawn && spell.useAlternativeSpawnMode ? alternativeSpawnStrategy : defaultSpawnStrategy;
+        spawnStrategy = alternativeSpawn && spell.useAlternativeSpawnMode
+            ? alternativeSpawnStrategy
+            : defaultSpawnStrategy;
         activeSpell.PrepareSpell(spell, spawnStrategy);
     }
 
@@ -126,7 +129,7 @@ public class SpellManager : NetworkBehaviour {
     private void SpawnProjectile(SpellData spell, Vector3 pos, Quaternion rot, int index) {
         var channelMulti = 1f;
         if (spell.isChanneling && spell.isCharging && spell.channelDuration > 0) {
-            channelMulti = _lastCastTime / spell.channelDuration;
+            channelMulti = (float)Math.Pow(2, _lastCastTime - spell.channelDuration);
             Debug.Log(
                 $"[SpellManager] Channel multiplier: {channelMulti}, _lastCastTime={_lastCastTime}, channelDuration={spell.channelDuration}");
         }

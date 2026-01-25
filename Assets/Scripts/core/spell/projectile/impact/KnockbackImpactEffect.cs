@@ -5,7 +5,7 @@ using UnityEngine;
 public class KnockbackImpactEffect : ImpactEffect {
     [SerializeField] private float rigidbodyForceMultiplier = 100f;
 
-    public override GameObject OnImpact(BaseSpell spell, SpellData data) {
+    public override GameObject OnImpact(BaseSpell spell, SpellData data, bool damageApplied) {
         if (data.knockbackForce == 0) return null;
         var radius = data.hasAreaEffect ? data.areaRadius : 1f;
         var hits = Physics.OverlapSphere(spell.transform.position, radius);
