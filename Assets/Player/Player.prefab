@@ -914,7 +914,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSpellCaster
   ShowTopMostFoldoutHeaderGroup: 1
-  noManaSound: {fileID: 1507093393527865229}
   disabledSound: {fileID: 1507093393527865229}
   spellCastKey: 323
   spellCancelKey: 324
@@ -1156,9 +1155,9 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 5062687673072769487, guid: 0dee41fcfd7ec4c429ddbec189e528ae, type: 2}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 9611abb8e7f880547b6383ac3cc12a36, type: 3}
+  m_Resource: {fileID: 8300000, guid: 0f9ab83e956c0c9479d288b9e9c26c59, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.2
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0

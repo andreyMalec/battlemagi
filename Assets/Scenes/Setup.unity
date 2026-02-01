@@ -1108,6 +1108,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1521928834}
   - component: {fileID: 1521928835}
+  - component: {fileID: 1521928836}
   m_Layer: 0
   m_Name: LobbyManager
   m_TagString: Untagged
@@ -1142,6 +1143,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc1a914f2711423c98a0917fed3892f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LobbyManager
+--- !u!114 &1521928836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1521928832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39b463b470d7418b9a9b8e5d79964e30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GraphicsSettingsInitializer
 --- !u!1 &1696171705
 GameObject:
   m_ObjectHideFlags: 0
@@ -1172,7 +1185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44dd247a00edbfa44b77868d755af6ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Facepunch Transport for Netcode for GameObjects::Netcode.Transports.Facepunch.FacepunchTransport
-  steamAppId: 480
+  steamAppId: 4381100
   targetSteamId: 0
   userSteamId: 0
 --- !u!114 &1696171707
@@ -1417,7 +1430,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1941920897}
   - component: {fileID: 1941920896}
-  - component: {fileID: 1941920898}
   - component: {fileID: 1941920899}
   m_Layer: 0
   m_Name: SceneLoader
@@ -1454,18 +1466,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1941920898
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1941920895}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 39b463b470d7418b9a9b8e5d79964e30, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GraphicsSettingsInitializer
 --- !u!114 &1941920899
 MonoBehaviour:
   m_ObjectHideFlags: 0

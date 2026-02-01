@@ -274,9 +274,6 @@
             "m_Id": "520e9b8d42764d04a067689752f8b481"
         },
         {
-            "m_Id": "348707a3f97b4b85b7eb4e969ccdef7f"
-        },
-        {
             "m_Id": "dbdac0fc8759440b876d54f28a58ed1d"
         },
         {
@@ -1324,9 +1321,6 @@
             },
             {
                 "m_Id": "ffe14c7002f045a1b585eed41b0ec3ef"
-            },
-            {
-                "m_Id": "348707a3f97b4b85b7eb4e969ccdef7f"
             }
         ]
     },
@@ -2826,40 +2820,6 @@
 
 {
     "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.BlockNode",
-    "m_ObjectId": "348707a3f97b4b85b7eb4e969ccdef7f",
-    "m_Group": {
-        "m_Id": ""
-    },
-    "m_Name": "SurfaceDescription.Alpha",
-    "m_DrawState": {
-        "m_Expanded": true,
-        "m_Position": {
-            "serializedVersion": "2",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 0.0,
-            "height": 0.0
-        }
-    },
-    "m_Slots": [
-        {
-            "m_Id": "8de7c90b7c94456ab49abe92ad3d7244"
-        }
-    ],
-    "synonyms": [],
-    "m_Precision": 0,
-    "m_PreviewExpanded": true,
-    "m_DismissedVersion": 0,
-    "m_PreviewMode": 0,
-    "m_CustomColors": {
-        "m_SerializableColors": []
-    },
-    "m_SerializedDescriptor": "SurfaceDescription.Alpha"
-}
-
-{
-    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.Texture2DMaterialSlot",
     "m_ObjectId": "350df47c916f4f848f1490dc3115dc73",
     "m_Id": 0,
@@ -3950,8 +3910,8 @@
     "m_ObjectId": "55ff2780f7c14124b1919ed58b8ad604",
     "m_Title": "Particle ",
     "m_Position": {
-        "x": -2061.0,
-        "y": -1282.0
+        "x": -2060.999755859375,
+        "y": -1281.9998779296875
     }
 }
 
@@ -4075,7 +4035,7 @@
         "m_Id": "d7123948b1284438bbc9acb546d4bdff"
     },
     "m_AllowMaterialOverride": false,
-    "m_SurfaceType": 1,
+    "m_SurfaceType": 0,
     "m_ZTestMode": 4,
     "m_ZWriteControl": 0,
     "m_AlphaMode": 0,
@@ -5798,21 +5758,6 @@
 {
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
-    "m_ObjectId": "8de7c90b7c94456ab49abe92ad3d7244",
-    "m_Id": 0,
-    "m_DisplayName": "Alpha",
-    "m_SlotType": 0,
-    "m_Hidden": false,
-    "m_ShaderOutputName": "Alpha",
-    "m_StageCapability": 2,
-    "m_Value": 1.0,
-    "m_DefaultValue": 1.0,
-    "m_Labels": []
-}
-
-{
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
     "m_ObjectId": "8e433fec2ddd45d39d2ea76d829b5252",
     "m_Id": 4,
     "m_DisplayName": "R",
@@ -5831,8 +5776,8 @@
     "m_ObjectId": "8f0778c36b7c4925ac220c06b4b5ef5b",
     "m_Title": "Main Color",
     "m_Position": {
-        "x": -896.0,
-        "y": 304.0
+        "x": -895.9998779296875,
+        "y": 303.9999694824219
     }
 }
 
@@ -7006,8 +6951,8 @@
     "m_ObjectId": "bae2e080895a4095b125905ef436106f",
     "m_Title": "Fresnel",
     "m_Position": {
-        "x": -2.0,
-        "y": 505.0
+        "x": -2.000030517578125,
+        "y": 504.99993896484377
     }
 }
 
@@ -7212,7 +7157,7 @@
     "m_ObjectId": "bfc6d7afa0844c668c4071c90ea1547c",
     "m_Title": "Normal map",
     "m_Position": {
-        "x": -1073.0,
+        "x": -1072.9998779296875,
         "y": -761.0
     }
 }
@@ -9126,7 +9071,7 @@
     "m_ObjectId": "f486d35a599d409e89fe757a9f702360",
     "m_Title": "Voronoi",
     "m_Position": {
-        "x": -2544.0,
+        "x": -2543.999755859375,
         "y": -449.0
     }
 }

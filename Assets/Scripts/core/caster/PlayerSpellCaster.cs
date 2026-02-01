@@ -8,7 +8,6 @@ using Voice;
 
 [RequireComponent(typeof(SpellManager))]
 public class PlayerSpellCaster : NetworkBehaviour {
-    [SerializeField] private AudioSource noManaSound;
     [SerializeField] private AudioSource disabledSound;
     private NetworkStatSystem _statSystem;
     private StatusEffectManager _effectManager;
@@ -104,7 +103,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
         if (!IsOwner) return;
         var spell = _state.SpellToCast();
         if (spell == null) return;
-        _state.EchoCount += 1;
+        _state.EchoCount = Math.Clamp(_state.EchoCount + 1, 0, spell.echoCount);
         Debug.Log(
             $" [PlayerSpellCaster] Игрок {OwnerClientId} восстанавливает эхо для {spell.name}. Осталось эхо: {_state.EchoCount}");
     }
@@ -146,7 +145,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
             if (_channelingCoroutine != null)
                 StopCoroutine(_channelingCoroutine);
             _channelingCoroutine = StartCoroutine(Channel(spell));
-        } else if (_state.EchoCount == spell.echoCount && !_state.EchoSpentMana) {
+        } else if (spell.echoCount == 0 || (_state.EchoCount == spell.echoCount && !_state.EchoSpentMana)) {
             SpendManaServerRpc(_manaController.CostPerSecond(spell));
             _state.EchoSpentMana = true;
         }
@@ -244,7 +243,8 @@ public class PlayerSpellCaster : NetworkBehaviour {
             return;
 
         if (DisableWhileCarrying(_state.RecognizedSpell)) {
-            disabledSound?.Play();
+            if (!disabledSound.isPlaying)
+                disabledSound.Play();
             _state.RecognizedSpell = null;
             return;
         }
@@ -305,7 +305,8 @@ public class PlayerSpellCaster : NetworkBehaviour {
         _state.CastWaiting = false;
 
         if (DisableWhileCarrying(_state.RecognizedSpell)) {
-            disabledSound?.Play();
+            if (!disabledSound.isPlaying)
+                disabledSound.Play();
             CancelSpell();
         } else {
             CastSpell();
