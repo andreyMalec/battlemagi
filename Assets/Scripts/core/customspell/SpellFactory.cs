@@ -15,12 +15,10 @@ public class SpellFactory {
         );
         var view = viewGo.GetComponent<SpellView>();
         var instance = viewGo.GetComponent<SpellInstance>();
-        if (viewGo.TryGetComponent<Collider>(out var _))
-            viewGo.AddComponent<TriggerHitBuffer>();
 
         var onHitTrigger = new SpellTrigger {
-            EventType = typeof(OnHitEvent),
-            Actions = new ISpellAction[] {
+            eventType = typeof(OnHitEvent),
+            actions = new ISpellAction[] {
                 new DealDamageAction(35f),
                 new SpawnZoneAction(def.onHitSpawnZone),
             }
@@ -32,14 +30,16 @@ public class SpellFactory {
             def
         );
 
-        var shape = new LinearProjectileShape();
+        var shape = viewGo.AddComponent<ForwardCapsuleShape>();
+        shape.Init(context);
         var core = new ProjectileCore(
             context,
             shape,
             new[] { onHitTrigger }
         );
 
-        var bind = new SpellBind(core, view, context);
+        var move = new LinearMoveTransform(direction, def.projectileSpeed);
+        var bind = new SpellBind(core, view, context, move);
         instance.Init(bind);
         return bind;
     }
@@ -57,13 +57,11 @@ public class SpellFactory {
         );
         var view = viewGo.GetComponent<SpellView>();
         var instance = viewGo.GetComponent<SpellInstance>();
-        if (viewGo.TryGetComponent<Collider>(out var _))
-            viewGo.AddComponent<TriggerHitBuffer>();
 
         var onHitTrigger = new SpellTrigger {
-            EventType = typeof(OnZoneStayEvent),
-            Actions = new ISpellAction[] {
-                new ZoneDamageAction(3f),
+            eventType = typeof(OnZoneStayEvent),
+            actions = new ISpellAction[] {
+                new ZoneDamageAction(10f),
             }
         };
 
@@ -73,15 +71,16 @@ public class SpellFactory {
             def
         );
 
-        var shape = new CircleZoneShape(def.zoneRadius);
+        var move = new StaticTransform();
+        var shape = viewGo.AddComponent<SphereShape>();
+        shape.Init(context);
         var core = new ZoneCore(
             context,
             shape,
-            new[] { onHitTrigger },
-            def.zoneDuration
+            new[] { onHitTrigger }
         );
 
-        var bind = new SpellBind(core, view, context);
+        var bind = new SpellBind(core, view, context, move);
         instance.Init(bind);
         return bind;
     }

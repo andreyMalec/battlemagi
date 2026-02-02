@@ -1,11 +1,11 @@
 public class SpellTrigger {
-    public System.Type EventType;
-    public ISpellAction[] Actions;
+    public System.Type eventType;
+    public ISpellAction[] actions;
 
     public void TryFire(ISpellContext context, SpellEvent evt) {
-        if (evt.GetType() == EventType) {
-            foreach (var action in Actions)
-                action.Apply(context, evt);
-        }
+        if (evt.GetType() != eventType) return;
+
+        foreach (var action in actions)
+            action.Apply(context, evt);
     }
 }

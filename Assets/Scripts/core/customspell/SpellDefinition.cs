@@ -4,10 +4,10 @@ using UnityEngine;
 public class SpellDefinition : ScriptableObject {
     public GameObject mainPrefab;
 
+    public float lifetime;
+
     [Header("Projectile")]
     public float projectileSpeed;
-
-    public float projectileLifetime;
 
     [Header("Zone")]
     public float zoneRadius = 1;

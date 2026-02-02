@@ -1,8 +1,11 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ZoneDamageAction : ISpellAction {
     private readonly float _damagePerSecond;
     private float _accumulator;
+    private readonly List<ulong> _damagedThisTick = new();
 
     public ZoneDamageAction(float dps) {
         _damagePerSecond = dps;
@@ -12,13 +15,18 @@ public class ZoneDamageAction : ISpellAction {
         if (evt is not OnZoneStayEvent stay)
             return;
 
-        _accumulator += context.DeltaTime;
+        _accumulator += stay.DeltaTime;
         if (_accumulator < 1f) return;
-        Debug.Log($"Applying _____________________________ {stay.Target.name}");
-        if (!DamageUtils.TryGetOwnerFromCollider(stay.Target, out var damageable, out ulong owner)) return;
-
-        base.Apply(context, evt);
         _accumulator = 0f;
-        damageable.TakeDamage("", context.OwnerId, _damagePerSecond);
+        _damagedThisTick.Clear();
+        foreach (var target in stay.Targets) {
+            if (!DamageUtils.TryGetOwnerFromCollider(target, out var damageable, out ulong owner)) continue;
+            if (!damageable.IsSpawned || damageable.isDead) continue;
+            if (_damagedThisTick.Contains(owner)) continue;
+            _damagedThisTick.Add(owner);
+            base.Apply(context, evt);
+
+            damageable.TakeDamage("", context.OwnerId, _damagePerSecond);
+        }
     }
 }

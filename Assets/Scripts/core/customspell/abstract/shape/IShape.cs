@@ -1,9 +1,8 @@
 using System.Collections.Generic;
+using UnityEngine;
 
-public interface IShape<C, R>
-    where C : ISpellContext
-    where R : IShapeResult {
-    R Sample(C context);
+public interface IShape {
+    void Init(ISpellContext context);
 
-    public IEnumerable<ShapeHit> Query(C ctx, R result);
+    IEnumerable<ShapeHit> Query();
 }

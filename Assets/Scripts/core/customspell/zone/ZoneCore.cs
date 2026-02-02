@@ -3,57 +3,26 @@ using UnityEngine;
 
 public class ZoneCore : ISpellCore {
     private readonly ZoneContext _ctx;
-    private readonly IShape<IZoneContext, ZoneVolume> _shape;
-    private readonly SpellTrigger[] _triggers;
-    private readonly float _duration;
-    private HashSet<GameObject> _inside = new();
+    private readonly IShape _shape;
 
     public ZoneCore(
         ZoneContext ctx,
-        IShape<IZoneContext, ZoneVolume> shape,
-        SpellTrigger[] triggers,
-        float duration
-    ) {
+        IShape shape,
+        SpellTrigger[] triggers
+    ) : base(ctx, triggers) {
         _ctx = ctx;
         _shape = shape;
-        _triggers = triggers;
-        _duration = duration;
     }
 
-    public void Tick(float delta) {
-        _ctx.Tick(delta);
-
-        if (_ctx.Age >= _duration) {
+    public override void Tick(float delta) {
+        _ctx.Lifetime -= delta;
+        if (_ctx.Lifetime <= 0f) {
             _ctx.View.Kill();
             return;
         }
 
+        var hits = _shape.Query();
 
-        var result = _shape.Sample(_ctx);
-        var hits = new List<ShapeHit>(_shape.Query(_ctx, result));
-
-        var current = new HashSet<GameObject>();
-        foreach (var hit in hits)
-            current.Add(hit.Target);
-
-        foreach (var enter in current) {
-            if (!_inside.Contains(enter))
-                HandleEvent(new OnZoneEnterEvent(enter));
-        }
-
-        foreach (var hit in hits)
-            HandleEvent(new OnZoneStayEvent(hit.Target));
-
-        foreach (var exit in _inside) {
-            if (!current.Contains(exit))
-                HandleEvent(new OnZoneExitEvent(exit));
-        }
-
-        _inside = current;
-    }
-
-    public void HandleEvent(SpellEvent evt) {
-        foreach (var trigger in _triggers)
-            trigger.TryFire(_ctx, evt);
+        HandleEvent(new OnZoneStayEvent(hits.Map(it => it.Target.gameObject), delta));
     }
 }

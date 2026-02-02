@@ -7,12 +7,6 @@ public class ProjectileContext : IProjectileContext {
     public SpellView View { get; }
     public SpellDefinition Data { get; }
 
-    public Vector3 Position {
-        get => View.transform.position;
-        set => View.transform.position = value;
-    }
-
-    public Vector3 Velocity { get; set; }
     public float Lifetime { get; set; }
 
     public float Time => UnityEngine.Time.time;
@@ -27,7 +21,6 @@ public class ProjectileContext : IProjectileContext {
         OwnerId = Caster.GetComponent<NetworkObject>().OwnerClientId;
         View = view;
         Data = data;
-        Lifetime = data.projectileLifetime;
-        Velocity = view.transform.forward * data.projectileSpeed;
+        Lifetime = data.lifetime;
     }
 }
