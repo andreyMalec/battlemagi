@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class ProjectileCore : ISpellCore {
     private readonly IProjectileContext _ctx;
     private readonly IShape<IProjectileContext, ProjectileStep> _shape;

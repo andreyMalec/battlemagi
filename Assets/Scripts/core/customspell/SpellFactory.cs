@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class SpellFactory {
@@ -9,11 +8,16 @@ public class SpellFactory {
         Quaternion rotation,
         Vector3 direction
     ) {
-        var view = Object.Instantiate(
+        var viewGo = Object.Instantiate(
             def.MainPrefab,
             position,
             rotation
-        ).GetComponent<SpellView>();
+        );
+        var view = viewGo.GetComponent<SpellView>();
+        var instance = viewGo.AddComponent<SpellInstance>();
+        if (viewGo.TryGetComponent<Collider>(out var _))
+            viewGo.AddComponent<TriggerHitBuffer>();
+
         var onHitTrigger = new SpellTrigger {
             EventType = typeof(OnHitEvent),
             Actions = new ISpellAction[] {
@@ -33,10 +37,12 @@ public class SpellFactory {
         var core = new ProjectileCore(
             context,
             shape,
-            new SpellTrigger[] { onHitTrigger }
+            new[] { onHitTrigger }
         );
 
-        return new SpellBind(core, view);
+        var bind = new SpellBind(core, view);
+        instance.Init(bind);
+        return bind;
     }
 
     public static SpellBind CreateZone(
@@ -45,11 +51,15 @@ public class SpellFactory {
         Vector3 position,
         Quaternion rotation
     ) {
-        var view = Object.Instantiate(
+        var viewGo = Object.Instantiate(
             def.MainPrefab,
             position,
             rotation
-        ).GetComponent<SpellView>();
+        );
+        var view = viewGo.GetComponent<SpellView>();
+        var instance = viewGo.AddComponent<SpellInstance>();
+        if (viewGo.TryGetComponent<Collider>(out var _))
+            viewGo.AddComponent<TriggerHitBuffer>();
 
         var onHitTrigger = new SpellTrigger {
             EventType = typeof(OnZoneStayEvent),
@@ -67,10 +77,12 @@ public class SpellFactory {
         var core = new ZoneCore(
             context,
             shape,
-            new SpellTrigger[] { onHitTrigger },
+            new[] { onHitTrigger },
             def.ZoneDuration
         );
 
-        return new SpellBind(core, view);
+        var bind = new SpellBind(core, view);
+        instance.Init(bind);
+        return bind;
     }
 }

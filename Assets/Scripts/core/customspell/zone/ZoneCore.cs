@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class ZoneCore : ISpellCore {
@@ -29,15 +28,26 @@ public class ZoneCore : ISpellCore {
             return;
         }
 
+
         var result = _shape.Sample(_ctx);
-        var hits = _shape.Query(_ctx, result);
-        var current = hits.Select(h => h.Target).ToHashSet();
-        foreach (var enter in current.Except(_inside))
-            HandleEvent(new OnZoneStayEvent(enter));
+        var hits = new List<ShapeHit>(_shape.Query(_ctx, result));
+
+        var current = new HashSet<GameObject>();
+        foreach (var hit in hits)
+            current.Add(hit.Target);
+
+        foreach (var enter in current) {
+            if (!_inside.Contains(enter))
+                HandleEvent(new OnZoneEnterEvent(enter));
+        }
+
         foreach (var hit in hits)
             HandleEvent(new OnZoneStayEvent(hit.Target));
-        foreach (var exit in _inside.Except(current))
-            HandleEvent(new OnZoneStayEvent(exit));
+
+        foreach (var exit in _inside) {
+            if (!current.Contains(exit))
+                HandleEvent(new OnZoneExitEvent(exit));
+        }
 
         _inside = current;
     }

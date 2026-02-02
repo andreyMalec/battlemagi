@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,6 +13,9 @@ public class LinearProjectileShape
     }
 
     public IEnumerable<ShapeHit> Query(IProjectileContext ctx, ProjectileStep step) {
+        if (ctx.View.TryGetComponent<TriggerHitBuffer>(out var buffer))
+            return buffer.Consume();
+
         if (Physics.Linecast(ctx.Position, step.NewPosition, out var hit))
             return new[] {
                 new ShapeHit {
@@ -22,6 +24,7 @@ public class LinearProjectileShape
                     Target = hit.collider.gameObject
                 }
             };
+
         return new List<ShapeHit>();
     }
 }

@@ -21,6 +21,9 @@ public class CircleZoneShape : IShape<IZoneContext, ZoneVolume> {
     }
 
     public IEnumerable<ShapeHit> Query(IZoneContext ctx, ZoneVolume result) {
+        if (ctx.View.TryGetComponent<TriggerHitBuffer>(out var buffer))
+            return buffer.Consume();
+
         var size = Physics.OverlapSphereNonAlloc(ctx.Center, _radius, _hits, 1 << _playerMask);
 
         var shapeHits = new List<ShapeHit>();

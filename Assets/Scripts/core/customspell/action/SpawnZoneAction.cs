@@ -18,7 +18,5 @@ public class SpawnZoneAction : ISpellAction {
             hit.Point,
             Quaternion.identity
         );
-
-        context.Caster.Cast(zone);
     }
 }
