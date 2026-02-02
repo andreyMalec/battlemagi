@@ -59,4 +59,18 @@ public static class DamageUtils {
         owner = damageable.OwnerClientId;
         return true;
     }
+
+    public static bool TryGetOwnerFromCollider(GameObject other, out Damageable damageable, out ulong owner) {
+        damageable = null;
+        owner = ulong.MaxValue;
+
+        if (other.TryGetComponent<ChildCollider>(out _)) {
+            damageable = other.GetComponentInParent<Damageable>();
+        } else if (!other.TryGetComponent(out damageable)) {
+            return false;
+        }
+
+        owner = damageable.OwnerClientId;
+        return true;
+    }
 }

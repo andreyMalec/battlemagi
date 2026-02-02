@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5018617467678129579}
   - component: {fileID: 5655171294455013999}
   - component: {fileID: 2096543699184924239}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Third Person Camera Face
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -138,7 +138,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6991023923860154135}
   - component: {fileID: 9180866248403736370}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Hand IK Target Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -182,7 +182,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6354605069808739984}
   - component: {fileID: 4551373672288408725}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Step Audio
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -310,7 +310,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3077521524520137575}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: CastPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -347,7 +347,7 @@ GameObject:
   - component: {fileID: 3684824733104456915}
   - component: {fileID: 7594489981059989853}
   - component: {fileID: 5039131445357911111}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: First Person Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -516,7 +516,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5596533096327910552}
   - component: {fileID: 3562400442783663379}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Hand IK Target
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -561,7 +561,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1983326224943658370}
   - component: {fileID: 772428511593807316}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: First Person Audio
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -623,7 +623,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2511421032472464710}
   - component: {fileID: 6962596785093598452}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Jump Audio
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -752,6 +752,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3580683726391601925}
   - component: {fileID: 6341828913972651628}
+  - component: {fileID: 4264968793503388057}
   - component: {fileID: 5777521522989648823}
   - component: {fileID: 6916625131687324290}
   - component: {fileID: 8271153046618425552}
@@ -778,7 +779,7 @@ GameObject:
   - component: {fileID: 2323875734396528773}
   - component: {fileID: 7527429836848279379}
   - component: {fileID: 61866278598921742}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -833,6 +834,23 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &4264968793503388057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74ebdd940d9a4fcaaae044fe12179c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellRunner
+  def: {fileID: 11400000, guid: 7659d312640413c4bbe8f8065b466a2c, type: 2}
+  spawnPos: {fileID: 3077521524520137575}
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &5777521522989648823
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1427,7 +1445,7 @@ GameObject:
   - component: {fileID: 2019376321681842677}
   - component: {fileID: 8944887311446215334}
   - component: {fileID: 913786688067405199}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Third Person Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1554,7 +1572,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1983242037409218633}
   - component: {fileID: 1198318877366138461}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Observer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1601,7 +1619,7 @@ GameObject:
   - component: {fileID: 4566222397654007818}
   - component: {fileID: 8091174937036172696}
   - component: {fileID: 2819066250352855099}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Mouth
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1759,7 +1777,7 @@ GameObject:
   m_Component:
   - component: {fileID: 136272458478440544}
   - component: {fileID: 8201634953252771622}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Damage Audio
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1888,7 +1906,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6404953993623198568}
   - component: {fileID: 7112777465546181935}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Hand Ik Target Spine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1932,7 +1950,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1635313302129742427}
   - component: {fileID: 6466238404988819252}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Ground Check
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1980,7 +1998,7 @@ GameObject:
   - component: {fileID: 1716412967212972362}
   - component: {fileID: 7638167997188353851}
   - component: {fileID: 504837146363618102}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2090,7 +2108,7 @@ GameObject:
   - component: {fileID: 6735588697236286772}
   - component: {fileID: 1972851545649759332}
   - component: {fileID: 1988255799526250045}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2217,7 +2235,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2987356091954791567, guid: 02e2f2c9ea735674f8b9868257d1e2a4, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 3027699357822140822, guid: 02e2f2c9ea735674f8b9868257d1e2a4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2269,7 +2287,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5394291565036808623, guid: 02e2f2c9ea735674f8b9868257d1e2a4, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 5502024964603606174, guid: 02e2f2c9ea735674f8b9868257d1e2a4, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -2281,7 +2299,7 @@ PrefabInstance:
       objectReference: {fileID: -2550372050140285000, guid: 3f207ffc5d1e2794b87c7b18faf6752d, type: 2}
     - target: {fileID: 9063925581789471907, guid: 02e2f2c9ea735674f8b9868257d1e2a4, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 9084727007643689808, guid: 02e2f2c9ea735674f8b9868257d1e2a4, type: 3}
       propertyPath: m_hasFontAssetChanged
@@ -2327,9 +2345,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2934301547977243489}
     m_Modifications:
+    - target: {fileID: 310365609681436769, guid: 0de2c1dc599d3ab4685bb2c1396fc2ec, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 1287744456044421830, guid: 0de2c1dc599d3ab4685bb2c1396fc2ec, type: 3}
       propertyPath: m_Name
       value: SpellBook
+      objectReference: {fileID: 0}
+    - target: {fileID: 1287744456044421830, guid: 0de2c1dc599d3ab4685bb2c1396fc2ec, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 1287744456044421830, guid: 0de2c1dc599d3ab4685bb2c1396fc2ec, type: 3}
       propertyPath: m_IsActive
@@ -2390,6 +2416,34 @@ PrefabInstance:
     - target: {fileID: 1381134658574864066, guid: 0de2c1dc599d3ab4685bb2c1396fc2ec, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2698233878842494244, guid: 0de2c1dc599d3ab4685bb2c1396fc2ec, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2830486375930321055, guid: 0de2c1dc599d3ab4685bb2c1396fc2ec, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3409670544872121731, guid: 0de2c1dc599d3ab4685bb2c1396fc2ec, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4668300441989971508, guid: 0de2c1dc599d3ab4685bb2c1396fc2ec, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6141756437835790441, guid: 0de2c1dc599d3ab4685bb2c1396fc2ec, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6164385739774691658, guid: 0de2c1dc599d3ab4685bb2c1396fc2ec, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7032589119094240443, guid: 0de2c1dc599d3ab4685bb2c1396fc2ec, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2469,6 +2523,10 @@ PrefabInstance:
     - target: {fileID: 3064280272593765402, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
       propertyPath: m_Name
       value: Freeze
+      objectReference: {fileID: 0}
+    - target: {fileID: 3064280272593765402, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 3064280272593765402, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
       propertyPath: m_IsActive
