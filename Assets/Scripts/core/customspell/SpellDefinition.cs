@@ -2,18 +2,18 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Spell", menuName = "Spells/Spell Definition")]
 public class SpellDefinition : ScriptableObject {
-    public GameObject MainPrefab;
+    public GameObject mainPrefab;
 
     [Header("Projectile")]
-    public float ProjectileSpeed;
+    public float projectileSpeed;
 
-    public float ProjectileLifetime;
+    public float projectileLifetime;
 
     [Header("Zone")]
-    public float ZoneRadius;
+    public float zoneRadius = 1;
 
-    public float ZoneDuration;
+    public float zoneDuration;
 
     [Header("Spawned Spells")]
-    public SpellDefinition OnHitSpawnZone;
+    public SpellDefinition onHitSpawnZone;
 }

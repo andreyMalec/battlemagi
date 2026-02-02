@@ -5,6 +5,7 @@ public class ProjectileContext : IProjectileContext {
     public SpellRunner Caster { get; }
     public ulong OwnerId { get; }
     public SpellView View { get; }
+    public SpellDefinition Data { get; }
 
     public Vector3 Position {
         get => View.transform.position;
@@ -20,13 +21,13 @@ public class ProjectileContext : IProjectileContext {
     public ProjectileContext(
         SpellRunner caster,
         SpellView view,
-        Vector3 velocity,
-        float lifetime
+        SpellDefinition data
     ) {
         Caster = caster;
         OwnerId = Caster.GetComponent<NetworkObject>().OwnerClientId;
         View = view;
-        Velocity = velocity;
-        Lifetime = lifetime;
+        Data = data;
+        Lifetime = data.projectileLifetime;
+        Velocity = view.transform.forward * data.projectileSpeed;
     }
 }

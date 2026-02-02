@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70d6ac2600d5440ab45bcb7d2aabe7d3, type: 3}
   m_Name: fire test
   m_EditorClassIdentifier: Assembly-CSharp::SpellProjectileDefinition
-  MainPrefab: {fileID: 7354784787554302670, guid: 98f9a507ceb843d49880363f9cf9869c, type: 3}
-  ProjectileSpeed: 10
-  ProjectileLifetime: 10
-  ZoneRadius: 0
-  ZoneDuration: 0
-  OnHitSpawnZone: {fileID: 11400000, guid: 4aec248e4dfc7464381c95a332855769, type: 2}
+  mainPrefab: {fileID: 7354784787554302670, guid: 98f9a507ceb843d49880363f9cf9869c, type: 3}
+  projectileSpeed: 0
+  projectileLifetime: 0
+  zoneRadius: 1
+  zoneDuration: 0
+  onHitSpawnZone: {fileID: 0}
