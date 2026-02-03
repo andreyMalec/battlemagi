@@ -21,11 +21,18 @@ public class ProjectileCore : ISpellCore {
         var hits = _shape.Query();
 
         foreach (var hit in hits) {
-            HandleEvent(new OnHitEvent {
+            var hitEvent = new OnHitEvent {
                 Target = hit.Target.gameObject,
                 Point = hit.Point,
-                Normal = hit.Normal
-            });
+                Normal = hit.Normal,
+                Outcome = HitOutcome.Destroy
+            };
+
+            HandleEvent(hitEvent);
+            if (hitEvent.Outcome == HitOutcome.Destroy) {
+                _ctx.View.Kill();
+                return;
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BounceTransform : ISpellTransform {
+public class BounceTransform : IHitReactiveTransform {
     private readonly ISpellTransform _inner;
     private readonly int _maxBounces;
     private readonly float _speedMultiplier;
@@ -28,6 +28,11 @@ public class BounceTransform : ISpellTransform {
 
     public Vector3 Sample(float dt) {
         return _inner.Sample(dt);
+    }
+
+    public bool TryReact(OnHitEvent hit) {
+        if (hit.Outcome != HitOutcome.Bounce) return false;
+        return TryBounce(hit.Normal);
     }
 
     public bool TryBounce(Vector3 normal) {
