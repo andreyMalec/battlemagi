@@ -26,8 +26,6 @@ public class ProjectileCore : ISpellCore {
                 Point = hit.Point,
                 Normal = hit.Normal
             });
-            _ctx.View.Kill();
-            return;
         }
     }
 }

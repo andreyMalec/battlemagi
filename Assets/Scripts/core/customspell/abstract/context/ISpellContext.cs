@@ -3,6 +3,7 @@ using UnityEngine;
 public interface ISpellContext {
     SpellRunner Caster { get; }
     SpellView View { get; }
+    ISpellTransform Movement { get; }
     SpellDefinition Data { get; }
 
     float Lifetime { get; }

@@ -13,8 +13,11 @@ MonoBehaviour:
   m_Name: fire test
   m_EditorClassIdentifier: Assembly-CSharp::SpellProjectileDefinition
   mainPrefab: {fileID: 7354784787554302670, guid: 98f9a507ceb843d49880363f9cf9869c, type: 3}
-  projectileSpeed: 0
-  projectileLifetime: 0
+  lifetime: 5
+  projectileSpeed: 25
+  enableBounce: 1
+  maxBounces: 3
+  bounceSpeedMultiplier: 0.9
   zoneRadius: 1
   zoneDuration: 0
-  onHitSpawnZone: {fileID: 0}
+  onHitSpawnZone: {fileID: 11400000, guid: 4aec248e4dfc7464381c95a332855769, type: 2}

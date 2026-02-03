@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: luja test
   m_EditorClassIdentifier: Assembly-CSharp::SpellProjectileDefinition
   mainPrefab: {fileID: 1315042845377307778, guid: 53a4bda83406bbd4bbda5afab393fd3b, type: 3}
+  lifetime: 3
   projectileSpeed: 0
-  projectileLifetime: 0
-  zoneRadius: 3
-  zoneDuration: 0
+  zoneRadius: 4
+  zoneDuration: 10
   onHitSpawnZone: {fileID: 0}
+  bounce: {fileID: 0}

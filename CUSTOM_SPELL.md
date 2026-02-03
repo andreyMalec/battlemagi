@@ -1,6 +1,6 @@
 [How to](HOW_TO.md)
 
-### 1️⃣ Core (ядро) — “что вообще кастуется”
+### 1 Core (ядро) — “что вообще кастуется”
 
 Обязательный модуль (1 на заклинание)
 
@@ -88,11 +88,7 @@
     - OnSummonDeath
     - OnOwnerDeath
 
-### 2️⃣ Shape — “как это доставляется” (реализация зависит от Core)
-
-Правило пространственного распределения воздействия во времени
-
-#### 1️⃣ Projectile
+### 2 Transform — “как это распространяется” (реализация зависит от Core)
 
 - Linear
 - Arc
@@ -102,7 +98,16 @@
 - Split
 - Wave
 
-`Shape = Update(position, time)`
+Transform управляет:
+- ростом/сжатием
+- перемещением
+
+### 2.5 Shape — “какой это обладает” (реализация зависит от Core)
+
+#### 1️⃣ Projectile
+
+- Capsule
+- Sphere
 
 #### 2️⃣ Beam
 
@@ -122,8 +127,6 @@
 - Forked beam (раздвоение)
 - Chain beam
 
-`BeamShape.sampleRays(t) → List<Ray>`
-
 #### 3️⃣ Zone
 
 Примеры Zone Shape:
@@ -132,15 +135,9 @@
 - Ring
 - Donut
 - Line strip
-- Expanding circle
-- Moving zone
-- Fractal / random pockets
 
 Shape управляет:
-
 - формой overlap
-- ростом/сжатием
-- перемещением
 
 `ZoneShape.contains(point, t)`
 
@@ -158,7 +155,7 @@ Shape управляет:
 - spatial selector
 - target pattern
 
-### 3️⃣ Payload — “что происходит при попадании”
+### 3 Payload — “что происходит при попадании”
 
 🩸 Combat Effects
 
@@ -193,7 +190,7 @@ Shape управляет:
 - Add stack
 - Consume stacks
 
-### 4️⃣ Modifiers — “как именно это работает”
+### 4 Modifiers — “как именно это работает”
 
 - +Radius / −Speed
 - +Crit chance
@@ -202,7 +199,7 @@ Shape управляет:
 - Cast time → charge
 - Consumes HP instead of mana
 
-### 5️⃣ Triggers / Conditions — глубина 💀
+### 5 Triggers / Conditions — глубина 💀
 
 Trigger — когда проверяем. Это событие. Оно просто говорит: «что-то произошло»
 

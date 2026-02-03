@@ -4,10 +4,10 @@ public class SpellInstance : MonoBehaviour {
     [SerializeField] private GameObject[] scaleWithRadius;
     [SerializeField] private ParticleSystem[] scaleParticleWithRadius;
 
-    private SpellBind _bind;
+    public SpellBind Bind { get; private set; }
 
     public void Init(SpellBind bind) {
-        _bind = bind;
+        Bind = bind;
         var k = bind.Context.Data.zoneRadius;
 
         foreach (var go in scaleWithRadius)
@@ -19,6 +19,6 @@ public class SpellInstance : MonoBehaviour {
     }
 
     void FixedUpdate() {
-        _bind.Tick(Time.deltaTime);
+        Bind.Tick(Time.deltaTime);
     }
 }

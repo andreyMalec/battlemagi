@@ -11,10 +11,11 @@ public class SpellBind {
         View = view;
         Context = context;
         Transform = transform;
+        Transform.Init(View.transform, Context);
     }
 
     public void Tick(float deltaTime) {
-        Transform.Tick(View.transform, Context, deltaTime);
+        Transform.Tick(deltaTime);
         Core.Tick(deltaTime);
 
         if (!View.IsAlive)

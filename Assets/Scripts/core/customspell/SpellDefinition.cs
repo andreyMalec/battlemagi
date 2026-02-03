@@ -9,6 +9,11 @@ public class SpellDefinition : ScriptableObject {
     [Header("Projectile")]
     public float projectileSpeed;
 
+    [Header("Bounce")]
+    public bool enableBounce;
+    public int maxBounces = 3;
+    public float bounceSpeedMultiplier = 0.9f;
+
     [Header("Zone")]
     public float zoneRadius = 1;
 

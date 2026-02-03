@@ -1,5 +1,11 @@
 using UnityEngine;
 
 public interface ISpellTransform {
-    void Tick(Transform transform, ISpellContext ctx, float dt);
+    SpellMotion Motion { get; set; }
+
+    void Init(Transform transform, ISpellContext ctx);
+
+    void Tick(float dt);
+
+    Vector3 Sample(float dt);
 }
