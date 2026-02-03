@@ -29,7 +29,7 @@ public class ProjectileCore : ISpellCore {
             };
 
             HandleEvent(hitEvent);
-            if (hitEvent.Outcome == HitOutcome.Destroy) {
+            if ((hitEvent.Outcome & HitOutcome.Destroy) != 0) {
                 _ctx.View.Kill();
                 return;
             }

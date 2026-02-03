@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SpellFactory {
@@ -6,7 +7,8 @@ public class SpellFactory {
         SpellRunner caster,
         Vector3 position,
         Quaternion rotation,
-        Vector3 direction
+        Vector3 direction,
+        bool spawned = false
     ) {
         var viewGo = Object.Instantiate(
             def.mainPrefab,
@@ -16,29 +18,29 @@ public class SpellFactory {
         var view = viewGo.GetComponent<SpellView>();
         var instance = viewGo.GetComponent<SpellInstance>();
 
+        var actions = new List<ISpellAction>();
+        if (def.enablePierce)
+            actions.Add(new PierceOnHitAction(def.maxPierces));
+        if (def.enableBounce)
+            actions.Add(new BounceOnHitAction(def.maxBounces, def.bounceSpeedMultiplier));
+        if (def.enableFork)
+            actions.Add(new ForkOnHitAction(def.forkCount, def.forkSpreadAngle));
+        actions.Add(new DealDamageAction(35f));
+        actions.Add(new SpawnZoneAction(def.onHitSpawnZone));
+
         var onHitTrigger = new SpellTrigger {
             eventType = typeof(OnHitEvent),
-            actions = def.enableBounce
-                ? new ISpellAction[] {
-                    new BounceOnHitAction(),
-                    new DealDamageAction(35f),
-                    new SpawnZoneAction(def.onHitSpawnZone),
-                }
-                : new ISpellAction[] {
-                    new DealDamageAction(35f),
-                    new SpawnZoneAction(def.onHitSpawnZone),
-                }
+            actions = actions.ToArray()
         };
 
-        ISpellTransform move = new LinearMoveTransform(direction, def.projectileSpeed);
-        if (def.enableBounce)
-            move = new BounceTransform(move, def.maxBounces, def.bounceSpeedMultiplier);
+        var move = new LinearMoveTransform(direction, def.projectileSpeed);
 
         var context = new ProjectileContext(
             caster,
             view,
             move,
-            def
+            def,
+            spawned
         );
 
         var shape = viewGo.AddComponent<CapsuleProjectileShape>();
@@ -58,7 +60,8 @@ public class SpellFactory {
         SpellDefinition def,
         SpellRunner caster,
         Vector3 position,
-        Quaternion rotation
+        Quaternion rotation,
+        bool spawned = false
     ) {
         var viewGo = Object.Instantiate(
             def.mainPrefab,
@@ -80,7 +83,8 @@ public class SpellFactory {
             caster,
             view,
             move,
-            def
+            def,
+            spawned
         );
 
         var shape = viewGo.AddComponent<TriggerSphereShape>();

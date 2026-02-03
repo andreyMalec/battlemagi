@@ -12,11 +12,12 @@ public class SpawnZoneAction : ISpellAction {
             return;
         base.Apply(context, evt);
 
-        var zone = SpellFactory.CreateZone(
+        SpellFactory.CreateZone(
             _zoneDef,
             context.Caster,
             hit.Point,
-            Quaternion.identity
+            Quaternion.identity,
+            true
         );
     }
 }

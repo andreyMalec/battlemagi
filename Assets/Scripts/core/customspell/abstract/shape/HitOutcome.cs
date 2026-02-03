@@ -1,13 +1,18 @@
+using System;
+
+[Flags]
 public enum HitOutcome {
+    None = 0,
+
     /** исчезает */
-    Destroy,
+    Destroy = 1 << 0,
 
     /** отражается */
-    Bounce,
+    Bounce = 1 << 1,
 
     /** проходит сквозь */
-    Pierce,
+    Pierce = 1 << 2,
 
     /** порождает новые */
-    Fork
+    Fork = 1 << 3
 }

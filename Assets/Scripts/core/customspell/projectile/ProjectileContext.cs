@@ -1,5 +1,4 @@
 using Unity.Netcode;
-using UnityEngine;
 
 public class ProjectileContext : IProjectileContext {
     public SpellRunner Caster { get; }
@@ -7,6 +6,8 @@ public class ProjectileContext : IProjectileContext {
     public SpellView View { get; }
     public ISpellTransform Movement { get; }
     public SpellDefinition Data { get; }
+
+    public bool Spawned { get; }
 
     public float Lifetime { get; set; }
 
@@ -17,13 +18,15 @@ public class ProjectileContext : IProjectileContext {
         SpellRunner caster,
         SpellView view,
         ISpellTransform movement,
-        SpellDefinition data
+        SpellDefinition data,
+        bool spawned
     ) {
         Caster = caster;
         OwnerId = Caster.GetComponent<NetworkObject>().OwnerClientId;
         View = view;
         Data = data;
         Movement = movement;
+        Spawned = spawned;
         Lifetime = data.lifetime;
     }
 }

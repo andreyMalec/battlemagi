@@ -76,6 +76,7 @@
   Типовые триггеры
     - OnCast
     - OnAfterDelay
+
 - #### Summon — Полноценная сущность
   Spawn → Think → Act → Die
 
