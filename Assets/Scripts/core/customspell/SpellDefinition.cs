@@ -5,6 +5,12 @@ public class SpellDefinition : ScriptableObject {
     public GameObject mainPrefab;
 
     public float lifetime;
+    public SpellTransform moveType;
+
+    [Header("Spiral")]
+    public float angularSpeed;
+    public float spiralRadius = 0.5f;
+    public SpiralAxis spiralAxis = SpiralAxis.Forward;
 
     [Header("Projectile")]
     public float projectileSpeed;

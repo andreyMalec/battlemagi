@@ -33,7 +33,19 @@ public class SpellFactory {
             actions = actions.ToArray()
         };
 
-        ISpellTransform move = new LinearMoveTransform(direction, def.projectileSpeed);
+        ISpellTransform move = def.moveType switch {
+            SpellTransform.Linear => new LinearMoveTransform(direction, def.projectileSpeed),
+            SpellTransform.Spiral => new SpiralMoveTransform(
+                direction,
+                def.spiralAxis,
+                def.spiralRadius,
+                def.angularSpeed,
+                def.projectileSpeed
+            ),
+            SpellTransform.FollowCaster => new FollowCasterTransform(),
+            _ => new StaticTransform()
+        };
+
         if (def.enableGravity) {
             move = new GravityTransform(move, def.gravity);
         }
@@ -85,6 +97,7 @@ public class SpellFactory {
         if (def.enableGravity) {
             move = new GravityTransform(move, def.gravity);
         }
+
         var context = new ZoneContext(
             caster,
             view,
