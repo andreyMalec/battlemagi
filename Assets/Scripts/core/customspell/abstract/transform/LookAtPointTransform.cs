@@ -34,6 +34,9 @@ public class LookAtPointTransform : ISpellTransform {
 
         Motion = new SpellMotion { Velocity = dir * _speed };
         _transform.position += Motion.Velocity * dt;
+
+        if (dir.sqrMagnitude > 0f)
+            _transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
     }
 
     public Vector3 Sample(float dt) {

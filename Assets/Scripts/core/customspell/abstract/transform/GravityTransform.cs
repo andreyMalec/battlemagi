@@ -4,6 +4,8 @@ public class GravityTransform : ISpellTransform {
     private readonly ISpellTransform _inner;
     private readonly Vector3 _gravity;
 
+    private Transform _transform;
+
     public SpellMotion Motion {
         get => _inner.Motion;
         set => _inner.Motion = value;
@@ -15,12 +17,16 @@ public class GravityTransform : ISpellTransform {
     }
 
     public void Init(Transform transform, ISpellContext ctx) {
+        _transform = transform;
         _inner.Init(transform, ctx);
     }
 
     public void Tick(float dt) {
         Motion = new SpellMotion { Velocity = Motion.Velocity + _gravity * dt };
         _inner.Tick(dt);
+        var dir = Motion.Velocity;
+        if (dir.sqrMagnitude > 0f)
+            _transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
     }
 
     public Vector3 Sample(float dt) {
@@ -31,4 +37,3 @@ public class GravityTransform : ISpellTransform {
         return sampled;
     }
 }
-

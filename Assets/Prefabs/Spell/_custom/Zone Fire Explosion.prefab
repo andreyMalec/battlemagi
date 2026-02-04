@@ -251,8 +251,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 1
-      minScalar: 0.8
+      scalar: 0.333
+      minScalar: 0.2666
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2533,9 +2533,9 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0.37234116
           inSlope: 14.952831
-          outSlope: -3.5217397
+          outSlope: -1.3112886
           tangentMode: 69
           weightedMode: 0
           inWeight: 0.33333334
@@ -2543,8 +2543,8 @@ ParticleSystem:
         - serializedVersion: 3
           time: 0.28395057
           value: 0
-          inSlope: -3.5217397
-          outSlope: -3.5217397
+          inSlope: -1.3112886
+          outSlope: -1.3112886
           tangentMode: 34
           weightedMode: 0
           inWeight: 0.33333334
@@ -4812,8 +4812,9 @@ GameObject:
   - component: {fileID: 6726005682311974204}
   - component: {fileID: 4032708602031652390}
   - component: {fileID: 5960827591578367935}
+  - component: {fileID: 2052138199942996905}
   m_Layer: 0
-  m_Name: test exp
+  m_Name: Zone Fire Explosion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4919,8 +4920,8 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 1
-      minScalar: 0.5
+      scalar: 0.6
+      minScalar: 0.3
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -4954,7 +4955,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 40
+      scalar: 6
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -5054,8 +5055,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.6
-      minScalar: 0.4
+      scalar: 0.2
+      minScalar: 0.133
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -5482,7 +5483,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 1
+      value: 0.5
       mode: 0
       spread: 0
       speed:
@@ -7336,13 +7337,13 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
-          inSlope: -2
-          outSlope: -2
+          value: 0.46808434
+          inSlope: -1.451328
+          outSlope: -1.451328
           tangentMode: 0
           weightedMode: 0
           inWeight: 0
-          outWeight: 0
+          outWeight: 0.10262009
         - serializedVersion: 3
           time: 1
           value: 0
@@ -9816,6 +9817,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95a013b49884445fb29a6af511334745, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellView
+--- !u!114 &2052138199942996905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1742013225946848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fd067c9361d43908ab7c673b844449b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellInstance
+  scaleWithRadius: []
+  scaleParticleWithRadius:
+  - {fileID: 198785070284630344}
+  - {fileID: 2080794156608794387}
+  - {fileID: 2081657376057034139}
+  - {fileID: 198694502634222740}
 --- !u!1001 &2171430530737002755
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9885,8 +9904,68 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 198738731738625552, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 198738731738625552, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
+      propertyPath: InitialModule.startSpeed.scalar
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 198738731738625552, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
+      propertyPath: InitialModule.startSize.minScalar
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 198738731738625552, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
       propertyPath: InitialModule.gravityModifier.scalar
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 198738731738625552, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
+      propertyPath: ClampVelocityModule.magnitude.maxCurve.m_Curve.Array.data[0].time
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 198738731738625552, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
+      propertyPath: ClampVelocityModule.magnitude.maxCurve.m_Curve.Array.data[1].time
+      value: 0.6979087
+      objectReference: {fileID: 0}
+    - target: {fileID: 198738731738625552, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
+      propertyPath: ClampVelocityModule.magnitude.maxCurve.m_Curve.Array.data[2].time
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 198738731738625552, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
+      propertyPath: ClampVelocityModule.magnitude.maxCurve.m_Curve.Array.data[0].value
+      value: 0.29738426
+      objectReference: {fileID: 0}
+    - target: {fileID: 198738731738625552, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
+      propertyPath: ClampVelocityModule.magnitude.maxCurve.m_Curve.Array.data[1].value
+      value: 0.033866763
+      objectReference: {fileID: 0}
+    - target: {fileID: 198738731738625552, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
+      propertyPath: ClampVelocityModule.magnitude.maxCurve.m_Curve.Array.data[2].value
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 198738731738625552, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
+      propertyPath: ClampVelocityModule.magnitude.maxCurve.m_Curve.Array.data[1].inSlope
+      value: -0.38033614
+      objectReference: {fileID: 0}
+    - target: {fileID: 198738731738625552, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
+      propertyPath: ClampVelocityModule.magnitude.maxCurve.m_Curve.Array.data[2].inSlope
+      value: -0.11210771
+      objectReference: {fileID: 0}
+    - target: {fileID: 198738731738625552, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
+      propertyPath: ClampVelocityModule.magnitude.maxCurve.m_Curve.Array.data[0].outSlope
+      value: -0.37758163
+      objectReference: {fileID: 0}
+    - target: {fileID: 198738731738625552, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
+      propertyPath: ClampVelocityModule.magnitude.maxCurve.m_Curve.Array.data[1].outSlope
+      value: -0.38033614
+      objectReference: {fileID: 0}
+    - target: {fileID: 198738731738625552, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
+      propertyPath: ClampVelocityModule.magnitude.maxCurve.m_Curve.Array.data[2].outSlope
+      value: -0.11210771
+      objectReference: {fileID: 0}
+    - target: {fileID: 198738731738625552, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
+      propertyPath: ClampVelocityModule.magnitude.maxCurve.m_Curve.Array.data[1].outWeight
+      value: 0.4723821
       objectReference: {fileID: 0}
     - target: {fileID: 199171645158860722, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
       propertyPath: m_Materials.Array.size
@@ -9901,6 +9980,16 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
+--- !u!198 &2080794156608794387 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 198738731738625552, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
+  m_PrefabInstance: {fileID: 2171430530737002755}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &2081657376057034139 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 198704611722779800, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
+  m_PrefabInstance: {fileID: 2171430530737002755}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2175944349114265179 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4777701302679384, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}

@@ -7,12 +7,22 @@ public class SpellDefinition : ScriptableObject {
 
     public float lifetime;
     public SpellTransform moveType;
+    
+    public LayerMask defaultRaycast = ~0;
 
     [Header("Projectile")]
     public float projectileSpeed;
 
     public bool enableGravity;
     [ShowIf("enableGravity")] public Vector3 gravity = new(0, -9.81f, 0);
+
+    [Header("LookAtPoint")]
+    [ShowIf("_transformLookAtPoint")] public float lookAtMaxDistance = 50f;
+
+    [ShowIf("_transformLookAtPoint")] public LayerMask lookAtRayMask = ~0;
+
+    [Header("FollowCaster")]
+    [ShowIf("_transformFollowCaster")] public FollowCasterTarget followTarget;
 
     [Header("Spiral")]
     [ShowIf("_transformSpiral")] public float angularSpeed;
@@ -27,10 +37,8 @@ public class SpellDefinition : ScriptableObject {
     [ShowIf("enableSquashStretch")] public float stretchFrequency = 8f;
     [ShowIf("enableSquashStretch")] public float stretchDamping = 0f;
 
-    [Header("LookAtPoint")]
-    [ShowIf("_transformSLookAtPoint")] public float lookAtMaxDistance = 50f;
-
-    [ShowIf("_transformSLookAtPoint")] public LayerMask lookAtRayMask = ~0;
+    [Header("Beam")]
+    public float beamMaxLength = 15f;
 
     [Header("Bounce")]
     public bool enableBounce;
@@ -56,12 +64,14 @@ public class SpellDefinition : ScriptableObject {
     public SpellDefinition onHitSpawnZone;
 
     private bool _transformSpiral = false;
-    private bool _transformSLookAtPoint = false;
+    private bool _transformLookAtPoint = false;
+    private bool _transformFollowCaster = false;
 
 #if UNITY_EDITOR
     private void OnValidate() {
         _transformSpiral = moveType is SpellTransform.Spiral;
-        _transformSLookAtPoint = moveType is SpellTransform.LookAtPoint;
+        _transformLookAtPoint = moveType is SpellTransform.LookAtPoint;
+        _transformFollowCaster = moveType is SpellTransform.FollowCaster;
     }
 #endif
 }

@@ -14,7 +14,9 @@ public class SpiralMoveTransform : ISpellTransform {
 
     private float _angle;
 
-    public SpiralMoveTransform(Vector3 forward, SpiralAxis axisMode, float radius, float angularSpeed, float forwardSpeed) {
+    public SpiralMoveTransform(
+        Vector3 forward, SpiralAxis axisMode, float radius, float angularSpeed, float forwardSpeed
+    ) {
         _forward = forward.sqrMagnitude > 0f ? forward.normalized : Vector3.forward;
         _axisMode = axisMode;
         _radius = radius;
@@ -31,9 +33,15 @@ public class SpiralMoveTransform : ISpellTransform {
     }
 
     public void Tick(float dt) {
+        var prev = _transform.position;
+
         _center += Motion.Velocity * dt;
         _angle += _angularSpeed * dt;
         _transform.position = _center + CalcRadial(_angle) * _radius;
+
+        var vel = (_transform.position - prev) / dt;
+        if (vel.sqrMagnitude > 0f)
+            _transform.rotation = Quaternion.LookRotation(vel.normalized, Vector3.up);
     }
 
     public Vector3 Sample(float dt) {

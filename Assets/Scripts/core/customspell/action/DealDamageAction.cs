@@ -7,9 +7,9 @@ public class DealDamageAction : ISpellAction {
 
     public override void Apply(ISpellContext context, SpellEvent evt) {
         if (evt is not OnHitEvent hit) return;
+        if (!DamageUtils.TryGetOwnerFromCollider(hit.Target, out var damageable, out ulong owner)) return;
+        if (!damageable.IsSpawned || damageable.isDead) return;
         base.Apply(context, evt);
-        if (hit.Target.TryGetComponent<Damageable>(out var damageable)) {
-            damageable.TakeDamage("", context.OwnerId, _damage);
-        }
+        damageable.TakeDamage("", context.OwnerId, _damage);
     }
 }

@@ -6,6 +6,7 @@ public class SpellFactory {
         SpellDefinition def,
         SpellRunner caster,
         Vector3 position,
+        Vector3 direction,
         Quaternion rotation,
         bool spawned = false
     ) {
@@ -21,7 +22,7 @@ public class SpellFactory {
             eventType = typeof(OnHitEvent),
             actions = HitActions(def).ToArray()
         };
-        var move = Move(def, caster.Direction);
+        var move = Move(def, direction);
 
         var context = new ProjectileContext(
             caster,
@@ -31,7 +32,7 @@ public class SpellFactory {
             spawned
         );
 
-        var shape = viewGo.AddComponent<CapsuleProjectileShape>();
+        var shape = viewGo.AddComponent<LineProjectileShape>();
         shape.Init(context);
         var core = new ProjectileCore(
             context,
@@ -48,6 +49,7 @@ public class SpellFactory {
         SpellDefinition def,
         SpellRunner caster,
         Vector3 position,
+        Vector3 direction,
         Quaternion rotation,
         bool spawned = false
     ) {
@@ -66,7 +68,7 @@ public class SpellFactory {
             }
         };
 
-        var move = Move(def, caster.Direction);
+        var move = Move(def, direction);
 
         var context = new ZoneContext(
             caster,
@@ -89,6 +91,54 @@ public class SpellFactory {
         return bind;
     }
 
+    public static SpellBind<BeamContext> CreateBeam(
+        SpellDefinition def,
+        SpellRunner caster,
+        Vector3 position,
+        Vector3 direction,
+        Quaternion rotation,
+        bool spawned = false
+    ) {
+        var viewGo = Object.Instantiate(
+            def.mainPrefab,
+            position,
+            rotation
+        );
+        var view = viewGo.GetComponent<SpellView>();
+        var instance = viewGo.GetComponent<SpellInstance>();
+
+        var triggers = new List<SpellTrigger>();
+        triggers.Add(new SpellTrigger {
+            eventType = typeof(OnBeamTickEvent),
+            actions = new ISpellAction[] {
+                new DealDamageAction(10f)
+            }
+        });
+
+        ISpellTransform move = Move(def, direction);
+
+        var context = new BeamContext(
+            caster,
+            view,
+            move,
+            def,
+            spawned
+        );
+
+        var shape = viewGo.AddComponent<StraightBeamShape>();
+        shape.Init(context);
+
+        var core = new BeamCore(
+            context,
+            shape,
+            triggers.ToArray()
+        );
+
+        var bind = new SpellBind<BeamContext>(core, view, context, move);
+        instance.Init(bind);
+        return bind;
+    }
+
     private static ISpellTransform Move(SpellDefinition def, Vector3 direction) {
         ISpellTransform move = def.moveType switch {
             SpellTransform.Linear => new LinearMoveTransform(direction, def.projectileSpeed),
@@ -101,7 +151,7 @@ public class SpellFactory {
                 def.angularSpeed,
                 def.projectileSpeed
             ),
-            SpellTransform.FollowCaster => new FollowCasterTransform(),
+            SpellTransform.FollowCaster => new FollowCasterTransform(def.followTarget),
             _ => new StaticTransform()
         };
 

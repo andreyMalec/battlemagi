@@ -10,14 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 70d6ac2600d5440ab45bcb7d2aabe7d3, type: 3}
-  m_Name: fire test
+  m_Name: Projectile
   m_EditorClassIdentifier: Assembly-CSharp::SpellProjectileDefinition
   mainPrefab: {fileID: 7354784787554302670, guid: 98f9a507ceb843d49880363f9cf9869c, type: 3}
   lifetime: 5
   moveType: 1
-  projectileSpeed: 20
+  defaultRaycast:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  projectileSpeed: 25
   enableGravity: 1
   gravity: {x: 0, y: -9.81, z: 0}
+  lookAtMaxDistance: 50
+  lookAtRayMask:
+    serializedVersion: 2
+    m_Bits: 64
+  followTarget: 1
   angularSpeed: 5
   spiralRadius: 2
   spiralAxis: 0
@@ -25,17 +33,14 @@ MonoBehaviour:
   stretchAmplitude: 1
   stretchFrequency: 0.5
   stretchDamping: 0
-  lookAtMaxDistance: 50
-  lookAtRayMask:
-    serializedVersion: 2
-    m_Bits: 64
-  enableBounce: 0
-  maxBounces: 1
+  beamMaxLength: 15
+  enableBounce: 1
+  maxBounces: 3
   bounceSpeedMultiplier: 0.7
   enablePierce: 0
-  maxPierces: 2
-  enableFork: 0
-  forkCount: 3
+  maxPierces: 1
+  enableFork: 1
+  forkCount: 5
   forkSpreadAngle: 35
   zoneRadius: 1
   onHitSpawnZone: {fileID: 11400000, guid: 4aec248e4dfc7464381c95a332855769, type: 2}
