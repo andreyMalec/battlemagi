@@ -51,7 +51,6 @@ public class ForkOnHitAction : ISpellAction {
             context.Caster,
             hit.Point,
             Quaternion.LookRotation(dir, Vector3.up),
-            dir,
             true
         );
     }

@@ -2,5 +2,6 @@ public enum SpellTransform {
     Static,
     Linear,
     Spiral,
-    FollowCaster
+    FollowCaster,
+    LookAtPoint
 }

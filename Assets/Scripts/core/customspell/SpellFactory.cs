@@ -7,7 +7,6 @@ public class SpellFactory {
         SpellRunner caster,
         Vector3 position,
         Quaternion rotation,
-        Vector3 direction,
         bool spawned = false
     ) {
         var viewGo = Object.Instantiate(
@@ -18,37 +17,11 @@ public class SpellFactory {
         var view = viewGo.GetComponent<SpellView>();
         var instance = viewGo.GetComponent<SpellInstance>();
 
-        var actions = new List<ISpellAction>();
-        if (def.enablePierce)
-            actions.Add(new PierceOnHitAction(def.maxPierces));
-        if (def.enableBounce)
-            actions.Add(new BounceOnHitAction(def.maxBounces, def.bounceSpeedMultiplier));
-        if (def.enableFork)
-            actions.Add(new ForkOnHitAction(def.forkCount, def.forkSpreadAngle));
-        actions.Add(new DealDamageAction(35f));
-        actions.Add(new SpawnZoneAction(def.onHitSpawnZone));
-
         var onHitTrigger = new SpellTrigger {
             eventType = typeof(OnHitEvent),
-            actions = actions.ToArray()
+            actions = HitActions(def).ToArray()
         };
-
-        ISpellTransform move = def.moveType switch {
-            SpellTransform.Linear => new LinearMoveTransform(direction, def.projectileSpeed),
-            SpellTransform.Spiral => new SpiralMoveTransform(
-                direction,
-                def.spiralAxis,
-                def.spiralRadius,
-                def.angularSpeed,
-                def.projectileSpeed
-            ),
-            SpellTransform.FollowCaster => new FollowCasterTransform(),
-            _ => new StaticTransform()
-        };
-
-        if (def.enableGravity) {
-            move = new GravityTransform(move, def.gravity);
-        }
+        var move = Move(def, caster.Direction);
 
         var context = new ProjectileContext(
             caster,
@@ -93,10 +66,7 @@ public class SpellFactory {
             }
         };
 
-        ISpellTransform move = new StaticTransform();
-        if (def.enableGravity) {
-            move = new GravityTransform(move, def.gravity);
-        }
+        var move = Move(def, caster.Direction);
 
         var context = new ZoneContext(
             caster,
@@ -117,5 +87,50 @@ public class SpellFactory {
         var bind = new SpellBind<ZoneContext>(core, view, context, move);
         instance.Init(bind);
         return bind;
+    }
+
+    private static ISpellTransform Move(SpellDefinition def, Vector3 direction) {
+        ISpellTransform move = def.moveType switch {
+            SpellTransform.Linear => new LinearMoveTransform(direction, def.projectileSpeed),
+            SpellTransform.LookAtPoint => new LookAtPointTransform(def.projectileSpeed, def.lookAtMaxDistance,
+                def.lookAtRayMask),
+            SpellTransform.Spiral => new SpiralMoveTransform(
+                direction,
+                def.spiralAxis,
+                def.spiralRadius,
+                def.angularSpeed,
+                def.projectileSpeed
+            ),
+            SpellTransform.FollowCaster => new FollowCasterTransform(),
+            _ => new StaticTransform()
+        };
+
+        if (def.enableGravity) {
+            move = new GravityTransform(move, def.gravity);
+        }
+
+        if (def.enableSquashStretch) {
+            move = new SquashStretchTransform(
+                move,
+                def.stretchAmplitude,
+                def.stretchFrequency,
+                def.stretchDamping
+            );
+        }
+
+        return move;
+    }
+
+    private static List<ISpellAction> HitActions(SpellDefinition def) {
+        var actions = new List<ISpellAction>();
+        if (def.enablePierce)
+            actions.Add(new PierceOnHitAction(def.maxPierces));
+        if (def.enableBounce)
+            actions.Add(new BounceOnHitAction(def.maxBounces, def.bounceSpeedMultiplier));
+        if (def.enableFork)
+            actions.Add(new ForkOnHitAction(def.forkCount, def.forkSpreadAngle));
+        actions.Add(new DealDamageAction(35f));
+        actions.Add(new SpawnZoneAction(def.onHitSpawnZone));
+        return actions;
     }
 }

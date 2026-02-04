@@ -14,21 +14,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpellProjectileDefinition
   mainPrefab: {fileID: 7354784787554302670, guid: 98f9a507ceb843d49880363f9cf9869c, type: 3}
   lifetime: 5
-  moveType: 2
+  moveType: 1
+  projectileSpeed: 20
+  enableGravity: 1
+  gravity: {x: 0, y: -9.81, z: 0}
   angularSpeed: 5
   spiralRadius: 2
   spiralAxis: 0
-  projectileSpeed: 10
-  enableGravity: 0
-  gravity: {x: 0, y: -9.81, z: 0}
-  enableBounce: 1
+  enableSquashStretch: 0
+  stretchAmplitude: 1
+  stretchFrequency: 0.5
+  stretchDamping: 0
+  lookAtMaxDistance: 50
+  lookAtRayMask:
+    serializedVersion: 2
+    m_Bits: 64
+  enableBounce: 0
   maxBounces: 1
   bounceSpeedMultiplier: 0.7
   enablePierce: 0
-  maxPierces: 1
-  enableFork: 1
+  maxPierces: 2
+  enableFork: 0
   forkCount: 3
   forkSpreadAngle: 35
   zoneRadius: 1
-  zoneDuration: 0
   onHitSpawnZone: {fileID: 11400000, guid: 4aec248e4dfc7464381c95a332855769, type: 2}
