@@ -16,5 +16,11 @@ public class PierceOnHitAction : ISpellAction {
         hit.Outcome &= ~HitOutcome.Destroy;
 
         _pierces++;
+
+        context.SendEvent(new OnPierceEvent {
+            target = hit.Target,
+            point = hit.Point,
+            normal = hit.Normal
+        });
     }
 }

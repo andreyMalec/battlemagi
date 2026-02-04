@@ -26,6 +26,7 @@ public class ForkOnHitAction : ISpellAction {
 
         if (_count <= 1) {
             Spawn(context, hit, Quaternion.identity, baseDir);
+            Send(context, hit);
             return;
         }
 
@@ -36,6 +37,8 @@ public class ForkOnHitAction : ISpellAction {
             var rot = Quaternion.AngleAxis(yaw, Vector3.up);
             Spawn(context, hit, rot, baseDir);
         }
+
+        Send(context, hit);
     }
 
     private void Spawn(ISpellContext context, OnHitEvent hit, Quaternion rot, Vector3 baseDir) {
@@ -51,5 +54,13 @@ public class ForkOnHitAction : ISpellAction {
             dir,
             true
         );
+    }
+
+    private void Send(ISpellContext context, OnHitEvent hit) {
+        context.SendEvent(new OnForkEvent {
+            target = hit.Target,
+            point = hit.Point,
+            normal = hit.Normal
+        });
     }
 }

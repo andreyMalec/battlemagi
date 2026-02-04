@@ -1,5 +1,4 @@
-public class ProjectileCore : ISpellCore {
-    private readonly ProjectileContext _ctx;
+public class ProjectileCore : ISpellCore<ProjectileContext> {
     private readonly IShape _shape;
 
     public ProjectileCore(
@@ -7,14 +6,13 @@ public class ProjectileCore : ISpellCore {
         IShape shape,
         SpellTrigger[] triggers
     ) : base(ctx, triggers) {
-        _ctx = ctx;
         _shape = shape;
     }
 
     public override void Tick(float delta) {
-        _ctx.Lifetime -= delta;
-        if (_ctx.Lifetime <= 0f) {
-            _ctx.View.Kill();
+        context.Lifetime -= delta;
+        if (context.Lifetime <= 0f) {
+            context.View.Kill();
             return;
         }
 
@@ -30,9 +28,13 @@ public class ProjectileCore : ISpellCore {
 
             HandleEvent(hitEvent);
             if ((hitEvent.Outcome & HitOutcome.Destroy) != 0) {
-                _ctx.View.Kill();
+                context.View.Kill();
                 return;
             }
         }
+    }
+
+    protected override void AttachEventSink() {
+        context.eventSink = HandleEvent;
     }
 }

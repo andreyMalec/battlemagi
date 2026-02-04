@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 
-public class ZoneCore : ISpellCore {
-    private readonly ZoneContext _ctx;
+public class ZoneCore : ISpellCore<ZoneContext> {
     private readonly IShape _shape;
 
     public ZoneCore(
@@ -9,19 +8,22 @@ public class ZoneCore : ISpellCore {
         IShape shape,
         SpellTrigger[] triggers
     ) : base(ctx, triggers) {
-        _ctx = ctx;
         _shape = shape;
     }
 
     public override void Tick(float delta) {
-        _ctx.Lifetime -= delta;
-        if (_ctx.Lifetime <= 0f) {
-            _ctx.View.Kill();
+        context.Lifetime -= delta;
+        if (context.Lifetime <= 0f) {
+            context.View.Kill();
             return;
         }
 
         var hits = _shape.Query();
 
         HandleEvent(new OnZoneStayEvent(hits.Map(it => it.Target.gameObject), delta));
+    }
+
+    protected override void AttachEventSink() {
+        context.eventSink = HandleEvent;
     }
 }

@@ -1,12 +1,14 @@
-public class SpellBind {
-    public ISpellCore Core { get; }
+public class SpellBind<TContext> : ISpellBind
+    where TContext : ISpellContext {
+    public ISpellCore<TContext> Core { get; }
     public SpellView View { get; }
-    public ISpellContext Context { get; }
+    public TContext Context { get; }
+    ISpellContext ISpellBind.Context => Context;
     public ISpellTransform Transform { get; }
 
     public bool IsAlive { get; private set; } = true;
 
-    public SpellBind(ISpellCore core, SpellView view, ISpellContext context, ISpellTransform transform) {
+    public SpellBind(ISpellCore<TContext> core, SpellView view, TContext context, ISpellTransform transform) {
         Core = core;
         View = view;
         Context = context;

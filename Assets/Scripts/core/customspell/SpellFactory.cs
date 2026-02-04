@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SpellFactory {
-    public static SpellBind CreateProjectile(
+    public static SpellBind<ProjectileContext> CreateProjectile(
         SpellDefinition def,
         SpellRunner caster,
         Vector3 position,
@@ -33,7 +33,10 @@ public class SpellFactory {
             actions = actions.ToArray()
         };
 
-        var move = new LinearMoveTransform(direction, def.projectileSpeed);
+        ISpellTransform move = new LinearMoveTransform(direction, def.projectileSpeed);
+        if (def.enableGravity) {
+            move = new GravityTransform(move, def.gravity);
+        }
 
         var context = new ProjectileContext(
             caster,
@@ -51,12 +54,12 @@ public class SpellFactory {
             new[] { onHitTrigger }
         );
 
-        var bind = new SpellBind(core, view, context, move);
+        var bind = new SpellBind<ProjectileContext>(core, view, context, move);
         instance.Init(bind);
         return bind;
     }
 
-    public static SpellBind CreateZone(
+    public static SpellBind<ZoneContext> CreateZone(
         SpellDefinition def,
         SpellRunner caster,
         Vector3 position,
@@ -78,7 +81,10 @@ public class SpellFactory {
             }
         };
 
-        var move = new StaticTransform();
+        ISpellTransform move = new StaticTransform();
+        if (def.enableGravity) {
+            move = new GravityTransform(move, def.gravity);
+        }
         var context = new ZoneContext(
             caster,
             view,
@@ -95,7 +101,7 @@ public class SpellFactory {
             new[] { onHitTrigger }
         );
 
-        var bind = new SpellBind(core, view, context, move);
+        var bind = new SpellBind<ZoneContext>(core, view, context, move);
         instance.Init(bind);
         return bind;
     }

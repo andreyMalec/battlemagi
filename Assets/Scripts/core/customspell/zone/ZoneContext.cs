@@ -1,3 +1,4 @@
+using System;
 using Unity.Netcode;
 
 public class ZoneContext : IZoneContext {
@@ -14,6 +15,8 @@ public class ZoneContext : IZoneContext {
     public float Time => UnityEngine.Time.time;
     public float DeltaTime => UnityEngine.Time.deltaTime;
 
+    public Action<SpellEvent> eventSink;
+
     public ZoneContext(
         SpellRunner caster,
         SpellView view,
@@ -28,5 +31,9 @@ public class ZoneContext : IZoneContext {
         Movement = movement;
         Spawned = spawned;
         Lifetime = data.lifetime;
+    }
+
+    public void SendEvent(SpellEvent evt) {
+        eventSink?.Invoke(evt);
     }
 }

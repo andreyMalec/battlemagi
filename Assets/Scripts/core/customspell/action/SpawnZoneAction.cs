@@ -8,8 +8,7 @@ public class SpawnZoneAction : ISpellAction {
     }
 
     public override void Apply(ISpellContext context, SpellEvent evt) {
-        if (evt is not OnHitEvent hit)
-            return;
+        if (evt is not OnHitEvent hit) return;
         base.Apply(context, evt);
 
         SpellFactory.CreateZone(

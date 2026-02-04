@@ -11,4 +11,6 @@ public interface ISpellContext {
     ulong OwnerId { get; }
     float Time { get; }
     float DeltaTime { get; }
+
+    void SendEvent(SpellEvent evt);
 }

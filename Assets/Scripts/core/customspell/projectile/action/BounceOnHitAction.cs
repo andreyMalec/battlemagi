@@ -25,5 +25,11 @@ public class BounceOnHitAction : ISpellAction {
         context.Movement.Motion = new SpellMotion { Velocity = reflected };
         context.View.transform.position = hit.Point + hit.Normal.normalized * 0.02f;
         _bounces++;
+
+        context.SendEvent(new OnBounceEvent {
+            target = hit.Target,
+            point = hit.Point,
+            normal = hit.Normal
+        });
     }
 }
