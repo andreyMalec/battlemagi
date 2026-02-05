@@ -4,6 +4,7 @@ public class BeamCore : ISpellCore<BeamContext> {
     private readonly IShape _shape;
     private readonly HashSet<object> _inside = new();
     private bool _started;
+    private bool _sentLifetimeEnding;
 
     public BeamCore(
         BeamContext ctx,
@@ -17,6 +18,11 @@ public class BeamCore : ISpellCore<BeamContext> {
         if (!_started) {
             _started = true;
             HandleEvent(new OnBeamStartEvent());
+        }
+
+        if (!_sentLifetimeEnding && context.Lifetime > 0f && context.Lifetime <= BeforeEndThreshold) {
+            _sentLifetimeEnding = true;
+            HandleEvent(new OnLifetimeEndingEvent { remaining = context.Lifetime });
         }
 
         context.Lifetime -= delta;
@@ -86,4 +92,3 @@ public class BeamCore : ISpellCore<BeamContext> {
         context.eventSink = HandleEvent;
     }
 }
-

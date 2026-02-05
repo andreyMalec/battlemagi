@@ -12,3 +12,7 @@ public sealed class OnHitEvent : SpellEvent {
 
 public sealed class OnTickEvent : SpellEvent {
 }
+
+public sealed class OnLifetimeEndingEvent : SpellEvent {
+    public float remaining;
+}

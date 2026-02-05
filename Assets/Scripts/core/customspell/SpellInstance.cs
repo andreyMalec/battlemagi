@@ -6,23 +6,28 @@ public interface ISpellBind {
 }
 
 public class SpellInstance : MonoBehaviour {
-    [SerializeField] private GameObject[] scaleWithRadius;
-    [SerializeField] private ParticleSystem[] scaleParticleWithRadius;
-
     public ISpellBind Bind { get; private set; }
 
     public void Init(ISpellBind bind) {
         Bind = bind;
+
         var k = bind.Context.Data.zoneRadius;
+        foreach (var ps in GetComponentsInChildren<ParticleSystem>()) {
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            var main = ps.main;
+            main.duration = bind.Context.Lifetime;
+            if (!ps.main.loop) {
+                if (main.startLifetime.constantMax > bind.Context.Lifetime)
+                    main.startLifetime = bind.Context.Lifetime;
+            }
 
-        foreach (var go in scaleWithRadius)
-            go.transform.localScale *= k;
-
-        foreach (var ps in scaleParticleWithRadius)
             ParticleUtils.Scale(ps, k);
+            ps.Play(true);
+        }
     }
 
     void FixedUpdate() {
-        Bind.Tick(Time.deltaTime);
+        if (Bind.Context.View.IsAlive)
+            Bind.Tick(Time.deltaTime);
     }
 }

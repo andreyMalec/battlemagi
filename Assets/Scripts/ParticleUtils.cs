@@ -2,7 +2,6 @@ using UnityEngine;
 
 public static class ParticleUtils {
     public static void Scale(ParticleSystem ps, float k) {
-        ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         var main = ps.main;
         main.startSizeMultiplier *= k;
         main.startSpeedMultiplier *= k;
@@ -49,6 +48,5 @@ public static class ParticleUtils {
             shape.boxThickness *= k;
         }
 
-        ps.Play(true);
     }
 }

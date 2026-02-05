@@ -20,4 +20,6 @@ public abstract class ISpellCore<TContext>
         foreach (var trigger in _triggers)
             trigger.TryFire(context, evt);
     }
+    
+    protected const float BeforeEndThreshold = 1f;
 }

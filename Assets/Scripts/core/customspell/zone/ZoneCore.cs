@@ -2,6 +2,7 @@ using System.Collections.Generic;
 
 public class ZoneCore : ISpellCore<ZoneContext> {
     private readonly IShape _shape;
+    private bool _sentLifetimeEnding;
 
     public ZoneCore(
         ZoneContext ctx,
@@ -12,6 +13,11 @@ public class ZoneCore : ISpellCore<ZoneContext> {
     }
 
     public override void Tick(float delta) {
+        if (!_sentLifetimeEnding && context.Lifetime > 0f && context.Lifetime <= BeforeEndThreshold) {
+            _sentLifetimeEnding = true;
+            HandleEvent(new OnLifetimeEndingEvent { remaining = context.Lifetime });
+        }
+
         context.Lifetime -= delta;
         if (context.Lifetime <= 0f) {
             context.View.Kill();

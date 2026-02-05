@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70d6ac2600d5440ab45bcb7d2aabe7d3, type: 3}
   m_Name: Zone
   m_EditorClassIdentifier: Assembly-CSharp::SpellProjectileDefinition
-  mainPrefab: {fileID: 1315042845377307778, guid: 3574cef7da322704cab09ae8ef9741e1, type: 3}
-  lifetime: 5
+  mainPrefab: {fileID: 1742013225946848, guid: dde68ffb88754c54c90a1b4c44a82d4f, type: 3}
+  lifetime: 2
   moveType: 0
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 4294967295
-  projectileSpeed: 5
+  projectileSpeed: 2
   enableGravity: 0
   gravity: {x: 0, y: -9.81, z: 0}
   lookAtMaxDistance: 50
@@ -42,5 +42,5 @@ MonoBehaviour:
   enableFork: 0
   forkCount: 3
   forkSpreadAngle: 35
-  zoneRadius: 1
+  zoneRadius: 3
   onHitSpawnZone: {fileID: 0}

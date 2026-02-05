@@ -18,10 +18,18 @@ public class SpellFactory {
         var view = viewGo.GetComponent<SpellView>();
         var instance = viewGo.GetComponent<SpellInstance>();
 
+        var triggers = new List<SpellTrigger>();
         var onHitTrigger = new SpellTrigger {
             eventType = typeof(OnHitEvent),
             actions = HitActions(def).ToArray()
         };
+        triggers.Add(onHitTrigger);
+        triggers.Add(new SpellTrigger {
+            eventType = typeof(OnLifetimeEndingEvent),
+            actions = new ISpellAction[] {
+                new RemoveParticlesAction()
+            }
+        });
         var move = Move(def, direction);
 
         var context = new ProjectileContext(
@@ -37,7 +45,7 @@ public class SpellFactory {
         var core = new ProjectileCore(
             context,
             shape,
-            new[] { onHitTrigger }
+            triggers.ToArray()
         );
 
         var bind = new SpellBind<ProjectileContext>(core, view, context, move);
@@ -61,12 +69,20 @@ public class SpellFactory {
         var view = viewGo.GetComponent<SpellView>();
         var instance = viewGo.GetComponent<SpellInstance>();
 
+        var triggers = new List<SpellTrigger>();
         var onHitTrigger = new SpellTrigger {
             eventType = typeof(OnZoneStayEvent),
             actions = new ISpellAction[] {
                 new ZoneDamageAction(10f),
             }
         };
+        triggers.Add(onHitTrigger);
+        triggers.Add(new SpellTrigger {
+            eventType = typeof(OnLifetimeEndingEvent),
+            actions = new ISpellAction[] {
+                new RemoveParticlesAction()
+            }
+        });
 
         var move = Move(def, direction);
 
@@ -83,7 +99,7 @@ public class SpellFactory {
         var core = new ZoneCore(
             context,
             shape,
-            new[] { onHitTrigger }
+            triggers.ToArray()
         );
 
         var bind = new SpellBind<ZoneContext>(core, view, context, move);
@@ -112,6 +128,12 @@ public class SpellFactory {
             eventType = typeof(OnBeamTickEvent),
             actions = new ISpellAction[] {
                 new DealDamageAction(10f)
+            }
+        });
+        triggers.Add(new SpellTrigger {
+            eventType = typeof(OnLifetimeEndingEvent),
+            actions = new ISpellAction[] {
+                new RemoveParticlesAction()
             }
         });
 
