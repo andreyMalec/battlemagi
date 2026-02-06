@@ -10,37 +10,37 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 70d6ac2600d5440ab45bcb7d2aabe7d3, type: 3}
-  m_Name: Projectile
+  m_Name: Zone
   m_EditorClassIdentifier: Assembly-CSharp::SpellProjectileDefinition
-  mainPrefab: {fileID: 7354784787554302670, guid: c351ec4f3915fdc4f9b419e56ab6b15a, type: 3}
-  lifetime: 5
-  moveType: 1
+  mainPrefab: {fileID: 1315042845377307778, guid: 53a4bda83406bbd4bbda5afab393fd3b, type: 3}
+  lifetime: 2
+  moveType: 0
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 4294967295
-  projectileSpeed: 25
-  enableGravity: 1
+  projectileSpeed: 2
+  enableGravity: 0
   gravity: {x: 0, y: -9.81, z: 0}
   lookAtMaxDistance: 50
   lookAtRayMask:
     serializedVersion: 2
     m_Bits: 64
-  followTarget: 1
-  angularSpeed: 5
-  spiralRadius: 2
+  followTarget: 0
+  angularSpeed: 0
+  spiralRadius: 0.5
   spiralAxis: 0
   enableSquashStretch: 0
-  stretchAmplitude: 1
-  stretchFrequency: 0.5
+  stretchAmplitude: 0.2
+  stretchFrequency: 8
   stretchDamping: 0
   beamMaxLength: 15
-  enableBounce: 1
+  enableBounce: 0
   maxBounces: 3
-  bounceSpeedMultiplier: 0.7
+  bounceSpeedMultiplier: 0.9
   enablePierce: 0
   maxPierces: 1
-  enableFork: 1
-  forkCount: 5
+  enableFork: 0
+  forkCount: 3
   forkSpreadAngle: 35
-  zoneRadius: 1
-  onHitSpawnZone: {fileID: 11400000, guid: 4aec248e4dfc7464381c95a332855769, type: 2}
+  zoneRadius: 3
+  onHitSpawnZone: {fileID: 0}
