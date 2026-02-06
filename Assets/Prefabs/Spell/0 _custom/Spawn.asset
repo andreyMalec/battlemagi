@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1907b37ed1aa4ddd80c76a48f1db8862, type: 3}
   m_Name: Spawn
   m_EditorClassIdentifier: Assembly-CSharp::SpawnDefinition
-  meshPreview: 0
+  preview: 5
   instanceCount: 3
   instanceLimit: 0
-  multiInstanceDelay: 0.3
+  multiInstanceDelay: 0
   delayOrigin: 0
-  spawnMode: 4
+  spawnMode: 5
   useAlternativeSpawnMode: 0
   alternativeSpawnMode: 0
   forwardStep: {x: 0, y: 0, z: 0}

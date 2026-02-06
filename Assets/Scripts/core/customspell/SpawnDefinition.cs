@@ -3,7 +3,7 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Spawn Strategy", menuName = "Spells/Spawn Definition")]
 public class SpawnDefinition : ScriptableObject {
-    public bool meshPreview = false;
+    public Preview preview;
     public int instanceCount = 1;
     public int instanceLimit = 0;
     [ShowIf("_isMultiInstance")] public float multiInstanceDelay = 0.2f;

@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SpellRunner : MonoBehaviour {
@@ -7,17 +7,74 @@ public class SpellRunner : MonoBehaviour {
     public Transform spawnPos;
     // public NetworkStatSystem statSystem;
 
-    public Vector3 Direction => spawnPos.forward;
+    private SpellDefinition _spell;
+    private ISpellSpawnPreview _spawnPreview;
 
-    private void Awake() {
-        // statSystem = GetComponent<NetworkStatSystem>();
-    }
+    public Vector3 Direction => spawnPos.forward;
 
     void Update() {
         if (Input.GetKeyDown(KeyCode.E))
-            RequestSpawn(def);
+            _spell = def;
         if (Input.GetKeyDown(KeyCode.R))
-            RequestSpawn(def2);
+            _spell = def2;
+
+        UpdatePreview();
+
+        if (_spell != null && Input.GetKeyDown(KeyCode.Mouse0)) {
+            RequestSpawn(_spell);
+            _spell = null;
+            _spawnPreview?.Clear();
+            _spawnPreview = null;
+        }
+
+        if (_spell != null && Input.GetKeyDown(KeyCode.Mouse1)) {
+            _spell = null;
+            _spawnPreview?.Clear();
+            _spawnPreview = null;
+        }
+    }
+
+    private void UpdatePreview() {
+        if (_spell != null && _spawnPreview == null) {
+            _spawnPreview = CreatePreview(_spell.spawn.preview);
+            _spawnPreview.Show(new SpawnContext {
+                spell = _spell,
+                spawn = _spell.spawn,
+                position = spawnPos.position,
+                rotation = spawnPos.rotation,
+                forward = spawnPos.forward,
+                caster = this
+            }, GetMode(_spell.spawn.spawnMode));
+        }
+
+        _spawnPreview?.Update(new SpawnContext {
+            spell = _spell,
+            spawn = _spell.spawn,
+            position = spawnPos.position,
+            rotation = spawnPos.rotation,
+            forward = spawnPos.forward,
+            caster = this
+        });
+    }
+
+    private static ISpellSpawnPreview CreatePreview(Preview previewFlags) {
+        if (previewFlags == Preview.None)
+            return new NonePreview();
+
+        var list = new List<ISpellSpawnPreview>(4);
+
+        if ((previewFlags & Preview.Mesh) != 0)
+            list.Add(new MeshSpawnPreview());
+        if ((previewFlags & Preview.Sphere) != 0)
+            list.Add(new NonePreview());
+        if ((previewFlags & Preview.Line) != 0)
+            list.Add(new LinePreview());
+
+        return list.Count switch {
+            0 => new NonePreview(),
+            1 => list[0],
+            _ => new CompositeSpawnPreview(list)
+        };
     }
 
     private void Spawn(SpawnContext context, int index) {
@@ -34,6 +91,17 @@ public class SpellRunner : MonoBehaviour {
         }
     }
 
+    private ISpellSpawn GetMode(SpawnMode mode) {
+        return mode switch {
+            SpawnMode.Direct => new NewDirectSpawn(),
+            SpawnMode.DirectDown => new OnFeetSpawn(),
+            SpawnMode.Arc => new NewArcSpawn(),
+            SpawnMode.GroundPoint => new LookAtPointSpawn(),
+            SpawnMode.GroundPointArc => new ArcToGroundPointSpawn(),
+            _ => null
+        };
+    }
+
     private void RequestSpawn(SpellDefinition spell) {
         var context = new SpawnContext {
             spell = spell,
@@ -43,21 +111,7 @@ public class SpellRunner : MonoBehaviour {
             forward = spawnPos.forward,
             caster = this
         };
-        ISpellSpawn spawn = null;
-        switch (spell.spawn.spawnMode) {
-            case SpawnMode.Direct:
-                spawn = new NewDirectSpawn();
-                break;
-            case SpawnMode.DirectDown:
-                spawn = new OnFeetSpawn();
-                break;
-            case SpawnMode.Arc:
-                spawn = new NewArcSpawn();
-                break;
-            // case SpawnMode.GroundPointArc:
-            //     spawn = new ArcToGroundPointSpawn();
-            //     break;
-        }
+        ISpellSpawn spawn = GetMode(spell.spawn.spawnMode);
 
         StartCoroutine(spawn!.Request(context, Spawn));
     }
