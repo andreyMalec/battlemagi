@@ -64,13 +64,13 @@ public class SpellFactory {
         var instance = viewGo.GetComponent<SpellInstance>();
 
         var triggers = new List<SpellTrigger>();
-        var onHitTrigger = new SpellTrigger {
-            eventType = typeof(OnZoneStayEvent),
-            actions = new ISpellAction[] {
-                new ZoneDamageAction(10f),
-            }
-        };
-        triggers.Add(onHitTrigger);
+        // var onHitTrigger = new SpellTrigger {
+        //     eventType = typeof(OnZoneStayEvent),
+        //     actions = new ISpellAction[] {
+        //         new ZoneDamageAction(10f),
+        //     }
+        // };
+        // triggers.Add(onHitTrigger);
         triggers.Add(new SpellTrigger {
             eventType = typeof(OnLifetimeEndingEvent),
             actions = new ISpellAction[] {
@@ -194,7 +194,7 @@ public class SpellFactory {
             actions.Add(new BounceOnHitAction(def.maxBounces, def.bounceSpeedMultiplier));
         if (def.enableFork)
             actions.Add(new ForkOnHitAction(def.forkCount, def.forkSpreadAngle));
-        actions.Add(new DealDamageAction(35f));
+        // actions.Add(new DealDamageAction(35f));
         actions.Add(new SpawnZoneAction(def.onHitSpawnZone));
         return actions;
     }

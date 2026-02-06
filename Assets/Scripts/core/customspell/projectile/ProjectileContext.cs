@@ -25,7 +25,7 @@ public class ProjectileContext : IProjectileContext {
         bool spawned
     ) {
         Caster = caster;
-        OwnerId = Caster.GetComponent<NetworkObject>().OwnerClientId;
+        OwnerId = 0;//Caster.GetComponent<NetworkObject>().OwnerClientId;
         View = view;
         Data = data;
         Movement = movement;

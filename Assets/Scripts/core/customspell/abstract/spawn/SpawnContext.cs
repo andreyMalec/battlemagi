@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public struct SpawnContext {
+public record SpawnContext {
     public SpellDefinition spell;
-    public SpawnDefinition data;
+    public SpawnDefinition spawn;
     public Vector3 position;
     public Quaternion rotation;
     public Vector3 forward;

@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70d6ac2600d5440ab45bcb7d2aabe7d3, type: 3}
   m_Name: Zone
   m_EditorClassIdentifier: Assembly-CSharp::SpellProjectileDefinition
+  coreType: 1
+  spawn: {fileID: 11400000, guid: 0765568dd6142ec40b54766a9bce0d08, type: 2}
   mainPrefab: {fileID: 1742013225946848, guid: e379ec8fb8f5df644a5751b78222d168, type: 3}
   lifetime: 2
   moveType: 0
@@ -42,5 +44,5 @@ MonoBehaviour:
   enableFork: 0
   forkCount: 3
   forkSpreadAngle: 35
-  zoneRadius: 3
+  zoneRadius: 1
   onHitSpawnZone: {fileID: 0}

@@ -48,7 +48,7 @@ public class ForkOnHitAction : ISpellAction {
 
         var spawnContext = new SpawnContext {
             spell = context.Data,
-            data = context.Data.spawn,
+            spawn = context.Data.spawn,
             position = hit.Point,
             rotation = Quaternion.LookRotation(dir, Vector3.up),
             forward = dir,

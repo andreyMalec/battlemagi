@@ -5,12 +5,12 @@ public class SpellRunner : MonoBehaviour {
     public SpellDefinition def;
     public SpellDefinition def2;
     public Transform spawnPos;
-    public NetworkStatSystem statSystem;
+    // public NetworkStatSystem statSystem;
 
     public Vector3 Direction => spawnPos.forward;
 
     private void Awake() {
-        statSystem = GetComponent<NetworkStatSystem>();
+        // statSystem = GetComponent<NetworkStatSystem>();
     }
 
     void Update() {
@@ -37,7 +37,7 @@ public class SpellRunner : MonoBehaviour {
     private void RequestSpawn(SpellDefinition spell) {
         var context = new SpawnContext {
             spell = spell,
-            data = spell.spawn,
+            spawn = spell.spawn,
             position = spawnPos.position,
             rotation = spawnPos.rotation,
             forward = spawnPos.forward,
@@ -46,8 +46,17 @@ public class SpellRunner : MonoBehaviour {
         ISpellSpawn spawn = null;
         switch (spell.spawn.spawnMode) {
             case SpawnMode.Direct:
-                spawn = new NewDirectSpawn(spell.spawn.multiInstanceDelay);
+                spawn = new NewDirectSpawn();
                 break;
+            case SpawnMode.DirectDown:
+                spawn = new OnFeetSpawn();
+                break;
+            case SpawnMode.Arc:
+                spawn = new NewArcSpawn();
+                break;
+            // case SpawnMode.GroundPointArc:
+            //     spawn = new ArcToGroundPointSpawn();
+            //     break;
         }
 
         StartCoroutine(spawn!.Request(context, Spawn));

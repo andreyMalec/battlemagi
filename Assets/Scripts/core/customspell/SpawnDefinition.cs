@@ -7,6 +7,7 @@ public class SpawnDefinition : ScriptableObject {
     public int instanceCount = 1;
     public int instanceLimit = 0;
     [ShowIf("_isMultiInstance")] public float multiInstanceDelay = 0.2f;
+    [ShowIf("_isDelayed")] public DelayOrigin delayOrigin;
     public SpawnMode spawnMode = SpawnMode.Direct;
     public bool useAlternativeSpawnMode = false;
     [ShowIf("useAlternativeSpawnMode")] public SpawnMode alternativeSpawnMode = SpawnMode.Direct;
@@ -22,10 +23,12 @@ public class SpawnDefinition : ScriptableObject {
     private bool _isForward = false;
 
     private bool _isMultiInstance = false;
+    private bool _isDelayed = false;
 
 #if UNITY_EDITOR
     private void OnValidate() {
         _isMultiInstance = instanceCount > 1;
+        _isDelayed = multiInstanceDelay > 0;
         _isArc = spawnMode is SpawnMode.Arc or SpawnMode.GroundPointArc ||
                  alternativeSpawnMode is SpawnMode.Arc or SpawnMode.GroundPointArc;
         _isRaycast = spawnMode is SpawnMode.GroundPoint or SpawnMode.GroundPointArc or SpawnMode.HitScan

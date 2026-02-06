@@ -9,11 +9,12 @@ public class SpawnZoneAction : ISpellAction {
 
     public override void Apply(ISpellContext context, SpellEvent evt) {
         if (evt is not OnHitEvent hit) return;
+        if (context.Caster == null) return;
         base.Apply(context, evt);
 
         var spawnContext = new SpawnContext {
             spell = _zoneDef,
-            data = _zoneDef.spawn,
+            spawn = _zoneDef.spawn,
             position = hit.Point,
             rotation = ComputeRotation(hit.Normal, context.Movement.Motion.Velocity),
             forward = Vector3.zero,
