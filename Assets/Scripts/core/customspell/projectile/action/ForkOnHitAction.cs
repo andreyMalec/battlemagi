@@ -46,14 +46,15 @@ public class ForkOnHitAction : ISpellAction {
         if (dir == Vector3.zero)
             dir = context.View.transform.forward;
 
-        SpellFactory.CreateProjectile(
-            context.Data,
-            context.Caster,
-            hit.Point,
-            dir,
-            Quaternion.LookRotation(dir, Vector3.up),
-            true
-        );
+        var spawnContext = new SpawnContext {
+            spell = context.Data,
+            data = context.Data.spawn,
+            position = hit.Point,
+            rotation = Quaternion.LookRotation(dir, Vector3.up),
+            forward = dir,
+            caster = context.Caster
+        };
+        SpellFactory.CreateProjectile(spawnContext, true);
     }
 
     private void Send(ISpellContext context, OnHitEvent hit) {

@@ -11,14 +11,15 @@ public class SpawnZoneAction : ISpellAction {
         if (evt is not OnHitEvent hit) return;
         base.Apply(context, evt);
 
-        SpellFactory.CreateZone(
-            _zoneDef,
-            context.Caster,
-            hit.Point,
-            context.Caster.Direction,
-            ComputeRotation(hit.Normal, context.Movement.Motion.Velocity),
-            true
-        );
+        var spawnContext = new SpawnContext {
+            spell = _zoneDef,
+            data = _zoneDef.spawn,
+            position = hit.Point,
+            rotation = ComputeRotation(hit.Normal, context.Movement.Motion.Velocity),
+            forward = Vector3.zero,
+            caster = context.Caster
+        };
+        SpellFactory.CreateZone(spawnContext);
     }
 
     private Quaternion ComputeRotation(Vector3 normal, Vector3 direction) {

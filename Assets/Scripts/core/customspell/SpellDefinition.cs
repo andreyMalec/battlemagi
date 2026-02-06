@@ -3,11 +3,13 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Spell", menuName = "Spells/Spell Definition")]
 public class SpellDefinition : ScriptableObject {
+    public CoreType coreType;
+    public SpawnDefinition spawn;
     public GameObject mainPrefab;
 
     public float lifetime;
     public SpellTransform moveType;
-    
+
     public LayerMask defaultRaycast = ~0;
 
     [Header("Projectile")]

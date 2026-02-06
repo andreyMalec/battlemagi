@@ -21,5 +21,5 @@ public abstract class ISpellCore<TContext>
             trigger.TryFire(context, evt);
     }
     
-    protected const float BeforeEndThreshold = 1f;
+    public const float BeforeEndThreshold = 1f;
 }

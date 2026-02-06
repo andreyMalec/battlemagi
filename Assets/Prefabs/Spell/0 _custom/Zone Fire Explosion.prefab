@@ -9624,8 +9624,8 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 4b5cb900cc7b7724787cb75fd9e27302, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
-  m_Pitch: 0.96
+  m_Volume: 0.5
+  m_Pitch: 1
   Loop: 0
   Mute: 0
   Spatialize: 0
@@ -9721,7 +9721,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: ced4c4e24bb391349a2152efedbcdb54, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -9829,12 +9829,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fd067c9361d43908ab7c673b844449b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellInstance
-  scaleWithRadius: []
-  scaleParticleWithRadius:
-  - {fileID: 198785070284630344}
-  - {fileID: 2080794156608794387}
-  - {fileID: 2081657376057034139}
-  - {fileID: 198694502634222740}
 --- !u!1001 &2171430530737002755
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9980,16 +9974,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
---- !u!198 &2080794156608794387 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 198738731738625552, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
-  m_PrefabInstance: {fileID: 2171430530737002755}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &2081657376057034139 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 198704611722779800, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
-  m_PrefabInstance: {fileID: 2171430530737002755}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2175944349114265179 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4777701302679384, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}

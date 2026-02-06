@@ -2,18 +2,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SpellFactory {
-    public static SpellBind<ProjectileContext> CreateProjectile(
-        SpellDefinition def,
-        SpellRunner caster,
-        Vector3 position,
-        Vector3 direction,
-        Quaternion rotation,
+    public static void CreateProjectile(
+        SpawnContext spawnContext,
         bool spawned = false
     ) {
+        SpellDefinition def = spawnContext.spell;
         var viewGo = Object.Instantiate(
             def.mainPrefab,
-            position,
-            rotation
+            spawnContext.position,
+            spawnContext.rotation
         );
         var view = viewGo.GetComponent<SpellView>();
         var instance = viewGo.GetComponent<SpellInstance>();
@@ -27,13 +24,14 @@ public class SpellFactory {
         triggers.Add(new SpellTrigger {
             eventType = typeof(OnLifetimeEndingEvent),
             actions = new ISpellAction[] {
-                new RemoveParticlesAction()
+                new RemoveParticlesAction(),
+                new FadeOutAudioSourcesAction(ISpellCore<ISpellContext>.BeforeEndThreshold),
             }
         });
-        var move = Move(def, direction);
+        var move = Move(def, spawnContext.forward);
 
         var context = new ProjectileContext(
-            caster,
+            spawnContext.caster,
             view,
             move,
             def,
@@ -50,21 +48,17 @@ public class SpellFactory {
 
         var bind = new SpellBind<ProjectileContext>(core, view, context, move);
         instance.Init(bind);
-        return bind;
     }
 
     public static SpellBind<ZoneContext> CreateZone(
-        SpellDefinition def,
-        SpellRunner caster,
-        Vector3 position,
-        Vector3 direction,
-        Quaternion rotation,
+        SpawnContext spawnContext,
         bool spawned = false
     ) {
+        SpellDefinition def = spawnContext.spell;
         var viewGo = Object.Instantiate(
             def.mainPrefab,
-            position,
-            rotation
+            spawnContext.position,
+            spawnContext.rotation
         );
         var view = viewGo.GetComponent<SpellView>();
         var instance = viewGo.GetComponent<SpellInstance>();
@@ -80,14 +74,15 @@ public class SpellFactory {
         triggers.Add(new SpellTrigger {
             eventType = typeof(OnLifetimeEndingEvent),
             actions = new ISpellAction[] {
-                new RemoveParticlesAction()
+                new RemoveParticlesAction(),
+                new FadeOutAudioSourcesAction(ISpellCore<ISpellContext>.BeforeEndThreshold),
             }
         });
 
-        var move = Move(def, direction);
+        var move = Move(def, spawnContext.forward);
 
         var context = new ZoneContext(
-            caster,
+            spawnContext.caster,
             view,
             move,
             def,
@@ -108,17 +103,14 @@ public class SpellFactory {
     }
 
     public static SpellBind<BeamContext> CreateBeam(
-        SpellDefinition def,
-        SpellRunner caster,
-        Vector3 position,
-        Vector3 direction,
-        Quaternion rotation,
+        SpawnContext spawnContext,
         bool spawned = false
     ) {
+        SpellDefinition def = spawnContext.spell;
         var viewGo = Object.Instantiate(
             def.mainPrefab,
-            position,
-            rotation
+            spawnContext.position,
+            spawnContext.rotation
         );
         var view = viewGo.GetComponent<SpellView>();
         var instance = viewGo.GetComponent<SpellInstance>();
@@ -133,14 +125,15 @@ public class SpellFactory {
         triggers.Add(new SpellTrigger {
             eventType = typeof(OnLifetimeEndingEvent),
             actions = new ISpellAction[] {
-                new RemoveParticlesAction()
+                new RemoveParticlesAction(),
+                new FadeOutAudioSourcesAction(ISpellCore<ISpellContext>.BeforeEndThreshold),
             }
         });
 
-        ISpellTransform move = Move(def, direction);
+        ISpellTransform move = Move(def, spawnContext.forward);
 
         var context = new BeamContext(
-            caster,
+            spawnContext.caster,
             view,
             move,
             def,
