@@ -2,7 +2,24 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SpellFactory {
-    public static void CreateProjectile(
+    public static void CreateSpell(
+        SpawnContext spawnContext,
+        bool spawned = false
+    ) {
+        switch (spawnContext.spell.coreType) {
+            case CoreType.Projectile:
+                CreateProjectile(spawnContext, spawned);
+                break;
+            case CoreType.Zone:
+                CreateZone(spawnContext, spawned);
+                break;
+            case CoreType.Beam:
+                CreateBeam(spawnContext, spawned);
+                break;
+        }
+    }
+
+    private static void CreateProjectile(
         SpawnContext spawnContext,
         bool spawned = false
     ) {
@@ -21,11 +38,19 @@ public class SpellFactory {
             actions = HitActions(def).ToArray()
         };
         triggers.Add(onHitTrigger);
+        var atMaxDistanceTrigger = new SpellTrigger {
+            eventType = typeof(OnMaxDistanceEvent),
+            actions = new ISpellAction[] {
+                new SpawnAtMaxDistanceAction(),
+            }
+        };
+        triggers.Add(atMaxDistanceTrigger);
         triggers.Add(new SpellTrigger {
             eventType = typeof(OnLifetimeEndingEvent),
             actions = new ISpellAction[] {
                 new RemoveParticlesAction(),
-                new FadeOutAudioSourcesAction(ISpellCore<ISpellContext>.BeforeEndThreshold),
+                new FadeOutAudioSourcesAction(),
+                new SpawnOnLifetimeEndAction(),
             }
         });
         var move = Move(def, spawnContext.forward);
@@ -50,7 +75,7 @@ public class SpellFactory {
         instance.Init(bind);
     }
 
-    public static SpellBind<ZoneContext> CreateZone(
+    private static SpellBind<ZoneContext> CreateZone(
         SpawnContext spawnContext,
         bool spawned = false
     ) {
@@ -71,11 +96,19 @@ public class SpellFactory {
         //     }
         // };
         // triggers.Add(onHitTrigger);
+        var atMaxDistanceTrigger = new SpellTrigger {
+            eventType = typeof(OnMaxDistanceEvent),
+            actions = new ISpellAction[] {
+                new SpawnAtMaxDistanceAction(),
+            }
+        };
+        triggers.Add(atMaxDistanceTrigger);
         triggers.Add(new SpellTrigger {
             eventType = typeof(OnLifetimeEndingEvent),
             actions = new ISpellAction[] {
                 new RemoveParticlesAction(),
-                new FadeOutAudioSourcesAction(ISpellCore<ISpellContext>.BeforeEndThreshold),
+                new FadeOutAudioSourcesAction(),
+                new SpawnOnLifetimeEndAction(),
             }
         });
 
@@ -102,7 +135,7 @@ public class SpellFactory {
         return bind;
     }
 
-    public static SpellBind<BeamContext> CreateBeam(
+    private static SpellBind<BeamContext> CreateBeam(
         SpawnContext spawnContext,
         bool spawned = false
     ) {
@@ -122,11 +155,19 @@ public class SpellFactory {
                 new DealDamageAction(10f)
             }
         });
+        var atMaxDistanceTrigger = new SpellTrigger {
+            eventType = typeof(OnMaxDistanceEvent),
+            actions = new ISpellAction[] {
+                new SpawnAtMaxDistanceAction(),
+            }
+        };
+        triggers.Add(atMaxDistanceTrigger);
         triggers.Add(new SpellTrigger {
             eventType = typeof(OnLifetimeEndingEvent),
             actions = new ISpellAction[] {
                 new RemoveParticlesAction(),
-                new FadeOutAudioSourcesAction(ISpellCore<ISpellContext>.BeforeEndThreshold),
+                new FadeOutAudioSourcesAction(),
+                new SpawnOnLifetimeEndAction(),
             }
         });
 
@@ -174,6 +215,13 @@ public class SpellFactory {
             move = new GravityTransform(move, def.gravity);
         }
 
+        if (def.enableMaxDistance) {
+            move = new MaxDistanceTransform(
+                move,
+                def.maxDistance
+            );
+        }
+
         if (def.enableSquashStretch) {
             move = new SquashStretchTransform(
                 move,
@@ -195,7 +243,8 @@ public class SpellFactory {
         if (def.enableFork)
             actions.Add(new ForkOnHitAction(def.forkCount, def.forkSpreadAngle));
         // actions.Add(new DealDamageAction(35f));
-        actions.Add(new SpawnZoneAction(def.onHitSpawnZone));
+        if (def.onHitSpawnZone != null)
+            actions.Add(new SpawnZoneOnHitAction());
         return actions;
     }
 }

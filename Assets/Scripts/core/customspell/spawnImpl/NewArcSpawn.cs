@@ -6,21 +6,16 @@ public class NewArcSpawn : ISpellSpawn, IDelayOriginRespect {
     public IEnumerator Request(SpawnContext context, Action<SpawnContext, int> spawn) {
         var count = ISpellSpawn.InstanceCount(context);
 
-        var origin = context.spawn.delayOrigin;
+        var origin = context.DelayOrigin;
         var delay = context.spawn.multiInstanceDelay;
         var angleStep = context.spawn.arcAngleStep;
         float startAngle = -((count - 1) * angleStep) / 2f;
-        
-        var onFirst = context with {
-            position = context.caster.spawnPos.position,
-            rotation = context.caster.spawnPos.rotation,
-            forward = context.caster.spawnPos.forward,
-        };
+
         for (int i = count - 1; i >= 0; i--) {
             float angle = startAngle + angleStep * i;
 
             var ctx = origin switch {
-                DelayOrigin.First => onFirst,
+                DelayOrigin.First => context,
                 DelayOrigin.Continuous => context with {
                     position = context.caster.spawnPos.position,
                     rotation = context.caster.spawnPos.rotation,

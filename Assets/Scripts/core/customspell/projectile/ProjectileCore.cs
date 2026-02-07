@@ -1,6 +1,5 @@
 public class ProjectileCore : ISpellCore<ProjectileContext> {
     private readonly IShape _shape;
-    private bool _sentLifetimeEnding;
 
     public ProjectileCore(
         ProjectileContext ctx,
@@ -10,18 +9,8 @@ public class ProjectileCore : ISpellCore<ProjectileContext> {
         _shape = shape;
     }
 
-    public override void Tick(float delta) {
-        if (!_sentLifetimeEnding && context.Lifetime > 0f && context.Lifetime <= BeforeEndThreshold) {
-            _sentLifetimeEnding = true;
-            HandleEvent(new OnLifetimeEndingEvent { remaining = context.Lifetime });
-        }
-
+    protected override void TickInner(float delta) {
         context.Lifetime -= delta;
-        if (context.Lifetime <= 0f) {
-            context.View.Kill();
-            return;
-        }
-
         var hits = _shape.Query();
 
         foreach (var hit in hits) {

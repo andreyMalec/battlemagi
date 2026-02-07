@@ -68,4 +68,19 @@ public interface ISpellSpawn {
             forward = Vector3.zero
         };
     }
+
+    public static ISpellSpawn GetMode(SpawnMode mode) {
+        return mode switch {
+            SpawnMode.Direct => new NewDirectSpawn(),
+            SpawnMode.DirectDown => new NewDirectDownSpawn(),
+            SpawnMode.DirectDownForward => new DirectDownForwardSpawn(),
+            SpawnMode.Arc => new NewArcSpawn(),
+            SpawnMode.GroundPoint => new NewGroundPointSpawn(),
+            SpawnMode.GroundPointArc => new NewGroundPointArcSpawn(),
+            SpawnMode.GroundPointArcDown => new NewGroundPointArcDownSpawn(),
+            SpawnMode.GroundPointForward => new NewGroundPointForwardSpawn(),
+            SpawnMode.Cone => new ConeSpawn(),
+            _ => null
+        };
+    }
 }

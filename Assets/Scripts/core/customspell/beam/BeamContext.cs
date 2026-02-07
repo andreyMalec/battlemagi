@@ -7,7 +7,7 @@ public class BeamContext : IBeamContext {
     public ulong OwnerId { get; }
     public SpellView View { get; }
     public ISpellTransform Movement { get; }
-    public SpellDefinition Data { get; }
+    public SpellDefinition Spell { get; }
 
     public bool Spawned { get; }
 
@@ -20,7 +20,7 @@ public class BeamContext : IBeamContext {
 
     public Vector3 Origin => Caster.spawnPos.position;
     public Vector3 Direction => Caster.Direction;
-    public float MaxLength => Data.beamMaxLength;
+    public float MaxLength => Spell.beamMaxLength;
 
     public BeamContext(
         SpellRunner caster,
@@ -32,7 +32,7 @@ public class BeamContext : IBeamContext {
         Caster = caster;
         OwnerId = 0;//Caster.GetComponent<NetworkObject>().OwnerClientId;
         View = view;
-        Data = data;
+        Spell = data;
         Movement = movement;
         Spawned = spawned;
         Lifetime = data.lifetime;

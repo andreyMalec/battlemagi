@@ -47,14 +47,14 @@ public class ForkOnHitAction : ISpellAction {
             dir = context.View.transform.forward;
 
         var spawnContext = new SpawnContext {
-            spell = context.Data,
-            spawn = context.Data.spawn,
+            spell = context.Spell,
+            spawn = context.Spell.spawn,
             position = hit.Point,
             rotation = Quaternion.LookRotation(dir, Vector3.up),
             forward = dir,
             caster = context.Caster
         };
-        SpellFactory.CreateProjectile(spawnContext, true);
+        SpellFactory.CreateSpell(spawnContext, true);
     }
 
     private void Send(ISpellContext context, OnHitEvent hit) {

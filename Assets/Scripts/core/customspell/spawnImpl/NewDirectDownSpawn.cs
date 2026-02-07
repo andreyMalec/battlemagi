@@ -6,7 +6,7 @@ public class NewDirectDownSpawn : ISpellSpawn, IDelayOriginRespect {
     public IEnumerator Request(SpawnContext context, Action<SpawnContext, int> spawn) {
         var count = ISpellSpawn.InstanceCount(context);
         var delay = context.spawn.multiInstanceDelay;
-        var origin = context.spawn.delayOrigin;
+        var origin = context.DelayOrigin;
         var onFirst = context with {
             position = context.caster.transform.position,
             rotation = context.caster.transform.rotation,

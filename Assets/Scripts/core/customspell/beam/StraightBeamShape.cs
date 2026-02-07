@@ -13,7 +13,7 @@ public class StraightBeamShape : IShape {
 
     public IEnumerable<ShapeHit> Query() {
         var ray = new Ray(_ctx.Origin, _ctx.Direction);
-        var count = Physics.RaycastNonAlloc(ray, _hits, _ctx.MaxLength, _ctx.Data.defaultRaycast,
+        var count = Physics.RaycastNonAlloc(ray, _hits, _ctx.MaxLength, _ctx.Spell.defaultRaycast,
             QueryTriggerInteraction.Ignore);
         for (var i = 0; i < count; i++) {
             var hit = _hits[i];

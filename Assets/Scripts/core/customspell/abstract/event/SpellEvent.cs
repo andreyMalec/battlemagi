@@ -13,6 +13,10 @@ public sealed class OnHitEvent : SpellEvent {
 public sealed class OnTickEvent : SpellEvent {
 }
 
+public sealed class OnLifetimeHalfEvent : SpellEvent {
+    public float remaining;
+}
+
 public sealed class OnLifetimeEndingEvent : SpellEvent {
     public float remaining;
 }

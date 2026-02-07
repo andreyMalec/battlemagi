@@ -6,7 +6,7 @@ public class ZoneContext : IZoneContext {
     public ulong OwnerId { get; }
     public SpellView View { get; }
     public ISpellTransform Movement { get; }
-    public SpellDefinition Data { get; }
+    public SpellDefinition Spell { get; }
 
     public bool Spawned { get; }
 
@@ -27,7 +27,7 @@ public class ZoneContext : IZoneContext {
         Caster = caster;
         OwnerId = 0;//Caster.GetComponent<NetworkObject>().OwnerClientId;
         View = view;
-        Data = data;
+        Spell = data;
         Movement = movement;
         Spawned = spawned;
         Lifetime = data.lifetime;

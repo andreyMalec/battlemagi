@@ -81,17 +81,7 @@ public class SpellRunner : MonoBehaviour {
     }
 
     private void Spawn(SpawnContext context, int index) {
-        switch (context.spell.coreType) {
-            case CoreType.Projectile:
-                SpellFactory.CreateProjectile(context);
-                break;
-            case CoreType.Zone:
-                SpellFactory.CreateZone(context);
-                break;
-            case CoreType.Beam:
-                SpellFactory.CreateBeam(context);
-                break;
-        }
+        SpellFactory.CreateSpell(context);
     }
 
     private ISpellSpawn GetMode(SpawnMode mode) {
@@ -104,6 +94,7 @@ public class SpellRunner : MonoBehaviour {
             SpawnMode.GroundPointArc => new NewGroundPointArcSpawn(),
             SpawnMode.GroundPointArcDown => new NewGroundPointArcDownSpawn(),
             SpawnMode.GroundPointForward => new NewGroundPointForwardSpawn(),
+            SpawnMode.Cone => new ConeSpawn(),
             _ => null
         };
     }

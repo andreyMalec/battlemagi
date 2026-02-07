@@ -2,7 +2,7 @@ public interface ISpellContext {
     SpellRunner Caster { get; }
     SpellView View { get; }
     ISpellTransform Movement { get; }
-    SpellDefinition Data { get; }
+    SpellDefinition Spell { get; }
 
     bool Spawned { get; }
 

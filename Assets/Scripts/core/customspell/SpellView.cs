@@ -2,9 +2,11 @@ using System.Collections;
 using UnityEngine;
 
 public class SpellView : MonoBehaviour {
+    public float beforeEndThreshold = 1f;
     public bool IsAlive { get; private set; } = true;
 
     public void Kill() {
+        if (!IsAlive) return;
         IsAlive = false;
 
         foreach (var ps in GetComponentsInChildren<ParticleSystem>()) {

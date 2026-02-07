@@ -6,7 +6,7 @@ public class NewDirectSpawn : ISpellSpawn, IDelayOriginRespect {
     public IEnumerator Request(SpawnContext context, Action<SpawnContext, int> spawn) {
         var count = ISpellSpawn.InstanceCount(context);
         var delay = context.spawn.multiInstanceDelay;
-        var origin = context.spawn.delayOrigin;
+        var origin = context.DelayOrigin;
         for (int i = 0; i < count; i++) {
             switch (origin) {
                 case DelayOrigin.First:

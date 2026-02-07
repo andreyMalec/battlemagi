@@ -3,6 +3,9 @@ public abstract class ISpellCore<TContext>
     protected readonly TContext context;
     private readonly SpellTrigger[] _triggers;
 
+    private bool _sentLifetimeHalf;
+    private bool _sentLifetimeEnding;
+
     protected ISpellCore(
         TContext context,
         SpellTrigger[] triggers
@@ -12,7 +15,29 @@ public abstract class ISpellCore<TContext>
         AttachEventSink();
     }
 
-    public abstract void Tick(float deltaTime);
+    public void Tick(float deltaTime) {
+        if (!_sentLifetimeHalf && context.Lifetime > 0f && context.Lifetime <= context.Spell.lifetime * 0.5f) {
+            _sentLifetimeHalf = true;
+            HandleEvent(new OnLifetimeHalfEvent { remaining = context.Lifetime });
+        }
+
+        if (!_sentLifetimeEnding && context.Lifetime > 0f && context.Lifetime <= context.View.beforeEndThreshold) {
+            _sentLifetimeEnding = true;
+            HandleEvent(new OnLifetimeEndingEvent { remaining = context.Lifetime });
+        }
+
+        TickInner(deltaTime);
+
+        if (context.Lifetime <= 0f) {
+            OnLifetimeExpired();
+        }
+    }
+
+    protected abstract void TickInner(float deltaTime);
+
+    protected virtual void OnLifetimeExpired() {
+        context.View.Kill();
+    }
 
     protected abstract void AttachEventSink();
 
@@ -20,6 +45,4 @@ public abstract class ISpellCore<TContext>
         foreach (var trigger in _triggers)
             trigger.TryFire(context, evt);
     }
-    
-    public const float BeforeEndThreshold = 1f;
 }

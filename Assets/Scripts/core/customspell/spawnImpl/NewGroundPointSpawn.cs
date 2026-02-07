@@ -7,7 +7,7 @@ public class NewGroundPointSpawn : ISpellSpawn, IDelayOriginRespect {
         var count = ISpellSpawn.InstanceCount(context);
 
         var delay = context.spawn.multiInstanceDelay;
-        var origin = context.spawn.delayOrigin;
+        var origin = context.DelayOrigin;
         var onFirst = ISpellSpawn.GroundPos(context, context.forward, out _);
         for (int i = count - 1; i >= 0; i--) {
             switch (origin) {

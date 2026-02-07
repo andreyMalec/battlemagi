@@ -51,4 +51,9 @@ public enum SpawnMode {
      * временное распространение
      */
     GroundPointForward,
+
+    /**
+     * Конус по направлению forward: высота @{coneHeight}, радиус основания @{coneRadius}
+     */
+    Cone,
 }

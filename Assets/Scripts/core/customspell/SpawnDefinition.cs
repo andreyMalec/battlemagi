@@ -3,26 +3,30 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Spawn Strategy", menuName = "Spells/Spawn Definition")]
 public class SpawnDefinition : ScriptableObject {
+    public SpawnMode spawnMode = SpawnMode.Direct;
     public Preview preview;
     public int instanceCount = 1;
     public int instanceLimit = 0;
     [ShowIf("_isMultiInstance")] public float multiInstanceDelay = 0.2f;
 
     [ShowIf(EConditionOperator.And, "_isDelayed", "_respectDelayOrigin")]
-    public DelayOrigin delayOrigin;
+    public DelayOrigin delayOrigin = DelayOrigin.First;
 
-    public SpawnMode spawnMode = SpawnMode.Direct;
     public bool useAlternativeSpawnMode = false;
     [ShowIf("useAlternativeSpawnMode")] public SpawnMode alternativeSpawnMode = SpawnMode.Direct;
 
     [ShowIf("_isForward")] public float forwardStep = 3;
     [ShowIf("_isArc")] public float arcAngleStep = 15f;
 
+    [ShowIf("_isCone")] public float coneRadius = 2f;
+    [ShowIf("_isCone")] public float coneHeight = 5f;
+
     [ShowIf("_isRaycast")] public float raycastMaxDistance = 50f;
 
     private bool _isArc = false;
     private bool _isRaycast = false;
     private bool _isForward = false;
+    private bool _isCone = false;
 
     private bool _isMultiInstance = false;
     private bool _isDelayed = false;
@@ -36,10 +40,12 @@ public class SpawnDefinition : ScriptableObject {
         _isArc = IsArc(spawnMode) || IsArc(alternativeSpawnMode);
         _isRaycast = IsRay(spawnMode) || IsRay(alternativeSpawnMode);
         _isForward = IsForward(spawnMode) || IsForward(alternativeSpawnMode);
+        _isCone = IsCone(spawnMode) || IsCone(alternativeSpawnMode);
     }
 
     private static bool RespectOrigin(SpawnMode spawnMode) {
-        return spawnMode is SpawnMode.Direct or SpawnMode.DirectDown or SpawnMode.GroundPoint;
+        return spawnMode is SpawnMode.Direct or SpawnMode.DirectDown or SpawnMode.Arc or SpawnMode.GroundPoint
+            or SpawnMode.Cone;
     }
 
     private static bool IsArc(SpawnMode spawnMode) {
@@ -53,6 +59,10 @@ public class SpawnDefinition : ScriptableObject {
 
     private static bool IsForward(SpawnMode spawnMode) {
         return spawnMode is SpawnMode.GroundPointForward or SpawnMode.DirectDownForward;
+    }
+
+    private static bool IsCone(SpawnMode spawnMode) {
+        return spawnMode is SpawnMode.Cone;
     }
 #endif
 }

@@ -4,7 +4,6 @@ public class BeamCore : ISpellCore<BeamContext> {
     private readonly IShape _shape;
     private readonly HashSet<object> _inside = new();
     private bool _started;
-    private bool _sentLifetimeEnding;
 
     public BeamCore(
         BeamContext ctx,
@@ -14,21 +13,11 @@ public class BeamCore : ISpellCore<BeamContext> {
         _shape = shape;
     }
 
-    public override void Tick(float delta) {
+    protected override void TickInner(float delta) {
+        context.Lifetime -= delta;
         if (!_started) {
             _started = true;
             HandleEvent(new OnBeamStartEvent());
-        }
-
-        if (!_sentLifetimeEnding && context.Lifetime > 0f && context.Lifetime <= BeforeEndThreshold) {
-            _sentLifetimeEnding = true;
-            HandleEvent(new OnLifetimeEndingEvent { remaining = context.Lifetime });
-        }
-
-        context.Lifetime -= delta;
-        if (context.Lifetime <= 0f) {
-            HandleEnd();
-            return;
         }
 
         HandleEvent(new OnBeamTickEvent { delta = delta });
@@ -74,6 +63,10 @@ public class BeamCore : ISpellCore<BeamContext> {
         }
     }
 
+    protected override void OnLifetimeExpired() {
+        HandleEnd();
+    }
+
     private void HandleEnd() {
         if (_started) {
             _started = false;
@@ -82,6 +75,7 @@ public class BeamCore : ISpellCore<BeamContext> {
                     HandleEvent(new OnTargetExitEvent { target = (UnityEngine.GameObject)key });
                 _inside.Clear();
             }
+
             HandleEvent(new OnBeamEndEvent());
         }
 

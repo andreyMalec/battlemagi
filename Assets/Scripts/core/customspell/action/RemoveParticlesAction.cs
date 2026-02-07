@@ -6,5 +6,9 @@ public class RemoveParticlesAction : ISpellAction {
         foreach (var ps in context.View.GetComponentsInChildren<ParticleSystem>()) {
             ps.Stop(true, ParticleSystemStopBehavior.StopEmitting);
         }
+
+        foreach (var mesh in context.View.GetComponentsInChildren<MeshRenderer>()) {
+            mesh.enabled = false;
+        }
     }
 }
