@@ -79,6 +79,8 @@ public interface ISpellSpawn {
             SpawnMode.GroundPointArc => new NewGroundPointArcSpawn(),
             SpawnMode.GroundPointArcDown => new NewGroundPointArcDownSpawn(),
             SpawnMode.GroundPointForward => new NewGroundPointForwardSpawn(),
+            SpawnMode.GroundPointCircleUp => new GroundPointCircleUpSpawn(),
+            SpawnMode.GroundPointDiskUp => new GroundPointDiskUpSpawn(),
             SpawnMode.Cone => new ConeSpawn(),
             _ => null
         };

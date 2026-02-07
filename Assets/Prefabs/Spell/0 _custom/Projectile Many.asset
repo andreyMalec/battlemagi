@@ -13,17 +13,17 @@ MonoBehaviour:
   m_Name: Projectile Many
   m_EditorClassIdentifier: Assembly-CSharp::SpellProjectileDefinition
   coreType: 0
-  spawn: {fileID: 11400000, guid: 0c8321b4ebe2c074988ecbf47bc38763, type: 2}
-  mainPrefab: {fileID: 7354784787554302670, guid: 98f9a507ceb843d49880363f9cf9869c, type: 3}
+  spawn: {fileID: 11400000, guid: fe64d8c223a545c45b1688dd25d3e9cf, type: 2}
+  mainPrefab: {fileID: 7354784787554302670, guid: c351ec4f3915fdc4f9b419e56ab6b15a, type: 3}
   lifetime: 5
   moveType: 1
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 576
-  projectileSpeed: 25
-  enableGravity: 1
+  projectileSpeed: 50
+  enableGravity: 0
   gravity: {x: 0, y: -9.81, z: 0}
-  enableMaxDistance: 1
+  enableMaxDistance: 0
   maxDistance: 20
   lookAtMaxDistance: 50
   lookAtRayMask:
@@ -49,3 +49,5 @@ MonoBehaviour:
   zoneRadius: 1
   onHitSpawnZone: {fileID: 11400000, guid: 4aec248e4dfc7464381c95a332855769, type: 2}
   atMaxDistanceSpawn: {fileID: 0}
+  onLifetimeEndSpawn: {fileID: 0}
+  onLifetimeHalfSpawn: {fileID: 0}

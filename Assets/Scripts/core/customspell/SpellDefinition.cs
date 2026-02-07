@@ -68,6 +68,7 @@ public class SpellDefinition : ScriptableObject {
     public SpellDefinition onHitSpawnZone;
     public SpellDefinition atMaxDistanceSpawn;
     public SpellDefinition onLifetimeEndSpawn;
+    public SpellDefinition onLifetimeHalfSpawn;
 
     private bool _transformSpiral = false;
     private bool _transformLookAtPoint = false;

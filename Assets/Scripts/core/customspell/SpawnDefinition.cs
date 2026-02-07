@@ -21,12 +21,16 @@ public class SpawnDefinition : ScriptableObject {
     [ShowIf("_isCone")] public float coneRadius = 2f;
     [ShowIf("_isCone")] public float coneHeight = 5f;
 
+    [ShowIf("_isCircleUp")] public float circleRadius = 2f;
+    [ShowIf("_isCircleUp")] public float circleHeight = 2f;
+
     [ShowIf("_isRaycast")] public float raycastMaxDistance = 50f;
 
     private bool _isArc = false;
     private bool _isRaycast = false;
     private bool _isForward = false;
     private bool _isCone = false;
+    private bool _isCircleUp = false;
 
     private bool _isMultiInstance = false;
     private bool _isDelayed = false;
@@ -41,6 +45,7 @@ public class SpawnDefinition : ScriptableObject {
         _isRaycast = IsRay(spawnMode) || IsRay(alternativeSpawnMode);
         _isForward = IsForward(spawnMode) || IsForward(alternativeSpawnMode);
         _isCone = IsCone(spawnMode) || IsCone(alternativeSpawnMode);
+        _isCircleUp = IsCircleUp(spawnMode) || IsCircleUp(alternativeSpawnMode);
     }
 
     private static bool RespectOrigin(SpawnMode spawnMode) {
@@ -63,6 +68,10 @@ public class SpawnDefinition : ScriptableObject {
 
     private static bool IsCone(SpawnMode spawnMode) {
         return spawnMode is SpawnMode.Cone;
+    }
+
+    private static bool IsCircleUp(SpawnMode spawnMode) {
+        return spawnMode is SpawnMode.GroundPointCircleUp or SpawnMode.GroundPointDiskUp;
     }
 #endif
 }

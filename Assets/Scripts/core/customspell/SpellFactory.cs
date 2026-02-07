@@ -38,13 +38,12 @@ public class SpellFactory {
             actions = HitActions(def).ToArray()
         };
         triggers.Add(onHitTrigger);
-        var atMaxDistanceTrigger = new SpellTrigger {
+        triggers.Add(new SpellTrigger {
             eventType = typeof(OnMaxDistanceEvent),
             actions = new ISpellAction[] {
                 new SpawnAtMaxDistanceAction(),
             }
-        };
-        triggers.Add(atMaxDistanceTrigger);
+        });
         triggers.Add(new SpellTrigger {
             eventType = typeof(OnLifetimeEndingEvent),
             actions = new ISpellAction[] {
@@ -53,6 +52,13 @@ public class SpellFactory {
                 new SpawnOnLifetimeEndAction(),
             }
         });
+        triggers.Add(new SpellTrigger {
+            eventType = typeof(OnLifetimeHalfEvent),
+            actions = new ISpellAction[] {
+                new SpawnOnLifetimeHalfAction(),
+            }
+        });
+
         var move = Move(def, spawnContext.forward);
 
         var context = new ProjectileContext(
@@ -96,19 +102,24 @@ public class SpellFactory {
         //     }
         // };
         // triggers.Add(onHitTrigger);
-        var atMaxDistanceTrigger = new SpellTrigger {
+        triggers.Add(new SpellTrigger {
             eventType = typeof(OnMaxDistanceEvent),
             actions = new ISpellAction[] {
                 new SpawnAtMaxDistanceAction(),
             }
-        };
-        triggers.Add(atMaxDistanceTrigger);
+        });
         triggers.Add(new SpellTrigger {
             eventType = typeof(OnLifetimeEndingEvent),
             actions = new ISpellAction[] {
                 new RemoveParticlesAction(),
                 new FadeOutAudioSourcesAction(),
                 new SpawnOnLifetimeEndAction(),
+            }
+        });
+        triggers.Add(new SpellTrigger {
+            eventType = typeof(OnLifetimeHalfEvent),
+            actions = new ISpellAction[] {
+                new SpawnOnLifetimeHalfAction(),
             }
         });
 
@@ -155,19 +166,24 @@ public class SpellFactory {
                 new DealDamageAction(10f)
             }
         });
-        var atMaxDistanceTrigger = new SpellTrigger {
+        triggers.Add(new SpellTrigger {
             eventType = typeof(OnMaxDistanceEvent),
             actions = new ISpellAction[] {
                 new SpawnAtMaxDistanceAction(),
             }
-        };
-        triggers.Add(atMaxDistanceTrigger);
+        });
         triggers.Add(new SpellTrigger {
             eventType = typeof(OnLifetimeEndingEvent),
             actions = new ISpellAction[] {
                 new RemoveParticlesAction(),
                 new FadeOutAudioSourcesAction(),
                 new SpawnOnLifetimeEndAction(),
+            }
+        });
+        triggers.Add(new SpellTrigger {
+            eventType = typeof(OnLifetimeHalfEvent),
+            actions = new ISpellAction[] {
+                new SpawnOnLifetimeHalfAction(),
             }
         });
 

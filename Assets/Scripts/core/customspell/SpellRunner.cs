@@ -47,7 +47,7 @@ public class SpellRunner : MonoBehaviour {
                 rotation = spawnPos.rotation,
                 forward = spawnPos.forward,
                 caster = this
-            }, GetMode(_spell.spawn.spawnMode));
+            }, ISpellSpawn.GetMode(_spell.spawn.spawnMode));
         }
 
         _spawnPreview?.Update(new SpawnContext {
@@ -72,6 +72,10 @@ public class SpellRunner : MonoBehaviour {
             list.Add(new NonePreview());
         if ((previewFlags & Preview.Line) != 0)
             list.Add(new LinePreview());
+        if ((previewFlags & Preview.Disk) != 0) {
+            list.Add(new GroundRayPreview());
+            list.Add(new DiskPreview());
+        }
 
         return list.Count switch {
             0 => new NonePreview(),
@@ -84,21 +88,6 @@ public class SpellRunner : MonoBehaviour {
         SpellFactory.CreateSpell(context);
     }
 
-    private ISpellSpawn GetMode(SpawnMode mode) {
-        return mode switch {
-            SpawnMode.Direct => new NewDirectSpawn(),
-            SpawnMode.DirectDown => new NewDirectDownSpawn(),
-            SpawnMode.DirectDownForward => new DirectDownForwardSpawn(),
-            SpawnMode.Arc => new NewArcSpawn(),
-            SpawnMode.GroundPoint => new NewGroundPointSpawn(),
-            SpawnMode.GroundPointArc => new NewGroundPointArcSpawn(),
-            SpawnMode.GroundPointArcDown => new NewGroundPointArcDownSpawn(),
-            SpawnMode.GroundPointForward => new NewGroundPointForwardSpawn(),
-            SpawnMode.Cone => new ConeSpawn(),
-            _ => null
-        };
-    }
-
     private void RequestSpawn(SpellDefinition spell) {
         var context = new SpawnContext {
             spell = spell,
@@ -108,7 +97,7 @@ public class SpellRunner : MonoBehaviour {
             forward = spawnPos.forward,
             caster = this
         };
-        ISpellSpawn spawn = GetMode(spell.spawn.spawnMode);
+        ISpellSpawn spawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
 
         StartCoroutine(spawn!.Request(context, Spawn));
     }
