@@ -2,20 +2,11 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TriggerSphereShape : MonoBehaviour, IShape {
+public class TriggerSphereShape : IShape {
     private readonly HashSet<GameObject> _inside = new();
-    private SphereCollider _collider;
     private ISpellContext _context;
 
-    private void Awake() {
-        _collider = gameObject.AddComponent<SphereCollider>();
-        _collider.enabled = false;
-        _collider.isTrigger = true;
-    }
-
     public void Init(ISpellContext context) {
-        _collider.radius = context.Data.zoneRadius;
-        _collider.enabled = true;
     }
 
     void OnTriggerEnter(Collider other) {

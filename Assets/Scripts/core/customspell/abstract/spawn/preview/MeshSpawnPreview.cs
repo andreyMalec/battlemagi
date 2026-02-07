@@ -38,7 +38,7 @@ public class MeshSpawnPreview : ISpellSpawnPreview {
         var m = _spell.mainPrefab.GetComponentInChildren<MeshFilter>(true);
         mesh = m.sharedMesh;
         _wireMesh = BuildWireMesh(mesh);
-        scale = m.gameObject.transform.localScale;
+        scale = m.gameObject.transform.localScale * context.spell.zoneRadius;
         position = m.gameObject.transform.localPosition;
         rotation = m.gameObject.transform.localRotation;
         _active = true;

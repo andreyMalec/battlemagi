@@ -15,12 +15,11 @@ MonoBehaviour:
   preview: 5
   instanceCount: 3
   instanceLimit: 0
-  multiInstanceDelay: 0
+  multiInstanceDelay: 0.5
   delayOrigin: 0
-  spawnMode: 5
+  spawnMode: 6
   useAlternativeSpawnMode: 0
   alternativeSpawnMode: 0
-  forwardStep: {x: 0, y: 0, z: 0}
-  forwardAngle: {x: 0, y: 0, z: 0}
+  forwardStep: 10
   arcAngleStep: 15
   raycastMaxDistance: 50

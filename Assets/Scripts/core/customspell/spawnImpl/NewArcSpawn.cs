@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class NewArcSpawn : ISpellSpawn {
+public class NewArcSpawn : ISpellSpawn, IDelayOriginRespect {
     public IEnumerator Request(SpawnContext context, Action<SpawnContext, int> spawn) {
         var count = ISpellSpawn.InstanceCount(context);
 

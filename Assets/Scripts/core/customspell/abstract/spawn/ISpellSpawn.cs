@@ -22,9 +22,50 @@ public interface ISpellSpawn {
 
     public static SpawnContext FromHit(SpawnContext context, RaycastHit hit, Vector3 direction) {
         return context with {
-            position = hit.point + hit.normal * 0.3f,
-            rotation = ISpellSpawn.RotationFromNormal(direction, hit.normal),
+            position = hit.point + hit.normal * 0.15f,
+            rotation = RotationFromNormal(direction, hit.normal),
             forward = Vector3.Reflect(direction, hit.normal.normalized)
+        };
+    }
+
+    public static SpawnContext GroundPos(
+        SpawnContext context,
+        Vector3 direction,
+        out RaycastHit hitInfo,
+        Vector3 secondDirection = default
+    ) {
+        var maxDistance = context.spawn.raycastMaxDistance;
+        var origin = context.position;
+        var mask = context.spell.defaultRaycast;
+
+        if (Physics.Raycast(origin, direction, out var hit, maxDistance, mask)) {
+            if (secondDirection != Vector3.zero) {
+                origin = hit.point + hit.normal * 0.15f;
+                if (Physics.Raycast(origin, Vector3.down, out var hit2, maxDistance, context.spell.defaultRaycast)) {
+                    hitInfo = hit2;
+                    return FromHit(context, hit2, direction);
+                }
+            }
+
+            hitInfo = hit;
+            return FromHit(context, hit, direction);
+        }
+
+        if (Physics.Raycast(origin + direction * maxDistance, Vector3.down, out hit, maxDistance, mask)) {
+            hitInfo = hit;
+            return FromHit(context, hit, direction);
+        }
+
+        if (Physics.Raycast(origin + Vector3.up, Vector3.down, out hit, maxDistance, mask)) {
+            hitInfo = hit;
+            return FromHit(context, hit, direction);
+        }
+
+        hitInfo = new RaycastHit();
+        return context with {
+            position = new Vector3(1000, 0, 0),
+            rotation = Quaternion.identity,
+            forward = Vector3.zero
         };
     }
 }

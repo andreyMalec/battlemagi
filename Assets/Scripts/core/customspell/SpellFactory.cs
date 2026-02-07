@@ -38,7 +38,7 @@ public class SpellFactory {
             spawned
         );
 
-        var shape = viewGo.AddComponent<LineProjectileShape>();
+        var shape = new LineProjectileShape();
         shape.Init(context);
         var core = new ProjectileCore(
             context,
@@ -89,7 +89,7 @@ public class SpellFactory {
             spawned
         );
 
-        var shape = viewGo.AddComponent<TriggerSphereShape>();
+        var shape = new TriggerSphereShape();
         shape.Init(context);
         var core = new ZoneCore(
             context,
@@ -140,7 +140,7 @@ public class SpellFactory {
             spawned
         );
 
-        var shape = viewGo.AddComponent<StraightBeamShape>();
+        var shape = new StraightBeamShape();
         shape.Init(context);
 
         var core = new BeamCore(

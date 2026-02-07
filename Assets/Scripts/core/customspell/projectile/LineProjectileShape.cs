@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LineProjectileShape : MonoBehaviour, IShape {
+public class LineProjectileShape : IShape {
     private ISpellContext _context;
 
     public void Init(ISpellContext context) {
@@ -11,7 +11,7 @@ public class LineProjectileShape : MonoBehaviour, IShape {
 
     public IEnumerable<ShapeHit> Query() {
         var newPos = _context.Movement.Sample(_context.DeltaTime);
-        if (Physics.Linecast(transform.position, newPos, out var hit, _context.Data.defaultRaycast,
+        if (Physics.Linecast(_context.View.transform.position, newPos, out var hit, _context.Data.defaultRaycast,
                 QueryTriggerInteraction.Ignore)) {
             yield return new ShapeHit { Target = hit.collider.gameObject, Point = hit.point, Normal = hit.normal };
         }

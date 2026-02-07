@@ -2,26 +2,21 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class OnFeetSpawn : ISpellSpawn {
+public class NewDirectSpawn : ISpellSpawn, IDelayOriginRespect {
     public IEnumerator Request(SpawnContext context, Action<SpawnContext, int> spawn) {
         var count = ISpellSpawn.InstanceCount(context);
         var delay = context.spawn.multiInstanceDelay;
         var origin = context.spawn.delayOrigin;
-        var onFirst = context with {
-            position = context.caster.transform.position,
-            rotation = context.caster.transform.rotation,
-            forward = context.caster.transform.forward,
-        };
         for (int i = 0; i < count; i++) {
             switch (origin) {
                 case DelayOrigin.First:
-                    spawn(onFirst, i);
+                    spawn(context, i);
                     break;
                 case DelayOrigin.Continuous:
                     spawn(context with {
-                        position = context.caster.transform.position,
-                        rotation = context.caster.transform.rotation,
-                        forward = context.caster.transform.forward,
+                        position = context.caster.spawnPos.position,
+                        rotation = context.caster.spawnPos.rotation,
+                        forward = context.caster.spawnPos.forward,
                     }, i);
                     break;
             }

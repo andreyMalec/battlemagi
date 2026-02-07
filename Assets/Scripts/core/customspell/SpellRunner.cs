@@ -4,6 +4,7 @@ using UnityEngine;
 public class SpellRunner : MonoBehaviour {
     public SpellDefinition def;
     public SpellDefinition def2;
+    public SpellDefinition def3;
     public Transform spawnPos;
     // public NetworkStatSystem statSystem;
 
@@ -17,6 +18,8 @@ public class SpellRunner : MonoBehaviour {
             _spell = def;
         if (Input.GetKeyDown(KeyCode.R))
             _spell = def2;
+        if (Input.GetKeyDown(KeyCode.Q))
+            _spell = def3;
 
         UpdatePreview();
 
@@ -94,10 +97,13 @@ public class SpellRunner : MonoBehaviour {
     private ISpellSpawn GetMode(SpawnMode mode) {
         return mode switch {
             SpawnMode.Direct => new NewDirectSpawn(),
-            SpawnMode.DirectDown => new OnFeetSpawn(),
+            SpawnMode.DirectDown => new NewDirectDownSpawn(),
+            SpawnMode.DirectDownForward => new DirectDownForwardSpawn(),
             SpawnMode.Arc => new NewArcSpawn(),
-            SpawnMode.GroundPoint => new LookAtPointSpawn(),
-            SpawnMode.GroundPointArc => new ArcToGroundPointSpawn(),
+            SpawnMode.GroundPoint => new NewGroundPointSpawn(),
+            SpawnMode.GroundPointArc => new NewGroundPointArcSpawn(),
+            SpawnMode.GroundPointArcDown => new NewGroundPointArcDownSpawn(),
+            SpawnMode.GroundPointForward => new NewGroundPointForwardSpawn(),
             _ => null
         };
     }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class LinePreview : ISpellSpawnPreview {
     private Color fillColor = new Color(0f, 1f, 1f, 0.2f);
-    private float _thickness = 0.03f;
+    private float _thickness = 0.01f;
 
     private ISpellSpawn _spawnMode;
     private bool _active;

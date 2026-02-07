@@ -21,7 +21,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 576
   projectileSpeed: 25
-  enableGravity: 1
+  enableGravity: 0
   gravity: {x: 0, y: -9.81, z: 0}
   lookAtMaxDistance: 50
   lookAtRayMask:
@@ -36,12 +36,12 @@ MonoBehaviour:
   stretchFrequency: 0.5
   stretchDamping: 0
   beamMaxLength: 15
-  enableBounce: 1
+  enableBounce: 0
   maxBounces: 1
   bounceSpeedMultiplier: 0.7
-  enablePierce: 0
-  maxPierces: 1
-  enableFork: 1
+  enablePierce: 1
+  maxPierces: 100000
+  enableFork: 0
   forkCount: 2
   forkSpreadAngle: 35
   zoneRadius: 1

@@ -60,7 +60,6 @@ public class SpellManager : NetworkBehaviour {
         return spawnMode switch {
             SpawnMode.Arc => new ArcSpawn(multiProjDelay),
             SpawnMode.GroundPoint => new GroundPointSpawn(multiProjDelay),
-            SpawnMode.HitScan => new HitScanSpawn(multiProjDelay),
             SpawnMode.DirectDown => new DirectDownSpawn(multiProjDelay),
             SpawnMode.GroundPointArc => new GroundPointArcSpawn(multiProjDelay),
             SpawnMode.GroundPointForward => new GroundPointForwardSpawn(multiProjDelay),

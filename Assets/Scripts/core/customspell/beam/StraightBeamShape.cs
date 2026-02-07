@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StraightBeamShape : MonoBehaviour, IShape {
+public class StraightBeamShape : IShape {
     private const int MaxHits = 32;
 
     private IBeamContext _ctx;
