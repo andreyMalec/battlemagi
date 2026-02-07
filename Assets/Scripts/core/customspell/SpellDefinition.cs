@@ -5,7 +5,7 @@ using UnityEngine;
 public class SpellDefinition : ScriptableObject {
     public CoreType coreType;
     public SpawnDefinition spawn;
-    public GameObject mainPrefab;
+    public SpellPrefabId prefabId;
 
     public float lifetime;
     public SpellTransform moveType;

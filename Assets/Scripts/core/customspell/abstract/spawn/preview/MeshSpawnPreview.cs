@@ -35,7 +35,8 @@ public class MeshSpawnPreview : ISpellSpawnPreview {
     public void Show(SpawnContext context, ISpellSpawn spawnMode) {
         _spawnMode = spawnMode;
         _spell = context.spell;
-        var m = _spell.mainPrefab.GetComponentInChildren<MeshFilter>(true);
+        var prefab = SpellPrefabDatabase.Instance.Get(_spell.prefabId);
+        var m = prefab.GetComponentInChildren<MeshFilter>(true);
         mesh = m.sharedMesh;
         _wireMesh = BuildWireMesh(mesh);
         scale = m.gameObject.transform.localScale * context.spell.zoneRadius;

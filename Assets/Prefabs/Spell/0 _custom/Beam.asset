@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpellDefinition
   coreType: 2
   spawn: {fileID: 11400000, guid: 0c8321b4ebe2c074988ecbf47bc38763, type: 2}
-  mainPrefab: {fileID: 7354784787554302670, guid: c1d2b633082563743833579beaf20a95, type: 3}
+  prefabId: 8
   lifetime: 4
   moveType: 4
   defaultRaycast:
@@ -23,6 +23,8 @@ MonoBehaviour:
   projectileSpeed: 0
   enableGravity: 0
   gravity: {x: 0, y: -9.81, z: 0}
+  enableMaxDistance: 0
+  maxDistance: 20
   lookAtMaxDistance: 50
   lookAtRayMask:
     serializedVersion: 2
@@ -46,3 +48,6 @@ MonoBehaviour:
   forkSpreadAngle: 35
   zoneRadius: 1
   onHitSpawnZone: {fileID: 0}
+  atMaxDistanceSpawn: {fileID: 0}
+  onLifetimeEndSpawn: {fileID: 0}
+  onLifetimeHalfSpawn: {fileID: 0}

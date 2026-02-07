@@ -24,8 +24,9 @@ public class SpellFactory {
         bool spawned = false
     ) {
         SpellDefinition def = spawnContext.spell;
+        var prefab = SpellPrefabDatabase.Instance.Get(def.prefabId);
         var viewGo = Object.Instantiate(
-            def.mainPrefab,
+            prefab,
             spawnContext.position,
             spawnContext.rotation
         );
@@ -86,8 +87,9 @@ public class SpellFactory {
         bool spawned = false
     ) {
         SpellDefinition def = spawnContext.spell;
+        var prefab = SpellPrefabDatabase.Instance.Get(def.prefabId);
         var viewGo = Object.Instantiate(
-            def.mainPrefab,
+            prefab,
             spawnContext.position,
             spawnContext.rotation
         );
@@ -151,8 +153,9 @@ public class SpellFactory {
         bool spawned = false
     ) {
         SpellDefinition def = spawnContext.spell;
+        var prefab = SpellPrefabDatabase.Instance.Get(def.prefabId);
         var viewGo = Object.Instantiate(
-            def.mainPrefab,
+            prefab,
             spawnContext.position,
             spawnContext.rotation
         );
