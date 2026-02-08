@@ -1,9 +1,12 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public interface ISpellSpawn {
     IEnumerator Request(SpawnContext context, Action<SpawnContext, int> spawn);
+
+    IEnumerable<SpawnContext> ShapeCenter(SpawnContext context);
 
     public static int InstanceCount(SpawnContext context) {
         var instanceMulti = 1f; //context.caster.statSystem.Stats.GetFinal(StatType.ProjectileCount);

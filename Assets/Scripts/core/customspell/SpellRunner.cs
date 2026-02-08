@@ -72,6 +72,8 @@ public class SpellRunner : MonoBehaviour {
             list.Add(new NonePreview());
         if ((previewFlags & Preview.Line) != 0)
             list.Add(new LinePreview());
+        if ((previewFlags & Preview.GroundPoint) != 0)
+            list.Add(new GroundPointPreview());
         if ((previewFlags & Preview.Disk) != 0) {
             list.Add(new GroundRayPreview());
             list.Add(new DiskPreview());

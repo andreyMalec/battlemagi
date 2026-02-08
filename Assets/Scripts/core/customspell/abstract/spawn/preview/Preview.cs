@@ -7,4 +7,5 @@ public enum Preview {
     Sphere = 1 << 1,
     Line = 1 << 2,
     Disk = 1 << 3,
+    GroundPoint = 1 << 4,
 }

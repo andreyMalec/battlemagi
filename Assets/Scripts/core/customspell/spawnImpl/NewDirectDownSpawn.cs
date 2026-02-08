@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class NewDirectDownSpawn : ISpellSpawn, IDelayOriginRespect {
@@ -30,5 +31,9 @@ public class NewDirectDownSpawn : ISpellSpawn, IDelayOriginRespect {
                 yield return new WaitForSeconds(delay);
             }
         }
+    }
+
+    public IEnumerable<SpawnContext> ShapeCenter(SpawnContext context) {
+        yield return context;
     }
 }

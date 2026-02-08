@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class NewGroundPointArcSpawn : ISpellSpawn {
@@ -20,5 +21,9 @@ public class NewGroundPointArcSpawn : ISpellSpawn {
             if (delay > 0f && i > 0)
                 yield return new WaitForSeconds(delay);
         }
+    }
+
+    public IEnumerable<SpawnContext> ShapeCenter(SpawnContext context) {
+        yield return ISpellSpawn.GroundPos(context, context.forward, out _);
     }
 }

@@ -35,10 +35,31 @@ public class GroundRayPreview : ISpellSpawnPreview {
             && context.spawn.spawnMode is not SpawnMode.GroundPointDiskUp)
             return;
 
-        var ctx = ISpellSpawn.GroundPos(context, context.forward, out _, Vector3.down);
-        Draw(ctx with {
-            position = ctx.position + ctx.rotation * new Vector3(0f, context.spawn.circleHeight, 0f)
-        }, 0);
+        var hasFirst = false;
+        var hasSecond = false;
+        SpawnContext first = default;
+        SpawnContext second = default;
+
+        foreach (var c in _spawnMode.ShapeCenter(context)) {
+            if (!hasFirst) {
+                first = c;
+                hasFirst = true;
+                continue;
+            }
+
+            second = c;
+            hasSecond = true;
+            break;
+        }
+
+        if (!hasFirst) return;
+
+        var start = first.position;
+        var end = hasSecond
+            ? second.position
+            : first.position + first.rotation * new Vector3(0f, context.spawn.circleHeight, 0f);
+
+        Draw(start, end);
     }
 
     private void Draw(SpawnContext context, int index) {

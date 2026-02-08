@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class DirectDownForwardSpawn : ISpellSpawn {
@@ -22,6 +23,10 @@ public class DirectDownForwardSpawn : ISpellSpawn {
             if (delay > 0f && i < count - 1)
                 yield return new WaitForSeconds(delay);
         }
+    }
+
+    public IEnumerable<SpawnContext> ShapeCenter(SpawnContext context) {
+        yield return context;
     }
 
     private static Vector3 RotationFromNormal(Vector3 forwardHint, Vector3 normal) {

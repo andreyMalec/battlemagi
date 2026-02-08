@@ -34,17 +34,34 @@ public class DiskPreview : ISpellSpawnPreview {
             && context.spawn.spawnMode is not SpawnMode.GroundPointDiskUp)
             return;
 
-        var ctx = ISpellSpawn.GroundPos(context, context.forward, out _, Vector3.down);
-        Draw(ctx with {
-            position = ctx.position + ctx.rotation * new Vector3(0f, context.spawn.circleHeight, 0f)
-        }, 0);
+        var hasFirst = false;
+        var hasSecond = false;
+        SpawnContext first = default;
+        SpawnContext second = default;
+
+        foreach (var c in _spawnMode.ShapeCenter(context)) {
+            if (!hasFirst) {
+                first = c;
+                hasFirst = true;
+                continue;
+            }
+
+            second = c;
+            hasSecond = true;
+            break;
+        }
+
+        if (hasSecond)
+            Draw(second, 0);
+        else if (hasFirst)
+            Draw(first, 0);
     }
 
     private void Draw(SpawnContext context, int index) {
-        var center = context.position - context.rotation * new Vector3(0f, context.spawn.circleHeight, 0f);
+        var center = context.position;
         var normal = context.rotation * Vector3.up;
 
-        DrawDisk(center, normal, context.spawn.circleRadius, context.spawn.circleHeight);
+        DrawDisk(center, normal, context.spawn.circleRadius, 0f);
     }
 
     private void DrawDisk(Vector3 groundPoint, Vector3 normal, float radius, float height) {

@@ -240,17 +240,17 @@ public class SpellFactory {
             move = new GravityTransform(move, def.gravity);
         }
 
-        if (def.spawnMaxDistance) {
-            move = new MaxDistanceTransform(
-                move,
-                def.maxDistance
-            );
-        }
-
         if (def.spawnAtStep) {
             move = new StepDistanceTransform(
                 move,
                 def.spawnStep
+            );
+        }
+
+        if (def.enableMaxDistance) {
+            move = new MaxDistanceTransform(
+                move,
+                def.maxDistance
             );
         }
 
