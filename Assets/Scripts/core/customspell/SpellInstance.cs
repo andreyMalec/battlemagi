@@ -19,7 +19,7 @@ public class SpellInstance : MonoBehaviour {
     public void Init(ISpellBind bind) {
         Bind = bind;
 
-        var k = bind.Context.Spell.zoneRadius;
+        var k = bind.Context.Spell.scale;
         foreach (var ps in GetComponentsInChildren<ParticleSystem>()) {
             ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             var main = ps.main;

@@ -20,7 +20,7 @@ public class BeamContext : IBeamContext {
 
     public Vector3 Origin => Caster.spawnPos.position;
     public Vector3 Direction => Caster.Direction;
-    public float MaxLength => Spell.beamMaxLength;
+    public float MaxLength => Spell.beam.beamMaxLength;
 
     public BeamContext(
         SpellRunner caster,

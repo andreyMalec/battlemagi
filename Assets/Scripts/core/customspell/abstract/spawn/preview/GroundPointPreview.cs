@@ -47,7 +47,7 @@ public class GroundPointPreview : ISpellSpawnPreview {
     private void Draw(SpawnContext context, int index) {
         var pos = context.position;
         var up = context.rotation * Vector3.up;
-        DrawDisk(pos, up, context.spell.zoneRadius);
+        DrawDisk(pos, up, context.spell.scale);
         DrawCross(pos, context.rotation);
     }
 

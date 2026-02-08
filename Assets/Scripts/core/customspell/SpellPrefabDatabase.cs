@@ -4,22 +4,65 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "SpellPrefabDatabase", menuName = "Spells/Spell Prefab Database")]
 public class SpellPrefabDatabase : ScriptableObject {
     [Serializable]
-    public struct Entry {
-        public SpellPrefabId id;
+    public struct ProjectileEntry {
+        public SpellProjectilePrefabId id;
         public GameObject prefab;
     }
 
-    public Entry[] entries;
+    [Serializable]
+    public struct ZoneEntry {
+        public SpellZonePrefabId id;
+        public GameObject prefab;
+    }
 
-    public GameObject Get(SpellPrefabId id) {
-        for (int i = 0; i < entries.Length; i++) {
-            if (entries[i].id == id)
-                return entries[i].prefab;
+    [Serializable]
+    public struct BeamEntry {
+        public SpellBeamPrefabId id;
+        public GameObject prefab;
+    }
+
+    public ProjectileEntry[] projectiles;
+    public ZoneEntry[] zones;
+    public BeamEntry[] beams;
+
+    public GameObject Get(SpellDefinition def) {
+        return def.coreType switch {
+            CoreType.Projectile => Get(def.projectile.prefabId),
+            CoreType.Zone => Get(def.zone.prefabId),
+            CoreType.Beam => Get(def.beam.prefabId),
+            _ => null
+        };
+    }
+
+    public GameObject Get(SpellProjectilePrefabId id) {
+        for (int i = 0; i < projectiles.Length; i++) {
+            if (projectiles[i].id == id)
+                return projectiles[i].prefab;
         }
+
+        return null;
+    }
+
+    public GameObject Get(SpellZonePrefabId id) {
+        for (int i = 0; i < zones.Length; i++) {
+            if (zones[i].id == id)
+                return zones[i].prefab;
+        }
+
+        return null;
+    }
+
+    public GameObject Get(SpellBeamPrefabId id) {
+        for (int i = 0; i < beams.Length; i++) {
+            if (beams[i].id == id)
+                return beams[i].prefab;
+        }
+
         return null;
     }
 
     private static SpellPrefabDatabase _instance;
+
     public static SpellPrefabDatabase Instance {
         get {
             if (_instance == null)

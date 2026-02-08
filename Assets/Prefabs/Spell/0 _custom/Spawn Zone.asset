@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1907b37ed1aa4ddd80c76a48f1db8862, type: 3}
   m_Name: Spawn Zone
   m_EditorClassIdentifier: Assembly-CSharp::SpawnDefinition
-  spawnMode: 0
-  preview: 0
-  instanceCount: 1
+  spawnMode: 5
+  preview: 13
+  instanceCount: 3
   instanceLimit: 0
   multiInstanceDelay: 0.2
   delayOrigin: 0
@@ -24,6 +24,6 @@ MonoBehaviour:
   arcAngleStep: 15
   coneRadius: 2
   coneHeight: 5
-  circleRadius: 2
-  circleHeight: 2
+  circleRadius: 6
+  circleHeight: 8
   raycastMaxDistance: 50

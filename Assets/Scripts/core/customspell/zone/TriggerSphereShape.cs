@@ -12,7 +12,7 @@ public class TriggerSphereShape : IShape {
 
     public void Init(ISpellContext context) {
         _context = context;
-        _radius = context.Spell.zoneRadius / 2;
+        _radius = context.Spell.scale / 2;
         _radiusSqr = _radius * _radius;
     }
 

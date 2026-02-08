@@ -24,7 +24,7 @@ public class SpellFactory {
         bool spawned = false
     ) {
         SpellDefinition def = spawnContext.spell;
-        var prefab = SpellPrefabDatabase.Instance.Get(def.prefabId);
+        var prefab = SpellPrefabDatabase.Instance.Get(def.projectile.prefabId);
         var viewGo = Object.Instantiate(
             prefab,
             spawnContext.position,
@@ -36,7 +36,7 @@ public class SpellFactory {
         var triggers = new List<SpellTrigger>();
         var onHitTrigger = new SpellTrigger {
             eventType = typeof(OnHitEvent),
-            actions = HitActions(def).ToArray()
+            actions = HitActions(def.projectile).ToArray()
         };
         triggers.Add(onHitTrigger);
         triggers.Add(new SpellTrigger {
@@ -66,7 +66,7 @@ public class SpellFactory {
             }
         });
 
-        var move = Move(def, spawnContext.forward);
+        var move = Move(def.projectile, spawnContext.forward);
 
         var context = new ProjectileContext(
             spawnContext.caster,
@@ -93,7 +93,7 @@ public class SpellFactory {
         bool spawned = false
     ) {
         SpellDefinition def = spawnContext.spell;
-        var prefab = SpellPrefabDatabase.Instance.Get(def.prefabId);
+        var prefab = SpellPrefabDatabase.Instance.Get(def.zone.prefabId);
         var viewGo = Object.Instantiate(
             prefab,
             spawnContext.position,
@@ -131,7 +131,7 @@ public class SpellFactory {
             }
         });
 
-        var move = Move(def, spawnContext.forward);
+        var move = Move(def.zone, spawnContext.forward);
 
         var context = new ZoneContext(
             spawnContext.caster,
@@ -159,7 +159,7 @@ public class SpellFactory {
         bool spawned = false
     ) {
         SpellDefinition def = spawnContext.spell;
-        var prefab = SpellPrefabDatabase.Instance.Get(def.prefabId);
+        var prefab = SpellPrefabDatabase.Instance.Get(def.beam.prefabId);
         var viewGo = Object.Instantiate(
             prefab,
             spawnContext.position,
@@ -196,7 +196,7 @@ public class SpellFactory {
             }
         });
 
-        ISpellTransform move = Move(def, spawnContext.forward);
+        ISpellTransform move = Move(def.beam, spawnContext.forward);
 
         var context = new BeamContext(
             spawnContext.caster,
@@ -220,19 +220,18 @@ public class SpellFactory {
         return bind;
     }
 
-    private static ISpellTransform Move(SpellDefinition def, Vector3 direction) {
+    private static ISpellTransform Move(ProjectileDefinition def, Vector3 direction) {
         ISpellTransform move = def.moveType switch {
-            SpellTransform.Linear => new LinearMoveTransform(direction, def.projectileSpeed),
-            SpellTransform.LookAtPoint => new LookAtPointTransform(def.projectileSpeed, def.lookAtMaxDistance,
+            SpellTransform.Linear => new LinearMoveTransform(direction, def.moveSpeed),
+            SpellTransform.LookAtPoint => new LookAtPointTransform(def.moveSpeed, def.lookAtMaxDistance,
                 def.lookAtRayMask),
             SpellTransform.Spiral => new SpiralMoveTransform(
                 direction,
                 def.spiralAxis,
                 def.spiralRadius,
                 def.angularSpeed,
-                def.projectileSpeed
+                def.moveSpeed
             ),
-            SpellTransform.FollowCaster => new FollowCasterTransform(def.followTarget),
             _ => new StaticTransform()
         };
 
@@ -266,7 +265,84 @@ public class SpellFactory {
         return move;
     }
 
-    private static List<ISpellAction> HitActions(SpellDefinition def) {
+    private static ISpellTransform Move(ZoneDefinition def, Vector3 direction) {
+        ISpellTransform move = def.moveType switch {
+            SpellTransform.Linear => new LinearMoveTransform(direction, def.moveSpeed),
+            SpellTransform.LookAtPoint => new LookAtPointTransform(def.moveSpeed, def.lookAtMaxDistance,
+                def.lookAtRayMask),
+            SpellTransform.Spiral => new SpiralMoveTransform(
+                direction,
+                def.spiralAxis,
+                def.spiralRadius,
+                def.angularSpeed,
+                def.moveSpeed
+            ),
+            SpellTransform.FollowCaster => new FollowCasterTransform(def.followTarget),
+            _ => new StaticTransform()
+        };
+
+        if (def.spawnAtStep) {
+            move = new StepDistanceTransform(
+                move,
+                def.spawnStep
+            );
+        }
+
+        if (def.enableMaxDistance) {
+            move = new MaxDistanceTransform(
+                move,
+                def.maxDistance
+            );
+        }
+
+        if (def.enableSquashStretch) {
+            move = new SquashStretchTransform(
+                move,
+                def.stretchAmplitude,
+                def.stretchFrequency,
+                def.stretchDamping
+            );
+        }
+
+        return move;
+    }
+
+    private static ISpellTransform Move(BeamDefinition def, Vector3 direction) {
+        ISpellTransform move = def.moveType switch {
+            SpellTransform.Linear => new LinearMoveTransform(direction, def.moveSpeed),
+            SpellTransform.LookAtPoint => new LookAtPointTransform(def.moveSpeed, def.lookAtMaxDistance,
+                def.lookAtRayMask),
+            SpellTransform.FollowCaster => new FollowCasterTransform(def.followTarget),
+            _ => new StaticTransform()
+        };
+
+        if (def.spawnAtStep) {
+            move = new StepDistanceTransform(
+                move,
+                def.spawnStep
+            );
+        }
+
+        if (def.enableMaxDistance) {
+            move = new MaxDistanceTransform(
+                move,
+                def.maxDistance
+            );
+        }
+
+        if (def.enableSquashStretch) {
+            move = new SquashStretchTransform(
+                move,
+                def.stretchAmplitude,
+                def.stretchFrequency,
+                def.stretchDamping
+            );
+        }
+
+        return move;
+    }
+
+    private static List<ISpellAction> HitActions(ProjectileDefinition def) {
         var actions = new List<ISpellAction>();
         if (def.enablePierce)
             actions.Add(new PierceOnHitAction(def.maxPierces));

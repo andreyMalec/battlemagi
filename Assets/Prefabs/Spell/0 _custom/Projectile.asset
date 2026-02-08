@@ -14,43 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpellProjectileDefinition
   coreType: 0
   spawn: {fileID: 11400000, guid: 0c8321b4ebe2c074988ecbf47bc38763, type: 2}
-  prefabId: 0
+  scale: 1
   lifetime: 10
-  moveType: 1
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 576
-  projectileSpeed: 20
-  enableGravity: 1
-  gravity: {x: 0, y: -9.81, z: 0}
-  enableMaxDistance: 0
-  maxDistance: 20
-  lookAtMaxDistance: 50
-  lookAtRayMask:
-    serializedVersion: 2
-    m_Bits: 64
-  followTarget: 1
-  angularSpeed: 5
-  spiralRadius: 2
-  spiralAxis: 0
-  enableSquashStretch: 0
-  stretchAmplitude: 1
-  stretchFrequency: 0.5
-  stretchDamping: 0
-  beamMaxLength: 15
-  enableBounce: 1
-  maxBounces: 5
-  bounceSpeedMultiplier: 0.7
-  enablePierce: 0
-  maxPierces: 100000
-  enableFork: 0
-  forkCount: 2
-  forkSpreadAngle: 35
-  zoneRadius: 1
-  onHitSpawnZone: {fileID: 0}
-  atMaxDistanceSpawn: {fileID: 0}
-  atStepDistanceSpawn: {fileID: 11400000, guid: 4aec248e4dfc7464381c95a332855769, type: 2}
-  spawnStep: 3
-  onLifetimeEndSpawn: {fileID: 0}
-  onLifetimeHalfSpawn: {fileID: 0}
-  spawnAtStep: 1
+  projectile: {fileID: 11400000, guid: 41bb151cb5bb8a147bb8d6c93ef9b739, type: 2}
+  zone: {fileID: 0}
+  beam: {fileID: 0}
