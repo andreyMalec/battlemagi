@@ -46,6 +46,12 @@ public class SpellFactory {
             }
         });
         triggers.Add(new SpellTrigger {
+            eventType = typeof(OnStepDistanceEvent),
+            actions = new ISpellAction[] {
+                new SpawnAtStepDistanceAction(),
+            }
+        });
+        triggers.Add(new SpellTrigger {
             eventType = typeof(OnLifetimeEndingEvent),
             actions = new ISpellAction[] {
                 new RemoveParticlesAction(),
@@ -234,10 +240,17 @@ public class SpellFactory {
             move = new GravityTransform(move, def.gravity);
         }
 
-        if (def.enableMaxDistance) {
+        if (def.spawnMaxDistance) {
             move = new MaxDistanceTransform(
                 move,
                 def.maxDistance
+            );
+        }
+
+        if (def.spawnAtStep) {
+            move = new StepDistanceTransform(
+                move,
+                def.spawnStep
             );
         }
 

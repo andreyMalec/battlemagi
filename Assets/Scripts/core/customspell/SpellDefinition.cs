@@ -17,8 +17,6 @@ public class SpellDefinition : ScriptableObject {
 
     public bool enableGravity;
     [ShowIf("enableGravity")] public Vector3 gravity = new(0, -9.81f, 0);
-    public bool enableMaxDistance;
-    [ShowIf("enableMaxDistance")] public float maxDistance = 20f;
 
     [Header("LookAtPoint")]
     [ShowIf("_transformLookAtPoint")] public float lookAtMaxDistance = 50f;
@@ -66,19 +64,27 @@ public class SpellDefinition : ScriptableObject {
 
     [Header("Spawned Spells")]
     public SpellDefinition onHitSpawnZone;
+
     public SpellDefinition atMaxDistanceSpawn;
+    [ShowIf("spawnMaxDistance")] public float maxDistance = 20f;
+    public SpellDefinition atStepDistanceSpawn;
+    [ShowIf("spawnAtStep")] public float spawnStep = 10f;
     public SpellDefinition onLifetimeEndSpawn;
     public SpellDefinition onLifetimeHalfSpawn;
 
     private bool _transformSpiral = false;
     private bool _transformLookAtPoint = false;
     private bool _transformFollowCaster = false;
+    [HideInInspector] public bool spawnMaxDistance;
+    [HideInInspector] public bool spawnAtStep = false;
 
 #if UNITY_EDITOR
     private void OnValidate() {
         _transformSpiral = moveType is SpellTransform.Spiral;
         _transformLookAtPoint = moveType is SpellTransform.LookAtPoint;
         _transformFollowCaster = moveType is SpellTransform.FollowCaster;
+        spawnMaxDistance = atMaxDistanceSpawn != null;
+        spawnAtStep = atStepDistanceSpawn != null;
     }
 #endif
 }

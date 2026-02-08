@@ -19,6 +19,7 @@ public class PlayersVoiceSettings : MonoBehaviour {
         }
 
         lobbyMembers.Clear();
+        if (LobbyManager.Instance == null) return;
         var lobby = LobbyManager.Instance.CurrentLobby;
         if (lobby.HasValue) {
             foreach (var member in lobby.Value.Members) {
@@ -26,6 +27,7 @@ public class PlayersVoiceSettings : MonoBehaviour {
                 lobbyMembers[member.Id.Value] = Create(member);
             }
         }
+
         container.alpha = lobbyMembers.Count == 0 ? 0 : 1;
     }
 

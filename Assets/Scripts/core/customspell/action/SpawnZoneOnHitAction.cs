@@ -3,16 +3,16 @@ using UnityEngine;
 public class SpawnZoneOnHitAction : ISpellAction {
     public override void Apply(ISpellContext context, SpellEvent evt) {
         if (evt is not OnHitEvent hit) return;
-        if (context.Caster == null) return;
         base.Apply(context, evt);
 
         var zoneDef = context.Spell.onHitSpawnZone;
+        var rotation = ComputeRotation(hit.Normal, context.View.transform.forward);
         var spawnContext = new SpawnContext {
             spell = zoneDef,
             spawn = zoneDef.spawn,
             position = hit.Point,
-            rotation = ComputeRotation(hit.Normal, context.Movement.Motion.Velocity),
-            forward = Vector3.zero,
+            rotation = rotation,
+            forward = rotation * Vector3.forward,
             caster = context.Caster,
             forceFirstOrigin = true
         };

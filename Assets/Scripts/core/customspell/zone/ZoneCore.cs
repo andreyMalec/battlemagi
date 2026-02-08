@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class ZoneCore : ISpellCore<ZoneContext> {
     private readonly IShape _shape;
 
@@ -13,6 +15,9 @@ public class ZoneCore : ISpellCore<ZoneContext> {
         context.Lifetime -= delta;
         var hits = _shape.Query();
 
+        foreach (var hit in hits) {
+            Debug.Log($"_______________ hit {hit.Target.gameObject.name} at point {hit.Point} with normal {hit.Normal}");
+        }
         HandleEvent(new OnZoneStayEvent(hits.Map(it => it.Target.gameObject), delta));
     }
 

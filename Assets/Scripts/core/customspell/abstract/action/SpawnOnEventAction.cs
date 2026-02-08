@@ -9,13 +9,13 @@ public abstract class SpawnOnEventAction : ISpellAction {
         base.Apply(context, evt);
 
         var spell = SpellDefinition(context);
-        var spawnContext = SpawnContext(context, spell);
+        var spawnContext = SpawnContext(context, spell, evt);
 
         ISpellSpawn spawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
         context.Caster.StartCoroutine(spawn!.Request(spawnContext, Spawn));
     }
 
-    protected virtual SpawnContext SpawnContext(ISpellContext context, SpellDefinition spell) {
+    protected virtual SpawnContext SpawnContext(ISpellContext context, SpellDefinition spell, SpellEvent evt) {
         return new SpawnContext {
             spell = spell,
             spawn = spell.spawn,

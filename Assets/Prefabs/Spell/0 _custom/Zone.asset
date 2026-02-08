@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Zone
   m_EditorClassIdentifier: Assembly-CSharp::SpellProjectileDefinition
   coreType: 1
-  spawn: {fileID: 11400000, guid: 0c8321b4ebe2c074988ecbf47bc38763, type: 2}
-  prefabId: 4
-  lifetime: 3
+  spawn: {fileID: 11400000, guid: b1b312811b376b84b94785ed96abd146, type: 2}
+  prefabId: 5
+  lifetime: 7
   moveType: 0
   defaultRaycast:
     serializedVersion: 2
@@ -49,5 +49,8 @@ MonoBehaviour:
   zoneRadius: 2
   onHitSpawnZone: {fileID: 0}
   atMaxDistanceSpawn: {fileID: 0}
+  atStepDistanceSpawn: {fileID: 0}
+  spawnStep: 10
   onLifetimeEndSpawn: {fileID: 0}
   onLifetimeHalfSpawn: {fileID: 0}
+  spawnAtStep: 0

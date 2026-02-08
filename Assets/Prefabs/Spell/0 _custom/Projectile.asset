@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpellProjectileDefinition
   coreType: 0
   spawn: {fileID: 11400000, guid: 0c8321b4ebe2c074988ecbf47bc38763, type: 2}
-  mainPrefab: {fileID: 7354784787554302670, guid: 98f9a507ceb843d49880363f9cf9869c, type: 3}
+  prefabId: 0
   lifetime: 10
   moveType: 1
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 576
-  projectileSpeed: 15
+  projectileSpeed: 20
   enableGravity: 1
   gravity: {x: 0, y: -9.81, z: 0}
   enableMaxDistance: 0
@@ -43,11 +43,14 @@ MonoBehaviour:
   bounceSpeedMultiplier: 0.7
   enablePierce: 0
   maxPierces: 100000
-  enableFork: 1
+  enableFork: 0
   forkCount: 2
   forkSpreadAngle: 35
   zoneRadius: 1
-  onHitSpawnZone: {fileID: 11400000, guid: 4aec248e4dfc7464381c95a332855769, type: 2}
+  onHitSpawnZone: {fileID: 0}
   atMaxDistanceSpawn: {fileID: 0}
+  atStepDistanceSpawn: {fileID: 11400000, guid: 4aec248e4dfc7464381c95a332855769, type: 2}
+  spawnStep: 3
   onLifetimeEndSpawn: {fileID: 0}
   onLifetimeHalfSpawn: {fileID: 0}
+  spawnAtStep: 1

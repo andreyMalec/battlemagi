@@ -1,8 +1,11 @@
+using UnityEngine;
+
 public abstract class ISpellCore<TContext>
     where TContext : ISpellContext {
     protected readonly TContext context;
     private readonly SpellTrigger[] _triggers;
 
+    private bool _sentLifetimeStart;
     private bool _sentLifetimeHalf;
     private bool _sentLifetimeEnding;
 
@@ -12,10 +15,16 @@ public abstract class ISpellCore<TContext>
     ) {
         this.context = context;
         _triggers = triggers;
+        Debug.Log($"Created {GetType().Name} for spell {context.Spell.name} with context {context.GetType().Name}");
         AttachEventSink();
     }
 
     public void Tick(float deltaTime) {
+        if (!_sentLifetimeStart) {
+            _sentLifetimeStart = true;
+            HandleEvent(new OnLifetimeStartEvent { remaining = context.Lifetime });
+        }
+
         if (!_sentLifetimeHalf && context.Lifetime > 0f && context.Lifetime <= context.Spell.lifetime * 0.5f) {
             _sentLifetimeHalf = true;
             HandleEvent(new OnLifetimeHalfEvent { remaining = context.Lifetime });

@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1907b37ed1aa4ddd80c76a48f1db8862, type: 3}
-  m_Name: Spawn Many
+  m_Name: Spawn Zone
   m_EditorClassIdentifier: Assembly-CSharp::SpawnDefinition
-  spawnMode: 8
-  preview: 8
-  instanceCount: 36
+  spawnMode: 0
+  preview: 0
+  instanceCount: 1
   instanceLimit: 0
-  multiInstanceDelay: 0.1
-  delayOrigin: 1
+  multiInstanceDelay: 0.2
+  delayOrigin: 0
   useAlternativeSpawnMode: 0
   alternativeSpawnMode: 0
   forwardStep: 5
   arcAngleStep: 15
-  coneRadius: 0.5
-  coneHeight: 2
-  circleRadius: 5
-  circleHeight: 6
+  coneRadius: 2
+  coneHeight: 5
+  circleRadius: 2
+  circleHeight: 2
   raycastMaxDistance: 50

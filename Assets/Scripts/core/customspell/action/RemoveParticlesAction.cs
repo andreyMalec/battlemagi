@@ -10,5 +10,9 @@ public class RemoveParticlesAction : ISpellAction {
         foreach (var mesh in context.View.GetComponentsInChildren<MeshRenderer>()) {
             mesh.enabled = false;
         }
+
+        foreach (var light in context.View.GetComponentsInChildren<Light>()) {
+            light.enabled = false;
+        }
     }
 }
