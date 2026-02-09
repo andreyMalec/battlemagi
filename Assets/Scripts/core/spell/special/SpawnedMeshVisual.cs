@@ -13,9 +13,10 @@ public class SpawnedMeshVisual : MonoBehaviour {
     private void Awake() {
         _damageable = GetComponent<Damageable>();
         _material = GetComponentInChildren<Renderer>().material;
-        _damageable.onDeath += () => {
-            DestroyAfterPlay.Play(onDestroy, transform.position);
-        };
+        //TODO
+        // _damageable.onDeath += () => {
+        //     DestroyAfterPlay.Play(onDestroy, transform.position);
+        // };
         transform.position -= transform.TransformDirection(end);
     }
 
@@ -24,8 +25,8 @@ public class SpawnedMeshVisual : MonoBehaviour {
     }
 
     private void Update() {
-        var percent = _damageable.health.Value / _damageable.maxHealth;
-        _material.color = Color.Lerp(Color.black, Color.white, percent);
+        // var percent = _damageable.health.Value / _damageable.maxHealth;
+        // _material.color = Color.Lerp(Color.black, Color.white, percent);
     }
 
     private IEnumerator MoveUp() {

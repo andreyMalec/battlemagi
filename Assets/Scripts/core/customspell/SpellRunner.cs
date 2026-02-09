@@ -5,6 +5,7 @@ public class SpellRunner : MonoBehaviour {
     public SpellDefinition def;
     public SpellDefinition def2;
     public SpellDefinition def3;
+    public SpellDefinition def4;
     public Transform spawnPos;
     // public NetworkStatSystem statSystem;
 
@@ -20,6 +21,8 @@ public class SpellRunner : MonoBehaviour {
             _spell = def2;
         if (Input.GetKeyDown(KeyCode.Q))
             _spell = def3;
+        if (Input.GetKeyDown(KeyCode.F))
+            _spell = def4;
 
         UpdatePreview();
 

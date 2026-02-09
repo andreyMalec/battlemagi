@@ -16,6 +16,9 @@ public class SpellFactory {
             case CoreType.Beam:
                 CreateBeam(spawnContext, spawned);
                 break;
+            case CoreType.Summon:
+                CreateSummon(spawnContext, spawned);
+                break;
         }
     }
 
@@ -218,6 +221,59 @@ public class SpellFactory {
         var bind = new SpellBind<BeamContext>(core, view, context, move);
         instance.Init(bind);
         return bind;
+    }
+
+    private static void CreateSummon(
+        SpawnContext spawnContext,
+        bool spawned = false
+    ) {
+        SpellDefinition def = spawnContext.spell;
+        var prefab = SpellPrefabDatabase.Instance.Get(def.summon.prefabId);
+        var viewGo = Object.Instantiate(
+            prefab,
+            spawnContext.position,
+            spawnContext.rotation
+        );
+        var view = viewGo.GetComponent<SpellView>();
+        var instance = viewGo.GetComponent<SpellInstance>();
+
+        var triggers = new List<SpellTrigger>();
+        triggers.Add(new SpellTrigger {
+            eventType = typeof(OnLifetimeEndingEvent),
+            actions = new ISpellAction[] {
+                new RemoveParticlesAction(),
+                new FadeOutAudioSourcesAction(),
+            }
+        });
+
+        var context = new SummonContext(
+            spawnContext.caster,
+            view,
+            def,
+            spawned
+        );
+
+        ILocomotion move = def.summon.motion switch {
+            SummonMotion.Stationary => new StationaryMotion(),
+            _ => new StationaryMotion()
+        };
+        ICombat combat = def.summon.combat switch {
+            _ => new MeleeCombat(0f)
+        };
+        IBrain brain = def.summon.brain switch {
+            SummonBrain.Aggressive => new BrainDead(),
+            _ => new BrainDead()
+        };
+        var sensors = new List<ISensor>();
+        if ((def.summon.sensors & SummonSensor.Radius) != 0)
+            sensors.Add(new RadiusSensor(10f));
+        var core = new SummonCore(
+            context,
+            triggers.ToArray()
+        );
+
+        var bind = new SummonBind<SummonContext>(core, view, context, move, combat, brain, sensors);
+        instance.Init(bind);
     }
 
     private static ISpellTransform Move(ProjectileDefinition def, Vector3 direction) {

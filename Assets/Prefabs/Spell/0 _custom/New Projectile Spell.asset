@@ -17,7 +17,7 @@ MonoBehaviour:
   moveSpeed: 30
   enableMaxDistance: 0
   maxDistance: 20
-  enableGravity: 1
+  enableGravity: 0
   gravity: {x: 0, y: -9.81, z: 0}
   lookAtMaxDistance: 50
   lookAtRayMask:
@@ -30,7 +30,7 @@ MonoBehaviour:
   stretchAmplitude: 0.2
   stretchFrequency: 8
   stretchDamping: 0
-  enableBounce: 1
+  enableBounce: 0
   maxBounces: 3
   bounceSpeedMultiplier: 0.7
   enablePierce: 0
@@ -38,10 +38,10 @@ MonoBehaviour:
   enableFork: 0
   forkCount: 3
   forkSpreadAngle: 35
-  onHitSpawnZone: {fileID: 11400000, guid: 4aec248e4dfc7464381c95a332855769, type: 2}
+  onHitSpawnZone: {fileID: 0}
   atMaxDistanceSpawn: {fileID: 0}
-  atStepDistanceSpawn: {fileID: 0}
-  spawnStep: 10
+  atStepDistanceSpawn: {fileID: 11400000, guid: 4aec248e4dfc7464381c95a332855769, type: 2}
+  spawnStep: 3
   onLifetimeEndSpawn: {fileID: 0}
   onLifetimeHalfSpawn: {fileID: 0}
-  spawnAtStep: 0
+  spawnAtStep: 1

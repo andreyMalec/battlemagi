@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Spawn
   m_EditorClassIdentifier: Assembly-CSharp::SpawnDefinition
   spawnMode: 0
-  preview: 1
+  preview: 0
   instanceCount: 1
   instanceLimit: 0
   multiInstanceDelay: 0.1
@@ -24,6 +24,6 @@ MonoBehaviour:
   arcAngleStep: 15
   coneRadius: 2
   coneHeight: 5
-  circleRadius: 4
-  circleHeight: 4
+  circleRadius: 5
+  circleHeight: 8
   raycastMaxDistance: 50

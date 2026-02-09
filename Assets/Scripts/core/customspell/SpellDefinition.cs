@@ -19,15 +19,20 @@ public class SpellDefinition : ScriptableObject {
     [Header("Beam")]
     [ShowIf("_typeBeam")] public BeamDefinition beam;
 
+    [Header("Summon")]
+    [ShowIf("_typeSummon")] public SummonDefinition summon;
+
     private bool _typeProjectile = false;
     private bool _typeZone = false;
     private bool _typeBeam = false;
+    private bool _typeSummon = false;
 
 #if UNITY_EDITOR
     private void OnValidate() {
         _typeProjectile = coreType is CoreType.Projectile;
         _typeZone = coreType is CoreType.Zone;
         _typeBeam = coreType is CoreType.Beam;
+        _typeSummon = coreType is CoreType.Summon;
 
         if (_typeProjectile) {
             zone = null;

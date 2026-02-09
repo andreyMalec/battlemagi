@@ -54,11 +54,11 @@ public class SpawnDefinition : ScriptableObject {
     }
 
     private static bool IsArc(SpawnMode spawnMode) {
-        return spawnMode is SpawnMode.Arc or SpawnMode.GroundPointArc;
+        return spawnMode is SpawnMode.Arc or SpawnMode.GroundPointArc or SpawnMode.GroundPointArcDown;
     }
 
     private static bool IsRay(SpawnMode spawnMode) {
-        return spawnMode is SpawnMode.GroundPoint or SpawnMode.GroundPointArc
+        return spawnMode is SpawnMode.GroundPoint or SpawnMode.GroundPointArc or SpawnMode.GroundPointArcDown
             or SpawnMode.DirectDown or SpawnMode.DirectDownForward;
     }
 
