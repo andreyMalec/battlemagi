@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpellProjectileDefinition
   coreType: 1
   spawn: {fileID: 11400000, guid: b1b312811b376b84b94785ed96abd146, type: 2}
-  scale: 1
+  scale: 5
   lifetime: 7
   defaultRaycast:
     serializedVersion: 2
@@ -22,3 +22,4 @@ MonoBehaviour:
   projectile: {fileID: 0}
   zone: {fileID: 11400000, guid: edd265dfe2fcb2d47ad052f7251bf683, type: 2}
   beam: {fileID: 0}
+  summon: {fileID: 0}

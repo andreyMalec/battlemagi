@@ -2,39 +2,39 @@ using UnityEngine;
 
 public class SummonCommands : IAICommands {
     readonly ILocomotion _move;
-    readonly ICombat _combat;
+    readonly SpellCaster _caster;
 
-    Vector3? _moveTarget;
-    ITarget _attackTarget;
+    private Vector3? _moveTarget;
+    private bool _attack;
 
-    public SummonCommands(ILocomotion move, ICombat combat) {
+    public SummonCommands(ILocomotion move, SpellCaster caster) {
         _move = move;
-        _combat = combat;
+        _caster = caster;
     }
 
     public void MoveTo(Vector3 position) {
         _moveTarget = position;
-        _attackTarget = null;
     }
 
-    public void Attack(ITarget target) {
-        _attackTarget = target;
-        _moveTarget = null;
+    public void Attack(AIContext ctx) {
+        _attack = true;
     }
 
     public void Idle() {
         _moveTarget = null;
-        _attackTarget = null;
         _move.Stop();
     }
 
     public void Tick(AIContext ctx) {
-        if (_attackTarget != null) {
-            if (_combat.CanAttack(ctx))
-                _combat.Attack(ctx, _attackTarget);
+        if (_caster.CanCast && _attack) {
+            if (ctx.Target == null)
+                _caster.Cast(ctx.Spell);
             else
-                _move.Move(ctx, _attackTarget.Position);
-        } else if (_moveTarget.HasValue) {
+                _caster.Cast(ctx.Spell, ctx.Target);
+            _attack = false;
+        }
+
+        if (_moveTarget.HasValue) {
             _move.Move(ctx, _moveTarget.Value);
         }
     }

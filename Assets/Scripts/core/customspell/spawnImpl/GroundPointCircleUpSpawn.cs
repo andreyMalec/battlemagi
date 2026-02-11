@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GroundPointCircleUpSpawn : ISpellSpawn, IDelayOriginRespect {
-    public IEnumerator Request(SpawnContext context, Action<SpawnContext, int> spawn) {
+    public IEnumerator Request(SpawnContext context, Action<SpawnContext> spawn) {
         var count = ISpellSpawn.InstanceCount(context);
 
         var delay = context.spawn.multiInstanceDelay;
@@ -34,7 +34,7 @@ public class GroundPointCircleUpSpawn : ISpellSpawn, IDelayOriginRespect {
                 rotation = rot,
                 forward = tiltedDown,
                 forceFirstOrigin = true,
-            }, i);
+            });
 
             if (delay > 0f && i < count - 1)
                 yield return new WaitForSeconds(delay);

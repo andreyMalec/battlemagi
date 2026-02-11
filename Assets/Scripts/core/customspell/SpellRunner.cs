@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpellRunner : MonoBehaviour {
+public class SpellCasterPlayer : SpellCaster {
     public SpellDefinition def;
     public SpellDefinition def2;
     public SpellDefinition def3;
@@ -12,7 +12,10 @@ public class SpellRunner : MonoBehaviour {
     private SpellDefinition _spell;
     private ISpellSpawnPreview _spawnPreview;
 
-    public Vector3 Direction => spawnPos.forward;
+    public override Vector3 Origin => spawnPos.position;
+    public override Vector3 Direction => spawnPos.forward;
+
+    public override bool CanCast { get; } = true;
 
     void Update() {
         if (Input.GetKeyDown(KeyCode.E))
@@ -89,10 +92,6 @@ public class SpellRunner : MonoBehaviour {
         };
     }
 
-    private void Spawn(SpawnContext context, int index) {
-        SpellFactory.CreateSpell(context);
-    }
-
     private void RequestSpawn(SpellDefinition spell) {
         var context = new SpawnContext {
             spell = spell,
@@ -104,6 +103,6 @@ public class SpellRunner : MonoBehaviour {
         };
         ISpellSpawn spawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
 
-        StartCoroutine(spawn!.Request(context, Spawn));
+        StartCoroutine(spawn!.Request(context, Cast));
     }
 }

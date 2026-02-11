@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public interface ISpellSpawn {
-    IEnumerator Request(SpawnContext context, Action<SpawnContext, int> spawn);
+    IEnumerator Request(SpawnContext context, Action<SpawnContext> spawn);
 
     IEnumerable<SpawnContext> ShapeCenter(SpawnContext context);
 

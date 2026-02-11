@@ -236,6 +236,7 @@ public class SpellFactory {
         );
         var view = viewGo.GetComponent<SpellView>();
         var instance = viewGo.GetComponent<SpellInstance>();
+        var caster = viewGo.GetComponent<SpellCaster>();
 
         var triggers = new List<SpellTrigger>();
         triggers.Add(new SpellTrigger {
@@ -257,11 +258,8 @@ public class SpellFactory {
             SummonMotion.Stationary => new StationaryMotion(),
             _ => new StationaryMotion()
         };
-        ICombat combat = def.summon.combat switch {
-            _ => new MeleeCombat(0f)
-        };
         IBrain brain = def.summon.brain switch {
-            SummonBrain.Aggressive => new BrainDead(),
+            SummonBrain.AlwaysAttack => new AlwaysAttackBrain(),
             _ => new BrainDead()
         };
         var sensors = new List<ISensor>();
@@ -272,7 +270,7 @@ public class SpellFactory {
             triggers.ToArray()
         );
 
-        var bind = new SummonBind<SummonContext>(core, view, context, move, combat, brain, sensors);
+        var bind = new SummonBind<SummonContext>(core, view, context, move, caster, brain, sensors);
         instance.Init(bind);
     }
 

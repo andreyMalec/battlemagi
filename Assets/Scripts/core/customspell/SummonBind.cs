@@ -21,7 +21,7 @@ public class SummonBind<TContext> : ISpellBind
         SpellView view,
         TContext context,
         ILocomotion move,
-        ICombat combat,
+        SpellCaster caster,
         IBrain brain,
         IEnumerable<ISensor> sensors
     ) {
@@ -30,9 +30,9 @@ public class SummonBind<TContext> : ISpellBind
         Context = context;
         _brain = brain;
         _sensors = sensors;
-        _commands = new SummonCommands(move, combat);
+        _commands = new SummonCommands(move, caster);
         _ai = new AIContext {
-            Spell = context.Spell,
+            Spell = context.Spell.summon.mainSpell,
             Self = view.transform,
             HomePosition = view.transform.position,
             Commands = _commands,

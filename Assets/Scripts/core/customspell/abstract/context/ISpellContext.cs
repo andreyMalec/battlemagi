@@ -1,5 +1,5 @@
 public interface ISpellContext {
-    SpellRunner Caster { get; }
+    SpellCaster Caster { get; }
     SpellView View { get; }
     ISpellTransform Movement { get; }
     SpellDefinition Spell { get; }

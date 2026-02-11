@@ -27,7 +27,7 @@ public abstract class SpawnOnEventAction : ISpellAction {
         };
     }
 
-    protected virtual void Spawn(SpawnContext context, int index) {
+    protected virtual void Spawn(SpawnContext context) {
         SpellFactory.CreateSpell(context, true);
     }
 }

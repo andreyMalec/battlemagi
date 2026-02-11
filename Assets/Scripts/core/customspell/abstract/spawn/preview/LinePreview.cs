@@ -34,7 +34,7 @@ public class LinePreview : ISpellSpawnPreview {
         RunBlocking(_spawnMode.Request(context, Draw));
     }
 
-    private void Draw(SpawnContext context, int index) {
+    private void Draw(SpawnContext context) {
         var start = context.caster.transform.position;
         var end = context.position;
         var dir = end - start;

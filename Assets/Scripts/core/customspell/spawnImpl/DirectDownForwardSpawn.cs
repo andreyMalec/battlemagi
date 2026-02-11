@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DirectDownForwardSpawn : ISpellSpawn {
-    public IEnumerator Request(SpawnContext context, Action<SpawnContext, int> spawn) {
+    public IEnumerator Request(SpawnContext context, Action<SpawnContext> spawn) {
         var count = ISpellSpawn.InstanceCount(context);
 
         var delay = context.spawn.multiInstanceDelay;
@@ -18,7 +18,7 @@ public class DirectDownForwardSpawn : ISpellSpawn {
                 position = hit.point + forward * (step * i + 1),
                 rotation = Quaternion.LookRotation(forward, Vector3.up),
                 forward = forward
-            }, i);
+            });
 
             if (delay > 0f && i < count - 1)
                 yield return new WaitForSeconds(delay);

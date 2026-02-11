@@ -14,5 +14,9 @@ public class RemoveParticlesAction : ISpellAction {
         foreach (var light in context.View.GetComponentsInChildren<Light>()) {
             light.enabled = false;
         }
+
+        foreach (var collider in context.View.GetComponentsInChildren<Collider>()) {
+            collider.enabled = false;
+        }
     }
 }

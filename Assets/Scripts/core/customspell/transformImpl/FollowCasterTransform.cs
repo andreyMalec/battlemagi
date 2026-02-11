@@ -32,7 +32,7 @@ public class FollowCasterTransform : ISpellTransform {
     public Vector3 Sample(float dt) {
         return _target switch {
             FollowCasterTarget.Caster => _ctx.Caster.transform.position,
-            FollowCasterTarget.Spawn => _ctx.Caster.spawnPos.transform.position,
+            FollowCasterTarget.Spawn => _ctx.Caster.Origin,
             _ => _transform.position
         };
     }

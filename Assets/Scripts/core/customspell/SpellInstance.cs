@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public interface ISpellBind {
@@ -10,6 +11,7 @@ public class SpellInstance : MonoBehaviour {
     public static readonly List<SpellInstance> Active = new();
 
     [SerializeField] private GameObject[] scale;
+    [SerializeField] private ParticleSystem[] exclude;
     public ISpellBind Bind { get; private set; }
 
     private void OnEnable() {
@@ -21,6 +23,8 @@ public class SpellInstance : MonoBehaviour {
 
         var k = bind.Context.Spell.scale;
         foreach (var ps in GetComponentsInChildren<ParticleSystem>()) {
+            if (exclude.Contains(ps))
+                continue;
             ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             var main = ps.main;
             main.duration = bind.Context.Lifetime;

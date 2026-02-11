@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ConeSpawn : ISpellSpawn, IDelayOriginRespect {
-    public IEnumerator Request(SpawnContext context, Action<SpawnContext, int> spawn) {
+    public IEnumerator Request(SpawnContext context, Action<SpawnContext> spawn) {
         var count = ISpellSpawn.InstanceCount(context);
 
         var origin = context.DelayOrigin;
@@ -17,9 +17,9 @@ public class ConeSpawn : ISpellSpawn, IDelayOriginRespect {
             var ctx = origin switch {
                 DelayOrigin.First => context,
                 DelayOrigin.Continuous => context with {
-                    position = context.caster.spawnPos.position,
-                    rotation = context.caster.spawnPos.rotation,
-                    forward = context.caster.spawnPos.forward,
+                    position = context.caster.Origin,
+                    rotation = Quaternion.LookRotation(context.caster.Direction),
+                    forward = context.caster.Direction,
                 },
                 _ => context
             };
@@ -41,7 +41,7 @@ public class ConeSpawn : ISpellSpawn, IDelayOriginRespect {
                 position = pos,
                 rotation = rot,
                 forward = worldDir
-            }, i);
+            });
 
             if (delay > 0f && i < count)
                 yield return new WaitForSeconds(delay);

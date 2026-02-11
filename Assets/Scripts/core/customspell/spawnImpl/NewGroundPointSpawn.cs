@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class NewGroundPointSpawn : ISpellSpawn, IDelayOriginRespect {
-    public IEnumerator Request(SpawnContext context, Action<SpawnContext, int> spawn) {
+    public IEnumerator Request(SpawnContext context, Action<SpawnContext> spawn) {
         var count = ISpellSpawn.InstanceCount(context);
 
         var delay = context.spawn.multiInstanceDelay;
@@ -13,15 +13,15 @@ public class NewGroundPointSpawn : ISpellSpawn, IDelayOriginRespect {
         for (int i = count - 1; i >= 0; i--) {
             switch (origin) {
                 case DelayOrigin.First:
-                    spawn(onFirst, i);
+                    spawn(onFirst);
                     break;
                 case DelayOrigin.Continuous:
                     var ctx = ISpellSpawn.GroundPos(context with {
-                        position = context.caster.spawnPos.position,
-                        rotation = context.caster.spawnPos.rotation,
-                        forward = context.caster.spawnPos.forward,
-                    }, context.caster.spawnPos.forward, out _);
-                    spawn(ctx, i);
+                        position = context.caster.Origin,
+                        rotation = Quaternion.LookRotation(context.caster.Direction),
+                        forward = context.caster.Direction,
+                    }, context.caster.Direction, out _);
+                    spawn(ctx);
                     break;
             }
 

@@ -3,7 +3,7 @@ using Unity.Netcode;
 using UnityEngine;
 
 public class BeamContext : IBeamContext {
-    public SpellRunner Caster { get; }
+    public SpellCaster Caster { get; }
     public ulong OwnerId { get; }
     public SpellView View { get; }
     public ISpellTransform Movement { get; }
@@ -18,12 +18,12 @@ public class BeamContext : IBeamContext {
 
     public Action<SpellEvent> eventSink;
 
-    public Vector3 Origin => Caster.spawnPos.position;
+    public Vector3 Origin => Caster.Origin;
     public Vector3 Direction => Caster.Direction;
     public float MaxLength => Spell.beam.beamMaxLength;
 
     public BeamContext(
-        SpellRunner caster,
+        SpellCaster caster,
         SpellView view,
         ISpellTransform movement,
         SpellDefinition data,

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class NewGroundPointForwardSpawn : ISpellSpawn {
-    public IEnumerator Request(SpawnContext context, Action<SpawnContext, int> spawn) {
+    public IEnumerator Request(SpawnContext context, Action<SpawnContext> spawn) {
         var count = ISpellSpawn.InstanceCount(context);
 
         var delay = context.spawn.multiInstanceDelay;
@@ -16,7 +16,7 @@ public class NewGroundPointForwardSpawn : ISpellSpawn {
             spawn(ground with {
                 position = ground.position + forward * (step * i),
                 forward = forward
-            }, i);
+            });
 
             if (delay > 0f && i < count - 1)
                 yield return new WaitForSeconds(delay);

@@ -2,7 +2,7 @@ using System;
 using Unity.Netcode;
 
 public class ZoneContext : IZoneContext {
-    public SpellRunner Caster { get; }
+    public SpellCaster Caster { get; }
     public ulong OwnerId { get; }
     public SpellView View { get; }
     public ISpellTransform Movement { get; }
@@ -18,7 +18,7 @@ public class ZoneContext : IZoneContext {
     public Action<SpellEvent> eventSink;
 
     public ZoneContext(
-        SpellRunner caster,
+        SpellCaster caster,
         SpellView view,
         ISpellTransform movement,
         SpellDefinition data,

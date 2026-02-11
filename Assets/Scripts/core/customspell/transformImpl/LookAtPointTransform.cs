@@ -47,7 +47,7 @@ public class LookAtPointTransform : ISpellTransform {
     }
 
     private Vector3 GetTarget() {
-        var ray = new Ray(_ctx.Caster.spawnPos.transform.position, _ctx.Caster.spawnPos.transform.forward);
+        var ray = new Ray(_ctx.Caster.Origin, _ctx.Caster.Direction);
         if (Physics.Raycast(ray, out var hit, _maxDistance, _mask, QueryTriggerInteraction.Ignore)) {
             _lastValidTarget = hit.point;
             _hasLastValid = true;
@@ -56,6 +56,6 @@ public class LookAtPointTransform : ISpellTransform {
 
         return _hasLastValid
             ? _lastValidTarget
-            : (_ctx.Caster.spawnPos.transform.position + _ctx.Caster.spawnPos.transform.forward * _maxDistance);
+            : (_ctx.Caster.Origin + _ctx.Caster.Direction * _maxDistance);
     }
 }

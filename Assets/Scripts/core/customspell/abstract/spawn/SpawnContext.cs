@@ -6,7 +6,7 @@ public record SpawnContext {
     public Vector3 position;
     public Quaternion rotation;
     public Vector3 forward;
-    public SpellRunner caster;
+    public SpellCaster caster;
     public bool forceFirstOrigin;
 
     public DelayOrigin DelayOrigin => forceFirstOrigin ? DelayOrigin.First : spawn.delayOrigin;

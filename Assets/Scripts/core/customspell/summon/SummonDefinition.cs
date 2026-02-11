@@ -5,9 +5,10 @@ using UnityEngine;
 public class SummonDefinition : ScriptableObject {
     public SpellSummonPrefabId prefabId;
 
+    public SpellDefinition mainSpell;
+
     public SummonBrain brain;
     public SummonMotion motion;
-    public SummonCombat combat;
     public SummonSensor sensors;
 
     [ShowIf("_canMove")] public float moveSpeed;

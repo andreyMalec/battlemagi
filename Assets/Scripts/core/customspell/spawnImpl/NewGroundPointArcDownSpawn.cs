@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class NewGroundPointArcDownSpawn : ISpellSpawn {
-    public IEnumerator Request(SpawnContext context, Action<SpawnContext, int> spawn) {
+    public IEnumerator Request(SpawnContext context, Action<SpawnContext> spawn) {
         var count = ISpellSpawn.InstanceCount(context);
 
         var delay = context.spawn.multiInstanceDelay;
@@ -16,7 +16,7 @@ public class NewGroundPointArcDownSpawn : ISpellSpawn {
 
             Quaternion rotation = context.rotation * Quaternion.Euler(0f, angle, 0f);
             var ctx = ISpellSpawn.GroundPos(context, rotation * Vector3.forward, out _, Vector3.down);
-            spawn(ctx, (int)angle);
+            spawn(ctx);
 
             if (delay > 0f && i > 0)
                 yield return new WaitForSeconds(delay);

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class NewDirectDownSpawn : ISpellSpawn, IDelayOriginRespect {
-    public IEnumerator Request(SpawnContext context, Action<SpawnContext, int> spawn) {
+    public IEnumerator Request(SpawnContext context, Action<SpawnContext> spawn) {
         var count = ISpellSpawn.InstanceCount(context);
         var delay = context.spawn.multiInstanceDelay;
         var origin = context.DelayOrigin;
@@ -16,14 +16,14 @@ public class NewDirectDownSpawn : ISpellSpawn, IDelayOriginRespect {
         for (int i = 0; i < count; i++) {
             switch (origin) {
                 case DelayOrigin.First:
-                    spawn(onFirst, i);
+                    spawn(onFirst);
                     break;
                 case DelayOrigin.Continuous:
                     spawn(context with {
                         position = context.caster.transform.position,
                         rotation = context.caster.transform.rotation,
                         forward = context.caster.transform.forward,
-                    }, i);
+                    });
                     break;
             }
 

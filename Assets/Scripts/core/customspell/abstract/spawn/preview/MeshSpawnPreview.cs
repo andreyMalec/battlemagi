@@ -55,7 +55,7 @@ public class MeshSpawnPreview : ISpellSpawnPreview {
         RunBlocking(_spawnMode.Request(context, Draw));
     }
 
-    private void Draw(SpawnContext context, int index) {
+    private void Draw(SpawnContext context) {
         RuntimeDrawFeature.Enqueue((UnityEngine.Rendering.RasterCommandBuffer cmd) => {
             var matrix = Matrix4x4.TRS(context.position + position, context.rotation * rotation, scale);
             cmd.DrawMesh(mesh, matrix, fillMat, 0, 0);

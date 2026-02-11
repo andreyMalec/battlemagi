@@ -3,7 +3,7 @@ using Unity.Netcode;
 using Unity.VisualScripting;
 
 public class SummonContext : ISpellContext {
-    public SpellRunner Caster { get; }
+    public SpellCaster Caster { get; }
     public ulong OwnerId { get; }
     public SpellView View { get; }
 
@@ -21,7 +21,7 @@ public class SummonContext : ISpellContext {
     public Action<SpellEvent> eventSink;
 
     public SummonContext(
-        SpellRunner caster,
+        SpellCaster caster,
         SpellView view,
         SpellDefinition data,
         bool spawned
