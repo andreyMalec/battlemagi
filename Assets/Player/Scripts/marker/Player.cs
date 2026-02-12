@@ -95,6 +95,7 @@ public class Player : NetworkBehaviour {
 
         if (IsOwner) {
             mainCamera.GetComponent<Camera>().depth = 100;
+            GetComponent<SpellCaster>().Initialize(clientId, DI.Get<SpellSystem>());
         } else {
             foreach (var script in scriptsToDisable) {
                 script.enabled = false;

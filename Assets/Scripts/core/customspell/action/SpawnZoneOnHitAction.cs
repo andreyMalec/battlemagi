@@ -16,7 +16,7 @@ public class SpawnZoneOnHitAction : ISpellAction {
             caster = context.Caster,
             forceFirstOrigin = true
         };
-        SpellFactory.CreateSpell(spawnContext);
+        context.Caster.SpellSystem.CastSpell(spawnContext, true);
     }
 
     private Quaternion ComputeRotation(Vector3 normal, Vector3 direction) {

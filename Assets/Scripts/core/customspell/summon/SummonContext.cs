@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 
 public class SummonContext : ISpellContext {
     public SpellCaster Caster { get; }
-    public ulong OwnerId { get; }
+    public OwnerId OwnerId { get; }
     public SpellView View { get; }
 
     public ISpellTransform Movement => throw new InvalidImplementationException();
@@ -27,7 +27,7 @@ public class SummonContext : ISpellContext {
         bool spawned
     ) {
         Caster = caster;
-        OwnerId = 0; //Caster.GetComponent<NetworkObject>().OwnerClientId;
+        OwnerId = Caster.OwnerId;
         View = view;
         Spell = data;
         Spawned = spawned;

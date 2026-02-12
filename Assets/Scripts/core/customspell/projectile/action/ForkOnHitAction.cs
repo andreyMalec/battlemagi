@@ -54,7 +54,7 @@ public class ForkOnHitAction : ISpellAction {
             forward = dir,
             caster = context.Caster
         };
-        SpellFactory.CreateSpell(spawnContext, true);
+        context.Caster.SpellSystem.CastSpell(spawnContext, true);
     }
 
     private void Send(ISpellContext context, OnHitEvent hit) {

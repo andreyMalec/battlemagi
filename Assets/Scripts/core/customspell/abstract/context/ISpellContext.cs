@@ -8,7 +8,7 @@ public interface ISpellContext {
 
     float Lifetime { get; }
 
-    ulong OwnerId { get; }
+    OwnerId OwnerId { get; }
     float Time { get; }
     float DeltaTime { get; }
 

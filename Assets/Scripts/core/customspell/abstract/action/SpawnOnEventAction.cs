@@ -28,6 +28,6 @@ public abstract class SpawnOnEventAction : ISpellAction {
     }
 
     protected virtual void Spawn(SpawnContext context) {
-        SpellFactory.CreateSpell(context, true);
+        context.caster.SpellSystem.CastSpell(context, true);
     }
 }

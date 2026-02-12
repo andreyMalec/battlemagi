@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public abstract class SpellCaster : MonoBehaviour {
@@ -6,8 +7,16 @@ public abstract class SpellCaster : MonoBehaviour {
     public abstract Vector3 Origin { get; }
     public abstract Vector3 Direction { get; }
 
-    public virtual void Cast(SpawnContext context) {
-        SpellFactory.CreateSpell(context);
+    public OwnerId OwnerId { get; private set; }
+    public SpellSystem SpellSystem { get; private set; }
+
+    public void Initialize(OwnerId ownerId, SpellSystem spellSystem) {
+        SpellSystem = spellSystem;
+        OwnerId = ownerId;
+    }
+
+    protected virtual void Cast(SpawnContext context) {
+        SpellSystem.CastSpell(context);
     }
 
     public virtual void Cast(SpellDefinition spell) {

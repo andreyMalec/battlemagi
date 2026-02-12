@@ -4792,6 +4792,7 @@ GameObject:
   - component: {fileID: 4457824291637619451}
   - component: {fileID: 4960621800947364489}
   - component: {fileID: 7452173690849493453}
+  - component: {fileID: 3708076444881354609}
   m_Layer: 6
   m_Name: Summon DirtWall
   m_TagString: Untagged
@@ -5197,3 +5198,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellInstance
   scale: []
+  exclude: []
+--- !u!114 &3708076444881354609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7354784787554302670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da5b177a7674563927cd904033722ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellCasterSummon
+  spawnPos: {fileID: 7238097125745469840}
+  activationDelay: 0
+  cooldown: 1
+  onAttackParticles: []
+  onAttackSounds: []

@@ -1,8 +1,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpellFactory {
-    public static void CreateSpell(
+public class SpellSystem {
+    private readonly IEntityManager _manager;
+    private readonly IAuthorityService _authority;
+
+    public SpellSystem(
+        IEntityManager manager,
+        IAuthorityService authority
+    ) {
+        _manager = manager;
+        _authority = authority;
+    }
+
+    public void CastSpell(
         SpawnContext spawnContext,
         bool spawned = false
     ) {
@@ -22,17 +33,13 @@ public class SpellFactory {
         }
     }
 
-    private static void CreateProjectile(
+    private void CreateProjectile(
         SpawnContext spawnContext,
         bool spawned = false
     ) {
         SpellDefinition def = spawnContext.spell;
         var prefab = SpellPrefabDatabase.Instance.Get(def.projectile.prefabId);
-        var viewGo = Object.Instantiate(
-            prefab,
-            spawnContext.position,
-            spawnContext.rotation
-        );
+        var viewGo = _manager.Spawn(spawnContext.caster.OwnerId, prefab, spawnContext.position, spawnContext.rotation);
         var view = viewGo.GetComponent<SpellView>();
         var instance = viewGo.GetComponent<SpellInstance>();
 
@@ -91,17 +98,13 @@ public class SpellFactory {
         instance.Init(bind);
     }
 
-    private static SpellBind<ZoneContext> CreateZone(
+    private void CreateZone(
         SpawnContext spawnContext,
         bool spawned = false
     ) {
         SpellDefinition def = spawnContext.spell;
         var prefab = SpellPrefabDatabase.Instance.Get(def.zone.prefabId);
-        var viewGo = Object.Instantiate(
-            prefab,
-            spawnContext.position,
-            spawnContext.rotation
-        );
+        var viewGo = _manager.Spawn(spawnContext.caster.OwnerId, prefab, spawnContext.position, spawnContext.rotation);
         var view = viewGo.GetComponent<SpellView>();
         var instance = viewGo.GetComponent<SpellInstance>();
 
@@ -154,20 +157,15 @@ public class SpellFactory {
 
         var bind = new SpellBind<ZoneContext>(core, view, context, move);
         instance.Init(bind);
-        return bind;
     }
 
-    private static SpellBind<BeamContext> CreateBeam(
+    private void CreateBeam(
         SpawnContext spawnContext,
         bool spawned = false
     ) {
         SpellDefinition def = spawnContext.spell;
         var prefab = SpellPrefabDatabase.Instance.Get(def.beam.prefabId);
-        var viewGo = Object.Instantiate(
-            prefab,
-            spawnContext.position,
-            spawnContext.rotation
-        );
+        var viewGo = _manager.Spawn(spawnContext.caster.OwnerId, prefab, spawnContext.position, spawnContext.rotation);
         var view = viewGo.GetComponent<SpellView>();
         var instance = viewGo.GetComponent<SpellInstance>();
 
@@ -220,23 +218,19 @@ public class SpellFactory {
 
         var bind = new SpellBind<BeamContext>(core, view, context, move);
         instance.Init(bind);
-        return bind;
     }
 
-    private static void CreateSummon(
+    private void CreateSummon(
         SpawnContext spawnContext,
         bool spawned = false
     ) {
         SpellDefinition def = spawnContext.spell;
         var prefab = SpellPrefabDatabase.Instance.Get(def.summon.prefabId);
-        var viewGo = Object.Instantiate(
-            prefab,
-            spawnContext.position,
-            spawnContext.rotation
-        );
+        var viewGo = _manager.Spawn(spawnContext.caster.OwnerId, prefab, spawnContext.position, spawnContext.rotation);
         var view = viewGo.GetComponent<SpellView>();
         var instance = viewGo.GetComponent<SpellInstance>();
         var caster = viewGo.GetComponent<SpellCaster>();
+        caster.Initialize(spawnContext.caster.OwnerId, spawnContext.caster.SpellSystem);
 
         var triggers = new List<SpellTrigger>();
         triggers.Add(new SpellTrigger {

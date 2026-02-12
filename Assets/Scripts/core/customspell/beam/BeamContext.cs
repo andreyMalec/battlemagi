@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BeamContext : IBeamContext {
     public SpellCaster Caster { get; }
-    public ulong OwnerId { get; }
+    public OwnerId OwnerId { get; }
     public SpellView View { get; }
     public ISpellTransform Movement { get; }
     public SpellDefinition Spell { get; }
@@ -30,7 +30,7 @@ public class BeamContext : IBeamContext {
         bool spawned
     ) {
         Caster = caster;
-        OwnerId = 0;//Caster.GetComponent<NetworkObject>().OwnerClientId;
+        OwnerId = Caster.OwnerId;
         View = view;
         Spell = data;
         Movement = movement;

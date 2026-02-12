@@ -3,7 +3,7 @@ using Unity.Netcode;
 
 public class ProjectileContext : IProjectileContext {
     public SpellCaster Caster { get; }
-    public ulong OwnerId { get; }
+    public OwnerId OwnerId { get; }
     public SpellView View { get; }
     public ISpellTransform Movement { get; }
     public SpellDefinition Spell { get; }
@@ -25,7 +25,7 @@ public class ProjectileContext : IProjectileContext {
         bool spawned
     ) {
         Caster = caster;
-        OwnerId = 0;//Caster.GetComponent<NetworkObject>().OwnerClientId;
+        OwnerId = Caster.OwnerId;
         View = view;
         Spell = data;
         Movement = movement;
