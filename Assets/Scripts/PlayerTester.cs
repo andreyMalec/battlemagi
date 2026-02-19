@@ -17,7 +17,6 @@ public class PlayerTester : MonoBehaviour {
 
     private void Awake() {
         _characterController = GetComponent<CharacterController>();
-        GetComponent<SpellCaster>().Initialize(0, DI.Get<SpellSystem>());
     }
 
     private void Update() {

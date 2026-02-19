@@ -1,3 +1,4 @@
 public interface IAuthorityService {
-    bool HasAuthority { get; }
+    bool IsServer { get; }
+    bool IsOwner { get; }
 }

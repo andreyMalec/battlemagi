@@ -6,7 +6,7 @@ public class SpawnZoneOnHitAction : ISpellAction {
         base.Apply(context, evt);
 
         var zoneDef = context.Spell.projectile.onHitSpawnZone;
-        var rotation = ComputeRotation(hit.Normal, context.View.transform.forward);
+        var rotation = ComputeRotation(hit.Normal, context.Movement.Transform.forward);
         var spawnContext = new SpawnContext {
             spell = zoneDef,
             spawn = zoneDef.spawn,

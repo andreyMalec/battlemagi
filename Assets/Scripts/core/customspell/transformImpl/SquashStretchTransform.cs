@@ -1,6 +1,8 @@
 using UnityEngine;
 
 public class SquashStretchTransform : ISpellTransform {
+    public Transform Transform { get; private set; }
+
     private readonly ISpellTransform _inner;
     private readonly float _amplitude;
     private readonly float _frequency;
@@ -11,7 +13,6 @@ public class SquashStretchTransform : ISpellTransform {
         set => _inner.Motion = value;
     }
 
-    private Transform _transform;
     private float _baseScale;
     private float _t;
 
@@ -23,7 +24,7 @@ public class SquashStretchTransform : ISpellTransform {
     }
 
     public void Init(Transform transform, ISpellContext ctx) {
-        _transform = transform;
+        Transform = transform;
         _baseScale = transform.localScale.x;
         _t = 0f;
         _inner.Init(transform, ctx);
@@ -45,7 +46,7 @@ public class SquashStretchTransform : ISpellTransform {
         var k = _damping <= 0f ? 1f : Mathf.Exp(-_damping * time);
         var wave = Mathf.Sin(time * Mathf.PI * 2f * _frequency);
         var s = Mathf.Max(0f, _baseScale * (1f + _amplitude * k * wave));
-        _transform.localScale = Vector3.one * s;
+        Transform.localScale = Vector3.one * s;
     }
 }
 

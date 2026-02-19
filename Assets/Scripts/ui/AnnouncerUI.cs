@@ -16,6 +16,7 @@ public class AnnouncerUI : MonoBehaviour {
     private Coroutine fadeCoroutine;
 
     private void Awake() {
+        if (CTFAnnouncer.Instance == null) return;
         CTFAnnouncer.Instance.OnFlagTaken += TakeFlag;
         CTFAnnouncer.Instance.OnFlagDropped += DropFlag;
         CTFAnnouncer.Instance.OnFlagReturned += ReturnFlag;
@@ -108,6 +109,8 @@ public class AnnouncerUI : MonoBehaviour {
     }
 
     private void OnDestroy() {
+        if (CTFAnnouncer.Instance == null) return;
+
         CTFAnnouncer.Instance.OnFlagTaken -= TakeFlag;
         CTFAnnouncer.Instance.OnFlagDropped -= DropFlag;
         CTFAnnouncer.Instance.OnFlagReturned -= ReturnFlag;

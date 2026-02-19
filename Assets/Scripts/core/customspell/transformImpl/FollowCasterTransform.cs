@@ -6,10 +6,11 @@ public enum FollowCasterTarget {
 }
 
 public class FollowCasterTransform : ISpellTransform {
+    public Transform Transform { get; private set; }
+
     public SpellMotion Motion { get; set; }
 
     private readonly FollowCasterTarget _target;
-    private Transform _transform;
     private ISpellContext _ctx;
 
     public FollowCasterTransform(FollowCasterTarget target) {
@@ -18,22 +19,22 @@ public class FollowCasterTransform : ISpellTransform {
 
     public void Init(Transform transform, ISpellContext ctx) {
         Motion = default;
-        _transform = transform;
+        Transform = transform;
         _ctx = ctx;
     }
 
     public void Tick(float dt) {
-        _transform.position = Sample(dt);
+        Transform.position = Sample(dt);
         var dir = _ctx.Caster.Direction;
         if (dir.sqrMagnitude > 0f)
-            _transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
+            Transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
     }
 
     public Vector3 Sample(float dt) {
         return _target switch {
             FollowCasterTarget.Caster => _ctx.Caster.transform.position,
             FollowCasterTarget.Spawn => _ctx.Caster.Origin,
-            _ => _transform.position
+            _ => Transform.position
         };
     }
 }

@@ -779,6 +779,8 @@ GameObject:
   - component: {fileID: 2323875734396528773}
   - component: {fileID: 7527429836848279379}
   - component: {fileID: 61866278598921742}
+  - component: {fileID: 2821027763571427141}
+  - component: {fileID: 8246313403022417532}
   m_Layer: 9
   m_Name: Player
   m_TagString: Untagged
@@ -821,7 +823,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1910923140
+  GlobalObjectIdHash: 2196398029
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -849,6 +851,7 @@ MonoBehaviour:
   def: {fileID: 11400000, guid: 7659d312640413c4bbe8f8065b466a2c, type: 2}
   def2: {fileID: 11400000, guid: d851f47005e0eaf4ebf6766b0ecbcf16, type: 2}
   def3: {fileID: 11400000, guid: 4aec248e4dfc7464381c95a332855769, type: 2}
+  def4: {fileID: 11400000, guid: 475fd1e9b5fe9c04990931ba46bb20fa, type: 2}
   spawnPos: {fileID: 3077521524520137575}
 --- !u!114 &5777521522989648823
 MonoBehaviour:
@@ -1433,6 +1436,33 @@ MonoBehaviour:
   rotationAmplitudePitch: 0.2
   followSmoothTime: 0.1
   angularSmoothTime: 0.05
+--- !u!114 &2821027763571427141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 123cbb52ba0543c49ae6a2547f3ec012, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NetworkGameBootstrap
+  ShowTopMostFoldoutHeaderGroup: 1
+  spellPrefab: {fileID: 4494555669983194706, guid: 03571efb2f2b72b4b9c0acd1238e4dbb, type: 3}
+--- !u!114 &8246313403022417532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25323fda5e644df797b84bde5a27cf96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NetworkSpellSystemEvent
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &5894542900604772476
 GameObject:
   m_ObjectHideFlags: 0

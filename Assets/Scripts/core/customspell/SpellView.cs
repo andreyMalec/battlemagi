@@ -5,13 +5,11 @@ public class SpellView : MonoBehaviour {
     public float beforeEndThreshold = 1f;
     public bool IsAlive { get; private set; } = true;
 
-    public void Kill() {
+    public void Kill(ISpellContext context) {
         if (!IsAlive) return;
         IsAlive = false;
 
-        foreach (var ps in GetComponentsInChildren<ParticleSystem>()) {
-            ps.Stop(true, ParticleSystemStopBehavior.StopEmitting);
-        }
+        context.Event.OnKill(this);
 
         StartCoroutine(WaitForParticlesToDie());
     }
@@ -31,6 +29,6 @@ public class SpellView : MonoBehaviour {
             yield return null;
         } while (anyAlive);
 
-        Destroy(gameObject);
+        DI.Get<IEntityManager>().Destroy(transform.parent.gameObject);
     }
 }

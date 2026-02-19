@@ -1,6 +1,7 @@
 using UnityEngine;
 
 public interface ISpellTransform {
+    Transform Transform { get; }
     SpellMotion Motion { get; set; }
 
     void Init(Transform transform, ISpellContext ctx);

@@ -1,10 +1,11 @@
 using UnityEngine;
 
 public class StepDistanceTransform : ISpellTransform {
+    public Transform Transform { get; private set; }
+
     private readonly ISpellTransform _inner;
     private readonly float _stepDistance;
 
-    private Transform _transform;
     private ISpellContext _ctx;
 
     private Vector3 _prevPosition;
@@ -22,7 +23,7 @@ public class StepDistanceTransform : ISpellTransform {
     }
 
     public void Init(Transform transform, ISpellContext ctx) {
-        _transform = transform;
+        Transform = transform;
         _ctx = ctx;
         _inner.Init(transform, ctx);
 
@@ -34,7 +35,7 @@ public class StepDistanceTransform : ISpellTransform {
     public void Tick(float dt) {
         _inner.Tick(dt);
 
-        var pos = _transform.position;
+        var pos = Transform.position;
         _distance += Vector3.Distance(_prevPosition, pos);
         _prevPosition = pos;
 

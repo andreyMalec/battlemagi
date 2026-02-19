@@ -1,6 +1,8 @@
 using UnityEngine;
 
 public class SpiralMoveTransform : ISpellTransform {
+    public Transform Transform { get; private set; }
+
     public SpellMotion Motion { get; set; }
 
     private readonly Vector3 _forward;
@@ -9,7 +11,6 @@ public class SpiralMoveTransform : ISpellTransform {
     private readonly float _angularSpeed;
     private readonly float _radius;
 
-    private Transform _transform;
     private Vector3 _center;
 
     private float _angle;
@@ -27,21 +28,21 @@ public class SpiralMoveTransform : ISpellTransform {
     }
 
     public void Init(Transform transform, ISpellContext ctx) {
-        _transform = transform;
+        Transform = transform;
         _center = transform.position;
-        _transform.position = _center;
+        Transform.position = _center;
     }
 
     public void Tick(float dt) {
-        var prev = _transform.position;
+        var prev = Transform.position;
 
         _center += Motion.Velocity * dt;
         _angle += _angularSpeed * dt;
-        _transform.position = _center + CalcRadial(_angle) * _radius;
+        Transform.position = _center + CalcRadial(_angle) * _radius;
 
-        var vel = (_transform.position - prev) / dt;
+        var vel = (Transform.position - prev) / dt;
         if (vel.sqrMagnitude > 0f)
-            _transform.rotation = Quaternion.LookRotation(vel.normalized, Vector3.up);
+            Transform.rotation = Quaternion.LookRotation(vel.normalized, Vector3.up);
     }
 
     public Vector3 Sample(float dt) {
@@ -68,9 +69,9 @@ public class SpiralMoveTransform : ISpellTransform {
             SpiralAxis.WorldX => Vector3.right,
             SpiralAxis.WorldY => Vector3.up,
             SpiralAxis.WorldZ => Vector3.forward,
-            SpiralAxis.LocalX => _transform.right,
-            SpiralAxis.LocalY => _transform.up,
-            SpiralAxis.LocalZ => _transform.forward,
+            SpiralAxis.LocalX => Transform.right,
+            SpiralAxis.LocalY => Transform.up,
+            SpiralAxis.LocalZ => Transform.forward,
             _ => _forward
         };
     }

@@ -15,6 +15,8 @@ public class Scoreboard : MonoBehaviour {
     private CanvasGroup _canvas;
 
     private void OnEnable() {
+        if (TeamManager.Instance == null) return;
+
         if (TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.CaptureTheFlag) {
             flagText.gameObject.SetActive(true);
             nameText.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 380f);
@@ -37,7 +39,8 @@ public class Scoreboard : MonoBehaviour {
     }
 
     private void OnDisable() {
-        PlayerManager.Instance.OnListChanged -= OnPlayersChanged;
+        if (PlayerManager.Instance != null)
+            PlayerManager.Instance.OnListChanged -= OnPlayersChanged;
     }
 
     private void OnPlayersChanged(List<PlayerManager.PlayerData> players) {

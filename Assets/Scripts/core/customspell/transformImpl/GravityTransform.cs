@@ -1,10 +1,10 @@
 using UnityEngine;
 
 public class GravityTransform : ISpellTransform {
+    public Transform Transform { get; private set; }
+
     private readonly ISpellTransform _inner;
     private readonly Vector3 _gravity;
-
-    private Transform _transform;
 
     public SpellMotion Motion {
         get => _inner.Motion;
@@ -17,7 +17,7 @@ public class GravityTransform : ISpellTransform {
     }
 
     public void Init(Transform transform, ISpellContext ctx) {
-        _transform = transform;
+        Transform = transform;
         _inner.Init(transform, ctx);
     }
 
@@ -26,7 +26,7 @@ public class GravityTransform : ISpellTransform {
         _inner.Tick(dt);
         var dir = Motion.Velocity;
         if (dir.sqrMagnitude > 0f)
-            _transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
+            Transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
     }
 
     public Vector3 Sample(float dt) {

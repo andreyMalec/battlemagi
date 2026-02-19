@@ -1,13 +1,14 @@
 using UnityEngine;
 
 public class LookAtPointTransform : ISpellTransform {
+    public Transform Transform { get; private set; }
+
     public SpellMotion Motion { get; set; }
 
     private readonly float _speed;
     private readonly float _maxDistance;
     private readonly LayerMask _mask;
 
-    private Transform _transform;
     private ISpellContext _ctx;
 
     private Vector3 _lastValidTarget;
@@ -21,7 +22,7 @@ public class LookAtPointTransform : ISpellTransform {
     }
 
     public void Init(Transform transform, ISpellContext ctx) {
-        _transform = transform;
+        Transform = transform;
         _ctx = ctx;
         _hasLastValid = false;
         _lastValidTarget = transform.position;
@@ -29,21 +30,21 @@ public class LookAtPointTransform : ISpellTransform {
 
     public void Tick(float dt) {
         var target = GetTarget();
-        var to = target - _transform.position;
+        var to = target - Transform.position;
         var dir = to.sqrMagnitude > 0f ? to.normalized : Vector3.zero;
 
         Motion = new SpellMotion { Velocity = dir * _speed };
-        _transform.position += Motion.Velocity * dt;
+        Transform.position += Motion.Velocity * dt;
 
         if (dir.sqrMagnitude > 0f)
-            _transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
+            Transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
     }
 
     public Vector3 Sample(float dt) {
         var target = GetTarget();
-        var to = target - _transform.position;
+        var to = target - Transform.position;
         var dir = to.sqrMagnitude > 0f ? to.normalized : Vector3.zero;
-        return _transform.position + dir * (_speed * dt);
+        return Transform.position + dir * (_speed * dt);
     }
 
     private Vector3 GetTarget() {

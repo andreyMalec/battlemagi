@@ -17,7 +17,7 @@ public class TriggerSphereShape : IShape {
     }
 
     public IEnumerable<ShapeHit> Query() {
-        var center = _context.View.transform.position;
+        var center = _context.Movement.Transform.position;
 
         _buffer.Clear();
         foreach (var inst in SpellInstance.Active) {

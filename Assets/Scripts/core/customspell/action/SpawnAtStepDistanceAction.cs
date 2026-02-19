@@ -17,7 +17,7 @@ public class SpawnAtStepDistanceAction : SpawnOnEventAction {
             spell = spell,
             spawn = spell.spawn,
             position = step.point,
-            rotation = context.View.transform.rotation,
+            rotation = context.Movement.Transform.rotation,
             forward = step.forward,
             caster = context.Caster,
             forceFirstOrigin = true

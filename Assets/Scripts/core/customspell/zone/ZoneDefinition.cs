@@ -5,7 +5,7 @@ using UnityEngine;
 public class ZoneDefinition : ScriptableObject {
     public SpellZonePrefabId prefabId;
 
-    public SpellTransform moveType;
+    public SpellMovement moveType;
 
     [ShowIf("_canMove")] public float moveSpeed;
 
@@ -50,10 +50,10 @@ public class ZoneDefinition : ScriptableObject {
 
 #if UNITY_EDITOR
     private void OnValidate() {
-        _canMove = moveType is not SpellTransform.Static;
-        _transformSpiral = moveType is SpellTransform.Spiral;
-        _transformLookAtPoint = moveType is SpellTransform.LookAtPoint;
-        _transformFollowCaster = moveType is SpellTransform.FollowCaster;
+        _canMove = moveType is not SpellMovement.Static;
+        _transformSpiral = moveType is SpellMovement.Spiral;
+        _transformLookAtPoint = moveType is SpellMovement.LookAtPoint;
+        _transformFollowCaster = moveType is SpellMovement.FollowCaster;
         spawnAtStep = atStepDistanceSpawn != null;
     }
 #endif

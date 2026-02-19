@@ -13,41 +13,13 @@ MonoBehaviour:
   m_Name: Beam
   m_EditorClassIdentifier: Assembly-CSharp::SpellDefinition
   coreType: 2
-  spawn: {fileID: 11400000, guid: 0c8321b4ebe2c074988ecbf47bc38763, type: 2}
-  prefabId: 8
+  spawn: {fileID: 11400000, guid: 6d36877cf5a205e4bbd1fc2c3009ab9a, type: 2}
+  scale: 1
   lifetime: 4
-  moveType: 4
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 4294967295
-  projectileSpeed: 0
-  enableGravity: 0
-  gravity: {x: 0, y: -9.81, z: 0}
-  enableMaxDistance: 0
-  maxDistance: 20
-  lookAtMaxDistance: 50
-  lookAtRayMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  followTarget: 1
-  angularSpeed: 0
-  spiralRadius: 0.5
-  spiralAxis: 0
-  enableSquashStretch: 0
-  stretchAmplitude: 0.2
-  stretchFrequency: 8
-  stretchDamping: 0
-  beamMaxLength: 15
-  enableBounce: 0
-  maxBounces: 3
-  bounceSpeedMultiplier: 0.9
-  enablePierce: 0
-  maxPierces: 1
-  enableFork: 0
-  forkCount: 3
-  forkSpreadAngle: 35
-  zoneRadius: 1
-  onHitSpawnZone: {fileID: 0}
-  atMaxDistanceSpawn: {fileID: 0}
-  onLifetimeEndSpawn: {fileID: 0}
-  onLifetimeHalfSpawn: {fileID: 0}
+  projectile: {fileID: 0}
+  zone: {fileID: 0}
+  beam: {fileID: 11400000, guid: 3f70a527268ab794982c4f27564e7b3b, type: 2}
+  summon: {fileID: 0}

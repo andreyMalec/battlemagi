@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public abstract class ISpellCore<TContext>
@@ -45,13 +46,18 @@ public abstract class ISpellCore<TContext>
     protected abstract void TickInner(float deltaTime);
 
     protected virtual void OnLifetimeExpired() {
-        context.View.Kill();
+        context.View.Kill(context);
     }
 
     protected abstract void AttachEventSink();
 
     protected virtual void HandleEvent(SpellEvent evt) {
-        foreach (var trigger in _triggers)
-            trigger.TryFire(context, evt);
+        foreach (var trigger in _triggers) {
+            try {
+                trigger.TryFire(context, evt);
+            } catch (Exception e) {
+                Debug.LogWarning(e);
+            }
+        }
     }
 }

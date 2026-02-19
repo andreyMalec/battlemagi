@@ -7,7 +7,6 @@ public class SpellCasterPlayer : SpellCaster {
     public SpellDefinition def3;
     public SpellDefinition def4;
     public Transform spawnPos;
-    // public NetworkStatSystem statSystem;
 
     private SpellDefinition _spell;
     private ISpellSpawnPreview _spawnPreview;
@@ -17,7 +16,22 @@ public class SpellCasterPlayer : SpellCaster {
 
     public override bool CanCast { get; } = true;
 
+    protected virtual void RequestSpawn(SpellDefinition spell) {
+        var context = new SpawnContext {
+            spell = spell,
+            spawn = spell.spawn,
+            position = Origin,
+            rotation = Quaternion.LookRotation(Direction, Vector3.up),
+            forward = Direction,
+            caster = this
+        };
+        var spellSpawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
+        StartCoroutine(spellSpawn!.Request(context, Cast));
+    }
+
     void Update() {
+        if (Authority == null || !Authority.IsOwner) return;
+
         if (Input.GetKeyDown(KeyCode.E))
             _spell = def;
         if (Input.GetKeyDown(KeyCode.R))
@@ -90,19 +104,5 @@ public class SpellCasterPlayer : SpellCaster {
             1 => list[0],
             _ => new CompositeSpawnPreview(list)
         };
-    }
-
-    private void RequestSpawn(SpellDefinition spell) {
-        var context = new SpawnContext {
-            spell = spell,
-            spawn = spell.spawn,
-            position = spawnPos.position,
-            rotation = spawnPos.rotation,
-            forward = spawnPos.forward,
-            caster = this
-        };
-        ISpellSpawn spawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
-
-        StartCoroutine(spawn!.Request(context, Cast));
     }
 }

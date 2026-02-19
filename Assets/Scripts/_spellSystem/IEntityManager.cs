@@ -1,6 +1,8 @@
 using UnityEngine;
 
 public interface IEntityManager {
+    GameObject SpellPrefab { get; }
+
     GameObject Spawn(
         OwnerId ownerId,
         GameObject prefab,
@@ -8,7 +10,5 @@ public interface IEntityManager {
         Quaternion rot
     );
 
-    OwnerId Owner(GameObject obj);
-
-    bool IsOwner(GameObject obj);
+    void Destroy(GameObject gameObject);
 }

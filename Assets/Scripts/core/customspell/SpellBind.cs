@@ -1,26 +1,28 @@
+using System;
+using UnityEngine;
+
 public class SpellBind<TContext> : ISpellBind
     where TContext : ISpellContext {
-    public ISpellCore<TContext> Core { get; }
-    public SpellView View { get; }
-    public TContext Context { get; }
-    ISpellContext ISpellBind.Context => Context;
-    public ISpellTransform Transform { get; }
+    private readonly ISpellCore<TContext> _core;
+    private readonly TContext _context;
+    private readonly ISpellTransform _transform;
 
-    public bool IsAlive { get; private set; } = true;
+    ISpellContext ISpellBind.Context => _context;
 
     public SpellBind(ISpellCore<TContext> core, SpellView view, TContext context, ISpellTransform transform) {
-        Core = core;
-        View = view;
-        Context = context;
-        Transform = transform;
-        Transform.Init(View.transform, Context);
+        _core = core;
+        _context = context;
+        _transform = transform;
+        _transform.Init(view.transform.parent, _context);
     }
 
     public void Tick(float deltaTime) {
-        Transform.Tick(deltaTime);
-        Core.Tick(deltaTime);
+        try {
+            _transform.Tick(deltaTime);
+        } catch (Exception e) {
+            Debug.LogWarning(e);
+        }
 
-        if (!View.IsAlive)
-            IsAlive = false;
+        _core.Tick(deltaTime);
     }
 }

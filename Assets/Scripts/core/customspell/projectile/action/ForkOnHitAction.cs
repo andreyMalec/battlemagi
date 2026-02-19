@@ -22,7 +22,7 @@ public class ForkOnHitAction : ISpellAction {
 
         var baseDir = context.Movement.Motion.Velocity;
         if (baseDir == Vector3.zero)
-            baseDir = context.View.transform.forward;
+            baseDir = context.Movement.Transform.forward;
 
         if (_count <= 1) {
             Spawn(context, hit, Quaternion.identity, baseDir);
@@ -44,7 +44,7 @@ public class ForkOnHitAction : ISpellAction {
     private void Spawn(ISpellContext context, OnHitEvent hit, Quaternion rot, Vector3 baseDir) {
         var dir = rot * baseDir.normalized;
         if (dir == Vector3.zero)
-            dir = context.View.transform.forward;
+            dir = context.Movement.Transform.forward;
 
         var spawnContext = new SpawnContext {
             spell = context.Spell,

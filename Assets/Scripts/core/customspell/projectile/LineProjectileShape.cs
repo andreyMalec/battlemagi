@@ -11,7 +11,7 @@ public class LineProjectileShape : IShape {
 
     public IEnumerable<ShapeHit> Query() {
         var newPos = _context.Movement.Sample(_context.DeltaTime);
-        if (Physics.Linecast(_context.View.transform.position, newPos, out var hit, _context.Spell.defaultRaycast,
+        if (Physics.Linecast(_context.Movement.Transform.position, newPos, out var hit, _context.Spell.defaultRaycast,
                 QueryTriggerInteraction.Ignore)) {
             yield return new ShapeHit { Target = hit.collider.gameObject, Point = hit.point, Normal = hit.normal };
         }

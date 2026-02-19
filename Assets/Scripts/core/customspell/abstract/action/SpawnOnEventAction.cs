@@ -19,9 +19,9 @@ public abstract class SpawnOnEventAction : ISpellAction {
         return new SpawnContext {
             spell = spell,
             spawn = spell.spawn,
-            position = context.View.transform.position,
-            rotation = context.View.transform.rotation,
-            forward = context.View.transform.forward,
+            position = context.Movement.Transform.position,
+            rotation = context.Movement.Transform.rotation,
+            forward = context.Movement.Transform.forward,
             caster = context.Caster,
             forceFirstOrigin = true
         };

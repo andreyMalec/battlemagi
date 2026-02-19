@@ -3,18 +3,15 @@ using UnityEngine;
 
 public class SummonBind<TContext> : ISpellBind
     where TContext : SummonContext {
-    public ISpellCore<TContext> Core { get; }
-    public SpellView View { get; }
-    public TContext Context { get; }
+    private readonly ISpellCore<TContext> _core;
+    private readonly TContext _context;
 
-    private AIContext _ai;
-    private IBrain _brain;
+    private readonly AIContext _ai;
+    private readonly IBrain _brain;
     private readonly IAICommands _commands;
-    private IEnumerable<ISensor> _sensors;
+    private readonly IEnumerable<ISensor> _sensors;
 
-    ISpellContext ISpellBind.Context => Context;
-
-    public bool IsAlive { get; private set; } = true;
+    ISpellContext ISpellBind.Context => _context;
 
     public SummonBind(
         ISpellCore<TContext> core,
@@ -25,9 +22,8 @@ public class SummonBind<TContext> : ISpellBind
         IBrain brain,
         IEnumerable<ISensor> sensors
     ) {
-        Core = core;
-        View = view;
-        Context = context;
+        _core = core;
+        _context = context;
         _brain = brain;
         _sensors = sensors;
         _commands = new SummonCommands(move, caster);
@@ -41,14 +37,11 @@ public class SummonBind<TContext> : ISpellBind
     }
 
     public void Tick(float deltaTime) {
-        Core.Tick(deltaTime);
+        _core.Tick(deltaTime);
         foreach (var sensor in _sensors)
             sensor.Sense(_ai);
 
         _brain.Tick(_ai);
         _commands.Tick(_ai);
-
-        if (!View.IsAlive)
-            IsAlive = false;
     }
 }

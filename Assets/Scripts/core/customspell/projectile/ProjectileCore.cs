@@ -23,7 +23,7 @@ public class ProjectileCore : ISpellCore<ProjectileContext> {
 
             HandleEvent(hitEvent);
             if ((hitEvent.Outcome & HitOutcome.Destroy) != 0) {
-                context.View.Kill();
+                context.View.Kill(context);
                 return;
             }
         }

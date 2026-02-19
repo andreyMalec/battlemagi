@@ -9,13 +9,16 @@ public abstract class SpellCaster : MonoBehaviour {
 
     public OwnerId OwnerId { get; private set; }
     public SpellSystem SpellSystem { get; private set; }
+    public IAuthorityService Authority { get; private set; }
 
-    public void Initialize(OwnerId ownerId, SpellSystem spellSystem) {
+    public void Initialize(OwnerId ownerId, SpellSystem spellSystem, IAuthorityService authority) {
         SpellSystem = spellSystem;
         OwnerId = ownerId;
+        Authority = authority;
+        Debug.Log($"SpellCaster initialized, ownerId={ownerId}, spellSystem={spellSystem}");
     }
 
-    protected virtual void Cast(SpawnContext context) {
+    public virtual void Cast(SpawnContext context) {
         SpellSystem.CastSpell(context);
     }
 

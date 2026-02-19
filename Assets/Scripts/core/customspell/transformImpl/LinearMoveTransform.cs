@@ -1,23 +1,23 @@
 using UnityEngine;
 
 public class LinearMoveTransform : ISpellTransform {
-    public SpellMotion Motion { get; set; }
+    public Transform Transform { get; private set; }
 
-    private Transform _transform;
+    public SpellMotion Motion { get; set; }
 
     public LinearMoveTransform(Vector3 dir, float speed) {
         Motion = new SpellMotion { Velocity = dir.normalized * speed };
     }
 
     public void Init(Transform transform, ISpellContext ctx) {
-        _transform = transform;
+        Transform = transform;
     }
 
     public void Tick(float dt) {
-        _transform.position += Motion.Velocity * dt;
+        Transform.position += Motion.Velocity * dt;
     }
 
     public Vector3 Sample(float dt) {
-        return _transform.position + Motion.Velocity * dt;
+        return Transform.position + Motion.Velocity * dt;
     }
 }

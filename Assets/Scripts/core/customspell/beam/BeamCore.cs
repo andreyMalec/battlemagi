@@ -79,7 +79,7 @@ public class BeamCore : ISpellCore<BeamContext> {
             HandleEvent(new OnBeamEndEvent());
         }
 
-        context.View.Kill();
+        context.View.Kill(context);
     }
 
     protected override void AttachEventSink() {

@@ -5,12 +5,17 @@ public class SpellSystem {
     private readonly IEntityManager _manager;
     private readonly IAuthorityService _authority;
 
+    public readonly SpellSystemEvent Event;
+
     public SpellSystem(
         IEntityManager manager,
-        IAuthorityService authority
+        IAuthorityService authority,
+        SpellSystemEvent spellSystemEvent
     ) {
         _manager = manager;
         _authority = authority;
+        Event = spellSystemEvent;
+        Debug.Log("SpellSystem initialized");
     }
 
     public void CastSpell(
@@ -39,7 +44,8 @@ public class SpellSystem {
     ) {
         SpellDefinition def = spawnContext.spell;
         var prefab = SpellPrefabDatabase.Instance.Get(def.projectile.prefabId);
-        var viewGo = _manager.Spawn(spawnContext.caster.OwnerId, prefab, spawnContext.position, spawnContext.rotation);
+        spawnContext.main.name = "Spell " + def.name;
+        var viewGo = Object.Instantiate(prefab, spawnContext.main.transform);
         var view = viewGo.GetComponent<SpellView>();
         var instance = viewGo.GetComponent<SpellInstance>();
 
@@ -95,7 +101,7 @@ public class SpellSystem {
         );
 
         var bind = new SpellBind<ProjectileContext>(core, view, context, move);
-        instance.Init(bind);
+        instance.Init(bind, _authority);
     }
 
     private void CreateZone(
@@ -104,7 +110,8 @@ public class SpellSystem {
     ) {
         SpellDefinition def = spawnContext.spell;
         var prefab = SpellPrefabDatabase.Instance.Get(def.zone.prefabId);
-        var viewGo = _manager.Spawn(spawnContext.caster.OwnerId, prefab, spawnContext.position, spawnContext.rotation);
+        spawnContext.main.name = "Spell " + def.name;
+        var viewGo = Object.Instantiate(prefab, spawnContext.main.transform);
         var view = viewGo.GetComponent<SpellView>();
         var instance = viewGo.GetComponent<SpellInstance>();
 
@@ -156,7 +163,7 @@ public class SpellSystem {
         );
 
         var bind = new SpellBind<ZoneContext>(core, view, context, move);
-        instance.Init(bind);
+        instance.Init(bind, _authority);
     }
 
     private void CreateBeam(
@@ -165,7 +172,8 @@ public class SpellSystem {
     ) {
         SpellDefinition def = spawnContext.spell;
         var prefab = SpellPrefabDatabase.Instance.Get(def.beam.prefabId);
-        var viewGo = _manager.Spawn(spawnContext.caster.OwnerId, prefab, spawnContext.position, spawnContext.rotation);
+        spawnContext.main.name = "Spell " + def.name;
+        var viewGo = Object.Instantiate(prefab, spawnContext.main.transform);
         var view = viewGo.GetComponent<SpellView>();
         var instance = viewGo.GetComponent<SpellInstance>();
 
@@ -217,7 +225,7 @@ public class SpellSystem {
         );
 
         var bind = new SpellBind<BeamContext>(core, view, context, move);
-        instance.Init(bind);
+        instance.Init(bind, _authority);
     }
 
     private void CreateSummon(
@@ -226,11 +234,12 @@ public class SpellSystem {
     ) {
         SpellDefinition def = spawnContext.spell;
         var prefab = SpellPrefabDatabase.Instance.Get(def.summon.prefabId);
-        var viewGo = _manager.Spawn(spawnContext.caster.OwnerId, prefab, spawnContext.position, spawnContext.rotation);
+        spawnContext.main.name = "Spell " + def.name;
+        var viewGo = Object.Instantiate(prefab, spawnContext.main.transform);
         var view = viewGo.GetComponent<SpellView>();
         var instance = viewGo.GetComponent<SpellInstance>();
         var caster = viewGo.GetComponent<SpellCaster>();
-        caster.Initialize(spawnContext.caster.OwnerId, spawnContext.caster.SpellSystem);
+        caster.Initialize(spawnContext.caster.OwnerId, spawnContext.caster.SpellSystem, spawnContext.caster.Authority);
 
         var triggers = new List<SpellTrigger>();
         triggers.Add(new SpellTrigger {
@@ -265,15 +274,15 @@ public class SpellSystem {
         );
 
         var bind = new SummonBind<SummonContext>(core, view, context, move, caster, brain, sensors);
-        instance.Init(bind);
+        instance.Init(bind, _authority);
     }
 
     private static ISpellTransform Move(ProjectileDefinition def, Vector3 direction) {
         ISpellTransform move = def.moveType switch {
-            SpellTransform.Linear => new LinearMoveTransform(direction, def.moveSpeed),
-            SpellTransform.LookAtPoint => new LookAtPointTransform(def.moveSpeed, def.lookAtMaxDistance,
+            SpellMovement.Linear => new LinearMoveTransform(direction, def.moveSpeed),
+            SpellMovement.LookAtPoint => new LookAtPointTransform(def.moveSpeed, def.lookAtMaxDistance,
                 def.lookAtRayMask),
-            SpellTransform.Spiral => new SpiralMoveTransform(
+            SpellMovement.Spiral => new SpiralMoveTransform(
                 direction,
                 def.spiralAxis,
                 def.spiralRadius,
@@ -315,17 +324,17 @@ public class SpellSystem {
 
     private static ISpellTransform Move(ZoneDefinition def, Vector3 direction) {
         ISpellTransform move = def.moveType switch {
-            SpellTransform.Linear => new LinearMoveTransform(direction, def.moveSpeed),
-            SpellTransform.LookAtPoint => new LookAtPointTransform(def.moveSpeed, def.lookAtMaxDistance,
+            SpellMovement.Linear => new LinearMoveTransform(direction, def.moveSpeed),
+            SpellMovement.LookAtPoint => new LookAtPointTransform(def.moveSpeed, def.lookAtMaxDistance,
                 def.lookAtRayMask),
-            SpellTransform.Spiral => new SpiralMoveTransform(
+            SpellMovement.Spiral => new SpiralMoveTransform(
                 direction,
                 def.spiralAxis,
                 def.spiralRadius,
                 def.angularSpeed,
                 def.moveSpeed
             ),
-            SpellTransform.FollowCaster => new FollowCasterTransform(def.followTarget),
+            SpellMovement.FollowCaster => new FollowCasterTransform(def.followTarget),
             _ => new StaticTransform()
         };
 
@@ -357,10 +366,10 @@ public class SpellSystem {
 
     private static ISpellTransform Move(BeamDefinition def, Vector3 direction) {
         ISpellTransform move = def.moveType switch {
-            SpellTransform.Linear => new LinearMoveTransform(direction, def.moveSpeed),
-            SpellTransform.LookAtPoint => new LookAtPointTransform(def.moveSpeed, def.lookAtMaxDistance,
+            SpellMovement.Linear => new LinearMoveTransform(direction, def.moveSpeed),
+            SpellMovement.LookAtPoint => new LookAtPointTransform(def.moveSpeed, def.lookAtMaxDistance,
                 def.lookAtRayMask),
-            SpellTransform.FollowCaster => new FollowCasterTransform(def.followTarget),
+            SpellMovement.FollowCaster => new FollowCasterTransform(def.followTarget),
             _ => new StaticTransform()
         };
 

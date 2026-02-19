@@ -1,10 +1,11 @@
 using UnityEngine;
 
 public class MaxDistanceTransform : ISpellTransform {
+    public Transform Transform { get; private set; }
+
     private readonly ISpellTransform _inner;
     private readonly float _maxDistance;
 
-    private Transform _transform;
     private ISpellContext _ctx;
 
     private Vector3 _prevPosition;
@@ -22,7 +23,7 @@ public class MaxDistanceTransform : ISpellTransform {
     }
 
     public void Init(Transform transform, ISpellContext ctx) {
-        _transform = transform;
+        Transform = transform;
         _ctx = ctx;
         _inner.Init(transform, ctx);
 
@@ -36,7 +37,7 @@ public class MaxDistanceTransform : ISpellTransform {
 
         _inner.Tick(dt);
 
-        var pos = _transform.position;
+        var pos = Transform.position;
         _distance += Vector3.Distance(_prevPosition, pos);
         _prevPosition = pos;
 
@@ -52,7 +53,7 @@ public class MaxDistanceTransform : ISpellTransform {
     }
 
     public Vector3 Sample(float dt) {
-        if (_reached) return _transform.position;
+        if (_reached) return Transform.position;
         return _inner.Sample(dt);
     }
 }

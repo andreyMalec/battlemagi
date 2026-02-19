@@ -15,7 +15,8 @@ GameObject:
   - component: {fileID: 450571583936688513}
   - component: {fileID: 1760773015534472312}
   - component: {fileID: 8708466025697548998}
-  - component: {fileID: 7408328398455056352}
+  - component: {fileID: 4537245233784347616}
+  - component: {fileID: 1129283518091888602}
   m_Layer: 0
   m_Name: Tester
   m_TagString: Untagged
@@ -168,7 +169,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06f55bf0e2cd43f989d01d5e3d21f0f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DebugTeleport
---- !u!114 &7408328398455056352
+--- !u!114 &4537245233784347616
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -177,9 +178,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 5056318315711601611}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c18a19a809a46c0ab72377f0a516928, type: 3}
+  m_Script: {fileID: 11500000, guid: 72716d9af3fd4b6097fcb847fd3e589c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameBootstrap
+  m_EditorClassIdentifier: Assembly-CSharp::LocalGameBootstrap
+  spellPrefab: {fileID: 4494555669983194706, guid: b2460b24122abfe4986d30e44c523d76, type: 3}
+--- !u!114 &1129283518091888602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056318315711601611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e9b60badbd74aa4ba8a880d06dd3911, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalSpellSystemEvent
 --- !u!1 &7750010650653659641
 GameObject:
   m_ObjectHideFlags: 0

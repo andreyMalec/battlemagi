@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +15,7 @@ public class ArchetypeSelector : MonoBehaviour {
     }
 
     private void OnEnable() {
-        UpdateLabel();
+        // UpdateLabel();
     }
 
     private void OnPrev() {

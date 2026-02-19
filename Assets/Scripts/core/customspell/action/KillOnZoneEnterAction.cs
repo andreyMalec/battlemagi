@@ -3,6 +3,6 @@ public class KillOnZoneEnterAction : ISpellAction {
         if (evt is not OnZoneEnterEvent enter) return;
         if (!enter.Target.TryGetComponent<SpellInstance>(out var instance)) return;
         base.Apply(context, evt);
-        instance.Bind.Context.View.Kill();
+        instance.Bind.Context.View.Kill(context);
     }
 }

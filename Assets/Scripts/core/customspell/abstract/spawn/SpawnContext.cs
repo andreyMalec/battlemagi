@@ -1,6 +1,7 @@
 using UnityEngine;
 
 public record SpawnContext {
+    public GameObject main;
     public SpellDefinition spell;
     public SpawnDefinition spawn;
     public Vector3 position;
