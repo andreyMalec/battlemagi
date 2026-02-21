@@ -2,12 +2,6 @@ using Unity.Netcode;
 using UnityEngine;
 
 public class NgoEntityManager : IEntityManager {
-    public GameObject SpellPrefab { get; }
-
-    public NgoEntityManager(GameObject spellPrefab) {
-        SpellPrefab = spellPrefab;
-    }
-
     public GameObject Spawn(OwnerId ownerId, GameObject prefab, Vector3 pos, Quaternion rot) {
         var obj = Object.Instantiate(prefab, pos, rot);
         var networkObject = obj.GetComponent<NetworkObject>();

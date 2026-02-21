@@ -152,6 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74ebdd940d9a4fcaaae044fe12179c1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellRunner
+  spellPrefab: {fileID: 4494555669983194706, guid: b2460b24122abfe4986d30e44c523d76, type: 3}
   def: {fileID: 11400000, guid: 7659d312640413c4bbe8f8065b466a2c, type: 2}
   def2: {fileID: 11400000, guid: d851f47005e0eaf4ebf6766b0ecbcf16, type: 2}
   def3: {fileID: 11400000, guid: 4aec248e4dfc7464381c95a332855769, type: 2}
@@ -181,7 +182,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72716d9af3fd4b6097fcb847fd3e589c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LocalGameBootstrap
-  spellPrefab: {fileID: 4494555669983194706, guid: b2460b24122abfe4986d30e44c523d76, type: 3}
 --- !u!114 &1129283518091888602
 MonoBehaviour:
   m_ObjectHideFlags: 0

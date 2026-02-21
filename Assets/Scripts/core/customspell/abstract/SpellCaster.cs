@@ -2,6 +2,8 @@ using System;
 using UnityEngine;
 
 public abstract class SpellCaster : MonoBehaviour {
+    public GameObject spellPrefab;
+
     public abstract bool CanCast { get; }
 
     public abstract Vector3 Origin { get; }
@@ -11,6 +13,15 @@ public abstract class SpellCaster : MonoBehaviour {
     public SpellSystem SpellSystem { get; private set; }
     public IAuthorityService Authority { get; private set; }
 
+    private SpellCasterNet _casterNet;
+
+    private void Awake() {
+        _casterNet = GetComponent<SpellCasterNet>();
+        if (_casterNet == null) {
+            _casterNet = GetComponentInParent<SpellCasterNet>();
+        }
+    }
+
     public void Initialize(OwnerId ownerId, SpellSystem spellSystem, IAuthorityService authority) {
         SpellSystem = spellSystem;
         OwnerId = ownerId;
@@ -18,31 +29,31 @@ public abstract class SpellCaster : MonoBehaviour {
         Debug.Log($"SpellCaster initialized, ownerId={ownerId}, spellSystem={spellSystem}");
     }
 
-    public virtual void Cast(SpawnContext context) {
-        SpellSystem.CastSpell(context);
-    }
-
     public virtual void Cast(SpellDefinition spell) {
+        if (_casterNet != null && _casterNet.IsSpawned) {
+            _casterNet.RequestCast(spell);
+            return;
+        }
+
+        var caster = this;
         var context = new SpawnContext {
             spell = spell,
             spawn = spell.spawn,
-            position = Origin,
-            rotation = Quaternion.LookRotation(Direction, Vector3.up),
-            forward = Direction,
-            caster = this
+            position = caster.Origin,
+            rotation = Quaternion.LookRotation(caster.Direction, Vector3.up),
+            forward = caster.Direction,
+            caster = caster
         };
-        Cast(context);
+        var spellSpawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
+        StartCoroutine(spellSpawn!.Request(context, SpawnMain));
+    }
+
+    private void SpawnMain(SpawnContext context) {
+        var main = Instantiate(spellPrefab, context.position, context.rotation);
+        SpellSystem.CastSpell(context with { main = main });
     }
 
     public virtual void Cast(SpellDefinition spell, ITarget target) {
-        var context = new SpawnContext {
-            spell = spell,
-            spawn = spell.spawn,
-            position = target.Position,
-            rotation = Quaternion.identity,
-            forward = Vector3.up,
-            caster = this
-        };
-        Cast(context);
+        throw new System.NotImplementedException("TODO");
     }
 }

@@ -47,17 +47,18 @@ public class SpellCasterSummon : SpellCaster {
 
     public override void Cast(SpellDefinition spell, ITarget target) {
         OnAttack();
-        _target = target;
-        _spell = spell;
-        var forward = (spawnPos.position - target.Position).normalized;
-        var context = new SpawnContext {
-            spell = spell,
-            spawn = spell.spawn,
-            position = target.Position,
-            rotation = Quaternion.LookRotation(forward, Vector3.up),
-            forward = forward,
-            caster = this
-        };
-        Cast(context);
+        base.Cast(spell, target);
+        // _target = target;
+        // _spell = spell;
+        // var forward = (spawnPos.position - target.Position).normalized;
+        // var context = new SpawnContext {
+        //     spell = spell,
+        //     spawn = spell.spawn,
+        //     position = target.Position,
+        //     rotation = Quaternion.LookRotation(forward, Vector3.up),
+        //     forward = forward,
+        //     caster = this
+        // };
+        // Cast(context);
     }
 }

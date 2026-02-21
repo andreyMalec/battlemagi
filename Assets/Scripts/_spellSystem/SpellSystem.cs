@@ -2,17 +2,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SpellSystem {
-    private readonly IEntityManager _manager;
     private readonly IAuthorityService _authority;
 
     public readonly SpellSystemEvent Event;
 
     public SpellSystem(
-        IEntityManager manager,
         IAuthorityService authority,
         SpellSystemEvent spellSystemEvent
     ) {
-        _manager = manager;
         _authority = authority;
         Event = spellSystemEvent;
         Debug.Log("SpellSystem initialized");

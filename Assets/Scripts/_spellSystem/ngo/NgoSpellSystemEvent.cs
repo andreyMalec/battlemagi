@@ -4,13 +4,6 @@ using Unity.Netcode;
 using UnityEngine;
 
 public class NgoSpellSystemEvent : NetworkBehaviour, SpellSystemEvent {
-    private GameObject _spellPrefab;
-
-    public void Init(GameObject spellPrefab) {
-        _spellPrefab = spellPrefab;
-    }
-
-
     public void OnApplyScale(ISpellContext context) {
         var instance = context.View.Id();
         var k = context.Spell.scale;

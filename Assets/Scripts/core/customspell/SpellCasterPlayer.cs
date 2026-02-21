@@ -16,19 +16,6 @@ public class SpellCasterPlayer : SpellCaster {
 
     public override bool CanCast { get; } = true;
 
-    protected virtual void RequestSpawn(SpellDefinition spell) {
-        var context = new SpawnContext {
-            spell = spell,
-            spawn = spell.spawn,
-            position = Origin,
-            rotation = Quaternion.LookRotation(Direction, Vector3.up),
-            forward = Direction,
-            caster = this
-        };
-        var spellSpawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
-        StartCoroutine(spellSpawn!.Request(context, Cast));
-    }
-
     void Update() {
         if (Authority == null || !Authority.IsOwner) return;
 
@@ -44,7 +31,7 @@ public class SpellCasterPlayer : SpellCaster {
         UpdatePreview();
 
         if (_spell != null && Input.GetKeyDown(KeyCode.Mouse0)) {
-            RequestSpawn(_spell);
+            Cast(_spell);
             _spell = null;
             _spawnPreview?.Clear();
             _spawnPreview = null;

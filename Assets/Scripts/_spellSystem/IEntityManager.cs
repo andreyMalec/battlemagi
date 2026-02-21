@@ -1,7 +1,6 @@
 using UnityEngine;
 
 public interface IEntityManager {
-    GameObject SpellPrefab { get; }
 
     GameObject Spawn(
         OwnerId ownerId,
