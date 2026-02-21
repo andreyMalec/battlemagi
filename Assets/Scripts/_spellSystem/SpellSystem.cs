@@ -16,21 +16,20 @@ public class SpellSystem {
     }
 
     public void CastSpell(
-        SpawnContext spawnContext,
-        bool spawned = false
+        SpawnContext spawnContext
     ) {
         switch (spawnContext.spell.coreType) {
             case CoreType.Projectile:
-                CreateProjectile(spawnContext, spawned);
+                CreateProjectile(spawnContext, spawnContext.branch);
                 break;
             case CoreType.Zone:
-                CreateZone(spawnContext, spawned);
+                CreateZone(spawnContext, spawnContext.branch);
                 break;
             case CoreType.Beam:
-                CreateBeam(spawnContext, spawned);
+                CreateBeam(spawnContext, spawnContext.branch);
                 break;
             case CoreType.Summon:
-                CreateSummon(spawnContext, spawned);
+                CreateSummon(spawnContext, spawnContext.branch);
                 break;
         }
     }
@@ -236,7 +235,7 @@ public class SpellSystem {
         var view = viewGo.GetComponent<SpellView>();
         var instance = viewGo.GetComponent<SpellInstance>();
         var caster = viewGo.GetComponent<SpellCaster>();
-        caster.Initialize(spawnContext.caster.OwnerId, spawnContext.caster.SpellSystem, spawnContext.caster.Authority);
+        // caster.Initialize(spawnContext.caster.OwnerId, spawnContext.caster.SpellSystem, spawnContext.caster.Authority);
 
         var triggers = new List<SpellTrigger>();
         triggers.Add(new SpellTrigger {

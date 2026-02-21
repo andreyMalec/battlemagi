@@ -3,7 +3,7 @@ public interface ISpellContext {
     SpellView View { get; }
     ISpellTransform Movement { get; }
     SpellDefinition Spell { get; }
-    SpellSystemEvent Event => Caster.SpellSystem.Event;
+    SpellSystemEvent Event => Caster.SpellSystemEvent;
 
     bool Spawned { get; }
 

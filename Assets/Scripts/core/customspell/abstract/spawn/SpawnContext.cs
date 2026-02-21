@@ -9,6 +9,7 @@ public record SpawnContext {
     public Vector3 forward;
     public SpellCaster caster;
     public bool forceFirstOrigin;
+    public bool branch;
 
     public DelayOrigin DelayOrigin => forceFirstOrigin ? DelayOrigin.First : spawn.delayOrigin;
 }

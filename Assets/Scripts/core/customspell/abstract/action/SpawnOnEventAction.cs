@@ -4,15 +4,14 @@ public abstract class SpawnOnEventAction : ISpellAction {
     protected abstract SpellDefinition SpellDefinition(ISpellContext context);
 
     public override void Apply(ISpellContext context, SpellEvent evt) {
-        if (SpellDefinition(context) == null) return;
+        var spell = SpellDefinition(context);
+        if (spell == null) return;
         if (context.Caster == null) return;
         base.Apply(context, evt);
 
-        var spell = SpellDefinition(context);
         var spawnContext = SpawnContext(context, spell, evt);
 
-        ISpellSpawn spawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
-        context.Caster.StartCoroutine(spawn!.Request(spawnContext, Spawn));
+        context.Caster.Spawn(spawnContext);
     }
 
     protected virtual SpawnContext SpawnContext(ISpellContext context, SpellDefinition spell, SpellEvent evt) {
@@ -25,9 +24,5 @@ public abstract class SpawnOnEventAction : ISpellAction {
             caster = context.Caster,
             forceFirstOrigin = true
         };
-    }
-
-    protected virtual void Spawn(SpawnContext context) {
-        context.caster.SpellSystem.CastSpell(context, true);
     }
 }

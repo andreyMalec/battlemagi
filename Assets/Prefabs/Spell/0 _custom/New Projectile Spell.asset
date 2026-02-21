@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 828b0ca3cf304def8ffca524fefb016c, type: 3}
   m_Name: New Projectile Spell
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileDefinition
-  prefabId: 4
+  prefabId: 1
   moveType: 1
-  moveSpeed: 30
+  moveSpeed: 20
   enableMaxDistance: 0
   maxDistance: 20
-  enableGravity: 1
+  enableGravity: 0
   gravity: {x: 0, y: -10, z: 0}
   lookAtMaxDistance: 50
   lookAtRayMask:
@@ -31,17 +31,17 @@ MonoBehaviour:
   stretchFrequency: 8
   stretchDamping: 0
   enableBounce: 1
-  maxBounces: 3
+  maxBounces: 1
   bounceSpeedMultiplier: 0.7
   enablePierce: 0
   maxPierces: 1
   enableFork: 0
   forkCount: 3
   forkSpreadAngle: 35
-  onHitSpawnZone: {fileID: 11400000, guid: 4aec248e4dfc7464381c95a332855769, type: 2}
+  onHitSpawnZone: {fileID: 0}
   atMaxDistanceSpawn: {fileID: 0}
-  atStepDistanceSpawn: {fileID: 0}
+  atStepDistanceSpawn: {fileID: 11400000, guid: f6555dbb3ea1d4049aa261e183a8ab03, type: 2}
   spawnStep: 3
   onLifetimeEndSpawn: {fileID: 0}
   onLifetimeHalfSpawn: {fileID: 0}
-  spawnAtStep: 0
+  spawnAtStep: 1

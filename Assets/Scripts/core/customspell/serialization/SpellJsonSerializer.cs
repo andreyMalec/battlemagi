@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Reflection;
 using UnityEngine;
 
 public static class SpellJsonSerializer {
@@ -101,6 +102,8 @@ public static class SpellJsonSerializer {
     }
 
     private class ScriptableObjectConverter : JsonConverter {
+        static readonly BindingFlags Bindings = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+
         public override bool CanConvert(Type objectType) {
             return typeof(ScriptableObject).IsAssignableFrom(objectType);
         }
@@ -113,12 +116,46 @@ public static class SpellJsonSerializer {
 
             var so = (ScriptableObject)value;
 
-            var safe = CreateSafeSerializer(serializer);
-            var obj = JObject.FromObject(so, safe);
-            obj["$type"] = so.GetType().AssemblyQualifiedName;
-            obj["$name"] = so.name;
+            writer.WriteStartObject();
 
-            obj.WriteTo(writer);
+            writer.WritePropertyName("$type");
+            writer.WriteValue(so.GetType().AssemblyQualifiedName);
+
+            writer.WritePropertyName("$name");
+            writer.WriteValue(so.name);
+
+            var t = so.GetType();
+
+            var fields = t.GetFields(Bindings);
+            for (int i = 0; i < fields.Length; i++) {
+                var f = fields[i];
+                if (f.IsStatic)
+                    continue;
+                if (f.IsDefined(typeof(NonSerializedAttribute), true))
+                    continue;
+                if (!IsUnitySerializedField(f))
+                    continue;
+
+                writer.WritePropertyName(f.Name);
+                serializer.Serialize(writer, f.GetValue(so));
+            }
+
+            var props = t.GetProperties(Bindings);
+            for (int i = 0; i < props.Length; i++) {
+                var p = props[i];
+                if (!p.CanRead || p.GetIndexParameters().Length > 0)
+                    continue;
+
+                var jsonProperty = p.GetCustomAttribute<JsonPropertyAttribute>(true);
+                if (jsonProperty == null)
+                    continue;
+
+                var name = string.IsNullOrEmpty(jsonProperty.PropertyName) ? p.Name : jsonProperty.PropertyName;
+                writer.WritePropertyName(name);
+                serializer.Serialize(writer, p.GetValue(so));
+            }
+
+            writer.WriteEndObject();
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
@@ -142,36 +179,10 @@ public static class SpellJsonSerializer {
             return inst;
         }
 
-        private static JsonSerializer CreateSafeSerializer(JsonSerializer baseSerializer) {
-            var s = new JsonSerializer();
-            if (baseSerializer != null) {
-                s.Culture = baseSerializer.Culture;
-                s.ContractResolver = baseSerializer.ContractResolver;
-                s.DateFormatHandling = baseSerializer.DateFormatHandling;
-                s.DateFormatString = baseSerializer.DateFormatString;
-                s.DateParseHandling = baseSerializer.DateParseHandling;
-                s.DateTimeZoneHandling = baseSerializer.DateTimeZoneHandling;
-                s.DefaultValueHandling = baseSerializer.DefaultValueHandling;
-                s.FloatFormatHandling = baseSerializer.FloatFormatHandling;
-                s.FloatParseHandling = baseSerializer.FloatParseHandling;
-                s.Formatting = baseSerializer.Formatting;
-                s.MaxDepth = baseSerializer.MaxDepth;
-                s.MissingMemberHandling = baseSerializer.MissingMemberHandling;
-                s.NullValueHandling = baseSerializer.NullValueHandling;
-                s.ObjectCreationHandling = baseSerializer.ObjectCreationHandling;
-                s.ReferenceLoopHandling = baseSerializer.ReferenceLoopHandling;
-                s.StringEscapeHandling = baseSerializer.StringEscapeHandling;
-                s.TypeNameAssemblyFormatHandling = baseSerializer.TypeNameAssemblyFormatHandling;
-                s.TypeNameHandling = baseSerializer.TypeNameHandling;
-            }
-
-            for (int i = 0; i < Settings.Converters.Count; i++) {
-                if (Settings.Converters[i] is ScriptableObjectConverter)
-                    continue;
-                s.Converters.Add(Settings.Converters[i]);
-            }
-
-            return s;
+        static bool IsUnitySerializedField(FieldInfo f) {
+            if (f.IsPublic)
+                return true;
+            return f.IsDefined(typeof(SerializeField), true);
         }
     }
 }

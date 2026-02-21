@@ -11,6 +11,7 @@ public abstract class SpellCaster : MonoBehaviour {
 
     public OwnerId OwnerId { get; private set; }
     public SpellSystem SpellSystem { get; private set; }
+    public SpellSystemEvent SpellSystemEvent => SpellSystem.Event;
     public IAuthorityService Authority { get; private set; }
 
     private SpellCasterNet _casterNet;
@@ -29,6 +30,9 @@ public abstract class SpellCaster : MonoBehaviour {
         Debug.Log($"SpellCaster initialized, ownerId={ownerId}, spellSystem={spellSystem}");
     }
 
+    /**
+     * Ручной каст
+     */
     public virtual void Cast(SpellDefinition spell) {
         if (_casterNet != null && _casterNet.IsSpawned) {
             _casterNet.RequestCast(spell);
@@ -48,12 +52,28 @@ public abstract class SpellCaster : MonoBehaviour {
         StartCoroutine(spellSpawn!.Request(context, SpawnMain));
     }
 
+    /**
+     * Каст вложенного спелла (например, при срабатывании SpawnOnEventAction)
+     */
+    public void Spawn(SpawnContext context) {
+        if (_casterNet != null && _casterNet.IsSpawned) {
+            _casterNet.RequestSpawn(context);
+            return;
+        }
+
+        context.branch = true;
+        SpawnMain(context);
+    }
+
+    /**
+     * Каст по цели (наводка из суммона)
+     */
+    public virtual void Cast(SpellDefinition spell, ITarget target) {
+        throw new System.NotImplementedException("TODO");
+    }
+
     private void SpawnMain(SpawnContext context) {
         var main = Instantiate(spellPrefab, context.position, context.rotation);
         SpellSystem.CastSpell(context with { main = main });
-    }
-
-    public virtual void Cast(SpellDefinition spell, ITarget target) {
-        throw new System.NotImplementedException("TODO");
     }
 }

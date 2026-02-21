@@ -5,8 +5,18 @@ using UnityEngine;
 public class SpellCasterNet : NetworkBehaviour {
     private GameObject _spellPrefab;
 
-    private void Awake() {
-        _spellPrefab = GetComponent<SpellCaster>().spellPrefab;
+    private GameObject SpellPrefab {
+        get {
+            if (_spellPrefab != null) return _spellPrefab;
+            var caster = GetComponent<SpellCaster>();
+            if (caster == null) {
+                caster = GetComponentInChildren<SpellCaster>();
+            }
+
+            _spellPrefab = caster.spellPrefab;
+
+            return _spellPrefab;
+        }
     }
 
     public void RequestCast(SpellDefinition spell) {
@@ -14,12 +24,44 @@ public class SpellCasterNet : NetworkBehaviour {
         RequestCastServerRpc(NetworkObjectId, spellJson);
     }
 
-    [ServerRpc]
-    private void RequestCastServerRpc(ulong casterNetObj, FixedString4096Bytes spellJson) {
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(casterNetObj, out var netObj)) return;
-        Debug.Log($"[NetworkSpellSystemEvent] OnCastServerRpc: {netObj.name}");
+    public void RequestSpawn(SpawnContext context) {
+        var spellJson = SpellJsonSerializer.ToJson(context.spell);
+        RequestSpawnServerRpc(NetworkObjectId, spellJson, context.position, context.forward, context.rotation);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void RequestSpawnServerRpc(
+        ulong casterNetObjectId,
+        FixedString4096Bytes spellJson,
+        Vector3 position, Vector3 forward, Quaternion rotation
+    ) {
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(casterNetObjectId, out var casterNetObj))
+            return;
+        Debug.Log(
+            $"[NetworkSpellSystemEvent] RequestSpawnServerRpc: {casterNetObj.name}, position={position}, forward={forward}");
         var spell = SpellJsonSerializer.FromJson<SpellDefinition>(spellJson.Value);
-        var caster = netObj.GetComponent<SpellCaster>();
+        var caster = casterNetObj.GetComponent<SpellCaster>();
+
+        var context = new SpawnContext {
+            spell = spell,
+            spawn = spell.spawn,
+            position = position,
+            rotation = rotation,
+            forward = forward,
+            caster = caster,
+            forceFirstOrigin = true
+        };
+        var spellSpawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
+        StartCoroutine(spellSpawn!.Request(context, ServerSpawnMain));
+    }
+
+    [ServerRpc]
+    private void RequestCastServerRpc(ulong casterNetObjectId, FixedString4096Bytes spellJson) {
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(casterNetObjectId, out var casterNetObj))
+            return;
+        Debug.Log($"[NetworkSpellSystemEvent] RequestCastServerRpc: {casterNetObj.name}");
+        var spell = SpellJsonSerializer.FromJson<SpellDefinition>(spellJson.Value);
+        var caster = casterNetObj.GetComponent<SpellCaster>();
 
         var context = new SpawnContext {
             spell = spell,
@@ -34,7 +76,7 @@ public class SpellCasterNet : NetworkBehaviour {
     }
 
     private void ServerSpawnMain(SpawnContext context) {
-        var main = Instantiate(_spellPrefab, context.position, context.rotation);
+        var main = Instantiate(SpellPrefab, context.position, context.rotation);
         var networkObject = main.GetComponent<NetworkObject>();
         networkObject.SpawnWithOwnership(context.caster.OwnerId);
         var id = networkObject.NetworkObjectId;

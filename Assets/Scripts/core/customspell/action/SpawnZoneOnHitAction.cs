@@ -1,22 +1,30 @@
 using UnityEngine;
 
-public class SpawnZoneOnHitAction : ISpellAction {
-    public override void Apply(ISpellContext context, SpellEvent evt) {
-        if (evt is not OnHitEvent hit) return;
-        base.Apply(context, evt);
+public class SpawnZoneOnHitAction : SpawnOnEventAction {
+    protected override SpellDefinition SpellDefinition(ISpellContext context) {
+        if (context.Spell.projectile != null)
+            return context.Spell.projectile.onHitSpawnZone;
+        return null;
+    }
 
-        var zoneDef = context.Spell.projectile.onHitSpawnZone;
+    public override void Apply(ISpellContext context, SpellEvent evt) {
+        if (evt is not OnHitEvent) return;
+        base.Apply(context, evt);
+    }
+
+    protected override SpawnContext SpawnContext(ISpellContext context, SpellDefinition spell, SpellEvent evt) {
+        var hit = (OnHitEvent)evt;
         var rotation = ComputeRotation(hit.Normal, context.Movement.Transform.forward);
         var spawnContext = new SpawnContext {
-            spell = zoneDef,
-            spawn = zoneDef.spawn,
+            spell = spell,
+            spawn = spell.spawn,
             position = hit.Point,
             rotation = rotation,
             forward = rotation * Vector3.forward,
             caster = context.Caster,
             forceFirstOrigin = true
         };
-        context.Caster.SpellSystem.CastSpell(spawnContext, true);
+        return spawnContext;
     }
 
     private Quaternion ComputeRotation(Vector3 normal, Vector3 direction) {

@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 70d6ac2600d5440ab45bcb7d2aabe7d3, type: 3}
-  m_Name: Beam
-  m_EditorClassIdentifier: Assembly-CSharp::SpellDefinition
-  coreType: 2
-  spawn: {fileID: 11400000, guid: 9abb3be42f2320740903de6f0c18c673, type: 2}
+  m_Name: Projectile 1
+  m_EditorClassIdentifier: Assembly-CSharp::SpellProjectileDefinition
+  coreType: 0
+  spawn: {fileID: 11400000, guid: 0c8321b4ebe2c074988ecbf47bc38763, type: 2}
   scale: 1
-  lifetime: 4
+  lifetime: 2
   defaultRaycast:
     serializedVersion: 2
-    m_Bits: 4294967295
-  projectile: {fileID: 0}
+    m_Bits: 576
+  projectile: {fileID: 11400000, guid: 30dcd3111e7d56244a1726dd5278b7d6, type: 2}
   zone: {fileID: 0}
-  beam: {fileID: 11400000, guid: 3f70a527268ab794982c4f27564e7b3b, type: 2}
+  beam: {fileID: 0}
   summon: {fileID: 0}
