@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileDefinition
   prefabId: 4
   moveType: 1
-  moveSpeed: 10
+  moveSpeed: 50
   enableMaxDistance: 0
   maxDistance: 20
   enableGravity: 1
-  gravity: {x: 0, y: -10, z: 0}
+  gravity: {x: 0, y: -5, z: 0}
   lookAtMaxDistance: 50
   lookAtRayMask:
     serializedVersion: 2
@@ -38,7 +38,7 @@ MonoBehaviour:
   enableFork: 0
   forkCount: 3
   forkSpreadAngle: 35
-  onHitSpawnZone: {fileID: 0}
+  onHitSpawnZone: {fileID: 11400000, guid: 4aec248e4dfc7464381c95a332855769, type: 2}
   atMaxDistanceSpawn: {fileID: 0}
   atStepDistanceSpawn: {fileID: 0}
   spawnStep: 3

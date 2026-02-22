@@ -30,6 +30,7 @@ public class PlayerTester : MonoBehaviour {
     }
 
     private void ProcessMouseInput() {
+        if (Cursor.lockState != CursorLockMode.Locked) return;
         Vector2 mouseDelta = new(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"));
         Vector2 rawFrameVelocity = Vector2.Scale(mouseDelta, Vector2.one * lookSettings.sensitivity);
 

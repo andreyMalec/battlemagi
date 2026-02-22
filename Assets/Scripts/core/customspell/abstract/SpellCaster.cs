@@ -62,7 +62,8 @@ public abstract class SpellCaster : MonoBehaviour {
         }
 
         context.branch = true;
-        SpawnMain(context);
+        var spellSpawn = ISpellSpawn.GetMode(context.spawn.spawnMode);
+        StartCoroutine(spellSpawn!.Request(context, SpawnMain));
     }
 
     /**

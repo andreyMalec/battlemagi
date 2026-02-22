@@ -12,17 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1907b37ed1aa4ddd80c76a48f1db8862, type: 3}
   m_Name: Spawn 1Many
   m_EditorClassIdentifier: Assembly-CSharp::SpawnDefinition
-  spawnMode: 2
+  spawnMode: 10
   preview: 1
-  instanceCount: 5
+  instanceCount: 20
   instanceLimit: 0
   multiInstanceDelay: 0
   delayOrigin: 1
   useAlternativeSpawnMode: 0
   alternativeSpawnMode: 0
   forwardStep: 5
-  arcAngleStep: 15
-  coneRadius: 1
+  arcAngleStep: 5
+  coneRadius: 0.5
   coneHeight: 2
   circleRadius: 5
   circleHeight: 8

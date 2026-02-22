@@ -78,13 +78,19 @@ public class InGameMenu : MonoBehaviour {
         }
     }
 
+    private bool alt = false;
+
     private void Update() {
         if (Input.GetKeyDown(KeyCode.Escape)) {
             ToggleMenu();
         }
 
-        if (!container.gameObject.activeSelf)
-            ShowCursor(Input.GetKey(KeyCode.LeftAlt));
+        if (!container.gameObject.activeSelf) {
+            if (Input.GetKeyDown(KeyCode.LeftAlt)) {
+                alt = !alt;
+            }
+            ShowCursor(alt);
+        }
 
         stateMain.gameObject.SetActive(_state == State.Main);
         stateSettings.gameObject.SetActive(_state != State.Main);

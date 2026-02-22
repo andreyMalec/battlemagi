@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class ReturnToMenu : MonoBehaviour {
-    [SerializeField] private KeyCode key = KeyCode.Keypad0;
+    [SerializeField] private KeyCode key = KeyCode.KeypadPlus;
 
     private void Update() {
         if (Input.GetKeyDown(key)) {
