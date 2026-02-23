@@ -19,7 +19,7 @@ public class ProjectileDefinition : ScriptableObject {
     [ShowIf("_transformLookAtPoint")] public LayerMask lookAtRayMask = ~0;
 
     [Header("Spiral")]
-    [ShowIf("_transformSpiral")] public float angularSpeed;
+    [ShowIf("_transformSpiral")] public float angularSpeed = 5;
 
     [ShowIf("_transformSpiral")] public float spiralRadius = 0.5f;
     [ShowIf("_transformSpiral")] public SpiralAxis spiralAxis = SpiralAxis.Forward;

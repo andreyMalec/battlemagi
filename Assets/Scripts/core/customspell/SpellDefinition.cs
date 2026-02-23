@@ -7,7 +7,7 @@ public class SpellDefinition : ScriptableObject {
     public SpawnDefinition spawn;
 
     public float scale = 1;
-    public float lifetime;
+    public float lifetime = 5;
     public LayerMask defaultRaycast = ~0;
 
     [Header("Projectile")]
