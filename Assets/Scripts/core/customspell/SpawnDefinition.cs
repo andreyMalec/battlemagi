@@ -2,7 +2,7 @@ using NaughtyAttributes;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Spawn Strategy", menuName = "Spells/Spawn Definition")]
-public class SpawnDefinition : ScriptableObject {
+public class SpawnDefinition : ScriptableObject, IValidate {
     public SpawnMode spawnMode = SpawnMode.Direct;
     public Preview preview;
     public int instanceCount = 1;
@@ -36,8 +36,7 @@ public class SpawnDefinition : ScriptableObject {
     private bool _isDelayed = false;
     private bool _respectDelayOrigin = false;
 
-#if UNITY_EDITOR
-    private void OnValidate() {
+    public void Validate() {
         _isMultiInstance = instanceCount > 1;
         _isDelayed = multiInstanceDelay > 0;
         _respectDelayOrigin = RespectOrigin(spawnMode);
@@ -46,6 +45,11 @@ public class SpawnDefinition : ScriptableObject {
         _isForward = IsForward(spawnMode) || IsForward(alternativeSpawnMode);
         _isCone = IsCone(spawnMode) || IsCone(alternativeSpawnMode);
         _isCircleUp = IsCircleUp(spawnMode) || IsCircleUp(alternativeSpawnMode);
+    }
+
+#if UNITY_EDITOR
+    private void OnValidate() {
+        Validate();
     }
 
     private static bool RespectOrigin(SpawnMode spawnMode) {

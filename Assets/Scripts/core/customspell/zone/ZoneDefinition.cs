@@ -2,7 +2,7 @@ using NaughtyAttributes;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Zone Spell", menuName = "Spells/Zone Definition")]
-public class ZoneDefinition : ScriptableObject {
+public class ZoneDefinition : ScriptableObject, IValidate {
     public SpellZonePrefabId prefabId;
 
     public SpellMovement moveType;
@@ -46,15 +46,19 @@ public class ZoneDefinition : ScriptableObject {
     private bool _transformSpiral = false;
     private bool _transformLookAtPoint = false;
     private bool _transformFollowCaster = false;
-    [HideInInspector] public bool spawnAtStep = false;
+    [ShowIf("false")] [HideInInspector] public bool spawnAtStep = false;
 
-#if UNITY_EDITOR
-    private void OnValidate() {
+    public void Validate() {
         _canMove = moveType is not SpellMovement.Static;
         _transformSpiral = moveType is SpellMovement.Spiral;
         _transformLookAtPoint = moveType is SpellMovement.LookAtPoint;
         _transformFollowCaster = moveType is SpellMovement.FollowCaster;
         spawnAtStep = atStepDistanceSpawn != null;
+    }
+
+#if UNITY_EDITOR
+    private void OnValidate() {
+        Validate();
     }
 #endif
 }

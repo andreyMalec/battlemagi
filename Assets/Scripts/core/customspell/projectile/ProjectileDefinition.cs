@@ -2,13 +2,13 @@ using NaughtyAttributes;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Projectile Spell", menuName = "Spells/Projectile Definition")]
-public class ProjectileDefinition : ScriptableObject {
+public class ProjectileDefinition : ScriptableObject, IValidate {
     public SpellProjectilePrefabId prefabId;
 
     public SpellMovement moveType;
 
-    public float moveSpeed;
-    public bool enableMaxDistance;
+    [ShowIf("_canMove")] public float moveSpeed;
+    [ShowIf("_canMove")] public bool enableMaxDistance;
     [ShowIf("enableMaxDistance")] public float maxDistance = 20f;
     public bool enableGravity;
     [ShowIf("enableGravity")] public Vector3 gravity = new(0, -9.81f, 0);
@@ -57,17 +57,23 @@ public class ProjectileDefinition : ScriptableObject {
     public SpellDefinition onLifetimeEndSpawn;
     public SpellDefinition onLifetimeHalfSpawn;
 
+    private bool _canMove = false;
     private bool _transformSpiral = false;
     private bool _transformLookAtPoint = false;
     private bool _transformFollowCaster = false;
-    [HideInInspector] public bool spawnAtStep = false;
+    [ShowIf("false")] [HideInInspector] public bool spawnAtStep = false;
 
-#if UNITY_EDITOR
-    private void OnValidate() {
+    public void Validate() {
+        _canMove = moveType is not SpellMovement.Static;
         _transformSpiral = moveType is SpellMovement.Spiral;
         _transformLookAtPoint = moveType is SpellMovement.LookAtPoint;
         _transformFollowCaster = moveType is SpellMovement.FollowCaster;
         spawnAtStep = atStepDistanceSpawn != null;
+    }
+
+#if UNITY_EDITOR
+    private void OnValidate() {
+        Validate();
     }
 #endif
 }
