@@ -825,7 +825,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1910923140
+  GlobalObjectIdHash: 2196398029
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -874,6 +874,7 @@ MonoBehaviour:
   - {fileID: 8745711078365152283}
   objectsToDisable:
   - {fileID: 3049812759064434572}
+  - {fileID: 7506481885274717685}
   mainCamera: {fileID: 4966461228147620054}
 --- !u!114 &6916625131687324290
 MonoBehaviour:
@@ -2628,6 +2629,11 @@ PrefabInstance:
 --- !u!224 &4785237571442939822 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3331633866762461487, guid: 40caa3ea09cd881448586bc784db54e2, type: 3}
+  m_PrefabInstance: {fileID: 7806078932792129153}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7506481885274717685 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 322186519547218804, guid: 40caa3ea09cd881448586bc784db54e2, type: 3}
   m_PrefabInstance: {fileID: 7806078932792129153}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8224858169178024182

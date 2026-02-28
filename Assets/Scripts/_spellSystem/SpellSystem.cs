@@ -34,6 +34,23 @@ public class SpellSystem {
         }
     }
 
+    public void ShowSpell(
+        GameObject main,
+        CoreType coreType,
+        int prefabId
+    ) {
+        var prefab = coreType switch {
+            CoreType.Projectile => SpellPrefabDatabase.Instance.Get((SpellProjectilePrefabId)prefabId),
+            CoreType.Zone => SpellPrefabDatabase.Instance.Get((SpellZonePrefabId)prefabId),
+            CoreType.Beam => SpellPrefabDatabase.Instance.Get((SpellBeamPrefabId)prefabId),
+            CoreType.Summon => SpellPrefabDatabase.Instance.Get((SpellSummonPrefabId)prefabId),
+            _ => null
+        };
+        if (prefab == null) return;
+        main.name = "Spell " + coreType;
+        Object.Instantiate(prefab, main.transform);
+    }
+
     private void CreateProjectile(
         SpawnContext spawnContext,
         bool spawned = false
@@ -64,17 +81,17 @@ public class SpellSystem {
             }
         });
         triggers.Add(new SpellTrigger {
+            eventType = typeof(OnLifetimeHalfEvent),
+            actions = new ISpellAction[] {
+                new SpawnOnLifetimeHalfAction(),
+            }
+        });
+        triggers.Add(new SpellTrigger {
             eventType = typeof(OnLifetimeEndingEvent),
             actions = new ISpellAction[] {
                 new RemoveParticlesAction(),
                 new FadeOutAudioSourcesAction(),
                 new SpawnOnLifetimeEndAction(),
-            }
-        });
-        triggers.Add(new SpellTrigger {
-            eventType = typeof(OnLifetimeHalfEvent),
-            actions = new ISpellAction[] {
-                new SpawnOnLifetimeHalfAction(),
             }
         });
 
@@ -126,17 +143,23 @@ public class SpellSystem {
             }
         });
         triggers.Add(new SpellTrigger {
-            eventType = typeof(OnLifetimeEndingEvent),
+            eventType = typeof(OnStepDistanceEvent),
             actions = new ISpellAction[] {
-                new RemoveParticlesAction(),
-                new FadeOutAudioSourcesAction(),
-                new SpawnOnLifetimeEndAction(),
+                new SpawnAtStepDistanceAction(),
             }
         });
         triggers.Add(new SpellTrigger {
             eventType = typeof(OnLifetimeHalfEvent),
             actions = new ISpellAction[] {
                 new SpawnOnLifetimeHalfAction(),
+            }
+        });
+        triggers.Add(new SpellTrigger {
+            eventType = typeof(OnLifetimeEndingEvent),
+            actions = new ISpellAction[] {
+                new RemoveParticlesAction(),
+                new FadeOutAudioSourcesAction(),
+                new SpawnOnLifetimeEndAction(),
             }
         });
 

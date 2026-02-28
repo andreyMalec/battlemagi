@@ -14,19 +14,19 @@ public class SpellInstance : MonoBehaviour {
     [SerializeField] private ParticleSystem[] exclude;
     public ISpellBind Bind { get; private set; }
     private IAuthorityService _authorityService;
-
-    private void OnEnable() {
-        Active.Add(this);
-    }
+    private bool _initialized;
 
     public void Init(ISpellBind bind, IAuthorityService authorityService) {
+        _initialized = true;
+        Active.Add(this);
         Bind = bind;
         _authorityService = authorityService;
 
-        bind.Context.Event.OnApplyScale(bind.Context);
+        Scale(bind.Context.Spell.scale, bind.Context.Lifetime);
     }
 
     void FixedUpdate() {
+        if (!_initialized) return;
         if (Bind.Context.View.IsAlive) {
             if (_authorityService.IsServer)
                 Bind.Tick(Time.deltaTime);

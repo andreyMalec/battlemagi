@@ -2,9 +2,6 @@ using UnityEngine;
 
 public class SpawnAtStepDistanceAction : SpawnOnEventAction {
     protected override SpellDefinition SpellDefinition(ISpellContext context) {
-        Debug.Log($"______________________ 1 {context.Spell.projectile.atStepDistanceSpawn}");
-        Debug.Log($"______________________ 2 {context.Spell.zone}");
-        Debug.Log($"______________________ 2 {context.Spell.beam}");
         if (context.Spell.projectile != null)
             return context.Spell.projectile.atStepDistanceSpawn;
         if (context.Spell.zone != null)

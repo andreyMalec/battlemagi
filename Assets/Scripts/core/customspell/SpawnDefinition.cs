@@ -51,6 +51,7 @@ public class SpawnDefinition : ScriptableObject, IValidate {
     private void OnValidate() {
         Validate();
     }
+#endif
 
     private static bool RespectOrigin(SpawnMode spawnMode) {
         return spawnMode is SpawnMode.Direct or SpawnMode.DirectDown or SpawnMode.Arc or SpawnMode.GroundPoint
@@ -77,5 +78,4 @@ public class SpawnDefinition : ScriptableObject, IValidate {
     private static bool IsCircleUp(SpawnMode spawnMode) {
         return spawnMode is SpawnMode.GroundPointCircleUp or SpawnMode.GroundPointDiskUp;
     }
-#endif
 }
