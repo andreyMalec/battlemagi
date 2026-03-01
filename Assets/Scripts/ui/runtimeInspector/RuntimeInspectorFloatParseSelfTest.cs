@@ -1,27 +1,26 @@
-using System;
 using System.Globalization;
-using TMPro;
 using UnityEngine;
 
-public class RuntimeInspectorFloatField : MonoBehaviour, IRuntimeInspectorField<float> {
-    [SerializeField] private TMP_Text label;
-    [SerializeField] private TMP_InputField input;
+public class RuntimeInspectorFloatParseSelfTest : MonoBehaviour {
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void Run() {
+        CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
 
-    private Action<float> _set;
-
-    public void Bind(string labelText, float value, Action<float> set) {
-        _set = set;
-        this.label.text = labelText;
-        input.SetTextWithoutNotify(value.ToString(CultureInfo.InvariantCulture));
-        input.onEndEdit.RemoveAllListeners();
-        input.onEndEdit.AddListener(OnEdit);
+        Test("3/4", 0.75f);
+        Test("0,75", 0.75f);
+        Test("0.75", 0.75f);
+        Test("1 234,5", 1234.5f);
+        Test("1,234.5", 1234.5f);
     }
 
-    private void OnEdit(string s) {
-        if (TryParseFloatAny(s, out var v)) _set(v);
+    private static void Test(string s, float expected) {
+        var ok = TryParseFloatAny(s, out var v);
+        if (!ok || Mathf.Abs(v - expected) > 0.0001f) {
+            Debug.LogError($"Float parse failed: '{s}' => {v} (ok={ok}) expected {expected}");
+        }
     }
 
-    public static bool TryParseFloatAny(string s, out float value) {
+    private static bool TryParseFloatAny(string s, out float value) {
         if (string.IsNullOrWhiteSpace(s)) {
             value = default;
             return false;
@@ -78,3 +77,4 @@ public class RuntimeInspectorFloatField : MonoBehaviour, IRuntimeInspectorField<
         return false;
     }
 }
+

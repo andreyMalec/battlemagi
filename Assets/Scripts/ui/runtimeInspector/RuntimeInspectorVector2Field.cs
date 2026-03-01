@@ -24,8 +24,8 @@ public class RuntimeInspectorVector2Field : MonoBehaviour {
     }
 
     private void Apply() {
-        if (!float.TryParse(x.text, out var xv)) return;
-        if (!float.TryParse(y.text, out var yv)) return;
+        if (!RuntimeInspectorFloatField.TryParseFloatAny(x.text, out var xv)) return;
+        if (!RuntimeInspectorFloatField.TryParseFloatAny(y.text, out var yv)) return;
         _set(new Vector2(xv, yv));
     }
 }

@@ -306,6 +306,10 @@ PrefabInstance:
       value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4998782982669972590, guid: 33adbecc8dc69a941a015eebbacf23c2, type: 3}
+      propertyPath: m_text
+      value: 0.00
+      objectReference: {fileID: 0}
+    - target: {fileID: 4998782982669972590, guid: 33adbecc8dc69a941a015eebbacf23c2, type: 3}
       propertyPath: m_fontSize
       value: 20
       objectReference: {fileID: 0}
@@ -319,7 +323,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7074189959319334014, guid: 33adbecc8dc69a941a015eebbacf23c2, type: 3}
       propertyPath: m_ContentType
-      value: 3
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7074189959319334014, guid: 33adbecc8dc69a941a015eebbacf23c2, type: 3}
+      propertyPath: m_KeyboardType
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7074189959319334014, guid: 33adbecc8dc69a941a015eebbacf23c2, type: 3}
       propertyPath: m_GlobalPointSize
@@ -327,7 +335,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7074189959319334014, guid: 33adbecc8dc69a941a015eebbacf23c2, type: 3}
       propertyPath: m_CharacterValidation
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8059935226737914409, guid: 33adbecc8dc69a941a015eebbacf23c2, type: 3}
       propertyPath: m_Name

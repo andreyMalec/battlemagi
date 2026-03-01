@@ -32,10 +32,10 @@ public class RuntimeInspectorColorField : MonoBehaviour {
     }
 
     private void Apply() {
-        if (!float.TryParse(r.text, out var rv)) return;
-        if (!float.TryParse(g.text, out var gv)) return;
-        if (!float.TryParse(b.text, out var bv)) return;
-        if (!float.TryParse(a.text, out var av)) return;
+        if (!RuntimeInspectorFloatField.TryParseFloatAny(r.text, out var rv)) return;
+        if (!RuntimeInspectorFloatField.TryParseFloatAny(g.text, out var gv)) return;
+        if (!RuntimeInspectorFloatField.TryParseFloatAny(b.text, out var bv)) return;
+        if (!RuntimeInspectorFloatField.TryParseFloatAny(a.text, out var av)) return;
         _set(new Color(rv, gv, bv, av));
     }
 }
