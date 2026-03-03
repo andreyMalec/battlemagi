@@ -9818,6 +9818,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95a013b49884445fb29a6af511334745, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellView
+  beforeEndThreshold: 0.2
 --- !u!114 &2052138199942996905
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9830,6 +9831,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fd067c9361d43908ab7c673b844449b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellInstance
+  scale: []
+  exclude: []
 --- !u!1 &1260899024763381997
 GameObject:
   m_ObjectHideFlags: 0

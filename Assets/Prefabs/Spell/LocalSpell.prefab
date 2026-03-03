@@ -9,7 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8444465831358548264}
-  - component: {fileID: 7918529059339773264}
+  - component: {fileID: 1782868930255785200}
+  - component: {fileID: -6154863040968312220}
   m_Layer: 0
   m_Name: LocalSpell
   m_TagString: Untagged
@@ -32,7 +33,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7918529059339773264
+--- !u!114 &1782868930255785200
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,6 +42,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 4494555669983194706}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f74c1794b5147d5a7cf69ba60f1803b, type: 3}
+  m_Script: {fileID: 11500000, guid: 72716d9af3fd4b6097fcb847fd3e589c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MeshBody
+  m_EditorClassIdentifier: Assembly-CSharp::LocalGameBootstrap
+--- !u!114 &-6154863040968312220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4494555669983194706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e9b60badbd74aa4ba8a880d06dd3911, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalSpellSystemEvent

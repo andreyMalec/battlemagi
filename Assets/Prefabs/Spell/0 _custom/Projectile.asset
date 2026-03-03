@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Projectile
   m_EditorClassIdentifier: Assembly-CSharp::SpellProjectileDefinition
   coreType: 0
-  spawn: {fileID: 0}
+  spawn: {fileID: 11400000, guid: 0c8321b4ebe2c074988ecbf47bc38763, type: 2}
   scale: 1
-  lifetime: 0.5
+  lifetime: 5
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 576
-  projectile: {fileID: 0}
+  projectile: {fileID: 11400000, guid: 41bb151cb5bb8a147bb8d6c93ef9b739, type: 2}
   zone: {fileID: 0}
   beam: {fileID: 0}
   summon: {fileID: 0}

@@ -10,6 +10,7 @@ public class SummonContext : ISpellContext {
     public ISpellTransform Movement => throw new InvalidImplementationException();
 
     public SpellDefinition Spell { get; }
+    public SpellSystemEvent Event { get; }
 
     public bool Spawned { get; }
 
@@ -24,12 +25,14 @@ public class SummonContext : ISpellContext {
         SpellCaster caster,
         SpellView view,
         SpellDefinition data,
+        SpellSystemEvent spellEvent,
         bool spawned
     ) {
         Caster = caster;
         OwnerId = Caster.OwnerId;
         View = view;
         Spell = data;
+        Event = spellEvent;
         Spawned = spawned;
         Lifetime = data.lifetime;
     }

@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 4237197653196310047}
   - component: {fileID: 4031477429604249502}
   - component: {fileID: 3956064474386173517}
+  - component: {fileID: 7488175892332515126}
+  - component: {fileID: 2843166307131748454}
   m_Layer: 0
   m_Name: NetworkSpell
   m_TagString: Untagged
@@ -118,3 +120,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellCasterNet
   ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &7488175892332515126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4494555669983194706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25323fda5e644df797b84bde5a27cf96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NgoSpellSystemEvent
+  ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &2843166307131748454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4494555669983194706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 123cbb52ba0543c49ae6a2547f3ec012, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NetworkGameBootstrap
+  ShowTopMostFoldoutHeaderGroup: 1
+  spellPrefab: {fileID: 4494555669983194706}

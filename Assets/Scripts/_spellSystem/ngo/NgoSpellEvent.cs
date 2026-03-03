@@ -62,6 +62,20 @@ public class NgoSpellSystemEvent : NetworkBehaviour, SpellSystemEvent {
         var instance = obj.GetComponentInChildren<SpellInstance>();
         instance.RemoveVisual();
     }
+
+    public void OnAttack(SpellCasterSummon caster) {
+        OnAttackClientRpc(caster.Id());
+    }
+
+    [ClientRpc]
+    private void OnAttackClientRpc(ulong netObjectId) {
+        var obj = netObjectId.Get();
+        if (obj == null) return;
+        Debug.Log($"[NetworkSpellSystemEvent] OnAttackClientRpc: {netObjectId}");
+
+        var caster = obj.GetComponentInChildren<SpellCasterSummon>();
+        caster.OnAttack();
+    }
 }
 
 internal static class NetworkSpellSystemEventExt {
@@ -69,7 +83,7 @@ internal static class NetworkSpellSystemEventExt {
         return NetworkManager.Singleton.SpawnManager.SpawnedObjects[netObjectId];
     }
 
-    public static ulong Id(this SpellView view) {
+    public static ulong Id(this Component view) {
         return view.transform.parent.GetComponent<NetworkObject>().NetworkObjectId;
     }
 }

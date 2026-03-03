@@ -2,8 +2,6 @@ using System;
 using UnityEngine;
 
 public abstract class SpellCaster : MonoBehaviour {
-    public GameObject spellPrefab;
-
     public abstract bool CanCast { get; }
 
     public abstract Vector3 Origin { get; }
@@ -11,34 +9,45 @@ public abstract class SpellCaster : MonoBehaviour {
 
     public OwnerId OwnerId { get; private set; }
     public SpellSystem SpellSystem { get; private set; }
-    public SpellSystemEvent SpellSystemEvent => SpellSystem.Event;
     public IAuthorityService Authority { get; private set; }
 
+    private bool _useNetwork;
     private SpellCasterNet _casterNet;
 
-    private void Awake() {
-        _casterNet = GetComponent<SpellCasterNet>();
-        if (_casterNet == null) {
-            _casterNet = GetComponentInParent<SpellCasterNet>();
-        }
+    protected void Awake() {
+        _casterNet = GetComponentInParent<SpellCasterNet>();
+        _useNetwork = _casterNet != null;
+
+        var bootstrap = GetComponentInParent<SpellBootstrap>();
+        bootstrap.Init(this);
     }
 
-    public void Initialize(OwnerId ownerId, SpellSystem spellSystem, IAuthorityService authority) {
+    public void Initialize(
+        OwnerId ownerId,
+        SpellSystem spellSystem,
+        IAuthorityService authority
+    ) {
         SpellSystem = spellSystem;
         OwnerId = ownerId;
         Authority = authority;
-        Debug.Log($"SpellCaster initialized, ownerId={ownerId}, spellSystem={spellSystem}");
+        Debug.Log($"{gameObject.name} initialized, ownerId={ownerId}, spellSystem={spellSystem}");
     }
 
     /**
      * Ручной каст
      */
     public virtual void Cast(SpellDefinition spell) {
-        if (_casterNet != null && _casterNet.IsSpawned) {
+        if (_useNetwork && _casterNet.IsSpawned) {
             _casterNet.RequestCast(spell);
             return;
         }
 
+        Debug.Log($"{gameObject.name} Cast = {spell.coreType}");
+        var spellSpawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
+        StartCoroutine(spellSpawn!.Request(CastContext(spell), SpawnMain));
+    }
+
+    protected virtual SpawnContext CastContext(SpellDefinition spell) {
         var caster = this;
         var context = new SpawnContext {
             spell = spell,
@@ -48,19 +57,19 @@ public abstract class SpellCaster : MonoBehaviour {
             forward = caster.Direction,
             caster = caster
         };
-        var spellSpawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
-        StartCoroutine(spellSpawn!.Request(context, SpawnMain));
+        return context;
     }
 
     /**
      * Каст вложенного спелла (например, при срабатывании SpawnOnEventAction)
      */
     public void Spawn(SpawnContext context) {
-        if (_casterNet != null && _casterNet.IsSpawned) {
+        if (_useNetwork && _casterNet.IsSpawned) {
             _casterNet.RequestSpawn(context);
             return;
         }
 
+        Debug.Log($"{gameObject.name} Spawn = {context.spell.coreType}");
         context.branch = true;
         var spellSpawn = ISpellSpawn.GetMode(context.spawn.spawnMode);
         StartCoroutine(spellSpawn!.Request(context, SpawnMain));
@@ -70,11 +79,22 @@ public abstract class SpellCaster : MonoBehaviour {
      * Каст по цели (наводка из суммона)
      */
     public virtual void Cast(SpellDefinition spell, ITarget target) {
-        throw new System.NotImplementedException("TODO");
+        if (_useNetwork && _casterNet.IsSpawned) {
+            _casterNet.RequestCast(spell);
+            return;
+        }
+
+        Debug.Log($"{gameObject.name} Cast2 = {spell.coreType}");
+        var spellSpawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
+        var context = CastContext(spell);
+        context.position = target.Position;
+        StartCoroutine(spellSpawn!.Request(context, SpawnMain));
     }
 
     private void SpawnMain(SpawnContext context) {
-        var main = Instantiate(spellPrefab, context.position, context.rotation);
+        var prefab = SpellPrefab.Instance.GetPrefab(_useNetwork);
+        var main = Instantiate(prefab, context.position, context.rotation);
+        Debug.Log($"{gameObject.name} SpawnMain = {context.spell.coreType}, main={main.name}");
         SpellSystem.CastSpell(context with { main = main });
     }
 }

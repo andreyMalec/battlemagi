@@ -9,5 +9,5 @@ public interface IEntityManager {
         Quaternion rot
     );
 
-    void Destroy(GameObject gameObject);
+    void Despawn(GameObject gameObject);
 }

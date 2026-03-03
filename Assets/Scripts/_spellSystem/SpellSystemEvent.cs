@@ -5,4 +5,5 @@ public interface SpellSystemEvent {
     void OnKill(SpellView view);
     void OnFadeOutAudio(SpellView view);
     void OnRemoveVisible(SpellView view);
+    void OnAttack(SpellCasterSummon caster);
 }

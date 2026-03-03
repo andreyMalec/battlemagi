@@ -5,7 +5,7 @@ public class LocalEntityManager : IEntityManager {
         return Object.Instantiate(prefab, pos, rot);
     }
 
-    public void Destroy(GameObject gameObject) {
+    public void Despawn(GameObject gameObject) {
         if (gameObject == null) return;
         Object.Destroy(gameObject);
     }

@@ -24,4 +24,8 @@ public class LocalSpellSystemEvent : MonoBehaviour, SpellSystemEvent {
         var instance = view.GetComponent<SpellInstance>();
         instance.RemoveVisual();
     }
+
+    public void OnAttack(SpellCasterSummon caster) {
+        caster.OnAttack();
+    }
 }

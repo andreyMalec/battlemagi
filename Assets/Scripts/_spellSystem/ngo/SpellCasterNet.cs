@@ -5,23 +5,7 @@ using Unity.Netcode;
 using UnityEngine;
 
 public class SpellCasterNet : NetworkBehaviour {
-    private GameObject _spellPrefab;
-
     private readonly Dictionary<FixedString64Bytes, List<FixedString4096Bytes>> _pendingChunks = new();
-
-    private GameObject SpellPrefab {
-        get {
-            if (_spellPrefab != null) return _spellPrefab;
-            var caster = GetComponent<SpellCaster>();
-            if (caster == null) {
-                caster = GetComponentInChildren<SpellCaster>();
-            }
-
-            _spellPrefab = caster.spellPrefab;
-
-            return _spellPrefab;
-        }
-    }
 
     public void RequestCast(SpellDefinition spell) {
         var json = SpellJsonSerializer.ToJson(spell);
@@ -91,7 +75,7 @@ public class SpellCasterNet : NetworkBehaviour {
         Debug.Log(
             $"[NetworkSpellSystemEvent] RequestSpawnServerRpc: {casterNetObj.name}, position={position}, forward={forward}");
         var spell = SpellJsonSerializer.FromJson<SpellDefinition>(json);
-        var caster = casterNetObj.GetComponent<SpellCaster>();
+        var caster = casterNetObj.GetComponentInChildren<SpellCaster>();
 
         var context = new SpawnContext {
             spell = spell,
@@ -115,7 +99,7 @@ public class SpellCasterNet : NetworkBehaviour {
 
         Debug.Log($"[NetworkSpellSystemEvent] RequestCastServerRpc: {casterNetObj.name}");
         var spell = SpellJsonSerializer.FromJson<SpellDefinition>(json);
-        var caster = casterNetObj.GetComponent<SpellCaster>();
+        var caster = casterNetObj.GetComponentInChildren<SpellCaster>();
 
         var context = new SpawnContext {
             spell = spell,
@@ -130,11 +114,13 @@ public class SpellCasterNet : NetworkBehaviour {
     }
 
     private void ServerSpawnMain(SpawnContext context) {
-        var main = Instantiate(SpellPrefab, context.position, context.rotation);
+        var casterNetObj = context.caster.GetComponentInParent<NetworkObject>();
+        if (!casterNetObj.IsSpawned) return;
+        var prefab = SpellPrefab.Instance.GetPrefab(true);
+        var main = Instantiate(prefab, context.position, context.rotation);
         var networkObject = main.GetComponent<NetworkObject>();
         networkObject.SpawnWithOwnership(context.caster.OwnerId);
         var id = networkObject.NetworkObjectId;
-        var casterNetObj = context.caster.GetComponent<NetworkObject>();
 
         var prefabId = context.spell.coreType switch {
             CoreType.Projectile => (int)context.spell.projectile.prefabId,
@@ -170,7 +156,7 @@ public class SpellCasterNet : NetworkBehaviour {
 
         Debug.Log(
             $"[NetworkSpellSystemEvent] OnCastClientRpc: netObjectId={spellNetObjectId}, caster={casterNetObj.gameObject.name}");
-        var caster = casterNetObj.GetComponent<SpellCaster>();
+        var caster = casterNetObj.GetComponentInChildren<SpellCaster>();
 
         caster.SpellSystem.ShowSpell(main.gameObject, (CoreType)coreType, prefabId);
         var instance = main.GetComponentInChildren<SpellInstance>();

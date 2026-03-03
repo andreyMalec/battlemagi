@@ -29,6 +29,6 @@ public class SpellView : MonoBehaviour {
             yield return null;
         } while (anyAlive);
 
-        DI.Get<IEntityManager>().Destroy(transform.parent.gameObject);
+        DI.Get<IEntityManager>().Despawn(transform.parent.gameObject);
     }
 }

@@ -4,14 +4,10 @@ using UnityEngine;
 public class SpellSystem {
     private readonly IAuthorityService _authority;
 
-    public readonly SpellSystemEvent Event;
-
     public SpellSystem(
-        IAuthorityService authority,
-        SpellSystemEvent spellSystemEvent
+        IAuthorityService authority
     ) {
         _authority = authority;
-        Event = spellSystemEvent;
         Debug.Log("SpellSystem initialized");
     }
 
@@ -61,6 +57,7 @@ public class SpellSystem {
         var viewGo = Object.Instantiate(prefab, spawnContext.main.transform);
         var view = viewGo.GetComponent<SpellView>();
         var instance = viewGo.GetComponent<SpellInstance>();
+        var spellEvent = spawnContext.main.GetComponent<SpellSystemEvent>();
 
         var triggers = new List<SpellTrigger>();
         var onHitTrigger = new SpellTrigger {
@@ -102,6 +99,7 @@ public class SpellSystem {
             view,
             move,
             def,
+            spellEvent,
             spawned
         );
 
@@ -127,6 +125,7 @@ public class SpellSystem {
         var viewGo = Object.Instantiate(prefab, spawnContext.main.transform);
         var view = viewGo.GetComponent<SpellView>();
         var instance = viewGo.GetComponent<SpellInstance>();
+        var spellEvent = spawnContext.main.GetComponent<SpellSystemEvent>();
 
         var triggers = new List<SpellTrigger>();
         // var onHitTrigger = new SpellTrigger {
@@ -170,6 +169,7 @@ public class SpellSystem {
             view,
             move,
             def,
+            spellEvent,
             spawned
         );
 
@@ -195,6 +195,7 @@ public class SpellSystem {
         var viewGo = Object.Instantiate(prefab, spawnContext.main.transform);
         var view = viewGo.GetComponent<SpellView>();
         var instance = viewGo.GetComponent<SpellInstance>();
+        var spellEvent = spawnContext.main.GetComponent<SpellSystemEvent>();
 
         var triggers = new List<SpellTrigger>();
         triggers.Add(new SpellTrigger {
@@ -231,6 +232,7 @@ public class SpellSystem {
             view,
             move,
             def,
+            spellEvent,
             spawned
         );
 
@@ -258,7 +260,7 @@ public class SpellSystem {
         var view = viewGo.GetComponent<SpellView>();
         var instance = viewGo.GetComponent<SpellInstance>();
         var caster = viewGo.GetComponent<SpellCaster>();
-        // caster.Initialize(spawnContext.caster.OwnerId, spawnContext.caster.SpellSystem, spawnContext.caster.Authority);
+        var spellEvent = spawnContext.main.GetComponent<SpellSystemEvent>();
 
         var triggers = new List<SpellTrigger>();
         triggers.Add(new SpellTrigger {
@@ -273,6 +275,7 @@ public class SpellSystem {
             spawnContext.caster,
             view,
             def,
+            spellEvent,
             spawned
         );
 

@@ -2,21 +2,19 @@ using Unity.Netcode;
 using UnityEngine;
 
 [DefaultExecutionOrder(-100)]
-public class NetworkGameBootstrap : NetworkBehaviour, IAuthorityService {
-    public override void OnNetworkSpawn() {
-        base.OnNetworkSpawn();
+public class NetworkGameBootstrap : NetworkBehaviour, IAuthorityService, SpellBootstrap {
+    public void Init(SpellCaster caster) {
         var (spellSystem, authority) = InitializeSpellSystem();
-        GetComponent<SpellCaster>().Initialize(OwnerClientId, spellSystem, authority);
+        caster?.Initialize(OwnerClientId, spellSystem, authority);
     }
 
     private (SpellSystem, IAuthorityService) InitializeSpellSystem() {
-        IEntityManager manager = new NgoEntityManager();
+        IEntityManager manager = SpellPrefab.Instance;
         IAuthorityService authority = this;
-        NgoSpellSystemEvent spellSystemEvent = GetComponent<NgoSpellSystemEvent>();
 
-        var spellSystem = new SpellSystem(authority, spellSystemEvent);
+        var spellSystem = new SpellSystem(authority);
         Debug.Log(
-            $" Network SpellSystem initialized with manager={manager}, authority={authority}, spellSystemEvent={spellSystemEvent}");
+            $" Network SpellSystem initialized with manager={manager}, authority={authority}");
 
         DI.Register(manager);
 

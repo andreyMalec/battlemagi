@@ -12,19 +12,22 @@ public class SpellCasterSummon : SpellCaster {
     private SpellDefinition _spell;
     private float _timer;
     private SpellView _view;
+    private SpellSystemEvent _event;
 
     private bool _canCast = false;
     public override bool CanCast => _canCast;
     public override Vector3 Origin => spawnPos.position;
     public override Vector3 Direction => spawnPos.forward;
 
-    private void Awake() {
+    private new void Awake() {
+        base.Awake();
         foreach (var ps in onAttackParticles)
             ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         foreach (var ps in onAttackSounds)
             ps.Stop();
         _timer = cooldown - activationDelay;
         _view = GetComponent<SpellView>();
+        _event = GetComponentInParent<SpellSystemEvent>();
     }
 
     private void FixedUpdate() {
@@ -32,7 +35,7 @@ public class SpellCasterSummon : SpellCaster {
         _canCast = _timer >= cooldown && _view.IsAlive;
     }
 
-    private void OnAttack() {
+    public void OnAttack() {
         foreach (var ps in onAttackParticles)
             ps.Play();
         foreach (var ps in onAttackSounds)
@@ -41,24 +44,12 @@ public class SpellCasterSummon : SpellCaster {
     }
 
     public override void Cast(SpellDefinition spell) {
-        OnAttack();
+        _event.OnAttack(this);
         base.Cast(spell);
     }
 
     public override void Cast(SpellDefinition spell, ITarget target) {
-        OnAttack();
+        _event.OnAttack(this);
         base.Cast(spell, target);
-        // _target = target;
-        // _spell = spell;
-        // var forward = (spawnPos.position - target.Position).normalized;
-        // var context = new SpawnContext {
-        //     spell = spell,
-        //     spawn = spell.spawn,
-        //     position = target.Position,
-        //     rotation = Quaternion.LookRotation(forward, Vector3.up),
-        //     forward = forward,
-        //     caster = this
-        // };
-        // Cast(context);
     }
 }
