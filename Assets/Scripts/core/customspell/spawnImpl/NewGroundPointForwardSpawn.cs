@@ -8,11 +8,13 @@ public class NewGroundPointForwardSpawn : ISpellSpawn {
         var count = ISpellSpawn.InstanceCount(context);
 
         var delay = context.spawn.multiInstanceDelay;
-        var ground = ISpellSpawn.GroundPos(context, context.forward, out var hit);
-        var step = context.spawn.forwardStep;
+        var baseCtx = ApplyDirectionToTarget(context);
+
+        var ground = ISpellSpawn.GroundPos(baseCtx, baseCtx.forward, out var hit);
+        var step = baseCtx.spawn.forwardStep;
 
         for (int i = 0; i < count; i++) {
-            var forward = RotationFromNormal(context.forward, hit.normal);
+            var forward = RotationFromNormal(baseCtx.forward, hit.normal);
             spawn(ground with {
                 position = ground.position + forward * (step * i),
                 forward = forward
@@ -23,8 +25,24 @@ public class NewGroundPointForwardSpawn : ISpellSpawn {
         }
     }
 
+    private static SpawnContext ApplyDirectionToTarget(SpawnContext context) {
+        if (context.target == null)
+            return context;
+
+        var dir = context.target.Position - context.position;
+        if (dir.sqrMagnitude <= 0f)
+            return context;
+
+        var forward = dir.normalized;
+        return context with {
+            rotation = Quaternion.LookRotation(forward, Vector3.up),
+            forward = forward,
+        };
+    }
+
     public IEnumerable<SpawnContext> ShapeCenter(SpawnContext context) {
-        yield return ISpellSpawn.GroundPos(context, context.forward, out _);
+        var baseCtx = context.target != null ? context with { position = context.target.Position } : context;
+        yield return ISpellSpawn.GroundPos(baseCtx, baseCtx.forward, out _);
     }
 
     private static Vector3 RotationFromNormal(Vector3 forwardHint, Vector3 normal) {

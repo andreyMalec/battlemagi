@@ -7,25 +7,39 @@ public class NewDirectSpawn : ISpellSpawn, IDelayOriginRespect {
     public IEnumerator Request(SpawnContext context, Action<SpawnContext> spawn) {
         var count = ISpellSpawn.InstanceCount(context);
         var delay = context.spawn.multiInstanceDelay;
-        var origin = context.DelayOrigin;
+
         for (int i = 0; i < count; i++) {
-            switch (origin) {
-                case DelayOrigin.First:
-                    spawn(context);
-                    break;
-                case DelayOrigin.Continuous:
-                    spawn(context with {
-                        position = context.caster.Origin,
-                        rotation = Quaternion.LookRotation(context.caster.Direction),
-                        forward = context.caster.Direction,
-                    });
-                    break;
+            var ctx = context;
+            if (ctx.DelayOrigin == DelayOrigin.Continuous) {
+                ctx = ctx with {
+                    position = ctx.caster.Origin,
+                    rotation = Quaternion.LookRotation(ctx.caster.Direction),
+                    forward = ctx.caster.Direction,
+                };
             }
 
-            if (delay > 0f && i < count - 1) {
+            ctx = ApplyDirectionToTarget(ctx);
+            spawn(ctx);
+
+            if (delay > 0f && i < count - 1)
                 yield return new WaitForSeconds(delay);
-            }
         }
+    }
+
+
+    private static SpawnContext ApplyDirectionToTarget(SpawnContext context) {
+        if (context.target == null)
+            return context;
+
+        var dir = context.target.Position - context.position;
+        if (dir.sqrMagnitude <= 0f)
+            return context;
+
+        var forward = dir.normalized;
+        return context with {
+            rotation = Quaternion.LookRotation(forward, Vector3.up),
+            forward = forward,
+        };
     }
 
     public IEnumerable<SpawnContext> ShapeCenter(SpawnContext context) {

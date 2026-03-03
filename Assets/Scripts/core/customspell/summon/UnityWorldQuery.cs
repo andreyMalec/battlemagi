@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class UnityWorldQuery : IWorldQuery {
-    readonly LayerMask _enemyMask;
+    private readonly int _enemyMask = 1 << LayerMask.NameToLayer("Player");
 
     public ITarget FindClosestEnemy(Vector3 pos, float radius) {
         var colliders = Physics.OverlapSphere(pos, radius, _enemyMask);
@@ -21,6 +21,7 @@ public class UnityWorldQuery : IWorldQuery {
             }
         }
 
+        Debug.Log($"[UnityWorldQuery] closest target {closest}");
         return closest;
     }
 

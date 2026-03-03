@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8709536170782105465}
   - component: {fileID: 8992203459555133444}
   - component: {fileID: 4485882996432935812}
-  m_Layer: 6
+  m_Layer: 9
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 7432870713269914684}
   - component: {fileID: 1567716114477953696}
   - component: {fileID: 5709794804142238210}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Particle Hit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4960,7 +4960,7 @@ GameObject:
   - component: {fileID: 4817187195410722558}
   - component: {fileID: 3540544254229742126}
   - component: {fileID: 6432627279053644846}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Particle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9815,7 +9815,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4654022114474352533}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9855,7 +9855,7 @@ GameObject:
   - component: {fileID: 8210015613394022047}
   - component: {fileID: 5245982611736220859}
   - component: {fileID: 8513036930816197730}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Summon Totem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9911,7 +9911,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpellCasterSummon
   spawnPos: {fileID: 4654022114474352533}
   activationDelay: 0.4
-  cooldown: 3
+  cooldown: 2
   onAttackParticles:
   - {fileID: 1567716114477953696}
   - {fileID: 5736238414581450584}
@@ -10219,7 +10219,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2717249634502408230}
   - component: {fileID: 5076778107608205321}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Scale
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10351,7 +10351,7 @@ GameObject:
   - component: {fileID: 5328990805559919197}
   - component: {fileID: 5736238414581450584}
   - component: {fileID: 5947684892890292675}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Start_Ring
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -13,16 +13,13 @@ public class ConeSpawn : ISpellSpawn, IDelayOriginRespect {
         var radius = context.spawn.coneRadius;
         var height = context.spawn.coneHeight;
 
+        var first = ApplyBaseByOrigin(context, origin, isFirst: true);
+        first = ApplyDirectionToTarget(first);
+
         for (int i = 1; i < count + 1; i++) {
-            var ctx = origin switch {
-                DelayOrigin.First => context,
-                DelayOrigin.Continuous => context with {
-                    position = context.caster.Origin,
-                    rotation = Quaternion.LookRotation(context.caster.Direction),
-                    forward = context.caster.Direction,
-                },
-                _ => context
-            };
+            var ctx = origin == DelayOrigin.First
+                ? first
+                : ApplyDirectionToTarget(ApplyBaseByOrigin(context, origin, isFirst: false));
 
             var denom = Mathf.Max(1, count);
             var t = Mathf.Clamp01((float)i / denom);
@@ -35,17 +32,45 @@ public class ConeSpawn : ISpellSpawn, IDelayOriginRespect {
             var worldDir = (ctx.rotation * local).normalized;
 
             var pos = ctx.position + worldDir * local.magnitude;
-            var rot = Quaternion.LookRotation(worldDir, Vector3.up);
+            var rot2 = Quaternion.LookRotation(worldDir, Vector3.up);
 
             spawn(ctx with {
                 position = pos,
-                rotation = rot,
+                rotation = rot2,
                 forward = worldDir
             });
 
             if (delay > 0f && i < count)
                 yield return new WaitForSeconds(delay);
         }
+    }
+
+    private static SpawnContext ApplyBaseByOrigin(SpawnContext context, DelayOrigin origin, bool isFirst) {
+
+        if (origin == DelayOrigin.Continuous && !isFirst) {
+            return context with {
+                position = context.caster.Origin,
+                rotation = Quaternion.LookRotation(context.caster.Direction),
+                forward = context.caster.Direction,
+            };
+        }
+
+        return context;
+    }
+
+    private static SpawnContext ApplyDirectionToTarget(SpawnContext context) {
+        if (context.target == null)
+            return context;
+
+        var dir = context.target.Position - context.position;
+        if (dir.sqrMagnitude <= 0f)
+            return context;
+
+        var forward = dir.normalized;
+        return context with {
+            rotation = Quaternion.LookRotation(forward, Vector3.up),
+            forward = forward,
+        };
     }
 
     public IEnumerable<SpawnContext> ShapeCenter(SpawnContext context) {

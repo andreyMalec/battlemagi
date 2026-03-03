@@ -10,6 +10,7 @@ public record SpawnContext {
     public SpellCaster caster;
     public bool forceFirstOrigin;
     public bool branch;
+    public ITarget target;
 
     public DelayOrigin DelayOrigin => forceFirstOrigin ? DelayOrigin.First : spawn.delayOrigin;
 }

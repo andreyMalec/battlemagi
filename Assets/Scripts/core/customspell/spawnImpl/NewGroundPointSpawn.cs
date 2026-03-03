@@ -9,18 +9,18 @@ public class NewGroundPointSpawn : ISpellSpawn, IDelayOriginRespect {
 
         var delay = context.spawn.multiInstanceDelay;
         var origin = context.DelayOrigin;
-        var onFirst = ISpellSpawn.GroundPos(context, context.forward, out _);
+
+        var firstBase = BaseContext(context, origin, isFirst: true);
+        var onFirst = ISpellSpawn.GroundPos(firstBase, firstBase.forward, out _);
+
         for (int i = count - 1; i >= 0; i--) {
             switch (origin) {
                 case DelayOrigin.First:
                     spawn(onFirst);
                     break;
                 case DelayOrigin.Continuous:
-                    var ctx = ISpellSpawn.GroundPos(context with {
-                        position = context.caster.Origin,
-                        rotation = Quaternion.LookRotation(context.caster.Direction),
-                        forward = context.caster.Direction,
-                    }, context.caster.Direction, out _);
+                    var currentBase = BaseContext(context, origin, isFirst: false);
+                    var ctx = ISpellSpawn.GroundPos(currentBase, currentBase.forward, out _);
                     spawn(ctx);
                     break;
             }
@@ -30,7 +30,31 @@ public class NewGroundPointSpawn : ISpellSpawn, IDelayOriginRespect {
         }
     }
 
+    private static SpawnContext BaseContext(SpawnContext context, DelayOrigin origin, bool isFirst) {
+        if (context.target != null) {
+            if (origin == DelayOrigin.First && !isFirst)
+                return context;
+
+            return context with {
+                position = context.target.Position,
+            };
+        }
+
+        if (origin == DelayOrigin.Continuous && !isFirst) {
+            return context with {
+                position = context.caster.Origin,
+                rotation = Quaternion.LookRotation(context.caster.Direction),
+                forward = context.caster.Direction,
+            };
+        }
+
+        return context;
+    }
+
     public IEnumerable<SpawnContext> ShapeCenter(SpawnContext context) {
-        yield return ISpellSpawn.GroundPos(context, context.forward, out _);
+        var baseCtx = context.target != null
+            ? context with { position = context.target.Position }
+            : context;
+        yield return ISpellSpawn.GroundPos(baseCtx, baseCtx.forward, out _);
     }
 }

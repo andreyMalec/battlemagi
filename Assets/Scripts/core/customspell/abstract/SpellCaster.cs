@@ -87,7 +87,7 @@ public abstract class SpellCaster : MonoBehaviour {
         Debug.Log($"{gameObject.name} Cast2 = {spell.coreType}");
         var spellSpawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
         var context = CastContext(spell);
-        context.position = target.Position;
+        context.target = target;
         StartCoroutine(spellSpawn!.Request(context, SpawnMain));
     }
 

@@ -10,10 +10,21 @@ public class DirectDownForwardSpawn : ISpellSpawn {
         var delay = context.spawn.multiInstanceDelay;
         var step = context.spawn.forwardStep;
 
+        var baseCtx = context;
+        if (baseCtx.target != null) {
+            var dir = baseCtx.target.Position - baseCtx.position;
+            if (dir.sqrMagnitude > 0f) {
+                var forward = dir.normalized;
+                baseCtx = baseCtx with {
+                    forward = forward,
+                };
+            }
+        }
+
         Physics.Raycast(context.position, Vector3.down, out var hit, context.spawn.raycastMaxDistance,
             context.spell.defaultRaycast, QueryTriggerInteraction.Ignore);
         for (int i = 0; i < count; i++) {
-            var forward = RotationFromNormal(context.forward, hit.normal);
+            var forward = RotationFromNormal(baseCtx.forward, hit.normal);
             spawn(context with {
                 position = hit.point + forward * (step * i + 1),
                 rotation = Quaternion.LookRotation(forward, Vector3.up),

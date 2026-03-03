@@ -5,6 +5,8 @@ public class SpellView : MonoBehaviour {
     public float beforeEndThreshold = 1f;
     public bool IsAlive { get; private set; } = true;
 
+    public Vector3 Position => transform.position;
+
     public void Kill(ISpellContext context) {
         if (!IsAlive) return;
         IsAlive = false;

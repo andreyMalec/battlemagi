@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 public class SummonBind<TContext> : ISpellBind
     where TContext : SummonContext {
@@ -38,6 +37,9 @@ public class SummonBind<TContext> : ISpellBind
 
     public void Tick(float deltaTime) {
         _core.Tick(deltaTime);
+
+        _ai.HomePosition = _context.Caster.Origin;
+
         foreach (var sensor in _sensors)
             sensor.Sense(_ai);
 
