@@ -36,13 +36,25 @@ public class MeshSpawnPreview : ISpellSpawnPreview {
         _spawnMode = spawnMode;
         _spell = context.spell;
         var prefab = SpellPrefabDatabase.Instance.Get(_spell);
-        var m = prefab.GetComponentInChildren<MeshFilter>(true);
-        mesh = m.sharedMesh;
+        var (m, c) = GetMeshAndComponent(prefab);
+        mesh = m;
         _wireMesh = BuildWireMesh(mesh);
-        scale = m.gameObject.transform.localScale * context.spell.scale;
-        position = m.gameObject.transform.localPosition;
-        rotation = m.gameObject.transform.localRotation;
+        scale = c.transform.localScale * context.spell.scale;
+        position = c.transform.localPosition;
+        rotation = c.transform.localRotation;
         _active = true;
+    }
+
+    private (Mesh, Component) GetMeshAndComponent(GameObject obj) {
+        var meshFilter = obj.GetComponentInChildren<MeshFilter>();
+        if (meshFilter != null)
+            return (meshFilter.sharedMesh, meshFilter);
+
+        var skinnedMesh = obj.GetComponentInChildren<SkinnedMeshRenderer>();
+        if (skinnedMesh != null)
+            return (skinnedMesh.sharedMesh, skinnedMesh);
+
+        return (null, null);
     }
 
     public void Clear() {

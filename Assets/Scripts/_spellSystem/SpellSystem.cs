@@ -281,17 +281,18 @@ public class SpellSystem {
 
         ILocomotion move = def.summon.motion switch {
             SummonMotion.Stationary => new StationaryMotion(),
-            SummonMotion.Floating => new FloatingMotion(def.summon.moveSpeed, 2),
+            SummonMotion.Floating => new FloatingMotion(def.summon.moveSpeed, 2, def.summon.floatingHeight),
             _ => new StationaryMotion()
         };
         IBrain brain = def.summon.brain switch {
             SummonBrain.AlwaysAttack => new AlwaysAttackBrain(),
+            SummonBrain.Aggressive => new AggressiveBrain(),
             SummonBrain.Defensive => new DefensiveBrain(),
             _ => new BrainDead()
         };
         var sensors = new List<ISensor>();
         if ((def.summon.sensors & SummonSensor.Radius) != 0)
-            sensors.Add(new RadiusSensor(20f));
+            sensors.Add(new RadiusSensor(def.summon.sensorRadius));
         var core = new SummonCore(
             context,
             triggers.ToArray()

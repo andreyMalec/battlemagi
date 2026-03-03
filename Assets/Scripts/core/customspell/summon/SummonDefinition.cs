@@ -12,11 +12,18 @@ public class SummonDefinition : ScriptableObject, IValidate {
     public SummonSensor sensors;
 
     [ShowIf("_canMove")] public float moveSpeed;
+    [ShowIf("_floating")] public float floatingHeight = 5f;
+    [ShowIf("_senserRadius")] public float sensorRadius = 20f;
 
     private bool _canMove = false;
+    private bool _floating = false;
+    private bool _senserRadius = false;
 
     public void Validate() {
         _canMove = motion is not SummonMotion.Stationary;
+        _floating = motion is SummonMotion.Floating;
+
+        _senserRadius = (sensors & SummonSensor.Radius) != 0;
     }
 
 #if UNITY_EDITOR

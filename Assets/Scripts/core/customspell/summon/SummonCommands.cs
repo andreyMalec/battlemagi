@@ -26,7 +26,7 @@ public class SummonCommands : IAICommands {
     }
 
     public void Tick(AIContext ctx) {
-        if (_caster.CanCast && _attack) {
+        if (_caster != null && _caster.CanCast && _attack) {
             if (ctx.Target == null)
                 _caster.Cast(ctx.Spell);
             else
