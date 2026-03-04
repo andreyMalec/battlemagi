@@ -24,7 +24,7 @@ public class RuneOfStasisPostEffect : StatusEffectData {
 
             target.GetComponent<Player>().ApplyEffectColorClientRpc(_data.color);
             target.GetComponent<StateController>().SetFreeze(true);
-            target.GetComponent<Damageable>().invulnerable = true;
+            target.GetComponent<OldDamageable>().invulnerable = true;
         }
 
         public override void OnExpire(GameObject target) {
@@ -36,7 +36,7 @@ public class RuneOfStasisPostEffect : StatusEffectData {
 
             target.GetComponent<Player>().RemoveEffectColorClientRpc(_data.color);
             target.GetComponent<StateController>().SetFreeze(false);
-            target.GetComponent<Damageable>().invulnerable = false;
+            target.GetComponent<OldDamageable>().invulnerable = false;
         }
     }
 }

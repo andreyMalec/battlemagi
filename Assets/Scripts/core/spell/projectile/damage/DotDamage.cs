@@ -8,7 +8,7 @@ public class DotDamage : ISpellDamage {
 
     private float _tickTimer;
 
-    private readonly List<Damageable> _inside = new();
+    private readonly List<OldDamageable> _inside = new();
 
     public DotDamage(BaseSpell s, SpellData d) {
         spell = s;

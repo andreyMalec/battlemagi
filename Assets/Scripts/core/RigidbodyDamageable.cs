@@ -3,7 +3,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(NetworkStatSystem))]
 [RequireComponent(typeof(StatusEffectManager))]
-public class RigidbodyDamageable : Damageable {
+public class RigidbodyDamageable : OldDamageable {
     [Header("RigidbodyDamageable")]
     [SerializeField] private Rigidbody _rigidbody;
     [SerializeField] private AudioSource _deathAudioSource;

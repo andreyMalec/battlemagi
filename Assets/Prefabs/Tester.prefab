@@ -16,6 +16,8 @@ GameObject:
   - component: {fileID: 1760773015534472312}
   - component: {fileID: 8708466025697548998}
   - component: {fileID: 4537245233784347616}
+  - component: {fileID: 4815534646972923113}
+  - component: {fileID: 1870895211298274875}
   m_Layer: 0
   m_Name: Tester
   m_TagString: Untagged
@@ -181,6 +183,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72716d9af3fd4b6097fcb847fd3e589c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LocalGameBootstrap
+--- !u!114 &4815534646972923113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056318315711601611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c102da4810804e98a519729bf047f72b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Damageable
+  _health:
+    maxHealth: 100
+    regenPerSecond: 1
+  _armor:
+    maxArmor: 50
+    armorEffect: 0.75
+  _immortal: 0
+  _invulnerable: 0
+  _bridge: {fileID: 0}
+--- !u!114 &1870895211298274875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056318315711601611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 572635613edd4d45a7d50d7348c79d56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalDamageableBridge
+  _damageAudio: {fileID: 0}
 --- !u!1 &7750010650653659641
 GameObject:
   m_ObjectHideFlags: 0

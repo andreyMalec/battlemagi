@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 [RequireComponent(typeof(NetworkStatSystem))]
 [RequireComponent(typeof(StatusEffectManager))]
-public class Damageable : NetworkBehaviour {
+public class OldDamageable : NetworkBehaviour {
     [SerializeField] public float maxHealth = 100f;
     [SerializeField] public float maxArmor = 50f;
     [SerializeField] public float armorEffect = 0.75f;
@@ -139,7 +139,7 @@ public class Damageable : NetworkBehaviour {
                     var player = client.PlayerObject;
                     if (player != null) {
                         var reflectDamage = damage * _statSystem.Stats.GetFinal(StatType.DamageReflection);
-                        player.GetComponent<Damageable>()
+                        player.GetComponent<OldDamageable>()
                             .TakeDamage("Pain Mirror", clientId, reflectDamage, DamageSoundType.Reflect,
                                 ignoreSoundCooldown);
                     }

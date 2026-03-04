@@ -7,11 +7,11 @@ public class SpawnedMeshVisual : MonoBehaviour {
     [SerializeField] private float duration = 1f;
     [SerializeField] private AudioClip onDestroy;
 
-    private Damageable _damageable;
+    private OldDamageable _damageable;
     private Material _material;
 
     private void Awake() {
-        _damageable = GetComponent<Damageable>();
+        _damageable = GetComponent<OldDamageable>();
         _material = GetComponentInChildren<Renderer>().material;
         //TODO
         // _damageable.onDeath += () => {

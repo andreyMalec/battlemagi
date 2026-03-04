@@ -34,7 +34,7 @@ public class DamageOverTimeEffect : StatusEffectData {
             _tickTimer += deltaTime;
             if (_tickTimer >= _data.tickInterval) {
                 _tickTimer = 0f;
-                var health = target.GetComponent<Damageable>();
+                var health = target.GetComponent<OldDamageable>();
                 if (health != null) {
                     if (!_data.canSelfDamage && TeamManager.Instance.AreAllies(ownerClientId, health.OwnerClientId))
                         return;

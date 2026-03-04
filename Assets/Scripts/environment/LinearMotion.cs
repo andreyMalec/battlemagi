@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class LinearMotion : MonoBehaviour, ITarget {
+public class LinearMotion : MonoBehaviour {
     public float speed = 5f;
     public float period = 5f;
 
@@ -14,6 +14,4 @@ public class LinearMotion : MonoBehaviour, ITarget {
         float direction = t < halfPeriod ? 1f : -1f;
         transform.Translate(Vector3.right * (direction * speed * Time.fixedDeltaTime));
     }
-
-    public Vector3 Position => transform.position;
 }

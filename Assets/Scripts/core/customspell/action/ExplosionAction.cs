@@ -21,7 +21,7 @@ public class ExplosionAction : ISpellAction {
         );
 
         foreach (var col in colliders) {
-            if (col.TryGetComponent<Damageable>(out var damageable)) {
+            if (col.TryGetComponent<OldDamageable>(out var damageable)) {
                 damageable.TakeDamage("", context.OwnerId, _damage);
             }
         }

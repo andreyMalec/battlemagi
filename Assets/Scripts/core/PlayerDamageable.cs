@@ -5,7 +5,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(NetworkStatSystem))]
 [RequireComponent(typeof(StatusEffectManager))]
-public class PlayerDamageable : Damageable {
+public class PlayerDamageable : OldDamageable {
     public override bool IsStructure() {
         return false;
     }

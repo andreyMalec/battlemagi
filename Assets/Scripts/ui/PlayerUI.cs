@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class PlayerUI : NetworkBehaviour {
     private PlayerUIRenderer _renderer;
-    private Damageable _damageable;
+    private OldDamageable _damageable;
     private PlayerSpellCaster _caster;
     private FirstPersonMovement _movement;
     private StatusEffectManager _effectManager;
@@ -21,7 +21,7 @@ public class PlayerUI : NetworkBehaviour {
         base.OnNetworkSpawn();
         if (!IsOwner) return;
         _renderer = FindFirstObjectByType<PlayerUIRenderer>();
-        _damageable = GetComponent<Damageable>();
+        _damageable = GetComponent<OldDamageable>();
         _effectManager = GetComponent<StatusEffectManager>();
         _caster = GetComponent<PlayerSpellCaster>();
         _movement = GetComponent<FirstPersonMovement>();

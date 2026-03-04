@@ -6,7 +6,7 @@ public static class DamageUtils {
     public static ulong TryApplyDamage(
         BaseSpell spell,
         SpellData data,
-        Damageable damageable,
+        OldDamageable damageable,
         Collider other,
         ulong[] excludeClients = null,
         bool applyDistanceMultiplier = false
@@ -46,12 +46,12 @@ public static class DamageUtils {
 
     // Helper: resolve Damageable and owner client id from a collider without applying damage.
     // Returns true if a Damageable and NetworkObject owner were found; out parameters are set accordingly.
-    public static bool TryGetOwnerFromCollider(Collider other, out Damageable damageable, out ulong owner) {
+    public static bool TryGetOwnerFromCollider(Collider other, out OldDamageable damageable, out ulong owner) {
         damageable = null;
         owner = ulong.MaxValue;
 
         if (other.TryGetComponent<ChildCollider>(out _)) {
-            damageable = other.GetComponentInParent<Damageable>();
+            damageable = other.GetComponentInParent<OldDamageable>();
         } else if (!other.TryGetComponent(out damageable)) {
             return false;
         }
@@ -60,12 +60,12 @@ public static class DamageUtils {
         return true;
     }
 
-    public static bool TryGetOwnerFromCollider(GameObject other, out Damageable damageable, out ulong owner) {
+    public static bool TryGetOwnerFromCollider(GameObject other, out OldDamageable damageable, out ulong owner) {
         damageable = null;
         owner = ulong.MaxValue;
 
         if (other.TryGetComponent<ChildCollider>(out _)) {
-            damageable = other.GetComponentInParent<Damageable>();
+            damageable = other.GetComponentInParent<OldDamageable>();
         } else if (!other.TryGetComponent(out damageable)) {
             return false;
         }

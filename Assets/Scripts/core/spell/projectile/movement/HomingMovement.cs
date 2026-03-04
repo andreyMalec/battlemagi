@@ -66,7 +66,7 @@ public class HomingMovement : ISpellMovement {
     private bool IsTargetValid() {
         if (_target == null) return false;
         if (TeamManager.Instance.AreAllies(_target.OwnerClientId, _spell.OwnerClientId)) return false;
-        if (!_target.TryGetComponent<Damageable>(out var damageable)) return false;
+        if (!_target.TryGetComponent<OldDamageable>(out var damageable)) return false;
         if (damageable.isDead) return false;
         if (damageable.GetComponentInChildren<Freeze>() != null) return false;
 
@@ -185,7 +185,7 @@ public class HomingMovement : ISpellMovement {
             var col = _homingTargets[i];
             if (!col.TryGetComponent<Player>(out var player)) continue;
             if (TeamManager.Instance.AreAllies(player.OwnerClientId, _spell.OwnerClientId)) continue;
-            if (!player.TryGetComponent<Damageable>(out var damageable)) continue;
+            if (!player.TryGetComponent<OldDamageable>(out var damageable)) continue;
             if (damageable.isDead) continue;
             if (player.GetComponentInChildren<Freeze>() != null) continue;
 
