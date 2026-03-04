@@ -37,7 +37,28 @@ public class NetworkDamageable : NetworkBehaviour, IDamageableBridge {
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
-        SyncFromCore(_core);
+
+        health.OnValueChanged += OnHealthChanged;
+        armor.OnValueChanged += OnArmorChanged;
+
+        _core.SetNetworkState(health.Value, armor.Value);
+
+        if (IsServer)
+            SyncFromCore(_core);
+    }
+
+    public override void OnNetworkDespawn() {
+        health.OnValueChanged -= OnHealthChanged;
+        armor.OnValueChanged -= OnArmorChanged;
+        base.OnNetworkDespawn();
+    }
+
+    private void OnHealthChanged(float prev, float next) {
+        _core.SetNetworkState(next, _core.CurrentArmor);
+    }
+
+    private void OnArmorChanged(float prev, float next) {
+        _core.SetNetworkState(_core.CurrentHealth, next);
     }
 
     private void Update() {
@@ -58,9 +79,11 @@ public class NetworkDamageable : NetworkBehaviour, IDamageableBridge {
     }
 
     public void SyncFromCore(Damageable core) {
+        if (!IsServer) return;
         if (!IsSpawned) return;
         health.Value = core.Health.Health;
         armor.Value = core.Armor.Armor;
+        core.SetNetworkState(health.Value, armor.Value);
     }
 
     public void PlayDamageSound(DamageSoundType sound, bool ignoreCooldown) {

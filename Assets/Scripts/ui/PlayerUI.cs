@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class PlayerUI : NetworkBehaviour {
     private PlayerUIRenderer _renderer;
@@ -48,12 +46,12 @@ public class PlayerUI : NetworkBehaviour {
         if (_renderer == null) return;
         if (!IsOwner) return;
 
-        var hp = Math.Clamp(_damageable.Health.Health / _damageable.Health.maxHealth, 0, 1);
+        var hp = Math.Clamp(_damageable.CurrentHealth / _damageable.Health.maxHealth, 0, 1);
         _renderer.hp.transform.localScale = new Vector3(hp, 1, 1);
-        var hpArmor = _damageable.Health.Health + _damageable.Armor.Armor;
+        var hpArmor = _damageable.CurrentHealth + _damageable.CurrentArmor;
         _renderer.hpText.text = $"{hpArmor:0}/{_damageable.Health.maxHealth:0}";
 
-        var armor = Math.Clamp(_damageable.Armor.Armor / _damageable.Armor.maxArmor, 0, 1);
+        var armor = Math.Clamp(_damageable.CurrentArmor / _damageable.Armor.maxArmor, 0, 1);
         _renderer.armor.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _armorBarWidth * armor);
 
         var primalMp = Math.Clamp(_caster.primalMana.Value / _caster.maxMana, 0, 1);

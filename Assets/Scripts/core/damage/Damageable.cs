@@ -16,6 +16,9 @@ public class Damageable : MonoBehaviour, ITarget {
     public HealthModule Health => _health;
     public ArmorModule Armor => _armor;
 
+    public float CurrentHealth { get; private set; }
+    public float CurrentArmor { get; private set; }
+
     public Vector3 Position => transform.position;
 
     public DamageableState State { get; private set; }
@@ -44,6 +47,11 @@ public class Damageable : MonoBehaviour, ITarget {
             _bridgeTyped = GetComponent<IDamageableBridge>();
     }
 
+    internal void SetNetworkState(float health, float armor) {
+        CurrentHealth = health;
+        CurrentArmor = armor;
+    }
+
     private void InitializeServer() {
         if (_initialized) return;
         _initialized = true;
@@ -60,6 +68,9 @@ public class Damageable : MonoBehaviour, ITarget {
 
         foreach (var m in _modules)
             m.Initialize(this);
+
+        CurrentHealth = _health.Health;
+        CurrentArmor = _armor.Armor;
 
         OnStateChanged?.Invoke(State);
 
@@ -97,6 +108,9 @@ public class Damageable : MonoBehaviour, ITarget {
 
         if (_health.Health <= 0f)
             TryDie(default);
+
+        CurrentHealth = _health.Health;
+        CurrentArmor = _armor.Armor;
 
         _bridgeTyped?.SyncFromCore(this);
     }

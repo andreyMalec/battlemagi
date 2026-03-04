@@ -65,9 +65,12 @@ public class Player : NetworkBehaviour, ITarget {
         caster.maxMana = archetype.maxMana;
         caster.manaRestore = archetype.manaRegen;
         caster.BindAvatar(meshController);
-        var damageable = GetComponent<OldDamageable>();
-        damageable.maxHealth = archetype.maxHealth;
-        damageable.hpRestore = archetype.healthRegen;
+        var oldDamageable = GetComponent<OldDamageable>();
+        oldDamageable.maxHealth = archetype.maxHealth;
+        oldDamageable.hpRestore = archetype.healthRegen;
+        var damageable = GetComponent<Damageable>();
+        damageable.Health.maxHealth = archetype.maxHealth;
+        damageable.Health.regenPerSecond = archetype.healthRegen;
         var camSel = GetComponent<CameraSelector>();
         camSel.BindAvatar(meshController);
         var fpss = GetComponentInChildren<FirstPersonSounds>();
