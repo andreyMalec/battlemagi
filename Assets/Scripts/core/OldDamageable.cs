@@ -7,6 +7,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
+[Obsolete("Use the new \"Damageable\" component instead.")]
 [RequireComponent(typeof(NetworkStatSystem))]
 [RequireComponent(typeof(StatusEffectManager))]
 public class OldDamageable : NetworkBehaviour {

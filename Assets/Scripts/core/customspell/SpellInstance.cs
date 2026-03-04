@@ -69,18 +69,19 @@ public class SpellInstance : MonoBehaviour {
     }
 
     public void Scale(float k, float lifetime) {
+        var scaleShape = GetComponent<SpellView>().scaleShape;
         foreach (var ps in GetComponentsInChildren<ParticleSystem>(true)) {
             if (exclude.Contains(ps))
                 continue;
             ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             var main = ps.main;
-            main.duration = lifetime;
             if (!ps.main.loop) {
-                if (main.startLifetime.constantMax > lifetime)
+                if (Mathf.Approximately(main.startLifetime.constant, main.duration))
                     main.startLifetime = lifetime;
             }
+            main.duration = lifetime;
 
-            ParticleUtils.Scale(ps, k);
+            ParticleUtils.Scale(ps, k, scaleShape);
             ps.Play(true);
         }
 

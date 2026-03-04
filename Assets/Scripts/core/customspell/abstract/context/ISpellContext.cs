@@ -5,6 +5,8 @@ public interface ISpellContext {
     SpellDefinition Spell { get; }
     SpellSystemEvent Event { get; }
 
+    DamageDefinition SpellDamage => Spell.damage;
+
     bool Spawned { get; }
 
     float Lifetime { get; }

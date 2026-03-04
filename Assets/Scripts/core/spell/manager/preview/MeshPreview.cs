@@ -45,11 +45,11 @@ public class MeshPreview : ISpellPreview {
     }
 
     private (Mesh, Component) GetMeshAndComponent(GameObject obj) {
-        var meshFilter = obj.GetComponentInChildren<MeshFilter>();
+        var meshFilter = obj.GetComponentInChildren<MeshFilter>(true);
         if (meshFilter != null)
             return (meshFilter.sharedMesh, meshFilter);
 
-        var skinnedMesh = obj.GetComponentInChildren<SkinnedMeshRenderer>();
+        var skinnedMesh = obj.GetComponentInChildren<SkinnedMeshRenderer>(true);
         if (skinnedMesh != null)
             return (skinnedMesh.sharedMesh, skinnedMesh);
 

@@ -146,7 +146,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95a013b49884445fb29a6af511334745, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellView
-  beforeEndThreshold: 1
+  beforeEndThreshold: 0.2
+  scaleShape: 1
 --- !u!114 &3645795047161649783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -160,6 +161,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellInstance
   scale: []
+  exclude: []
 --- !u!1 &4120079189964403006
 GameObject:
   m_ObjectHideFlags: 0
@@ -370,14 +372,14 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9192190679468592655}
   serializedVersion: 8
-  lengthInSec: 7
+  lengthInSec: 1.95
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -445,7 +447,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 7
+      scalar: 1.95
       minScalar: 5
       maxCurve:
         serializedVersion: 2

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class PlayerUI : NetworkBehaviour {
     private PlayerUIRenderer _renderer;
-    private OldDamageable _damageable;
+    private Damageable _damageable;
     private PlayerSpellCaster _caster;
     private FirstPersonMovement _movement;
     private StatusEffectManager _effectManager;
@@ -21,7 +21,7 @@ public class PlayerUI : NetworkBehaviour {
         base.OnNetworkSpawn();
         if (!IsOwner) return;
         _renderer = FindFirstObjectByType<PlayerUIRenderer>();
-        _damageable = GetComponent<OldDamageable>();
+        _damageable = GetComponent<Damageable>();
         _effectManager = GetComponent<StatusEffectManager>();
         _caster = GetComponent<PlayerSpellCaster>();
         _movement = GetComponent<FirstPersonMovement>();
@@ -48,12 +48,12 @@ public class PlayerUI : NetworkBehaviour {
         if (_renderer == null) return;
         if (!IsOwner) return;
 
-        var hp = Math.Clamp(_damageable.health.Value / _damageable.maxHealth, 0, 1);
+        var hp = Math.Clamp(_damageable.Health.Health / _damageable.Health.maxHealth, 0, 1);
         _renderer.hp.transform.localScale = new Vector3(hp, 1, 1);
-        var hpArmor = _damageable.health.Value + _damageable.armor.Value;
-        _renderer.hpText.text = $"{hpArmor:0}/{_damageable.maxHealth:0}";
+        var hpArmor = _damageable.Health.Health + _damageable.Armor.Armor;
+        _renderer.hpText.text = $"{hpArmor:0}/{_damageable.Health.maxHealth:0}";
 
-        var armor = Math.Clamp(_damageable.armor.Value / _damageable.maxArmor, 0, 1);
+        var armor = Math.Clamp(_damageable.Armor.Armor / _damageable.Armor.maxArmor, 0, 1);
         _renderer.armor.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _armorBarWidth * armor);
 
         var primalMp = Math.Clamp(_caster.primalMana.Value / _caster.maxMana, 0, 1);

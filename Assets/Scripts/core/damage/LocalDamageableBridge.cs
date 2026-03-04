@@ -17,6 +17,7 @@ public class LocalDamageableBridge : MonoBehaviour, IDamageableBridge {
 
     public bool IsServer => true;
     public bool IsSpawned => true;
+    public bool IsOwner => true;
     public ulong OwnerId => 0;
 
     private void Awake() {

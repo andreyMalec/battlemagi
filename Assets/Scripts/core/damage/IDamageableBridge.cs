@@ -1,6 +1,7 @@
 public interface IDamageableBridge {
     bool IsServer { get; }
     bool IsSpawned { get; }
+    bool IsOwner { get; }
 
     ulong OwnerId { get; }
 

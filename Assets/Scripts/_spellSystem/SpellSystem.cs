@@ -62,7 +62,7 @@ public class SpellSystem {
         var triggers = new List<SpellTrigger>();
         var onHitTrigger = new SpellTrigger {
             eventType = typeof(OnHitEvent),
-            actions = HitActions(def.projectile).ToArray()
+            actions = HitActions(def, def.projectile).ToArray()
         };
         triggers.Add(onHitTrigger);
         triggers.Add(new SpellTrigger {
@@ -128,13 +128,14 @@ public class SpellSystem {
         var spellEvent = spawnContext.main.GetComponent<SpellSystemEvent>();
 
         var triggers = new List<SpellTrigger>();
-        // var onHitTrigger = new SpellTrigger {
-        //     eventType = typeof(OnZoneStayEvent),
-        //     actions = new ISpellAction[] {
-        //         new ZoneDamageAction(10f),
-        //     }
-        // };
-        // triggers.Add(onHitTrigger);
+
+        if (def.damage != null) {
+            triggers.Add(new SpellTrigger {
+                eventType = typeof(OnZoneStayEvent),
+                actions = new ISpellAction[] { new ZoneDamageModuleAction() }
+            });
+        }
+
         triggers.Add(new SpellTrigger {
             eventType = typeof(OnMaxDistanceEvent),
             actions = new ISpellAction[] {
@@ -198,12 +199,13 @@ public class SpellSystem {
         var spellEvent = spawnContext.main.GetComponent<SpellSystemEvent>();
 
         var triggers = new List<SpellTrigger>();
-        triggers.Add(new SpellTrigger {
-            eventType = typeof(OnBeamTickEvent),
-            actions = new ISpellAction[] {
-                new DealDamageAction(10f)
-            }
-        });
+        if (def.damage != null) {
+            triggers.Add(new SpellTrigger {
+                eventType = typeof(OnHitEvent),
+                actions = new ISpellAction[] { new BeamDamageModuleAction() }
+            });
+        }
+
         triggers.Add(new SpellTrigger {
             eventType = typeof(OnMaxDistanceEvent),
             actions = new ISpellAction[] {
@@ -424,7 +426,7 @@ public class SpellSystem {
         return move;
     }
 
-    private static List<ISpellAction> HitActions(ProjectileDefinition def) {
+    private static List<ISpellAction> HitActions(SpellDefinition spell, ProjectileDefinition def) {
         var actions = new List<ISpellAction>();
         if (def.enablePierce)
             actions.Add(new PierceOnHitAction(def.maxPierces));
@@ -432,9 +434,10 @@ public class SpellSystem {
             actions.Add(new BounceOnHitAction(def.maxBounces, def.bounceSpeedMultiplier));
         if (def.enableFork)
             actions.Add(new ForkOnHitAction(def.forkCount, def.forkSpreadAngle));
-        // actions.Add(new DealDamageAction(35f));
         if (def.onHitSpawnZone != null)
             actions.Add(new SpawnZoneOnHitAction());
+        if (spell.damage != null)
+            actions.Add(new ProjectileInstantDamageAction());
         return actions;
     }
 }

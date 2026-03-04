@@ -29,7 +29,14 @@ public class Raven : MonoBehaviour {
         _bank = 0f;
     }
 
+    private bool _isQuitting;
+
+    private void OnApplicationQuit() {
+        _isQuitting = true;
+    }
+
     private void OnDestroy() {
+        if (_isQuitting) return;
         Instantiate(feathers, transform.position, Quaternion.identity);
     }
 
@@ -53,7 +60,8 @@ public class Raven : MonoBehaviour {
         if (flying) {
             _anim.SetFloat(_flyingDirectionYHash, 1);
             var velDir = planar.sqrMagnitude > 0f ? planar.normalized : transform.forward;
-            _bank = Mathf.Lerp(_bank, FindBankingAngle(transform, velDir), 1f - Mathf.Exp(-bankingSmooth * Time.deltaTime));
+            _bank = Mathf.Lerp(_bank, FindBankingAngle(transform, velDir),
+                1f - Mathf.Exp(-bankingSmooth * Time.deltaTime));
             _anim.SetFloat(_flyingDirectionHash, _bank);
 
             var state = _anim.GetCurrentAnimatorStateInfo(0);

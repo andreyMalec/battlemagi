@@ -21,7 +21,6 @@ public class UnityWorldQuery : IWorldQuery {
             }
         }
 
-        Debug.Log($"[UnityWorldQuery] closest target {closest}");
         return closest;
     }
 

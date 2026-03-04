@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public static class ParticleUtils {
-    public static void Scale(ParticleSystem ps, float k) {
+    public static void Scale(ParticleSystem ps, float k, bool scaleShape = false) {
         var main = ps.main;
         main.startSizeMultiplier *= k;
         main.startSpeedMultiplier *= k;
@@ -46,7 +46,8 @@ public static class ParticleUtils {
             shape.arc *= k;
             shape.length *= k;
             shape.boxThickness *= k;
+            if (scaleShape)
+                shape.scale *= k;
         }
-
     }
 }

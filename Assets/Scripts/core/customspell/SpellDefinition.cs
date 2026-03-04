@@ -6,6 +6,8 @@ public class SpellDefinition : ScriptableObject, IValidate {
     public CoreType coreType;
     public SpawnDefinition spawn;
 
+    public DamageDefinition damage;
+
     public float scale = 1;
     public float lifetime = 5;
     public LayerMask defaultRaycast = ~0;
@@ -58,6 +60,7 @@ public class SpellDefinition : ScriptableObject, IValidate {
         }
 
         if (spawn != null && spawn is IValidate v) v.Validate();
+        if (damage != null && damage is IValidate dv) dv.Validate();
         if (projectile != null && projectile is IValidate pv) pv.Validate();
         if (zone != null && zone is IValidate zv) zv.Validate();
         if (beam != null && beam is IValidate bv) bv.Validate();

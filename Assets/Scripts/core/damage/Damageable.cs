@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Damageable : MonoBehaviour, ITarget {
+    public static readonly List<Damageable> Active = new();
+
     [SerializeField] private HealthModule _health = new();
     [SerializeField] private ArmorModule _armor = new();
 
@@ -20,6 +22,9 @@ public class Damageable : MonoBehaviour, ITarget {
 
     public bool IsAlive => (State & DamageableState.Alive) != 0;
     public bool IsDead => (State & DamageableState.Dead) != 0;
+
+    public bool IsOwner => _bridgeTyped.IsOwner;
+    public ulong OwnerId => _bridgeTyped.OwnerId;
 
     public event Action<DamageApplied> OnDamageApplied;
     public event Action<float> OnHealed;
@@ -42,6 +47,8 @@ public class Damageable : MonoBehaviour, ITarget {
     private void InitializeServer() {
         if (_initialized) return;
         _initialized = true;
+
+        Active.Add(this);
 
         State = DamageableState.Spawned | DamageableState.Alive;
         if (_invulnerable) State |= DamageableState.Invulnerable;
@@ -202,6 +209,7 @@ public class Damageable : MonoBehaviour, ITarget {
         State |= DamageableState.Dead;
 
         if (State != prev) OnStateChanged?.Invoke(State);
+        Active.Remove(this);
         OnDeath?.Invoke(info);
 
         _bridgeTyped?.DespawnOnDeath();

@@ -781,6 +781,8 @@ GameObject:
   - component: {fileID: 61866278598921742}
   - component: {fileID: 2821027763571427141}
   - component: {fileID: 129843703706901327}
+  - component: {fileID: 2591686918436872089}
+  - component: {fileID: 3174336610539449282}
   m_Layer: 9
   m_Name: Player
   m_TagString: Untagged
@@ -1464,6 +1466,49 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellCasterNet
   ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &2591686918436872089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c102da4810804e98a519729bf047f72b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Damageable
+  _health:
+    maxHealth: 100
+    regenPerSecond: 1
+  _armor:
+    maxArmor: 50
+    armorEffect: 0.75
+  _immortal: 0
+  _invulnerable: 0
+  _bridge: {fileID: 3174336610539449282}
+--- !u!114 &3174336610539449282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7601162350c46279d11c95a8ec56de4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NetworkDamageable
+  ShowTopMostFoldoutHeaderGroup: 1
+  _hpText: {fileID: 0}
+  _damageAudio: {fileID: 8201634953252771622}
+  _damageSoundCooldown: 0.2
+  _statSystem: {fileID: 5208608556239358256}
+  _effectManager: {fileID: 1915652513373438011}
+  health:
+    m_InternalValue: 0
+  armor:
+    m_InternalValue: 0
 --- !u!1 &5894542900604772476
 GameObject:
   m_ObjectHideFlags: 0

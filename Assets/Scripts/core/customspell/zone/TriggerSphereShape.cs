@@ -12,7 +12,7 @@ public class TriggerSphereShape : IShape {
 
     public void Init(ISpellContext context) {
         _context = context;
-        _radius = context.Spell.scale / 2;
+        _radius = context.Spell.scale;
         _radiusSqr = _radius * _radius;
     }
 
@@ -27,6 +27,18 @@ public class TriggerSphereShape : IShape {
             if (!inst.Bind.Context.View.IsAlive) continue;
 
             var targetGo = inst.Bind.Context.View.gameObject;
+            var d = targetGo.transform.position - center;
+            if (d.sqrMagnitude > _radiusSqr) continue;
+
+            _buffer.Add(targetGo);
+            if (_inside.Add(targetGo))
+                _context.SendEvent(new OnZoneEnterEvent(targetGo));
+        }
+        foreach (var inst in Damageable.Active) {
+            if (inst == null) continue;
+            if (inst.IsDead) continue;
+
+            var targetGo = inst.gameObject;
             var d = targetGo.transform.position - center;
             if (d.sqrMagnitude > _radiusSqr) continue;
 

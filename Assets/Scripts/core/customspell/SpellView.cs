@@ -4,6 +4,7 @@ using UnityEngine;
 public class SpellView : MonoBehaviour {
     public float beforeEndThreshold = 1f;
     public bool IsAlive { get; private set; } = true;
+    public bool scaleShape = false;
 
     public Vector3 Position => transform.position;
 

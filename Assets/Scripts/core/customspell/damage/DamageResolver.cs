@@ -1,0 +1,30 @@
+using UnityEngine;
+
+public static class DamageResolver {
+    public static float Resolve(DamageDefinition def, ISpellContext context, Damageable target) {
+        if (def == null) return 0f;
+
+        return def.baseType switch {
+            SpellDamageBaseType.Flat => def.amount,
+            SpellDamageBaseType.Percent => ResolvePercent(def, target),
+            _ => def.amount
+        };
+    }
+
+    private static float ResolvePercent(DamageDefinition def, Damageable target) {
+        var baseValue = def.percentOf switch {
+            SpellDamagePercentStat.Health => target.Health.maxHealth,
+            SpellDamagePercentStat.Armor => target.Armor.maxArmor,
+            SpellDamagePercentStat.Mana => ResolveMaxMana(target),
+            _ => target.Health.maxHealth
+        };
+
+        return Mathf.Max(0f, baseValue * def.percent);
+    }
+
+    private static float ResolveMaxMana(Damageable target) {
+        var caster = target.GetComponent<PlayerSpellCaster>();
+        if (caster == null) return 0f;
+        return caster.maxMana;
+    }
+}
