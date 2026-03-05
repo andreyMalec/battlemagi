@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public interface ISpellSpawn {
+    private const float RayLength = 50f;
+    
     IEnumerator Request(SpawnContext context, Action<SpawnContext> spawn);
 
     IEnumerable<SpawnContext> ShapeCenter(SpawnContext context);
@@ -24,10 +26,16 @@ public interface ISpellSpawn {
     }
 
     public static SpawnContext FromHit(SpawnContext context, RaycastHit hit, Vector3 direction) {
+        var forward = Vector3.ProjectOnPlane(direction, hit.normal);
+        if (forward.sqrMagnitude < 0.0001f)
+            forward = direction;
+
+        forward.Normalize();
+
         return context with {
-            position = hit.point + hit.normal * 0.15f,
-            rotation = RotationFromNormal(direction, hit.normal),
-            forward = Vector3.Reflect(direction, hit.normal.normalized)
+            position = hit.point + hit.normal * 0.1f,
+            rotation = RotationFromNormal(forward, hit.normal),
+            forward = forward
         };
     }
 
@@ -43,7 +51,7 @@ public interface ISpellSpawn {
 
         if (Physics.Raycast(origin, direction, out var hit, maxDistance, mask)) {
             if (secondDirection != Vector3.zero) {
-                origin = hit.point + hit.normal * 0.15f;
+                origin = hit.point + hit.normal * 0.1f;
                 if (Physics.Raycast(origin, Vector3.down, out var hit2, maxDistance, context.spell.defaultRaycast)) {
                     hitInfo = hit2;
                     return FromHit(context, hit2, direction);
@@ -54,12 +62,12 @@ public interface ISpellSpawn {
             return FromHit(context, hit, direction);
         }
 
-        if (Physics.Raycast(origin + direction * maxDistance, Vector3.down, out hit, maxDistance, mask)) {
+        if (Physics.Raycast(origin + direction * maxDistance, Vector3.down, out hit, RayLength, mask)) {
             hitInfo = hit;
             return FromHit(context, hit, direction);
         }
 
-        if (Physics.Raycast(origin + Vector3.up, Vector3.down, out hit, maxDistance, mask)) {
+        if (Physics.Raycast(origin + Vector3.up, Vector3.down, out hit, RayLength, mask)) {
             hitInfo = hit;
             return FromHit(context, hit, direction);
         }

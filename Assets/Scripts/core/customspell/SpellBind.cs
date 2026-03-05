@@ -17,12 +17,11 @@ public class SpellBind<TContext> : ISpellBind
     }
 
     public void Tick(float deltaTime) {
+        _core.Tick(deltaTime);
         try {
             _transform.Tick(deltaTime);
         } catch (Exception e) {
             Debug.LogWarning(e);
         }
-
-        _core.Tick(deltaTime);
     }
 }

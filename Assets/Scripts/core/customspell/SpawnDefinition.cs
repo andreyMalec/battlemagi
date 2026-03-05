@@ -39,7 +39,7 @@ public class SpawnDefinition : ScriptableObject, IValidate {
     public void Validate() {
         _isMultiInstance = instanceCount > 1;
         _isDelayed = multiInstanceDelay > 0;
-        _respectDelayOrigin = RespectOrigin(spawnMode);
+        _respectDelayOrigin = RespectOrigin(spawnMode) && _isMultiInstance;
         _isArc = IsArc(spawnMode) || IsArc(alternativeSpawnMode);
         _isRaycast = IsRay(spawnMode) || IsRay(alternativeSpawnMode);
         _isForward = IsForward(spawnMode) || IsForward(alternativeSpawnMode);

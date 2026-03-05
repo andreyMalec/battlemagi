@@ -145,6 +145,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95a013b49884445fb29a6af511334745, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellView
+  beforeEndThreshold: 1
+  scaleShape: 0
 --- !u!114 &7541071993869150200
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -157,6 +159,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fd067c9361d43908ab7c673b844449b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellInstance
+  scale: []
+  exclude: []
 --- !u!1 &144290257960115208
 GameObject:
   m_ObjectHideFlags: 0
@@ -267,12 +271,24 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 934314443738612445, guid: 117f8a505030d254abaa098fdbd5b484, type: 3}
+      propertyPath: lengthInSec
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 934314443738612445, guid: 117f8a505030d254abaa098fdbd5b484, type: 3}
       propertyPath: InitialModule.startLifetime.scalar
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1200138366708106137, guid: 117f8a505030d254abaa098fdbd5b484, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1678950861605909941, guid: 117f8a505030d254abaa098fdbd5b484, type: 3}
+      propertyPath: lengthInSec
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1678950861605909941, guid: 117f8a505030d254abaa098fdbd5b484, type: 3}
+      propertyPath: moveWithTransform
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1678950861605909941, guid: 117f8a505030d254abaa098fdbd5b484, type: 3}
       propertyPath: InitialModule.size3D
@@ -290,12 +306,20 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2178673288301956606, guid: 117f8a505030d254abaa098fdbd5b484, type: 3}
+      propertyPath: moveWithTransform
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2612195989106699177, guid: 117f8a505030d254abaa098fdbd5b484, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3434340865277447881, guid: 117f8a505030d254abaa098fdbd5b484, type: 3}
       propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5170659038403284784, guid: 117f8a505030d254abaa098fdbd5b484, type: 3}
+      propertyPath: moveWithTransform
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5248908225563012809, guid: 117f8a505030d254abaa098fdbd5b484, type: 3}
@@ -343,6 +367,14 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5679446805072650603, guid: 117f8a505030d254abaa098fdbd5b484, type: 3}
+      propertyPath: lengthInSec
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5679446805072650603, guid: 117f8a505030d254abaa098fdbd5b484, type: 3}
+      propertyPath: moveWithTransform
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5679446805072650603, guid: 117f8a505030d254abaa098fdbd5b484, type: 3}
       propertyPath: InitialModule.startLifetime.scalar
       value: 10
       objectReference: {fileID: 0}
@@ -350,13 +382,21 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7109626393980671312, guid: 117f8a505030d254abaa098fdbd5b484, type: 3}
+      propertyPath: moveWithTransform
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7216988192306926055, guid: 117f8a505030d254abaa098fdbd5b484, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7479487935844054033, guid: 117f8a505030d254abaa098fdbd5b484, type: 3}
       propertyPath: lengthInSec
-      value: 1
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7479487935844054033, guid: 117f8a505030d254abaa098fdbd5b484, type: 3}
+      propertyPath: moveWithTransform
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7479487935844054033, guid: 117f8a505030d254abaa098fdbd5b484, type: 3}
       propertyPath: InitialModule.size3D
@@ -374,6 +414,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8238573066615930050, guid: 117f8a505030d254abaa098fdbd5b484, type: 3}
+      propertyPath: moveWithTransform
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8363951516885970256, guid: 117f8a505030d254abaa098fdbd5b484, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -381,6 +425,10 @@ PrefabInstance:
     - target: {fileID: 8993181203028094467, guid: 117f8a505030d254abaa098fdbd5b484, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9204776650647129525, guid: 117f8a505030d254abaa098fdbd5b484, type: 3}
+      propertyPath: moveWithTransform
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

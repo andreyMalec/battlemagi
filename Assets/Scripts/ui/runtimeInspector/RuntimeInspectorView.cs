@@ -21,6 +21,7 @@ public class RuntimeInspectorView : MonoBehaviour, IRuntimeInspectorRebuildReque
     [SerializeField] private Component colorFieldPrefab;
     [SerializeField] private Component layerMaskFieldPrefab;
     [SerializeField] private Component objectFieldPrefab;
+    [SerializeField] private Component collectionFieldPrefab;
 
     private object _target;
 
@@ -293,8 +294,7 @@ public class RuntimeInspectorView : MonoBehaviour, IRuntimeInspectorRebuildReque
             var arr = (Array)f.GetValue(owner);
             if (arr == null) return true;
 
-            var header = Instantiate(headerPrefab, parent);
-            ((IRuntimeInspectorHeader)header).SetTitle(title);
+            BuildCollectionHeader(parent, title, arr.Length, false, false, null, null);
 
             for (int i = 0; i < arr.Length; i++) {
                 var el = arr.GetValue(i);
@@ -309,8 +309,21 @@ public class RuntimeInspectorView : MonoBehaviour, IRuntimeInspectorRebuildReque
             var list = (IList)f.GetValue(owner);
             if (list == null) return true;
 
-            var header = Instantiate(headerPrefab, parent);
-            ((IRuntimeInspectorHeader)header).SetTitle(title);
+            var elementType = ft.GetGenericArguments()[0];
+
+            void Add() {
+                var created = CreateListElement(elementType);
+                list.Add(created);
+                Rebuild();
+            }
+
+            void RemoveLast() {
+                if (list.Count <= 0) return;
+                list.RemoveAt(list.Count - 1);
+                Rebuild();
+            }
+
+            BuildCollectionHeader(parent, title, list.Count, true, list.Count > 0, Add, RemoveLast);
 
             for (int i = 0; i < list.Count; i++) {
                 var el = list[i];
@@ -322,6 +335,38 @@ public class RuntimeInspectorView : MonoBehaviour, IRuntimeInspectorRebuildReque
         }
 
         return false;
+    }
+
+    private void BuildCollectionHeader(
+        Transform parent,
+        string title,
+        int count,
+        bool canAdd,
+        bool canRemoveLast,
+        Action add,
+        Action removeLast
+    ) {
+        if (collectionFieldPrefab == null) {
+            var header = Instantiate(headerPrefab, parent);
+            header.GetComponent<IRuntimeInspectorHeader>().SetTitle(title);
+            return;
+        }
+
+        var view = Instantiate(collectionFieldPrefab, parent);
+        view.GetComponent<RuntimeInspectorCollectionField>().Bind(title, count, canAdd, canRemoveLast, add, removeLast);
+    }
+
+    private static object CreateListElement(Type elementType) {
+        if (elementType == null) return null;
+
+        if (elementType.IsValueType) return Activator.CreateInstance(elementType);
+        if (elementType == typeof(string)) return string.Empty;
+
+        try {
+            return Activator.CreateInstance(elementType);
+        } catch {
+            return null;
+        }
     }
 
     private static Component Instantiate(Component prefab, Transform parent) {

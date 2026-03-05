@@ -9,7 +9,8 @@ public class NewDirectDownSpawn : ISpellSpawn, IDelayOriginRespect {
         var delay = context.spawn.multiInstanceDelay;
         var origin = context.DelayOrigin;
 
-        var first = ISpellSpawn.GroundPos(context, Vector3.down, out _);
+        var downWithDirection = Vector3.down + context.forward * 0.7f;
+        var first = ISpellSpawn.GroundPos(context, downWithDirection, out _);
         first = ApplyDirectionToTarget(first);
 
         for (int i = 0; i < count; i++) {
@@ -17,7 +18,7 @@ public class NewDirectDownSpawn : ISpellSpawn, IDelayOriginRespect {
                 spawn(first);
             } else {
                 context.position = context.caster.transform.position;
-                var current = ISpellSpawn.GroundPos(context, Vector3.down, out _);
+                var current = ISpellSpawn.GroundPos(context, downWithDirection, out _);
                 current = ApplyDirectionToTarget(current);
                 spawn(current);
             }

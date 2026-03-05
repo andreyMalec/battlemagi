@@ -12,5 +12,7 @@ public record SpawnContext {
     public bool branch;
     public ITarget target;
 
-    public DelayOrigin DelayOrigin => forceFirstOrigin ? DelayOrigin.First : spawn.delayOrigin;
+    public DelayOrigin DelayOrigin => forceFirstOrigin
+        ? DelayOrigin.First
+        : (spawn.instanceCount > 1 ? spawn.delayOrigin : DelayOrigin.First);
 }

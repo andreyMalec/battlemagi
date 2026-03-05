@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using NaughtyAttributes;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ public class SpellDefinition : ScriptableObject, IValidate {
     public SpawnDefinition spawn;
 
     public DamageDefinition damage;
+    public List<EffectDefinition> effects;
 
     public float scale = 1;
     public float lifetime = 5;

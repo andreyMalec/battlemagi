@@ -52,7 +52,8 @@ public class ForkOnHitAction : ISpellAction {
             position = hit.Point,
             rotation = Quaternion.LookRotation(dir, Vector3.up),
             forward = dir,
-            caster = context.Caster
+            caster = context.Caster,
+            forceFirstOrigin = true,
         };
         context.Caster.Spawn(spawnContext);
     }
