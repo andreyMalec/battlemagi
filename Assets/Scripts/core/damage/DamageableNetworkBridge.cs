@@ -3,7 +3,7 @@ using Unity.Netcode;
 using UnityEngine;
 
 [RequireComponent(typeof(Damageable))]
-public class NetworkDamageable : NetworkBehaviour, IDamageableBridge {
+public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
     [SerializeField] private TMP_Text _hpText;
 
     [Header("Sound")]
@@ -13,8 +13,6 @@ public class NetworkDamageable : NetworkBehaviour, IDamageableBridge {
 
     [Header("Modules")]
     [SerializeField] private NetworkStatSystem _statSystem;
-
-    [SerializeField] private StatusEffectManager _effectManager;
 
     private Damageable _core;
     private float _lastDamageSoundTime;
@@ -26,13 +24,14 @@ public class NetworkDamageable : NetworkBehaviour, IDamageableBridge {
     bool IDamageableBridge.IsSpawned => base.IsSpawned;
     public ulong OwnerId => OwnerClientId;
 
+    private Statusable _statusable;
+
     private void Awake() {
         _core = GetComponent<Damageable>();
 
         if (_statSystem == null)
             _statSystem = GetComponent<NetworkStatSystem>();
-        if (_effectManager == null)
-            _effectManager = GetComponent<StatusEffectManager>();
+        _statusable = GetComponent<Statusable>();
     }
 
     public override void OnNetworkSpawn() {
@@ -104,11 +103,11 @@ public class NetworkDamageable : NetworkBehaviour, IDamageableBridge {
             request = new DamageRequest(request.source, request.fromId, amount, request.kind);
         }
 
-        if (_effectManager != null && _effectManager.HasEffect("Rune of Stasis")) {
+        if (_statusable != null && _statusable.HasEffect("Rune of Stasis")) {
             var appliedPreview = PreviewDamageNoSideEffects(_core, in request);
             if (_core.Health.Health - appliedPreview.healthApplied <= 0f && beforeHealth > 0f) {
-                var removed = (RuneOfStasisEffect)_effectManager.RemoveEffect("Rune of Stasis");
-                _effectManager.AddEffect(OwnerClientId, removed.onExpire);
+                var removed = (RuneOfStasisEffect)_statusable.RemoveEffect("Rune of Stasis");
+                _statusable.AddEffect(OwnerClientId, removed.onExpire);
                 return false;
             }
         }
@@ -120,27 +119,6 @@ public class NetworkDamageable : NetworkBehaviour, IDamageableBridge {
         if (!IsServer) return;
 
         PlayDamageSound((DamageSoundType)request.kind, ignoreSoundCooldown);
-
-        if (_effectManager == null) return;
-
-        if (request.source != "Pain Mirror" && request.fromId != OwnerClientId) {
-            if (_effectManager.HasEffect("Pain Mirror")) {
-                if (NetworkManager.ConnectedClients.TryGetValue(request.fromId, out var client)) {
-                    var player = client.PlayerObject;
-                    if (player != null) {
-                        var reflectDamage = rawDamage;
-                        if (_statSystem != null)
-                            reflectDamage *= _statSystem.Stats.GetFinal(StatType.DamageReflection);
-
-                        player.GetComponent<Damageable>()
-                            .TakeDamage("Pain Mirror", OwnerClientId, reflectDamage, DamageSoundType.Reflect,
-                                ignoreSoundCooldown);
-                    }
-                }
-            }
-        }
-
-        _effectManager.HandleHit();
     }
 
     public void DespawnOnDeath() {

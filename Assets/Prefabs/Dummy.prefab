@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 206089089239990790}
   - component: {fileID: 5542829118104626782}
   - component: {fileID: 5533485296804457294}
-  - component: {fileID: 4193405509124416205}
   - component: {fileID: 1021149336119197285}
   - component: {fileID: 1326903040483868899}
   - component: {fileID: 8494788474716610380}
@@ -85,6 +84,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Damageable
   ShowTopMostFoldoutHeaderGroup: 1
   maxHealth: 100000000
+  maxArmor: 50
+  armorEffect: 0.75
   hpRestore: 1
   immortal: 1
   invulnerable: 0
@@ -92,6 +93,8 @@ MonoBehaviour:
   damageAudio: {fileID: 1021149336119197285}
   damageSoundCooldown: 0.2
   health:
+    m_InternalValue: 0
+  armor:
     m_InternalValue: 0
   isDead: 0
 --- !u!136 &5533485296804457294
@@ -117,19 +120,6 @@ CapsuleCollider:
   m_Height: 1.73
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
---- !u!114 &4193405509124416205
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2900472409879121813}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 310377ea541c4261a7d3cdc28d8173b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::StatusEffectManager
-  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!82 &1021149336119197285
 AudioSource:
   m_ObjectHideFlags: 0

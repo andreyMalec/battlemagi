@@ -15,12 +15,12 @@ public class PickUp : NetworkBehaviour {
         if (_destroyed) return;
         if (!IsServer) return;
 
-        if (other.TryGetComponent<Player>(out _) && other.TryGetComponent<StatusEffectManager>(out var manager)) {
+        if (other.TryGetComponent<Player>(out _) && other.TryGetComponent<Statusable>(out var statusable)) {
             var ownerId = OwnerClientId;
             if (NetworkObject.IsSceneObject == true)
                 ownerId = PlayerId.EnvironmentId;
             foreach (var effect in effects) {
-                manager.AddEffect(ownerId, effect);
+                statusable.AddEffect(ownerId, effect);
             }
 
             var toUI = effects.First();

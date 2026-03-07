@@ -4791,7 +4791,6 @@ GameObject:
   - component: {fileID: 2503025298705849989}
   - component: {fileID: 3258879510255564895}
   - component: {fileID: 5868877035629305093}
-  - component: {fileID: 1163428395993184920}
   - component: {fileID: 1682697048956875679}
   - component: {fileID: 5893265311457856560}
   - component: {fileID: 63883288458326577}
@@ -4983,19 +4982,6 @@ MonoBehaviour:
   end: {x: 0, y: 3, z: 0}
   duration: 1
   onDestroy: {fileID: 8300000, guid: a59c504acd646124eaab84aa8fb39ad1, type: 3}
---- !u!114 &1163428395993184920
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7354784787554302670}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 310377ea541c4261a7d3cdc28d8173b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::StatusEffectManager
-  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!65 &1682697048956875679
 BoxCollider:
   m_ObjectHideFlags: 0

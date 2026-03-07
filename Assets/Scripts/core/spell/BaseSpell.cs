@@ -87,7 +87,7 @@ public class BaseSpell : NetworkBehaviour {
 
         if (data.buffs != null && data.buffs.Length > 0) {
             var player = NetworkManager.ConnectedClients[OwnerClientId].PlayerObject;
-            if (player != null && player.TryGetComponent<StatusEffectManager>(out var manager)) {
+            if (player != null && player.TryGetComponent<Statusable>(out var manager)) {
                 foreach (var effect in data.buffs) {
                     manager.AddEffect(OwnerClientId, effect);
                 }

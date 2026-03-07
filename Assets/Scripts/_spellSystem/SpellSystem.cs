@@ -71,6 +71,15 @@ public class SpellSystem {
                 new SpawnAtMaxDistanceAction(),
             }
         });
+        if (def.effects != null && def.effects.Count > 0) {
+            triggers.Add(new SpellTrigger {
+                eventType = typeof(OnLifetimeStartEvent),
+                actions = new ISpellAction[] {
+                    new SelfStatusEffectAction(),
+                }
+            });
+        }
+
         triggers.Add(new SpellTrigger {
             eventType = typeof(OnStepDistanceEvent),
             actions = new ISpellAction[] {
@@ -133,6 +142,19 @@ public class SpellSystem {
             triggers.Add(new SpellTrigger {
                 eventType = typeof(OnZoneStayEvent),
                 actions = new ISpellAction[] { new ZoneDamageModuleAction() }
+            });
+        }
+
+        if (def.effects != null && def.effects.Count > 0) {
+            triggers.Add(new SpellTrigger {
+                eventType = typeof(OnZoneStayEvent),
+                actions = new ISpellAction[] { new ZoneStatusEffectAction() }
+            });
+            triggers.Add(new SpellTrigger {
+                eventType = typeof(OnLifetimeStartEvent),
+                actions = new ISpellAction[] {
+                    new SelfStatusEffectAction(),
+                }
             });
         }
 
@@ -206,6 +228,19 @@ public class SpellSystem {
             });
         }
 
+        if (def.effects != null && def.effects.Count > 0) {
+            triggers.Add(new SpellTrigger {
+                eventType = typeof(OnHitEvent),
+                actions = new ISpellAction[] { new BeamStatusEffectAction() }
+            });
+            triggers.Add(new SpellTrigger {
+                eventType = typeof(OnLifetimeStartEvent),
+                actions = new ISpellAction[] {
+                    new SelfStatusEffectAction(),
+                }
+            });
+        }
+
         triggers.Add(new SpellTrigger {
             eventType = typeof(OnMaxDistanceEvent),
             actions = new ISpellAction[] {
@@ -272,6 +307,14 @@ public class SpellSystem {
                 new FadeOutAudioSourcesAction(),
             }
         });
+        if (def.effects != null && def.effects.Count > 0) {
+            triggers.Add(new SpellTrigger {
+                eventType = typeof(OnLifetimeStartEvent),
+                actions = new ISpellAction[] {
+                    new SelfStatusEffectAction(),
+                }
+            });
+        }
 
         var context = new SummonContext(
             spawnContext.caster,
@@ -438,6 +481,8 @@ public class SpellSystem {
             actions.Add(new SpawnZoneOnHitAction());
         if (spell.damage != null)
             actions.Add(new ProjectileInstantDamageAction());
+        if (spell.effects != null && spell.effects.Count > 0)
+            actions.Add(new ProjectileStatusEffectAction());
         return actions;
     }
 }

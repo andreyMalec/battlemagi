@@ -8,7 +8,7 @@ public class PlayerUI : NetworkBehaviour {
     private Damageable _damageable;
     private PlayerSpellCaster _caster;
     private FirstPersonMovement _movement;
-    private StatusEffectManager _effectManager;
+    private Statusable _statusable;
 
     private float _armorBarWidth;
 
@@ -20,7 +20,7 @@ public class PlayerUI : NetworkBehaviour {
         if (!IsOwner) return;
         _renderer = FindFirstObjectByType<PlayerUIRenderer>();
         _damageable = GetComponent<Damageable>();
-        _effectManager = GetComponent<StatusEffectManager>();
+        _statusable = GetComponent<Statusable>();
         _caster = GetComponent<PlayerSpellCaster>();
         _movement = GetComponent<FirstPersonMovement>();
         var ui = GetComponents<UICameraSway>();
@@ -67,10 +67,10 @@ public class PlayerUI : NetworkBehaviour {
         var stamina = Math.Clamp(_movement.stamina.Value / _movement.maxStamina, 0, 1);
         _renderer.stamina.transform.localScale = new Vector3(stamina, 1, 1);
 
-        Show(_effectManager.ActiveEffects);
+        Show(_statusable.DurationEffects);
     }
 
-    private void Show(List<StatusEffectManager.DurationEffect> effects) {
+    private void Show(List<Statusable.DurationEffect> effects) {
         int needed = 0;
         for (int i = 0; i < effects.Count; i++) {
             if (effects[i].remains > 0f) needed++;

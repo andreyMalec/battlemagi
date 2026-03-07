@@ -34,14 +34,14 @@ public class DamageOverTimeEffect : StatusEffectData {
             _tickTimer += deltaTime;
             if (_tickTimer >= _data.tickInterval) {
                 _tickTimer = 0f;
-                var health = target.GetComponent<OldDamageable>();
-                if (health != null) {
-                    if (!_data.canSelfDamage && TeamManager.Instance.AreAllies(ownerClientId, health.OwnerClientId))
+                var damageable = target.GetComponent<Damageable>();
+                if (damageable != null) {
+                    if (!_data.canSelfDamage && TeamManager.Instance.AreAllies(ownerClientId, damageable.OwnerId))
                         return;
-                    health.TakeDamage(
+                    damageable.TakeDamage(
                         _data.effectName,
                         ownerClientId,
-                        _data.percentDamage ? health.maxHealth * _data.dps : _data.dps,
+                        _data.percentDamage ? damageable.Health.maxHealth * _data.dps : _data.dps,
                         _data.damageSound,
                         _data.ignoreDamageSoundCooldown
                     );

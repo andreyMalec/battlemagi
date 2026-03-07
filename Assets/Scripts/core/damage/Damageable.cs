@@ -34,6 +34,8 @@ public class Damageable : MonoBehaviour, ITarget {
     public event Action<DeathInfo> OnDeath;
     public event Action<DamageableState> OnStateChanged;
 
+    private Statusable _statusable;
+
     private readonly List<IDamageModifier> _modifiers = new();
     private readonly List<IDamageModule> _modules = new();
 
@@ -45,6 +47,7 @@ public class Damageable : MonoBehaviour, ITarget {
             _bridgeTyped = (IDamageableBridge)_bridge;
         else
             _bridgeTyped = GetComponent<IDamageableBridge>();
+        _statusable = GetComponent<Statusable>();
     }
 
     internal void SetNetworkState(float health, float armor) {
@@ -112,16 +115,11 @@ public class Damageable : MonoBehaviour, ITarget {
         CurrentHealth = _health.Health;
         CurrentArmor = _armor.Armor;
 
-        _bridgeTyped?.SyncFromCore(this);
+        _bridgeTyped.SyncFromCore(this);
     }
 
     public void Suicide() {
-        if (_bridgeTyped != null) {
-            _bridgeTyped.Suicide();
-            return;
-        }
-
-        TakeDamage("Suicide", 0, 9999f, DamageSoundType.Fall, true);
+        _bridgeTyped.Suicide();
     }
 
     public void TakeHeal(string source, float amount) {
@@ -129,13 +127,21 @@ public class Damageable : MonoBehaviour, ITarget {
         if (!IsAlive) return;
         if (amount <= 0f) return;
 
-        if (_bridgeTyped != null) {
-            if (!_bridgeTyped.IsServer) return;
-            if (!_bridgeTyped.IsSpawned) return;
-        }
+        if (!_bridgeTyped.IsServer) return;
 
         ApplyHealServer(source, amount);
-        _bridgeTyped?.SyncFromCore(this);
+        _bridgeTyped.SyncFromCore(this);
+    }
+
+    public void TakeArmor(float amount) {
+        if (!_initialized) return;
+        if (!IsAlive) return;
+        if (amount <= 0f) return;
+
+        if (!_bridgeTyped.IsServer) return;
+
+        TakeArmorServer(amount);
+        _bridgeTyped.SyncFromCore(this);
     }
 
     public void TakeDamage(
@@ -149,23 +155,20 @@ public class Damageable : MonoBehaviour, ITarget {
         if (!IsAlive) return;
         if (amount <= 0f) return;
 
-        if (_bridgeTyped != null) {
-            if (!_bridgeTyped.IsServer) return;
-            if (!_bridgeTyped.IsSpawned) return;
-        }
+        if (!_bridgeTyped.IsServer) return;
+        if (!_bridgeTyped.IsSpawned) return;
 
         var beforeHp = _health.Health;
         var request = new DamageRequest(source, fromId, amount, (DamageKind)sound);
 
-        if (_bridgeTyped != null) {
-            if (!_bridgeTyped.HandlePreApplyDamage(ref request, beforeHp))
-                return;
-        }
+        if (!_bridgeTyped.HandlePreApplyDamage(ref request, beforeHp))
+            return;
 
         ApplyDamageServer(in request);
 
-        _bridgeTyped?.HandlePostApplyDamage(in request, amount, ignoreSoundCooldown);
-        _bridgeTyped?.SyncFromCore(this);
+        _bridgeTyped.HandlePostApplyDamage(in request, amount, ignoreSoundCooldown);
+        _bridgeTyped.SyncFromCore(this);
+        _statusable?.HandleHit(request);
     }
 
     public bool CanTakeDamage(in DamageRequest request) {
@@ -196,7 +199,7 @@ public class Damageable : MonoBehaviour, ITarget {
         OnDamageApplied?.Invoke(applied);
 
         if (_health.Health <= 0f)
-            TryDie(new DeathInfo(_bridgeTyped != null ? _bridgeTyped.OwnerId : 0, request.fromId, request.source));
+            TryDie(new DeathInfo(_bridgeTyped.OwnerId, request.fromId, request.source));
 
         return applied;
     }
@@ -204,9 +207,14 @@ public class Damageable : MonoBehaviour, ITarget {
     private void ApplyHealServer(string source, float amount) {
         if (!_initialized) return;
         if (!IsAlive) return;
-        if (amount <= 0f) return;
         _health.ApplyHeal(amount);
         OnHealed?.Invoke(amount);
+    }
+
+    private void TakeArmorServer(float amount) {
+        if (!_initialized) return;
+        if (!IsAlive) return;
+        _armor.TakeArmor(amount);
     }
 
     public void ForceKillServer(DeathInfo info) {
@@ -226,6 +234,6 @@ public class Damageable : MonoBehaviour, ITarget {
         Active.Remove(this);
         OnDeath?.Invoke(info);
 
-        _bridgeTyped?.DespawnOnDeath();
+        _bridgeTyped.DespawnOnDeath();
     }
 }

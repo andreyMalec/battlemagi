@@ -9,7 +9,6 @@ using UnityEngine.UI;
 
 [Obsolete("Use the new \"Damageable\" component instead.")]
 [RequireComponent(typeof(NetworkStatSystem))]
-[RequireComponent(typeof(StatusEffectManager))]
 public class OldDamageable : NetworkBehaviour {
     [SerializeField] public float maxHealth = 100f;
     [SerializeField] public float maxArmor = 50f;
@@ -28,7 +27,6 @@ public class OldDamageable : NetworkBehaviour {
     protected List<ulong> _damagedBy = new();
     protected List<DamageInfo> _damagedBySource = new();
     protected NetworkStatSystem _statSystem;
-    protected StatusEffectManager _effectManager;
 
     public NetworkVariable<float> health = new();
     public NetworkVariable<float> armor = new();
@@ -37,7 +35,6 @@ public class OldDamageable : NetworkBehaviour {
 
     private void Awake() {
         _statSystem = GetComponent<NetworkStatSystem>();
-        _effectManager = GetComponent<StatusEffectManager>();
     }
 
     public override void OnNetworkSpawn() {
@@ -125,30 +122,6 @@ public class OldDamageable : NetworkBehaviour {
             PlayDamageSoundClientRpc((int)sound);
         }
 
-        if (_effectManager.HasEffect("Rune of Stasis")) {
-            if (health.Value <= 0 && beforeHp > 0) {
-                var removed = (RuneOfStasisEffect)_effectManager.RemoveEffect("Rune of Stasis");
-                _effectManager.AddEffect(clientId, removed.onExpire);
-
-                return;
-            }
-        }
-
-        if (source != "Pain Mirror" && fromClientId != clientId) {
-            if (_effectManager.HasEffect("Pain Mirror")) {
-                if (NetworkManager.ConnectedClients.TryGetValue(fromClientId, out var client)) {
-                    var player = client.PlayerObject;
-                    if (player != null) {
-                        var reflectDamage = damage * _statSystem.Stats.GetFinal(StatType.DamageReflection);
-                        player.GetComponent<OldDamageable>()
-                            .TakeDamage("Pain Mirror", clientId, reflectDamage, DamageSoundType.Reflect,
-                                ignoreSoundCooldown);
-                    }
-                }
-            }
-        }
-
-        _effectManager.HandleHit();
 
         if (!immortal && health.Value <= 0 && beforeHp >= 0) {
             OnDeath(clientId, fromClientId, source);

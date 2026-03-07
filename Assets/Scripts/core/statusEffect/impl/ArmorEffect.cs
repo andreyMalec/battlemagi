@@ -18,8 +18,8 @@ public class ArmorEffect : StatusEffectData {
 
         public override void OnApply(ulong ownerClientId, GameObject target) {
             base.OnApply(ownerClientId, target);
-            if (target.TryGetComponent<OldDamageable>(out var damageable)) {
-                damageable.armor.Value += _data.amount;
+            if (target.TryGetComponent<Damageable>(out var damageable)) {
+                damageable.TakeArmor(_data.amount);
             }
         }
     }

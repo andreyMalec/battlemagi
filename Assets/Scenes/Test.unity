@@ -2956,6 +2956,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b7a46b8c2431e884db0c07139efc6a9e, type: 3}
+--- !u!114 &934795264 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1870895211298274875, guid: 3388c675a04491247a96b13c5950bf10, type: 3}
+  m_PrefabInstance: {fileID: 2023091144}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 572635613edd4d45a7d50d7348c79d56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalDamageableBridge
 --- !u!1 &999395329
 GameObject:
   m_ObjectHideFlags: 0
@@ -3794,6 +3805,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7494799231161683395, guid: ed87c0ba1639c5c4db53f189a0262866, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3323337063
+      objectReference: {fileID: 0}
     - target: {fileID: 8361883788036183051, guid: ed87c0ba1639c5c4db53f189a0262866, type: 3}
       propertyPath: m_Name
       value: Flag
@@ -4163,6 +4178,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4815534646972923113, guid: 3388c675a04491247a96b13c5950bf10, type: 3}
+      propertyPath: _bridge
+      value: 
+      objectReference: {fileID: 934795264}
+    - target: {fileID: 4815534646972923113, guid: 3388c675a04491247a96b13c5950bf10, type: 3}
       propertyPath: _immortal
       value: 1
       objectReference: {fileID: 0}
@@ -4173,6 +4192,22 @@ PrefabInstance:
     - target: {fileID: 6397173638022833761, guid: 3388c675a04491247a96b13c5950bf10, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7925304159844833790, guid: 3388c675a04491247a96b13c5950bf10, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7925304159844833790, guid: 3388c675a04491247a96b13c5950bf10, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7925304159844833790, guid: 3388c675a04491247a96b13c5950bf10, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7925304159844833790, guid: 3388c675a04491247a96b13c5950bf10, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 8318835902796695180, guid: 3388c675a04491247a96b13c5950bf10, type: 3}
       propertyPath: m_AnchorMax.x
@@ -4616,6 +4651,8 @@ GameObject:
   - component: {fileID: 7351032199263568247}
   - component: {fileID: 7351032199263568246}
   - component: {fileID: 7351032199263568245}
+  - component: {fileID: 7351032199263568249}
+  - component: {fileID: 7351032199263568248}
   m_Layer: 9
   m_Name: Pure Dummy
   m_TagString: Untagged
@@ -5552,6 +5589,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 572635613edd4d45a7d50d7348c79d56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LocalDamageableBridge
+  clientId: 0
   _hpText: {fileID: 953732795025515142}
   _damageAudio: {fileID: 7351032199263568245}
   _damageSoundCooldown: 0.2
@@ -5577,6 +5615,32 @@ MonoBehaviour:
   _immortal: 1
   _invulnerable: 0
   _bridge: {fileID: 7351032199263568246}
+--- !u!114 &7351032199263568248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2900472411444271790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac197ad2c31b45ad97c78c0196803092, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatusableLocalBridge
+  clientId: 0
+--- !u!114 &7351032199263568249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2900472411444271790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d72e0fa02c2444db966472241dace85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Statusable
+  _bridge: {fileID: 7351032199263568248}
 --- !u!223 &7445101439491304637
 Canvas:
   m_ObjectHideFlags: 0

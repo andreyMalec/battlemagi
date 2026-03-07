@@ -8,7 +8,7 @@ public static class SpellJsonSerializer {
     private static readonly JsonSerializerSettings Settings = new() {
         Formatting = Formatting.None,
         ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-        NullValueHandling = NullValueHandling.Include,
+        NullValueHandling = NullValueHandling.Ignore,
         ObjectCreationHandling = ObjectCreationHandling.Replace,
         Converters = {
             new Vector2Converter(),
@@ -16,6 +16,7 @@ public static class SpellJsonSerializer {
             new QuaternionConverter(),
             new LayerMaskConverter(),
             new ScriptableObjectConverter(),
+            new ColorConverter(),
         }
     };
 
@@ -65,6 +66,27 @@ public static class SpellJsonSerializer {
             JsonSerializer serializer) {
             var obj = JObject.Load(reader);
             return new Vector3((float)obj["x"], (float)obj["y"], (float)obj["z"]);
+        }
+    }
+
+    private class ColorConverter : JsonConverter<Color> {
+        public override void WriteJson(JsonWriter writer, Color value, JsonSerializer serializer) {
+            writer.WriteStartObject();
+            writer.WritePropertyName("r");
+            writer.WriteValue(value.r);
+            writer.WritePropertyName("g");
+            writer.WriteValue(value.g);
+            writer.WritePropertyName("b");
+            writer.WriteValue(value.b);
+            writer.WritePropertyName("a");
+            writer.WriteValue(value.a);
+            writer.WriteEndObject();
+        }
+
+        public override Color ReadJson(JsonReader reader, Type objectType, Color existingValue, bool hasExistingValue,
+            JsonSerializer serializer) {
+            var obj = JObject.Load(reader);
+            return new Color((float)obj["r"], (float)obj["g"], (float)obj["b"], (float)obj["a"]);
         }
     }
 
@@ -132,6 +154,8 @@ public static class SpellJsonSerializer {
                 if (f.IsStatic)
                     continue;
                 if (f.IsDefined(typeof(NonSerializedAttribute), true))
+                    continue;
+                if (f.IsDefined(typeof(JsonIgnoreAttribute), true))
                     continue;
                 if (!IsUnitySerializedField(f))
                     continue;

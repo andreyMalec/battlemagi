@@ -14,6 +14,11 @@ public class ArmorModule : IDamageModule {
     public void TickServer(float dt) {
     }
 
+    public void TakeArmor(float amount) {
+        if (amount <= 0f) return;
+        Armor = Mathf.Clamp(Armor + amount, 0f, maxArmor);
+    }
+
     public float ApplyArmorPart(in DamageRequest request, float incomingAfterModifiers) {
         if (Armor <= 0f) return 0f;
         var armorDamageTarget = incomingAfterModifiers * armorEffect;

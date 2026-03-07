@@ -2,7 +2,8 @@ using TMPro;
 using UnityEngine;
 
 [RequireComponent(typeof(Damageable))]
-public class LocalDamageableBridge : MonoBehaviour, IDamageableBridge {
+public class DamageableLocalBridge : MonoBehaviour, IDamageableBridge {
+    [SerializeField] private ulong clientId;
     [SerializeField] private TMP_Text _hpText;
 
     [Header("Sound")]
@@ -15,10 +16,10 @@ public class LocalDamageableBridge : MonoBehaviour, IDamageableBridge {
 
     public float health = 0f;
 
-    public bool IsServer => true;
+    public bool IsServer => clientId == 0;
     public bool IsSpawned => true;
-    public bool IsOwner => true;
-    public ulong OwnerId => 0;
+    public bool IsOwner => clientId == 0;
+    public ulong OwnerId => clientId;
 
     private void Awake() {
         _core = GetComponent<Damageable>();

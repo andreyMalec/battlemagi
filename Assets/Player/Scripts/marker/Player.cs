@@ -65,9 +65,6 @@ public class Player : NetworkBehaviour, ITarget {
         caster.maxMana = archetype.maxMana;
         caster.manaRestore = archetype.manaRegen;
         caster.BindAvatar(meshController);
-        var oldDamageable = GetComponent<OldDamageable>();
-        oldDamageable.maxHealth = archetype.maxHealth;
-        oldDamageable.hpRestore = archetype.healthRegen;
         var damageable = GetComponent<Damageable>();
         damageable.Health.maxHealth = archetype.maxHealth;
         damageable.Health.regenPerSecond = archetype.healthRegen;
@@ -153,8 +150,8 @@ public class Player : NetworkBehaviour, ITarget {
         Debug.Log($"[PlayerSpawner] Init Сервер: Player_{clientId} создан в {position}, {rotation}");
         movement.stamina.Value = archetype.maxStamina;
 
-        var damageable = GetComponent<OldDamageable>();
-        damageable.health.Value = archetype.maxHealth;
+        var damageable = GetComponent<Damageable>();
+        damageable.Health.maxHealth = archetype.maxHealth;
 
         var caster = GetComponent<PlayerSpellCaster>();
         caster.mana.Value = archetype.maxMana;

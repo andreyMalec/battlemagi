@@ -2,7 +2,6 @@ using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(NetworkStatSystem))]
-[RequireComponent(typeof(StatusEffectManager))]
 public class RigidbodyDamageable : OldDamageable {
     [Header("RigidbodyDamageable")]
     [SerializeField] private Rigidbody _rigidbody;

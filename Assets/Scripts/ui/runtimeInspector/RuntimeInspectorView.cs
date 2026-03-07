@@ -82,6 +82,7 @@ public class RuntimeInspectorView : MonoBehaviour, IRuntimeInspectorRebuildReque
                     if (el == null) continue;
                     ValidateDeep(el, depth + 1);
                 }
+
                 continue;
             }
 
@@ -361,6 +362,11 @@ public class RuntimeInspectorView : MonoBehaviour, IRuntimeInspectorRebuildReque
 
         if (elementType.IsValueType) return Activator.CreateInstance(elementType);
         if (elementType == typeof(string)) return string.Empty;
+        if (typeof(ScriptableObject).IsAssignableFrom(elementType)) {
+            var so = ScriptableObject.CreateInstance(elementType);
+            so.name = elementType.Name;
+            return so;
+        }
 
         try {
             return Activator.CreateInstance(elementType);

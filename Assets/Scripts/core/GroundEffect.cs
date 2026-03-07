@@ -22,17 +22,17 @@ public class GroundEffect : NetworkBehaviour {
 
     private void OnTriggerStay(Collider other) {
         if (!IsServer || other.isTrigger) return;
-        if (!other.TryGetComponent<StatusEffectManager>(out var manager)) return;
+        if (!other.TryGetComponent<Statusable>(out var statusable)) return;
         if (oneShot) {
-            if (_affectedIds.Contains(manager.OwnerClientId)) return;
-            _affectedIds.Add(manager.OwnerClientId);
+            if (_affectedIds.Contains(statusable.OwnerId)) return;
+            _affectedIds.Add(statusable.OwnerId);
         }
 
         var ownerId = OwnerClientId;
         if (NetworkObject.IsSceneObject == true)
             ownerId = PlayerId.EnvironmentId;
         foreach (var effect in effects) {
-            manager.AddEffect(ownerId, effect);
+            statusable.AddEffect(ownerId, effect);
         }
     }
 

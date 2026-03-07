@@ -10,7 +10,7 @@ using Voice;
 public class PlayerSpellCaster : NetworkBehaviour {
     [SerializeField] private AudioSource disabledSound;
     private NetworkStatSystem _statSystem;
-    private StatusEffectManager _effectManager;
+    private Statusable _statusable;
     private MeshController _meshController;
     private Mouth _mouth;
     private PlayerAnimator _playerAnimator;
@@ -42,7 +42,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
         _mouth = GetComponent<Mouth>();
         _playerAnimator = GetComponent<PlayerAnimator>();
         _recognition = new PlayerSpellRecognitionController(_mouth);
-        _effectManager = GetComponent<StatusEffectManager>();
+        _statusable = GetComponent<Statusable>();
     }
 
     public override void OnNetworkSpawn() {
@@ -87,7 +87,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
         if (!IsServer) return;
         _manaController.ServerTick(Time.deltaTime);
         if (IsPrimalManaLocked())
-            _effectManager.AddEffect(OwnerClientId, primalManaStatus);
+            _statusable.AddEffect(OwnerClientId, primalManaStatus);
     }
 
     public void RestoreEcho(ulong targetClientId) {

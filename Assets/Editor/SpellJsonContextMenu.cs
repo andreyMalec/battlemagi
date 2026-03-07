@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -14,9 +15,13 @@ public static class SpellJsonContextMenu {
         if (obj == null)
             return;
 
-        var json = SpellJsonSerializer.ToJson(obj, true);
-        Debug.Log(json);
-        EditorGUIUtility.systemCopyBuffer = json;
+        try {
+            var json = SpellJsonSerializer.ToJson(obj, true);
+            Debug.Log(json);
+            EditorGUIUtility.systemCopyBuffer = json;
+        } catch (Exception e) {
+            Console.WriteLine(e);
+        }
     }
 }
 #endif

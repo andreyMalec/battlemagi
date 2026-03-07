@@ -4,7 +4,6 @@ using Unity.Netcode;
 using UnityEngine;
 
 [RequireComponent(typeof(NetworkStatSystem))]
-[RequireComponent(typeof(StatusEffectManager))]
 public class PlayerDamageable : OldDamageable {
     public override bool IsStructure() {
         return false;
