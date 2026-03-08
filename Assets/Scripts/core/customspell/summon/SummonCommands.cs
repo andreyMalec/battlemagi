@@ -27,10 +27,10 @@ public class SummonCommands : IAICommands {
 
     public void Tick(AIContext ctx) {
         if (_caster != null && _caster.CanCast && _attack) {
-            if (ctx.Target == null)
+            if (ctx.ActiveTarget == null)
                 _caster.Cast(ctx.Spell);
             else
-                _caster.Cast(ctx.Spell, ctx.Target);
+                _caster.Cast(ctx.Spell, ctx.ActiveTarget);
             _attack = false;
         }
 

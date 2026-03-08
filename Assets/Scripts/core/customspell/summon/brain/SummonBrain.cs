@@ -4,3 +4,9 @@ public enum SummonBrain {
     Aggressive,
     Defensive,
 }
+
+public enum TargetFilter {
+    Player,
+    Spell,
+    All
+}

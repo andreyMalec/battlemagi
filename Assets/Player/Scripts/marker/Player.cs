@@ -6,7 +6,7 @@ using UnityEngine;
 using System.Reflection; // reflection for Awake
 
 [DefaultExecutionOrder(-100)]
-public class Player : NetworkBehaviour, ITarget {
+public class Player : NetworkBehaviour {
     private static readonly int OutlineColor = Shader.PropertyToID("OutlineColor");
     private static readonly int OutlineAlpha = Shader.PropertyToID("OutlineAlpha");
 
@@ -18,8 +18,6 @@ public class Player : NetworkBehaviour, ITarget {
     private Animator animator;
 
     private MethodInfo _networkAnimatorAwake;
-
-    public Vector3 Position => transform.position;
 
     private void Awake() {
         // invoke Awake via reflection to rebuild internal state

@@ -827,7 +827,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2196398029
+  GlobalObjectIdHash: 1910923140
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -1093,20 +1093,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerDamageable
   ShowTopMostFoldoutHeaderGroup: 1
-  maxHealth: 100
-  maxArmor: 50
-  armorEffect: 0.75
-  hpRestore: 0.5
-  immortal: 0
-  invulnerable: 0
-  hp: {fileID: 0}
-  damageAudio: {fileID: 8201634953252771622}
-  damageSoundCooldown: 0.2
-  health:
-    m_InternalValue: 0
-  armor:
-    m_InternalValue: 0
-  isDead: 0
 --- !u!143 &1874046057587579816
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1466,6 +1452,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c102da4810804e98a519729bf047f72b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Damageable
+  damageAudio: {fileID: 8201634953252771622}
+  damageSoundCooldown: 0.2
   _health:
     maxHealth: 100
     regenPerSecond: 1
@@ -1474,6 +1462,7 @@ MonoBehaviour:
     armorEffect: 0.75
   _immortal: 0
   _invulnerable: 0
+  _isStructure: 0
   _bridge: {fileID: 3174336610539449282}
 --- !u!114 &3174336610539449282
 MonoBehaviour:
@@ -1489,8 +1478,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NetworkDamageable
   ShowTopMostFoldoutHeaderGroup: 1
   _hpText: {fileID: 0}
-  _damageAudio: {fileID: 8201634953252771622}
-  _damageSoundCooldown: 0.2
   _statSystem: {fileID: 5208608556239358256}
   health:
     m_InternalValue: 0

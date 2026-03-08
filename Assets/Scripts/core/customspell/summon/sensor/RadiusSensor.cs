@@ -6,7 +6,7 @@ public class RadiusSensor : ISensor {
     }
 
     public void Sense(AIContext ctx) {
-        ctx.Target = ctx.World.FindClosestEnemy(
+        ctx.Targets = ctx.World.FindEnemiesInRadius(
             ctx.Self.position,
             _radius
         );

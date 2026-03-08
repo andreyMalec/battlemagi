@@ -7,7 +7,7 @@ public interface ISpellBind {
     void Tick(float deltaTime);
 }
 
-public class SpellInstance : MonoBehaviour {
+public class SpellInstance : MonoBehaviour, ITarget {
     public static readonly List<SpellInstance> Active = new();
 
     [SerializeField] private GameObject[] scale;
@@ -15,6 +15,11 @@ public class SpellInstance : MonoBehaviour {
     public ISpellBind Bind { get; private set; }
     private IAuthorityService _authorityService;
     private bool _initialized;
+
+    public Vector3 Position => transform.position;
+    public bool IsPlayer => false;
+    public bool IsSpell => true;
+    public OwnerId OwnerId => _authorityService.OwnerId;
 
     public void Init(ISpellBind bind, IAuthorityService authorityService) {
         _initialized = true;
@@ -79,6 +84,7 @@ public class SpellInstance : MonoBehaviour {
                 if (Mathf.Approximately(main.startLifetime.constant, main.duration))
                     main.startLifetime = lifetime;
             }
+
             main.duration = lifetime;
 
             ParticleUtils.Scale(ps, k, scaleShape);

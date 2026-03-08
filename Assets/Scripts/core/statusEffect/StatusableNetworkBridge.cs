@@ -4,7 +4,6 @@ using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
-[RequireComponent(typeof(Statusable))]
 public class StatusableNetworkBridge : NetworkBehaviour, IStatusableBridge {
     private struct NetDurationEffect : INetworkSerializable, IEquatable<NetDurationEffect> {
         public FixedString64Bytes effectName;
@@ -21,6 +20,7 @@ public class StatusableNetworkBridge : NetworkBehaviour, IStatusableBridge {
     }
 
     private Statusable _core;
+    private bool _hasStatusable;
 
     private NetworkList<NetDurationEffect> _synced;
     private NetworkList<NetDurationEffect>.OnListChangedDelegate _onSyncedChanged;
@@ -29,13 +29,16 @@ public class StatusableNetworkBridge : NetworkBehaviour, IStatusableBridge {
     public List<Statusable.DurationEffect> DurationEffects { get; private set; } = new();
 
     private void Awake() {
-        _core = GetComponent<Statusable>();
+        _core = GetComponentInChildren<Statusable>();;
+        _hasStatusable = _core != null;
+        if (!_hasStatusable) return;
         _synced = new NetworkList<NetDurationEffect>();
         _onSyncedChanged = _ => RebuildActiveEffectsFromSynced();
     }
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
+        if (!_hasStatusable) return;
         _synced.OnListChanged += _onSyncedChanged;
         RebuildActiveEffectsFromSynced();
         if (IsServer)
@@ -43,11 +46,13 @@ public class StatusableNetworkBridge : NetworkBehaviour, IStatusableBridge {
     }
 
     public override void OnNetworkDespawn() {
+        if (!_hasStatusable) return;
         _synced.OnListChanged -= _onSyncedChanged;
         base.OnNetworkDespawn();
     }
 
     private void FixedUpdate() {
+        if (!_hasStatusable) return;
         TickFixed(_core);
     }
 

@@ -29,8 +29,8 @@ public class FloatingMotion : ILocomotion {
         var dist = new Vector3(dir.x, 0f, dir.z).magnitude;
 
         if (dist <= _minDistance) {
-            if (ctx.Target == null) return;
-            dir = ctx.Target.Position - pos;
+            if (ctx.ActiveTarget == null) return;
+            dir = ctx.ActiveTarget.Position - pos;
             if (dir.sqrMagnitude > 0f)
                 ctx.Self.rotation = Quaternion.LookRotation(dir.normalized, Vector3.up);
             return;

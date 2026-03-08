@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class Raven : MonoBehaviour {
     [SerializeField] private float moveSpeedThreshold = 0.05f;
-    [SerializeField] private GameObject feathers;
     [SerializeField] private float bankingSmooth = 12f;
 
     private Animator _anim;
@@ -27,17 +26,6 @@ public class Raven : MonoBehaviour {
 
         _prevPos = transform.position;
         _bank = 0f;
-    }
-
-    private bool _isQuitting;
-
-    private void OnApplicationQuit() {
-        _isQuitting = true;
-    }
-
-    private void OnDestroy() {
-        if (_isQuitting) return;
-        Instantiate(feathers, transform.position, Quaternion.identity);
     }
 
     private void OnEnable() {

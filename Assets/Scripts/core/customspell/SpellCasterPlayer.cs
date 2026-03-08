@@ -14,6 +14,9 @@ public class SpellCasterPlayer : SpellCaster {
     public override Vector3 Origin => spawnPos.position;
     public override Vector3 Direction => spawnPos.forward;
 
+    public override bool IsPlayer => true;
+    public override bool IsSpell => false;
+
     public override bool CanCast { get; } = true;
 
     void Update() {

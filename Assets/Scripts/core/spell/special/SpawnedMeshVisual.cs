@@ -5,7 +5,6 @@ public class SpawnedMeshVisual : MonoBehaviour {
     [SerializeField] private Vector3 start = Vector3.zero;
     [SerializeField] private Vector3 end;
     [SerializeField] private float duration = 1f;
-    [SerializeField] private AudioClip onDestroy;
 
     private OldDamageable _damageable;
     private Material _material;

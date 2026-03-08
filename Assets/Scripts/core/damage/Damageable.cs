@@ -2,14 +2,24 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Damageable : MonoBehaviour, ITarget {
+public class Damageable : MonoBehaviour {
     public static readonly List<Damageable> Active = new();
 
+    [Header("Sound")]
+    [SerializeField] public AudioSource damageAudio;
+
+    [SerializeField] public float damageSoundCooldown = 0.2f;
+
+    [Header("Module")]
     [SerializeField] private HealthModule _health = new();
+
     [SerializeField] private ArmorModule _armor = new();
 
+    [Header("State")]
     [SerializeField] private bool _immortal;
+
     [SerializeField] private bool _invulnerable;
+    [SerializeField] private bool _isStructure;
 
     [SerializeField] private MonoBehaviour _bridge;
 
@@ -18,8 +28,7 @@ public class Damageable : MonoBehaviour, ITarget {
 
     public float CurrentHealth { get; private set; }
     public float CurrentArmor { get; private set; }
-
-    public Vector3 Position => transform.position;
+    public bool IsStructure => _isStructure;
 
     public DamageableState State { get; private set; }
 
@@ -46,7 +55,7 @@ public class Damageable : MonoBehaviour, ITarget {
         if (_bridge != null)
             _bridgeTyped = (IDamageableBridge)_bridge;
         else
-            _bridgeTyped = GetComponent<IDamageableBridge>();
+            _bridgeTyped = GetComponentInParent<IDamageableBridge>();
         _statusable = GetComponent<Statusable>();
     }
 
@@ -234,6 +243,7 @@ public class Damageable : MonoBehaviour, ITarget {
         Active.Remove(this);
         OnDeath?.Invoke(info);
 
-        _bridgeTyped.DespawnOnDeath();
+        if (IsStructure)
+            _bridgeTyped.DespawnOnDeath();
     }
 }

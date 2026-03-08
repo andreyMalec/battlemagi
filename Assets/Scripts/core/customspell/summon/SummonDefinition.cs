@@ -8,6 +8,8 @@ public class SummonDefinition : ScriptableObject, IValidate {
     public SpellDefinition mainSpell;
 
     public SummonBrain brain;
+    public TargetFilter targetFilter;
+    public bool canTargetAllies;
     public SummonMotion motion;
     public SummonSensor sensors;
 

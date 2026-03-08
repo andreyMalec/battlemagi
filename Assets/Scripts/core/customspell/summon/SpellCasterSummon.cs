@@ -19,6 +19,9 @@ public class SpellCasterSummon : SpellCaster {
     public override Vector3 Origin => spawnPos.position;
     public override Vector3 Direction => spawnPos.forward;
 
+    public override bool IsPlayer => false;
+    public override bool IsSpell => true;
+
     private new void Awake() {
         base.Awake();
         foreach (var ps in onAttackParticles)

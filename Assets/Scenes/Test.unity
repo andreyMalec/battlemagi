@@ -359,6 +359,8 @@ GameObject:
   m_Component:
   - component: {fileID: 340026116}
   - component: {fileID: 340026115}
+  - component: {fileID: 340026118}
+  - component: {fileID: 340026117}
   m_Layer: 0
   m_Name: SpellPrefab
   m_TagString: Untagged
@@ -395,6 +397,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &340026117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 340026114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdcfeb5c05e142949cd99c4cea7f16b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TeamManager
+  ShowTopMostFoldoutHeaderGroup: 1
+  CurrentMode:
+    m_InternalValue: 0
+  RedScore:
+    m_InternalValue: 0
+  BlueScore:
+    m_InternalValue: 0
+  EndChoice:
+    m_InternalValue: 0
+--- !u!114 &340026118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 340026114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 2577766915
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1 &363908878
 GameObject:
   m_ObjectHideFlags: 0
@@ -4488,31 +4536,6 @@ RectTransform:
   m_AnchoredPosition: {x: 3.130005, y: 0.000030517578}
   m_SizeDelta: {x: 193.74, y: -6.26}
   m_Pivot: {x: 0, y: 0.5}
---- !u!114 &206089088756193085
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2900472411444271790}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1583604452
-  InScenePlacedSourceGlobalObjectIdHash: 1548787872
-  DeferredDespawnTick: 0
-  Ownership: 1
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 0
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0
 --- !u!114 &311047647223890433
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4644,7 +4667,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7351032199263568244}
-  - component: {fileID: 206089088756193085}
   - component: {fileID: 5533485296282123893}
   - component: {fileID: 1667126590}
   - component: {fileID: 1667126589}
@@ -4653,6 +4675,8 @@ GameObject:
   - component: {fileID: 7351032199263568245}
   - component: {fileID: 7351032199263568249}
   - component: {fileID: 7351032199263568248}
+  - component: {fileID: 7351032199263568250}
+  - component: {fileID: 7351032199263568251}
   m_Layer: 9
   m_Name: Pure Dummy
   m_TagString: Untagged
@@ -5589,10 +5613,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 572635613edd4d45a7d50d7348c79d56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LocalDamageableBridge
-  clientId: 0
+  clientId: 1
   _hpText: {fileID: 953732795025515142}
-  _damageAudio: {fileID: 7351032199263568245}
-  _damageSoundCooldown: 0.2
   health: 0
 --- !u!114 &7351032199263568247
 MonoBehaviour:
@@ -5606,6 +5628,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c102da4810804e98a519729bf047f72b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Damageable
+  damageAudio: {fileID: 0}
+  damageSoundCooldown: 0.2
   _health:
     maxHealth: 100
     regenPerSecond: 10
@@ -5614,6 +5638,7 @@ MonoBehaviour:
     armorEffect: 0.75
   _immortal: 1
   _invulnerable: 0
+  _isStructure: 0
   _bridge: {fileID: 7351032199263568246}
 --- !u!114 &7351032199263568248
 MonoBehaviour:
@@ -5627,7 +5652,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac197ad2c31b45ad97c78c0196803092, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StatusableLocalBridge
-  clientId: 0
+  clientId: 1
 --- !u!114 &7351032199263568249
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5641,6 +5666,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Statusable
   _bridge: {fileID: 7351032199263568248}
+--- !u!114 &7351032199263568250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2900472411444271790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74ebdd940d9a4fcaaae044fe12179c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellCasterPlayer
+  def: {fileID: 0}
+  def2: {fileID: 0}
+  def3: {fileID: 0}
+  def4: {fileID: 0}
+  spawnPos: {fileID: 0}
+--- !u!114 &7351032199263568251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2900472411444271790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72716d9af3fd4b6097fcb847fd3e589c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalGameBootstrap
+  ownerId: 1
 --- !u!223 &7445101439491304637
 Canvas:
   m_ObjectHideFlags: 0

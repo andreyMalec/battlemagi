@@ -40,19 +40,4 @@ public class SummonContext : ISpellContext {
     public void SendEvent(SpellEvent evt) {
         eventSink?.Invoke(evt);
     }
-
-    public DamageDefinition SpellDamage {
-        get {
-            var d = Spell.damage;
-            if (d != null) return d;
-
-            var f = Spell.GetType().GetField("damage");
-            if (f != null) return f.GetValue(Spell) as DamageDefinition;
-
-            var p = Spell.GetType().GetProperty("damage");
-            if (p != null) return p.GetValue(Spell) as DamageDefinition;
-
-            return null;
-        }
-    }
 }

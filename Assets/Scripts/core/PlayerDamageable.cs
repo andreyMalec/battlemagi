@@ -1,27 +1,42 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
-[RequireComponent(typeof(NetworkStatSystem))]
-public class PlayerDamageable : OldDamageable {
-    public override bool IsStructure() {
-        return false;
+[RequireComponent(typeof(Damageable))]
+public class PlayerDamageable : NetworkBehaviour {
+    private Damageable _damageable;
+    private readonly List<ulong> _damagedBy = new();
+    private readonly List<DamageInfo> _damagedBySource = new();
+
+    private void Awake() {
+        _damageable = GetComponent<Damageable>();
+        _damageable.OnDeath += OnDeath;
+        _damageable.OnDamageApplied += OnDamageApplied;
     }
 
-    protected override void OnDeath(ulong ownerClientId, ulong fromClientId, string source) {
+    private void OnDamageApplied(DamageApplied damageApplied) {
+        if (!_damagedBy.Contains(damageApplied.request.fromId) && OwnerClientId != damageApplied.request.fromId)
+            _damagedBy.Add(damageApplied.request.fromId);
+        _damagedBySource.Add(new DamageInfo { damage = damageApplied.final, source = damageApplied.request.source });
+    }
+
+    private void OnDeath(DeathInfo deathInfo) {
         NetworkObject.TryRemoveParent();
-        foreach (var enemy in _damagedBy.Where(damager => TeamManager.Instance.AreEnemies(ownerClientId, damager))) {
-            if (enemy == fromClientId)
-                PlayerManager.Instance.AddKill(fromClientId);
+        var enemies = _damagedBy.Where(damager => TeamManager.Instance.AreEnemies(OwnerClientId, damager));
+        foreach (var enemy in enemies) {
+            if (enemy == deathInfo.fromId)
+                PlayerManager.Instance.AddKill(deathInfo.fromId);
             else
                 PlayerManager.Instance.AddAssist(enemy);
         }
 
-        PlayerManager.Instance.AddDeath(ownerClientId);
-        PlayerSpawner.instance.HandleDeathServer(ownerClientId);
-        Killfeed.Instance?.HandleClientRpc(fromClientId, ownerClientId);
-        SendAnalytics(ownerClientId, source);
+        PlayerManager.Instance.AddDeath(OwnerClientId);
+        PlayerSpawner.instance.HandleDeathServer(OwnerClientId);
+        Killfeed.Instance?.HandleClientRpc(deathInfo.fromId, OwnerClientId);
+        SendAnalytics(OwnerClientId, deathInfo.source);
     }
 
     private void SendAnalytics(ulong ownerClientId, string source) {
@@ -52,5 +67,16 @@ public class PlayerDamageable : OldDamageable {
         FirebaseAnalytic.Instance.SendEvent("PlayerKilled", new Dictionary<string, object> {
             { "source", source }
         });
+    }
+
+    [Serializable]
+    protected struct DamageInfo : INetworkSerializable {
+        public float damage;
+        public FixedString128Bytes source;
+
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter {
+            serializer.SerializeValue(ref damage);
+            serializer.SerializeValue(ref source);
+        }
     }
 }

@@ -1,17 +1,12 @@
 using TMPro;
 using UnityEngine;
 
-[RequireComponent(typeof(Damageable))]
 public class DamageableLocalBridge : MonoBehaviour, IDamageableBridge {
     [SerializeField] private ulong clientId;
     [SerializeField] private TMP_Text _hpText;
 
-    [Header("Sound")]
-    [SerializeField] private AudioSource _damageAudio;
-
-    [SerializeField] private float _damageSoundCooldown = 0.2f;
-
     private Damageable _core;
+    private bool _hasDamageable;
     private float _lastDamageSoundTime;
 
     public float health = 0f;
@@ -22,15 +17,18 @@ public class DamageableLocalBridge : MonoBehaviour, IDamageableBridge {
     public ulong OwnerId => clientId;
 
     private void Awake() {
-        _core = GetComponent<Damageable>();
+        _core = GetComponentInChildren<Damageable>();
+        _hasDamageable = _core != null;
     }
 
     private void Update() {
+        if (!_hasDamageable) return;
         if (_hpText != null)
             _hpText.text = health.ToString("0.0");
     }
 
     private void FixedUpdate() {
+        if (!_hasDamageable) return;
         TickFixed(_core);
     }
 
@@ -43,15 +41,15 @@ public class DamageableLocalBridge : MonoBehaviour, IDamageableBridge {
     }
 
     public void PlayDamageSound(DamageSoundType sound, bool ignoreCooldown) {
-        if (_damageAudio == null) return;
+        if (_core.damageAudio == null) return;
 
-        if (Time.time - _lastDamageSoundTime < _damageSoundCooldown && !ignoreCooldown)
+        if (Time.time - _lastDamageSoundTime < _core.damageSoundCooldown && !ignoreCooldown)
             return;
 
         _lastDamageSoundTime = Time.time;
         var clip = AudioManager.Instance.GetDamageSound(sound);
         if (clip != null)
-            _damageAudio.PlayOneShot(clip);
+            _core.damageAudio.PlayOneShot(clip);
     }
 
     public bool HandlePreApplyDamage(ref DamageRequest request, float beforeHealth) {

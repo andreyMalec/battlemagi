@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class SpellCaster : MonoBehaviour {
+public abstract class SpellCaster : MonoBehaviour, ITarget {
+    public static readonly List<SpellCaster> Active = new();
+
     public abstract bool CanCast { get; }
 
     public abstract Vector3 Origin { get; }
@@ -14,12 +17,22 @@ public abstract class SpellCaster : MonoBehaviour {
     private bool _useNetwork;
     private SpellCasterNet _casterNet;
 
+    public Vector3 Position => transform.position;
+    public abstract bool IsPlayer { get; }
+    public abstract bool IsSpell { get; }
+    public OwnerId Ownerid => Authority.OwnerId;
+
     protected void Awake() {
         _casterNet = GetComponentInParent<SpellCasterNet>();
         _useNetwork = _casterNet != null;
 
         var bootstrap = GetComponentInParent<SpellBootstrap>();
         bootstrap.Init(this);
+        Active.Add(this);
+    }
+
+    private void OnDestroy() {
+        Active.Remove(this);
     }
 
     public void Initialize(

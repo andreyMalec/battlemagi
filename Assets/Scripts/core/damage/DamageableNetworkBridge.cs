@@ -2,19 +2,14 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
-[RequireComponent(typeof(Damageable))]
 public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
     [SerializeField] private TMP_Text _hpText;
-
-    [Header("Sound")]
-    [SerializeField] private AudioSource _damageAudio;
-
-    [SerializeField] private float _damageSoundCooldown = 0.2f;
 
     [Header("Modules")]
     [SerializeField] private NetworkStatSystem _statSystem;
 
     private Damageable _core;
+    private bool _hasDamageable;
     private float _lastDamageSoundTime;
 
     public NetworkVariable<float> health = new();
@@ -27,15 +22,17 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
     private Statusable _statusable;
 
     private void Awake() {
-        _core = GetComponent<Damageable>();
+        _core = GetComponentInChildren<Damageable>();
+        _hasDamageable = _core != null;
 
         if (_statSystem == null)
-            _statSystem = GetComponent<NetworkStatSystem>();
-        _statusable = GetComponent<Statusable>();
+            _statSystem = GetComponentInChildren<NetworkStatSystem>();
+        _statusable = GetComponentInChildren<Statusable>();
     }
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
+        if (!_hasDamageable) return;
 
         health.OnValueChanged += OnHealthChanged;
         armor.OnValueChanged += OnArmorChanged;
@@ -47,6 +44,7 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
     }
 
     public override void OnNetworkDespawn() {
+        if (!_hasDamageable) return;
         health.OnValueChanged -= OnHealthChanged;
         armor.OnValueChanged -= OnArmorChanged;
         base.OnNetworkDespawn();
@@ -61,11 +59,13 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
     }
 
     private void Update() {
+        if (!_hasDamageable) return;
         if (_hpText != null)
             _hpText.text = health.Value.ToString("0.0");
     }
 
     private void FixedUpdate() {
+        if (!_hasDamageable) return;
         TickFixed(_core);
     }
 
@@ -88,7 +88,7 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
     public void PlayDamageSound(DamageSoundType sound, bool ignoreCooldown) {
         if (!IsServer) return;
 
-        if (Time.time - _lastDamageSoundTime < _damageSoundCooldown && !ignoreCooldown)
+        if (Time.time - _lastDamageSoundTime < _core.damageSoundCooldown && !ignoreCooldown)
             return;
 
         _lastDamageSoundTime = Time.time;
@@ -151,10 +151,10 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
 
     [ClientRpc]
     private void PlayDamageSoundClientRpc(int damageSoundType) {
-        if (_damageAudio == null) return;
+        if (_core.damageAudio == null) return;
         var type = (DamageSoundType)damageSoundType;
         var clip = AudioManager.Instance.GetDamageSound(type);
         if (clip != null)
-            _damageAudio.PlayOneShot(clip);
+            _core.damageAudio.PlayOneShot(clip);
     }
 }

@@ -22,7 +22,7 @@ public class Statusable : MonoBehaviour {
         if (_bridge != null)
             _bridgeTyped = (IStatusableBridge)_bridge;
         else
-            _bridgeTyped = GetComponent<IStatusableBridge>();
+            _bridgeTyped = GetComponentInParent<IStatusableBridge>();
     }
 
     public bool HasEffect(string effectName) {

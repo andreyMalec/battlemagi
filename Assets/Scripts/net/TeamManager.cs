@@ -69,7 +69,9 @@ public class TeamManager : NetworkBehaviour {
     }
 
     private void Start() {
-        NetworkManager.Singleton.OnConnectionEvent += OnConnectionEvent;
+        if (NetworkManager.Singleton != null) {
+            NetworkManager.Singleton.OnConnectionEvent += OnConnectionEvent;
+        }
     }
 
     public override void OnDestroy() {

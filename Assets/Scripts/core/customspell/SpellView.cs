@@ -6,8 +6,6 @@ public class SpellView : MonoBehaviour {
     public bool IsAlive { get; private set; } = true;
     public bool scaleShape = false;
 
-    public Vector3 Position => transform.position;
-
     public void Kill(ISpellContext context) {
         if (!IsAlive) return;
         IsAlive = false;

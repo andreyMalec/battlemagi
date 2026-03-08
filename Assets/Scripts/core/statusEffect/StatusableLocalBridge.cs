@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Statusable))]
 public class StatusableLocalBridge : MonoBehaviour, IStatusableBridge {
     [SerializeField] private ulong clientId;
 
     private Statusable _core;
+    private bool _hasStatusable;
 
     public bool IsServer => clientId == 0;
     public bool IsSpawned => true;
@@ -13,10 +13,12 @@ public class StatusableLocalBridge : MonoBehaviour, IStatusableBridge {
     public List<Statusable.DurationEffect> DurationEffects { get; } = new();
 
     private void Awake() {
-        _core = GetComponent<Statusable>();
+        _core = GetComponentInChildren<Statusable>();
+        _hasStatusable = _core != null;
     }
 
     private void FixedUpdate() {
+        if (!_hasStatusable) return;
         TickFixed(_core);
     }
 

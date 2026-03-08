@@ -28,6 +28,9 @@ public class SummonBind<TContext> : ISpellBind
         _commands = new SummonCommands(move, caster);
         _ai = new AIContext {
             Spell = context.Spell.summon.mainSpell,
+            TargetFilter = context.Spell.summon.targetFilter,
+            CanTargetAllies = context.Spell.summon.canTargetAllies,
+            Caster = caster,
             Self = view.transform,
             HomePosition = view.transform.position,
             Commands = _commands,

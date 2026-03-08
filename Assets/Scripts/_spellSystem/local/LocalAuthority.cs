@@ -1,7 +1,12 @@
 using UnityEngine;
 
 public class LocalAuthority : IAuthorityService {
-    public ulong OwnerId => 0;
+    public OwnerId OwnerId { get; }
+
     public bool IsServer => true;
     public bool IsOwner => true;
+
+    public LocalAuthority(ulong ownerId) {
+        OwnerId = ownerId;
+    }
 }

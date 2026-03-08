@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 388be3652f9048a4b992fee274562333, type: 3}
   m_Name: New Summon Spell
   m_EditorClassIdentifier: Assembly-CSharp::SummonDefinition
-  prefabId: 2
+  prefabId: 0
   mainSpell: {fileID: 11400000, guid: 7659d312640413c4bbe8f8065b466a2c, type: 2}
   brain: 3
-  motion: 1
+  targetFilter: 1
+  canTargetAllies: 1
+  motion: 0
   sensors: 1
   moveSpeed: 3
   floatingHeight: 3
