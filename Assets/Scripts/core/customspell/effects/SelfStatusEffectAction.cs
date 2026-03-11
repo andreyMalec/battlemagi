@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public class SelfStatusEffectAction : ISpellAction {
     private readonly Dictionary<EffectDefinition, HashSet<Statusable>> _onceApplied = new();
@@ -26,7 +27,7 @@ public class SelfStatusEffectAction : ISpellAction {
                 set.Add(statusable);
             }
 
-            base.Apply(context, evt);
+            Debug.Log($"SpellAction {GetType().Name} applied to {statusable.name}. Event: {evt.GetType().Name}");
             statusable.AddEffect(context.OwnerId, def.effect);
         }
     }

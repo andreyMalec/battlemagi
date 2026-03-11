@@ -7,11 +7,13 @@ public class SpellCasterSummon : SpellCaster {
     [SerializeField] private float cooldown = 1f;
     [SerializeField] private ParticleSystem[] onAttackParticles;
     [SerializeField] private AudioSource[] onAttackSounds;
+    [SerializeField] private AudioSource[] onActivateSounds;
 
     private ITarget _target;
     private SpellDefinition _spell;
     private float _timer;
-    private SpellView _view;
+    private float _activationTimer;
+    private SpellInstance _instance;
     private SpellSystemEvent _event;
 
     private bool _canCast = false;
@@ -28,14 +30,22 @@ public class SpellCasterSummon : SpellCaster {
             ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         foreach (var ps in onAttackSounds)
             ps.Stop();
+        foreach (var ps in onActivateSounds)
+            ps.Stop();
         _timer = cooldown - activationDelay;
-        _view = GetComponent<SpellView>();
+        _instance = GetComponent<SpellInstance>();
         _event = GetComponentInParent<SpellSystemEvent>();
     }
 
     private void FixedUpdate() {
         _timer += Time.fixedDeltaTime;
-        _canCast = _timer >= cooldown && _view.IsAlive;
+        _activationTimer += Time.fixedDeltaTime;
+        if (_activationTimer >= activationDelay && _activationTimer - Time.fixedDeltaTime < activationDelay) {
+            foreach (var ps in onActivateSounds)
+                ps.Play();
+        }
+
+        _canCast = _timer >= cooldown && _instance.IsAlive;
     }
 
     public void OnAttack() {
@@ -48,11 +58,13 @@ public class SpellCasterSummon : SpellCaster {
 
     public override void Cast(SpellDefinition spell) {
         _event.OnAttack(this);
+        _instance.Bind.Context.SendEvent(new OnSummonAttackEvent(null));
         base.Cast(spell);
     }
 
     public override void Cast(SpellDefinition spell, ITarget target) {
         _event.OnAttack(this);
+        _instance.Bind.Context.SendEvent(new OnSummonAttackEvent(target));
         base.Cast(spell, target);
     }
 }

@@ -20,6 +20,10 @@ public class SummonCommands : IAICommands {
         _attack = true;
     }
 
+    public void StopAttack() {
+        _attack = false;
+    }
+
     public void Idle() {
         _moveTarget = null;
         _move.Stop();

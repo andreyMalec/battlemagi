@@ -11,7 +11,7 @@ public class DamageableLocalBridge : MonoBehaviour, IDamageableBridge {
 
     public float health = 0f;
 
-    public bool IsServer => clientId == 0;
+    public bool IsServer => true;
     public bool IsSpawned => true;
     public bool IsOwner => clientId == 0;
     public ulong OwnerId => clientId;
@@ -56,7 +56,7 @@ public class DamageableLocalBridge : MonoBehaviour, IDamageableBridge {
         return true;
     }
 
-    public void HandlePostApplyDamage(in DamageRequest request, float rawDamage, bool ignoreSoundCooldown) {
+    public void HandlePostApplyDamage(in DamageApplied applied, ref DamageRequest request, bool ignoreSoundCooldown) {
         PlayDamageSound((DamageSoundType)request.kind, ignoreSoundCooldown);
     }
 

@@ -2499,6 +2499,10 @@ PrefabInstance:
       propertyPath: MeshDescription.surfaceParameter
       value: 46764
       objectReference: {fileID: 0}
+    - target: {fileID: 9075168730978629305, guid: ed826c0dfa8aebb4c9473140d3d07b16, type: 3}
+      propertyPath: _hpText
+      value: 
+      objectReference: {fileID: 449970324}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -2775,73 +2779,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 855543942}
   m_CullTransparentMesh: 1
---- !u!1 &873240042
-GameObject:
-  m_ObjectHideFlags: 17
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 873240044}
-  - component: {fileID: 873240043}
-  m_Layer: 0
-  m_Name: '[default-CSGModel]'
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 124
-  m_IsActive: 1
---- !u!114 &873240043
-MonoBehaviour:
-  m_ObjectHideFlags: 17
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 873240042}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8672dcc90e16b0a489a41edf56e016f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp-firstpass::RealtimeCSG.Components.CSGModel
-  PrefabBehaviour: 0
-  PrefabSourceAlignment: 4
-  PrefabDestinationAlignment: 0
-  Version: 1.1
-  infiniteBrush: {fileID: 0}
-  Settings: 1025
-  VertexChannels: 14
-  ReceiveGI: 2
-  MeshColliderCookingOptions: 14
-  ShowGeneratedMeshes: 0
-  DefaultPhysicsMaterial: {fileID: 13400000, guid: 0c5fdfb44d6f19646a41a0720fbf751a, type: 2}
-  exportType: 0
-  originType: 0
-  exportColliders: 0
-  exportPath: 
-  angleError: 1
-  areaError: 1
-  hardAngle: 60
-  packMargin: 20
-  scaleInLightmap: 1
-  autoUVMaxDistance: 0.5
-  autoUVMaxAngle: 89
-  minimumChartSize: 4
---- !u!4 &873240044
-Transform:
-  m_ObjectHideFlags: 17
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 873240042}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &874741090
 GameObject:
   m_ObjectHideFlags: 0
@@ -3004,17 +2941,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b7a46b8c2431e884db0c07139efc6a9e, type: 3}
---- !u!114 &934795264 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1870895211298274875, guid: 3388c675a04491247a96b13c5950bf10, type: 3}
-  m_PrefabInstance: {fileID: 2023091144}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 572635613edd4d45a7d50d7348c79d56, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LocalDamageableBridge
 --- !u!1 &999395329
 GameObject:
   m_ObjectHideFlags: 0
@@ -3721,6 +3647,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LinearMotion
   speed: 2
   period: 7
+  stats: {fileID: 7351032199263568253}
 --- !u!54 &1667126590
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3941,6 +3868,73 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1847202219}
   m_CullTransparentMesh: 1
+--- !u!1 &1854213921
+GameObject:
+  m_ObjectHideFlags: 17
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1854213923}
+  - component: {fileID: 1854213922}
+  m_Layer: 0
+  m_Name: '[default-CSGModel]'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 124
+  m_IsActive: 1
+--- !u!114 &1854213922
+MonoBehaviour:
+  m_ObjectHideFlags: 17
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1854213921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8672dcc90e16b0a489a41edf56e016f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp-firstpass::RealtimeCSG.Components.CSGModel
+  PrefabBehaviour: 0
+  PrefabSourceAlignment: 4
+  PrefabDestinationAlignment: 0
+  Version: 1.1
+  infiniteBrush: {fileID: 0}
+  Settings: 1025
+  VertexChannels: 14
+  ReceiveGI: 2
+  MeshColliderCookingOptions: 14
+  ShowGeneratedMeshes: 0
+  DefaultPhysicsMaterial: {fileID: 13400000, guid: 0c5fdfb44d6f19646a41a0720fbf751a, type: 2}
+  exportType: 0
+  originType: 0
+  exportColliders: 0
+  exportPath: 
+  angleError: 1
+  areaError: 1
+  hardAngle: 60
+  packMargin: 20
+  scaleInLightmap: 1
+  autoUVMaxDistance: 0.5
+  autoUVMaxAngle: 89
+  minimumChartSize: 4
+--- !u!4 &1854213923
+Transform:
+  m_ObjectHideFlags: 17
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1854213921}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1887316379
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4228,7 +4222,7 @@ PrefabInstance:
     - target: {fileID: 4815534646972923113, guid: 3388c675a04491247a96b13c5950bf10, type: 3}
       propertyPath: _bridge
       value: 
-      objectReference: {fileID: 934795264}
+      objectReference: {fileID: 0}
     - target: {fileID: 4815534646972923113, guid: 3388c675a04491247a96b13c5950bf10, type: 3}
       propertyPath: _immortal
       value: 1
@@ -4670,13 +4664,15 @@ GameObject:
   - component: {fileID: 5533485296282123893}
   - component: {fileID: 1667126590}
   - component: {fileID: 1667126589}
-  - component: {fileID: 7351032199263568247}
-  - component: {fileID: 7351032199263568246}
-  - component: {fileID: 7351032199263568245}
-  - component: {fileID: 7351032199263568249}
-  - component: {fileID: 7351032199263568248}
   - component: {fileID: 7351032199263568250}
   - component: {fileID: 7351032199263568251}
+  - component: {fileID: 7351032199263568247}
+  - component: {fileID: 7351032199263568246}
+  - component: {fileID: 7351032199263568249}
+  - component: {fileID: 7351032199263568248}
+  - component: {fileID: 7351032199263568253}
+  - component: {fileID: 7351032199263568252}
+  - component: {fileID: 7351032199263568245}
   m_Layer: 9
   m_Name: Pure Dummy
   m_TagString: Untagged
@@ -5639,7 +5635,7 @@ MonoBehaviour:
   _immortal: 1
   _invulnerable: 0
   _isStructure: 0
-  _bridge: {fileID: 7351032199263568246}
+  _bridge: {fileID: 0}
 --- !u!114 &7351032199263568248
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5665,7 +5661,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d72e0fa02c2444db966472241dace85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Statusable
-  _bridge: {fileID: 7351032199263568248}
+  _bridge: {fileID: 0}
 --- !u!114 &7351032199263568250
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5696,6 +5692,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LocalGameBootstrap
   ownerId: 1
+--- !u!114 &7351032199263568252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2900472411444271790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c45202fb7a55494fa61133a39222b391, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatsLocalBridge
+  clientId: 1
+--- !u!114 &7351032199263568253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2900472411444271790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de56e174e26b44b0a58feea6433f9cb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Stats
+  _bridge: {fileID: 0}
 --- !u!223 &7445101439491304637
 Canvas:
   m_ObjectHideFlags: 0
@@ -5786,7 +5808,6 @@ SceneRoots:
   - {fileID: 1331458578}
   - {fileID: 851158354}
   - {fileID: 3866497477844789995}
-  - {fileID: 7351032199263568244}
   - {fileID: 364402788}
   - {fileID: 209071254}
   - {fileID: 1782253863}
@@ -5796,5 +5817,6 @@ SceneRoots:
   - {fileID: 2043647589}
   - {fileID: 2045028058}
   - {fileID: 928432573}
+  - {fileID: 7351032199263568244}
   - {fileID: 2023091144}
-  - {fileID: 873240044}
+  - {fileID: 1854213923}

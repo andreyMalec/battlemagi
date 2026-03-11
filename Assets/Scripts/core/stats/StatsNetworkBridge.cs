@@ -13,12 +13,6 @@ public class StatsNetworkBridge : NetworkBehaviour, IStatsBridge {
     public void Bind(Stats core) {
         _core = core;
         _hasCore = true;
-        if (!IsServer) {
-            _synced.OnValueChanged += OnSyncedChanged;
-            _core.SetSnapshot(_synced.Value);
-        } else {
-            SyncFromCore(_core);
-        }
     }
 
     public override void OnNetworkSpawn() {

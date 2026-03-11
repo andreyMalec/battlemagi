@@ -44,6 +44,7 @@ public class Damageable : MonoBehaviour {
     public event Action<DamageableState> OnStateChanged;
 
     private Statusable _statusable;
+    private Stats _stats;
 
     private readonly List<IDamageModifier> _modifiers = new();
     private readonly List<IDamageModule> _modules = new();
@@ -58,6 +59,7 @@ public class Damageable : MonoBehaviour {
             _bridgeTyped = GetComponentInParent<IDamageableBridge>();
         _bridgeTyped.Bind(this);
         _statusable = GetComponent<Statusable>();
+        _stats = GetComponent<Stats>();
     }
 
     internal void SetNetworkState(float health, float armor) {
@@ -80,7 +82,11 @@ public class Damageable : MonoBehaviour {
         _modules.Add(_armor);
 
         foreach (var m in _modules)
-            m.Initialize(this);
+            m.Initialize(this, _stats);
+
+        gameObject.AddComponent<StatSystemDamageModifier>();
+        foreach (var m in GetComponents<IDamageModifier>())
+            _modifiers.Add(m);
 
         CurrentHealth = _health.Health;
         CurrentArmor = _armor.Armor;
@@ -174,9 +180,9 @@ public class Damageable : MonoBehaviour {
         if (!_bridgeTyped.HandlePreApplyDamage(ref request, beforeHp))
             return;
 
-        ApplyDamageServer(in request);
+        var applied = ApplyDamageServer(in request);
 
-        _bridgeTyped.HandlePostApplyDamage(in request, amount, ignoreSoundCooldown);
+        _bridgeTyped.HandlePostApplyDamage(in applied, ref request, ignoreSoundCooldown);
         _bridgeTyped.SyncFromCore(this);
         _statusable?.HandleHit(request);
     }

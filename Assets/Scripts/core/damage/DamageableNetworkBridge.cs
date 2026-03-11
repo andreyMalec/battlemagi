@@ -9,7 +9,7 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
     [SerializeField] private Stats _stats;
 
     private Damageable _core;
-    private bool _hasDamageable;
+    private bool _hasCore;
     private float _lastDamageSoundTime;
 
     public NetworkVariable<float> health = new();
@@ -29,14 +29,14 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
 
     public void Bind(Damageable core) {
         _core = core;
-        _hasDamageable = true;
+        _hasCore = true;
         if (IsServer)
             SyncFromCore(_core);
     }
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
-        if (!_hasDamageable) return;
+        if (!_hasCore) return;
 
         health.OnValueChanged += OnHealthChanged;
         armor.OnValueChanged += OnArmorChanged;
@@ -48,7 +48,7 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
     }
 
     public override void OnNetworkDespawn() {
-        if (!_hasDamageable) return;
+        if (!_hasCore) return;
         health.OnValueChanged -= OnHealthChanged;
         armor.OnValueChanged -= OnArmorChanged;
         base.OnNetworkDespawn();
@@ -63,13 +63,13 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
     }
 
     private void Update() {
-        if (!_hasDamageable) return;
+        if (!_hasCore) return;
         if (_hpText != null)
             _hpText.text = health.Value.ToString("0.0");
     }
 
     private void FixedUpdate() {
-        if (!_hasDamageable) return;
+        if (!_hasCore) return;
         TickFixed(_core);
     }
 
@@ -82,7 +82,7 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
     }
 
     public void SyncFromCore(Damageable core) {
-        if (!_hasDamageable) return;
+        if (!_hasCore) return;
         if (!IsServer) return;
         if (!IsSpawned) return;
         health.Value = core.Health.Health;
@@ -103,11 +103,6 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
     public bool HandlePreApplyDamage(ref DamageRequest request, float beforeHealth) {
         if (!IsServer) return false;
 
-        if (_stats != null) {
-            var amount = request.amount * _stats.GetFinal(StatType.DamageReduction);
-            request = new DamageRequest(request.source, request.fromId, amount, request.kind);
-        }
-
         if (_statusable != null && _statusable.HasEffect("Rune of Stasis")) {
             var appliedPreview = PreviewDamageNoSideEffects(_core, in request);
             if (_core.Health.Health - appliedPreview.healthApplied <= 0f && beforeHealth > 0f) {
@@ -120,8 +115,24 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
         return true;
     }
 
-    public void HandlePostApplyDamage(in DamageRequest request, float rawDamage, bool ignoreSoundCooldown) {
+    public void HandlePostApplyDamage(in DamageApplied applied, ref DamageRequest request, bool ignoreSoundCooldown) {
         if (!IsServer) return;
+
+        if (_core.IsAlive) {
+            if (request.source != "Pain Mirror" && request.fromId != OwnerId) {
+                if (_statusable != null && _statusable.HasEffect("Pain Mirror")) {
+                    if (NetworkManager.ConnectedClients.TryGetValue(request.fromId, out var client)) {
+                        var player = client.PlayerObject;
+                        if (player != null) {
+                            var reflectDamage = applied.incoming * _stats.GetFinal(StatType.DamageReflection);
+                            player.GetComponent<Damageable>()
+                                .TakeDamage("Pain Mirror", OwnerId, reflectDamage, DamageSoundType.Reflect,
+                                    ignoreSoundCooldown);
+                        }
+                    }
+                }
+            }
+        }
 
         PlayDamageSound((DamageSoundType)request.kind, ignoreSoundCooldown);
     }

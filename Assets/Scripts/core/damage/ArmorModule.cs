@@ -7,7 +7,7 @@ public class ArmorModule : IDamageModule {
 
     public float Armor { get; private set; }
 
-    public void Initialize(Damageable damageable) {
+    public void Initialize(Damageable damageable, Stats stats) {
         Armor = 0f;
     }
 

@@ -1,13 +1,15 @@
 using UnityEngine;
 
 public class StatsLocalBridge : MonoBehaviour, IStatsBridge {
-    [SerializeField] private bool _isServer = true;
+    [SerializeField] private ulong clientId;
 
     private Stats _core;
     private bool _hasCore;
 
-    public bool IsServer => _isServer;
+    public bool IsServer => true;
     public bool IsSpawned => true;
+    public bool IsOwner => clientId == 0;
+    public ulong OwnerId => clientId;
 
     private void FixedUpdate() {
         if (!_hasCore) return;

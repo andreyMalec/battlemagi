@@ -7,7 +7,7 @@ public class StatusableLocalBridge : MonoBehaviour, IStatusableBridge {
     private Statusable _core;
     private bool _hasStatusable;
 
-    public bool IsServer => clientId == 0;
+    public bool IsServer => true;
     public bool IsSpawned => true;
     public ulong OwnerId => clientId;
     public List<Statusable.DurationEffect> DurationEffects { get; } = new();

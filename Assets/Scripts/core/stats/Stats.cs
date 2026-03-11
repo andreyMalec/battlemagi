@@ -27,7 +27,6 @@ public class Stats : MonoBehaviour {
     public void AddModifier(StatType type, float multiplier) {
         if (!_bridgeTyped.IsServer) return;
         if (!_bridgeTyped.IsSpawned) return;
-        Debug.Log($"______________________ [Stats] Adding modifier {type} x{multiplier} to {gameObject.name}");
         System.AddModifier(type, multiplier);
         _bridgeTyped.SyncFromCore(this);
     }

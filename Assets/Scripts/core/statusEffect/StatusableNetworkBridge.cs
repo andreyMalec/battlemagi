@@ -20,7 +20,7 @@ public class StatusableNetworkBridge : NetworkBehaviour, IStatusableBridge {
     }
 
     private Statusable _core;
-    private bool _hasStatusable;
+    private bool _hasCore;
 
     private NetworkList<NetDurationEffect> _synced;
     private NetworkList<NetDurationEffect>.OnListChangedDelegate _onSyncedChanged;
@@ -47,19 +47,19 @@ public class StatusableNetworkBridge : NetworkBehaviour, IStatusableBridge {
     }
 
     private void FixedUpdate() {
-        if (!_hasStatusable) return;
+        if (!_hasCore) return;
         TickFixed(_core);
     }
 
     public void Bind(Statusable core) {
         _core = GetComponentInChildren<Statusable>();
-        _hasStatusable = true;
+        _hasCore = true;
         if (IsServer)
             SyncFromCore(_core);
     }
 
     public void TickFixed(Statusable core) {
-        if (!_hasStatusable) return;
+        if (!_hasCore) return;
         if (!IsServer) return;
         if (!IsSpawned) return;
 
@@ -68,6 +68,7 @@ public class StatusableNetworkBridge : NetworkBehaviour, IStatusableBridge {
     }
 
     public void SyncFromCore(Statusable core) {
+        if (!_hasCore) return;
         if (!IsServer) return;
         if (!IsSpawned) return;
 

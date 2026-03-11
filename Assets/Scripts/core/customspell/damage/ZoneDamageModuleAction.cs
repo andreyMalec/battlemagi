@@ -74,7 +74,7 @@ public class ZoneDamageModuleAction : ISpellAction {
     private void DealResolved(ISpellContext context, Damageable damageable, SpellEvent evt) {
         var amount = DamageResolver.Resolve(context.SpellDamage, context, damageable);
         if (amount <= 0f) return;
-        base.Apply(context, evt);
+        Debug.Log($"SpellAction {GetType().Name} applied to {damageable.name}. Event: {evt.GetType().Name}");
         damageable.TakeDamage("", context.OwnerId, amount);
     }
 }

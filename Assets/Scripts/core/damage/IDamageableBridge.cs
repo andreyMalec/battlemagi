@@ -11,7 +11,7 @@ public interface IDamageableBridge {
     void SyncFromCore(Damageable core);
     void PlayDamageSound(DamageSoundType sound, bool ignoreCooldown);
     bool HandlePreApplyDamage(ref DamageRequest request, float beforeHealth);
-    void HandlePostApplyDamage(in DamageRequest request, float rawDamage, bool ignoreSoundCooldown);
+    void HandlePostApplyDamage(in DamageApplied applied, ref DamageRequest request, bool ignoreSoundCooldown);
     void DespawnOnDeath();
     void Suicide();
 }

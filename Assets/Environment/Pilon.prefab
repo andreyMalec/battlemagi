@@ -278,6 +278,12 @@ GameObject:
   - component: {fileID: 4036736941993708392}
   - component: {fileID: 1569582094293731266}
   - component: {fileID: 2244020545130972373}
+  - component: {fileID: 438441711185094654}
+  - component: {fileID: 5889287441816450770}
+  - component: {fileID: 6847911526045275083}
+  - component: {fileID: 9122485110014711764}
+  - component: {fileID: 2480677886643188922}
+  - component: {fileID: 9075168730978629305}
   m_Layer: 6
   m_Name: Pilon
   m_TagString: Untagged
@@ -591,6 +597,101 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &438441711185094654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3136606246879972417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de56e174e26b44b0a58feea6433f9cb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Stats
+  _bridge: {fileID: 0}
+--- !u!114 &5889287441816450770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3136606246879972417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41d97f216fc341fe92bfe338b61a9326, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatsNetworkBridge
+  ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &6847911526045275083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3136606246879972417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d72e0fa02c2444db966472241dace85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Statusable
+  _bridge: {fileID: 0}
+--- !u!114 &9122485110014711764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3136606246879972417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12df94b8485146f88be890a4da5e89e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatusableNetworkBridge
+  ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &2480677886643188922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3136606246879972417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c102da4810804e98a519729bf047f72b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Damageable
+  damageAudio: {fileID: 0}
+  damageSoundCooldown: 0.2
+  _health:
+    maxHealth: 100
+    regenPerSecond: 1
+  _armor:
+    maxArmor: 0
+    armorEffect: 0
+  _immortal: 0
+  _invulnerable: 0
+  _isStructure: 1
+  _bridge: {fileID: 0}
+--- !u!114 &9075168730978629305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3136606246879972417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7601162350c46279d11c95a8ec56de4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageableNetworkBridge
+  ShowTopMostFoldoutHeaderGroup: 1
+  _hpText: {fileID: 0}
+  _stats: {fileID: 0}
+  health:
+    m_InternalValue: 0
+  armor:
+    m_InternalValue: 0
 --- !u!1 &4094354205374937051
 GameObject:
   m_ObjectHideFlags: 0
@@ -728,7 +829,7 @@ MonoBehaviour:
     meshQuery:
       layers: 16777223
       maskAndChannels: 234881031
-    surfaceParameter: 51866
+    surfaceParameter: 51864
     meshQueryIndex: 0
     subMeshQueryIndex: 0
     geometryHashValue: 3079678831199280412

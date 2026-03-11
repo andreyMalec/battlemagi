@@ -19,6 +19,7 @@ public class SpellInstance : MonoBehaviour, ITarget {
     public Vector3 Position => transform.position;
     public bool IsPlayer => false;
     public bool IsSpell => true;
+    public bool IsAlive => Bind.Context.View.IsAlive;
     public OwnerId OwnerId => _authorityService.OwnerId;
 
     public void Init(ISpellBind bind, IAuthorityService authorityService) {
@@ -32,7 +33,7 @@ public class SpellInstance : MonoBehaviour, ITarget {
 
     void FixedUpdate() {
         if (!_initialized) return;
-        if (Bind.Context.View.IsAlive) {
+        if (IsAlive) {
             if (_authorityService.IsServer)
                 Bind.Tick(Time.deltaTime);
             return;

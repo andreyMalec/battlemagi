@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6aed9f25a87b4df799fdec2a0637e94d, type: 3}
   m_Name: New Zone Spell
   m_EditorClassIdentifier: Assembly-CSharp::ZoneDefinition
-  prefabId: 2
+  prefabId: 4
   moveType: 0
   moveSpeed: 5
   enableMaxDistance: 0
@@ -29,7 +29,6 @@ MonoBehaviour:
   stretchAmplitude: 0.2
   stretchFrequency: 8
   stretchDamping: 0
-  onHitSpawnZone: {fileID: 0}
   atMaxDistanceSpawn: {fileID: 0}
   atStepDistanceSpawn: {fileID: 0}
   spawnStep: 10

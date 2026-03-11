@@ -8,16 +8,19 @@ public class HealthModule : IDamageModule {
     public float Health { get; private set; }
 
     private Damageable _damageable;
+    private Stats _stats;
 
-    public void Initialize(Damageable damageable) {
+    public void Initialize(Damageable damageable, Stats stats) {
         _damageable = damageable;
+        _stats = stats;
         Health = maxHealth;
     }
 
     public void TickServer(float dt) {
         if (!_damageable.IsAlive) return;
         if (regenPerSecond <= 0f) return;
-        Health = Mathf.Clamp(Health + regenPerSecond * dt, 0f, maxHealth);
+        var regen = regenPerSecond * _stats?.GetFinal(StatType.HealthRegen) ?? 1f;
+        Health = Mathf.Clamp(Health + regen * dt, 0f, maxHealth);
     }
 
     public float ApplyDamage(float amount) {

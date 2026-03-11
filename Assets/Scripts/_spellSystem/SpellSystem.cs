@@ -316,6 +316,15 @@ public class SpellSystem {
             });
         }
 
+        if (def.summon.prefabId == SpellSummonPrefabId.Trap) {
+            triggers.Add(new SpellTrigger {
+                eventType = typeof(OnSummonAttackEvent),
+                actions = new ISpellAction[] {
+                    new DestroyOnAttackAction(),
+                }
+            });
+        }
+
         var context = new SummonContext(
             spawnContext.caster,
             view,
@@ -325,9 +334,10 @@ public class SpellSystem {
         );
 
         ILocomotion move = def.summon.motion switch {
+            SummonMotion.NoMotion => new NoMotion(),
             SummonMotion.Stationary => new StationaryMotion(),
             SummonMotion.Floating => new FloatingMotion(def.summon.moveSpeed, 2, def.summon.floatingHeight),
-            _ => new StationaryMotion()
+            _ => new NoMotion()
         };
         IBrain brain = def.summon.brain switch {
             SummonBrain.AlwaysAttack => new AlwaysAttackBrain(),
