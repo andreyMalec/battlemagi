@@ -4,7 +4,17 @@ public static class DamageResolver {
     public static float Resolve(DamageDefinition def, ISpellContext context, Damageable target) {
         if (def == null) return 0f;
 
-        return def.baseType switch {
+        var damageMulti = 1f;
+        if (def.scaleWithRange) {
+            var distance = Vector3.Distance(context.View.transform.position, target.transform.position);
+            var areaDamageMulti = 1f - distance / context.Spell.scale;
+            damageMulti *= areaDamageMulti;
+        }
+
+        if (target.IsStructure)
+            damageMulti *= def.structureMultiplier;
+
+        return damageMulti * def.baseType switch {
             SpellDamageBaseType.Flat => def.amount,
             SpellDamageBaseType.Percent => ResolvePercent(def, target),
             _ => def.amount

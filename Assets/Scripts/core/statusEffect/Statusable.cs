@@ -23,6 +23,7 @@ public class Statusable : MonoBehaviour {
             _bridgeTyped = (IStatusableBridge)_bridge;
         else
             _bridgeTyped = GetComponentInParent<IStatusableBridge>();
+        _bridgeTyped.Bind(this);
     }
 
     public bool HasEffect(string effectName) {

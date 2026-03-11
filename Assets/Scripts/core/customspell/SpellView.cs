@@ -5,6 +5,11 @@ public class SpellView : MonoBehaviour {
     public float beforeEndThreshold = 1f;
     public bool IsAlive { get; private set; } = true;
     public bool scaleShape = false;
+    public Stats Stats { get; private set; }
+
+    private void Awake() {
+        Stats = gameObject.AddComponent<Stats>();
+    }
 
     public void Kill(ISpellContext context) {
         if (!IsAlive) return;

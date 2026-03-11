@@ -6,7 +6,6 @@ using Unity.Netcode.Components;
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(NetworkObject))]
 [RequireComponent(typeof(NetworkTransform))]
-[RequireComponent(typeof(NetworkStatSystem))]
 [RequireComponent(typeof(PlayerPhysics))]
 public class FirstPersonMovement : NetworkBehaviour {
     public MovementSettings movementSettings;
@@ -27,7 +26,7 @@ public class FirstPersonMovement : NetworkBehaviour {
     public readonly NetworkVariable<Vector3> spawnPoint = new();
     private int _spawnTick;
 
-    private NetworkStatSystem _statSystem;
+    private Stats _stats;
     private PlayerPhysics _physics;
     private float _jumpCooldownTimer;
 
@@ -39,7 +38,7 @@ public class FirstPersonMovement : NetworkBehaviour {
     private const float MinStaminaThreshold = 0.05f;
 
     private void Awake() {
-        _statSystem = GetComponent<NetworkStatSystem>();
+        _stats = GetComponent<Stats>();
         _physics = GetComponent<PlayerPhysics>();
         _physics.Configure(movementSettings, groundCheck);
     }
@@ -139,7 +138,7 @@ public class FirstPersonMovement : NetworkBehaviour {
         float targetSpeed = running ? runSpeed : movementSpeed;
         float speedMultiplier = groundCheck.isGrounded ? 1f : movementSettings.flySpeedMultiplier;
 
-        speedMultiplier *= _statSystem.Stats.GetFinal(StatType.MoveSpeed);
+        speedMultiplier *= _stats?.GetFinal(StatType.MoveSpeed) ?? 1f;
         Vector3 moveDirection = transform.TransformDirection(new Vector3(
             input.x * targetSpeed * speedMultiplier,
             0f,

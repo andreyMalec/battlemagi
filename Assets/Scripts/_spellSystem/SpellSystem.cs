@@ -477,8 +477,8 @@ public class SpellSystem {
             actions.Add(new BounceOnHitAction(def.maxBounces, def.bounceSpeedMultiplier));
         if (def.enableFork)
             actions.Add(new ForkOnHitAction(def.forkCount, def.forkSpreadAngle));
-        if (def.onHitSpawnZone != null)
-            actions.Add(new SpawnZoneOnHitAction());
+        if (def.onHitSpawn != null)
+            actions.Add(new SpawnOnHitAction());
         if (spell.damage != null)
             actions.Add(new ProjectileInstantDamageAction());
         if (spell.effects != null && spell.effects.Count > 0)

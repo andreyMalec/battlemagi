@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 2843166307131748454}
   - component: {fileID: 4377608547182284222}
   - component: {fileID: 3027554172554346076}
+  - component: {fileID: 9128425788655502831}
   m_Layer: 0
   m_Name: NetworkSpell
   m_TagString: Untagged
@@ -175,8 +176,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DamageableNetworkBridge
   ShowTopMostFoldoutHeaderGroup: 1
   _hpText: {fileID: 0}
-  _statSystem: {fileID: 0}
+  _stats: {fileID: 0}
   health:
     m_InternalValue: 0
   armor:
     m_InternalValue: 0
+--- !u!114 &9128425788655502831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4494555669983194706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41d97f216fc341fe92bfe338b61a9326, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatsNetworkBridge
+  ShowTopMostFoldoutHeaderGroup: 1

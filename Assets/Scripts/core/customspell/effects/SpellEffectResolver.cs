@@ -19,7 +19,7 @@ public static class SpellEffectResolver {
         ownerId = ulong.MaxValue;
         if (targetGo == null) return false;
 
-        if (NewDamageUtils.TryGetOwnerFromCollider(targetGo, out _, out ownerId)) {
+        if (DamageUtils.TryGetOwnerFromCollider(targetGo, out _, out ownerId)) {
             return targetGo.TryGetComponent(out statusable) || (statusable = targetGo.GetComponentInParent<Statusable>()) != null;
         }
 

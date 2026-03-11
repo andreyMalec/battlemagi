@@ -56,6 +56,7 @@ public class Damageable : MonoBehaviour {
             _bridgeTyped = (IDamageableBridge)_bridge;
         else
             _bridgeTyped = GetComponentInParent<IDamageableBridge>();
+        _bridgeTyped.Bind(this);
         _statusable = GetComponent<Statusable>();
     }
 

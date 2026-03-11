@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ public class PlayerSpellManaController {
     private readonly float _maxMana;
     private readonly float _tickInterval;
     private readonly float _manaRestore;
-    private readonly NetworkStatSystem _statSystem;
+    [CanBeNull] private readonly Stats _stats;
 
     private float _restoreTick;
 
@@ -17,20 +18,20 @@ public class PlayerSpellManaController {
         float maxMana,
         float tickInterval,
         float manaRestore,
-        NetworkStatSystem statSystem
+        [CanBeNull] Stats stats
     ) {
         _mana = mana;
         _primalMana = primalMana;
         _maxMana = maxMana;
         _tickInterval = tickInterval;
         _manaRestore = manaRestore;
-        _statSystem = statSystem;
+        _stats = stats;
     }
 
     public void ServerTick(float dt) {
         _restoreTick += dt;
         if (_restoreTick >= _tickInterval) {
-            var restore = _manaRestore * _statSystem.Stats.GetFinal(StatType.ManaRegen);
+            var restore = _manaRestore * _stats?.GetFinal(StatType.ManaRegen) ?? 1f;
             _primalMana.Value -= restore;
             _mana.Value += restore;
             _restoreTick = 0f;
@@ -59,6 +60,6 @@ public class PlayerSpellManaController {
     }
 
     public float CostPerSecond(SpellData spell) {
-        return spell.manaCost * _statSystem.Stats.GetFinal(StatType.ManaCost);
+        return spell.manaCost * _stats?.GetFinal(StatType.ManaCost) ?? 1f;
     }
 }

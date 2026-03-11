@@ -7,6 +7,7 @@ public interface IStatusableBridge {
 
     List<Statusable.DurationEffect> DurationEffects { get; }
 
+    void Bind(Statusable core);
     void TickFixed(Statusable core);
 
     void SyncFromCore(Statusable core);

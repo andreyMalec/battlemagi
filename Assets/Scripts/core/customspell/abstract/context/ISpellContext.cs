@@ -4,6 +4,7 @@ public interface ISpellContext {
     ISpellTransform Movement { get; }
     SpellDefinition Spell { get; }
     SpellSystemEvent Event { get; }
+    StatSystem Stats => View.Stats.System;
 
     DamageDefinition SpellDamage => Spell.damage;
 

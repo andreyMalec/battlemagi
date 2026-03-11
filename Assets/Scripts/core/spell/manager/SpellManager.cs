@@ -7,7 +7,7 @@ using Unity.Netcode;
 public class SpellManager : NetworkBehaviour {
     [SerializeField] public Transform spellCastPoint;
     [SerializeField] private ActiveSpell activeSpell;
-    [HideInInspector] public NetworkStatSystem statSystem;
+    [HideInInspector] public Stats statSystem;
     private MeshController _meshController;
     private ISpawnStrategy spawnStrategy;
     private ISpawnStrategy defaultSpawnStrategy;
@@ -20,7 +20,7 @@ public class SpellManager : NetworkBehaviour {
 
     public override void OnNetworkSpawn() {
         activeSpell = GetComponent<ActiveSpell>();
-        statSystem = GetComponent<NetworkStatSystem>();
+        statSystem = GetComponent<Stats>();
     }
 
     public override void OnNetworkDespawn() {
@@ -172,9 +172,9 @@ public class SpellManager : NetworkBehaviour {
 
         netObj.SpawnWithOwnership(casterId);
         StartCoroutine(DespawnAndDestroyServer(netObj, spell.lifeTime));
-        var caster = NetworkManager.Singleton.ConnectedClients[casterId].PlayerObject.GetComponent<NetworkStatSystem>();
+        var caster = NetworkManager.Singleton.ConnectedClients[casterId].PlayerObject.GetComponent<Stats>();
         SpawnMainClientRpc(netObj.NetworkObjectId, spellId,
-            caster.Stats.GetFinal(StatType.SpellDamage) * damageMultiplier, index);
+            caster.GetFinal(StatType.SpellDamage) * damageMultiplier, index);
     }
 
     [ClientRpc]

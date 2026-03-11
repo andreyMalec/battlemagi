@@ -12,14 +12,14 @@ public class StatusableLocalBridge : MonoBehaviour, IStatusableBridge {
     public ulong OwnerId => clientId;
     public List<Statusable.DurationEffect> DurationEffects { get; } = new();
 
-    private void Awake() {
-        _core = GetComponentInChildren<Statusable>();
-        _hasStatusable = _core != null;
-    }
-
     private void FixedUpdate() {
         if (!_hasStatusable) return;
         TickFixed(_core);
+    }
+
+    public void Bind(Statusable core) {
+        _core = core;
+        _hasStatusable = true;
     }
 
     public void TickFixed(Statusable core) {

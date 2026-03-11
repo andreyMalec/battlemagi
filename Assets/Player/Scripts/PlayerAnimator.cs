@@ -5,7 +5,6 @@ using Unity.Netcode.Components;
 using UnityEngine;
 
 [RequireComponent(typeof(FirstPersonMovement))]
-[RequireComponent(typeof(NetworkStatSystem))]
 [RequireComponent(typeof(Player))]
 public class PlayerAnimator : NetworkBehaviour {
     private static readonly int VelocityZ = Animator.StringToHash("Velocity Z");
@@ -27,7 +26,7 @@ public class PlayerAnimator : NetworkBehaviour {
     [HideInInspector] public NetworkAnimator networkAnimator;
     [HideInInspector] public MeshController meshController;
     private FirstPersonMovement movement;
-    private NetworkStatSystem statSystem;
+    private Stats _stats;
 
     public float acceleration = 3f;
     public AnimationCurve decelerationCurve;
@@ -38,7 +37,7 @@ public class PlayerAnimator : NetworkBehaviour {
     private bool isRunning => movement.IsRunning;
 
     // private float maxVelocity => (2f) * statSystem.Stats.GetFinal(StatType.MoveSpeed);
-    private float maxVelocity => (isRunning ? 0.5f : 2f) * statSystem.Stats.GetFinal(StatType.MoveSpeed);
+    private float maxVelocity => (isRunning ? 0.5f : 2f) * _stats?.GetFinal(StatType.MoveSpeed) ?? 1f;
 
     private bool jumpStart = false;
     private bool fallStart = false;
@@ -49,7 +48,7 @@ public class PlayerAnimator : NetworkBehaviour {
 
     public override void OnNetworkSpawn() {
         movement = GetComponent<FirstPersonMovement>();
-        statSystem = GetComponent<NetworkStatSystem>();
+        _stats = GetComponent<Stats>();
     }
 
     private void Start() {
@@ -101,7 +100,7 @@ public class PlayerAnimator : NetworkBehaviour {
     }
 
     public IEnumerator CastSpell(SpellData spell) {
-        AnimateFloat(CastSpeed, statSystem.Stats.GetFinal(StatType.CastSpeed));
+        AnimateFloat(CastSpeed, _stats?.GetFinal(StatType.CastSpeed) ?? 1f);
         AnimateFloat(Invocation, spell.invocationIndex);
         yield return new WaitForSeconds(0.1f);
         AnimateFloat(Invocation, 0);

@@ -6,7 +6,7 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
     [SerializeField] private TMP_Text _hpText;
 
     [Header("Modules")]
-    [SerializeField] private NetworkStatSystem _statSystem;
+    [SerializeField] private Stats _stats;
 
     private Damageable _core;
     private bool _hasDamageable;
@@ -22,12 +22,16 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
     private Statusable _statusable;
 
     private void Awake() {
-        _core = GetComponentInChildren<Damageable>();
-        _hasDamageable = _core != null;
-
-        if (_statSystem == null)
-            _statSystem = GetComponentInChildren<NetworkStatSystem>();
+        if (_stats == null)
+            _stats = GetComponentInChildren<Stats>();
         _statusable = GetComponentInChildren<Statusable>();
+    }
+
+    public void Bind(Damageable core) {
+        _core = core;
+        _hasDamageable = true;
+        if (IsServer)
+            SyncFromCore(_core);
     }
 
     public override void OnNetworkSpawn() {
@@ -78,6 +82,7 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
     }
 
     public void SyncFromCore(Damageable core) {
+        if (!_hasDamageable) return;
         if (!IsServer) return;
         if (!IsSpawned) return;
         health.Value = core.Health.Health;
@@ -98,8 +103,8 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
     public bool HandlePreApplyDamage(ref DamageRequest request, float beforeHealth) {
         if (!IsServer) return false;
 
-        if (_statSystem != null) {
-            var amount = request.amount * _statSystem.Stats.GetFinal(StatType.DamageReduction);
+        if (_stats != null) {
+            var amount = request.amount * _stats.GetFinal(StatType.DamageReduction);
             request = new DamageRequest(request.source, request.fromId, amount, request.kind);
         }
 

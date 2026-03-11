@@ -10,8 +10,7 @@ public class DirectDamage : ISpellDamage {
     }
 
     public bool OnEnter(Collider other) {
-        var applied = DamageUtils.TryApplyDamage(spell, data, other);
-        return applied != ulong.MaxValue;
+        return true;
     }
 
     public bool OnExit(Collider other) {

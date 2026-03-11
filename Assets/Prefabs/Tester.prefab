@@ -156,6 +156,8 @@ GameObject:
   - component: {fileID: 1870895211298274875}
   - component: {fileID: 4168519252703680591}
   - component: {fileID: 1174926313006942357}
+  - component: {fileID: 283036274027162254}
+  - component: {fileID: 3467911108821741378}
   m_Layer: 0
   m_Name: Tester
   m_TagString: Untagged
@@ -321,6 +323,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72716d9af3fd4b6097fcb847fd3e589c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LocalGameBootstrap
+  ownerId: 0
 --- !u!114 &4815534646972923113
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -333,6 +336,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c102da4810804e98a519729bf047f72b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Damageable
+  damageAudio: {fileID: 0}
+  damageSoundCooldown: 0.2
   _health:
     maxHealth: 100
     regenPerSecond: 1
@@ -341,6 +346,7 @@ MonoBehaviour:
     armorEffect: 0.75
   _immortal: 0
   _invulnerable: 0
+  _isStructure: 0
   _bridge: {fileID: 0}
 --- !u!114 &1870895211298274875
 MonoBehaviour:
@@ -354,9 +360,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 572635613edd4d45a7d50d7348c79d56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LocalDamageableBridge
+  clientId: 0
   _hpText: {fileID: 6791132826984752259}
-  _damageAudio: {fileID: 0}
-  _damageSoundCooldown: 0.2
   health: 0
 --- !u!114 &4168519252703680591
 MonoBehaviour:
@@ -370,7 +375,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d72e0fa02c2444db966472241dace85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Statusable
-  _bridge: {fileID: 1174926313006942357}
+  _bridge: {fileID: 0}
 --- !u!114 &1174926313006942357
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -383,6 +388,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac197ad2c31b45ad97c78c0196803092, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LocalStatusableBridge
+  clientId: 0
+--- !u!114 &283036274027162254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056318315711601611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de56e174e26b44b0a58feea6433f9cb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Stats
+  _bridge: {fileID: 0}
+--- !u!114 &3467911108821741378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056318315711601611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c45202fb7a55494fa61133a39222b391, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatsLocalBridge
+  _isServer: 1
 --- !u!1 &7750010650653659641
 GameObject:
   m_ObjectHideFlags: 0

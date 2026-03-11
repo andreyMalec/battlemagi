@@ -49,7 +49,7 @@ public class ProjectileDefinition : ScriptableObject, IValidate {
     [ShowIf("enableFork")] public float forkSpreadAngle = 35f;
 
     [Header("Spawned Spells")]
-    public SpellDefinition onHitSpawnZone;
+    public SpellDefinition onHitSpawn;
 
     [ShowIf("enableMaxDistance")] public SpellDefinition atMaxDistanceSpawn;
     public SpellDefinition atStepDistanceSpawn;

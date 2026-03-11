@@ -34,9 +34,8 @@ public class ZoneDefinition : ScriptableObject, IValidate {
     [ShowIf("enableSquashStretch")] public float stretchDamping = 0f;
 
     [Header("Spawned Spells")]
-    public SpellDefinition onHitSpawnZone;
-
     [ShowIf("enableMaxDistance")] public SpellDefinition atMaxDistanceSpawn;
+
     public SpellDefinition atStepDistanceSpawn;
     [ShowIf("spawnAtStep")] public float spawnStep = 10f;
     public SpellDefinition onLifetimeEndSpawn;

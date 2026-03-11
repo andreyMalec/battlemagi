@@ -31,6 +31,8 @@ public class SummonBind<TContext> : ISpellBind
             TargetFilter = context.Spell.summon.targetFilter,
             CanTargetAllies = context.Spell.summon.canTargetAllies,
             Caster = caster,
+            OwnerId = context.OwnerId,
+            Stats = view.Stats.System,
             Self = view.transform,
             HomePosition = view.transform.position,
             Commands = _commands,

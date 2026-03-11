@@ -11,12 +11,14 @@ public class PlayerTester : MonoBehaviour {
     public float runSpeed = 5;
 
     private CharacterController _characterController;
+    private Stats _stats;
     private float _velocityY;
     private Vector2 _currentRotation;
     private Vector2 _frameVelocity;
 
     private void Awake() {
         _characterController = GetComponent<CharacterController>();
+        _stats = GetComponent<Stats>();
     }
 
     private void Update() {
@@ -46,6 +48,7 @@ public class PlayerTester : MonoBehaviour {
         float targetSpeed = running ? runSpeed : movementSpeed;
         float speedMultiplier = groundCheck.isGrounded ? 1f : movementSettings.flySpeedMultiplier;
 
+        speedMultiplier *= _stats.GetFinal(StatType.MoveSpeed);
         Vector3 moveDirection = transform.TransformDirection(new Vector3(
             input.x * targetSpeed * speedMultiplier,
             0f,

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: -6154863040968312220}
   - component: {fileID: -522312961412572633}
   - component: {fileID: -9036300889543184669}
+  - component: {fileID: 141645351148141325}
   m_Layer: 0
   m_Name: LocalSpell
   m_TagString: Untagged
@@ -88,3 +89,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StatusableLocalBridge
   clientId: 0
+--- !u!114 &141645351148141325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4494555669983194706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c45202fb7a55494fa61133a39222b391, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatsLocalBridge
+  _isServer: 1

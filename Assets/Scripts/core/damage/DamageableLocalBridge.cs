@@ -16,11 +16,6 @@ public class DamageableLocalBridge : MonoBehaviour, IDamageableBridge {
     public bool IsOwner => clientId == 0;
     public ulong OwnerId => clientId;
 
-    private void Awake() {
-        _core = GetComponentInChildren<Damageable>();
-        _hasDamageable = _core != null;
-    }
-
     private void Update() {
         if (!_hasDamageable) return;
         if (_hpText != null)
@@ -30,6 +25,11 @@ public class DamageableLocalBridge : MonoBehaviour, IDamageableBridge {
     private void FixedUpdate() {
         if (!_hasDamageable) return;
         TickFixed(_core);
+    }
+
+    public void Bind(Damageable core) {
+        _core = core;
+        _hasDamageable = true;
     }
 
     public void TickFixed(Damageable core) {

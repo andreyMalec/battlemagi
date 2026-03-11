@@ -9,7 +9,7 @@ using Voice;
 [RequireComponent(typeof(SpellManager))]
 public class PlayerSpellCaster : NetworkBehaviour {
     [SerializeField] private AudioSource disabledSound;
-    private NetworkStatSystem _statSystem;
+    private Stats _stats;
     private Statusable _statusable;
     private MeshController _meshController;
     private Mouth _mouth;
@@ -38,7 +38,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
     private PlayerSpellRecognitionController _recognition;
 
     private void Awake() {
-        _statSystem = GetComponent<NetworkStatSystem>();
+        _stats = GetComponent<Stats>();
         _mouth = GetComponent<Mouth>();
         _playerAnimator = GetComponent<PlayerAnimator>();
         _recognition = new PlayerSpellRecognitionController(_mouth);
@@ -54,7 +54,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
         }
 
         _manaController =
-            new PlayerSpellManaController(mana, primalMana, maxMana, manaRestoreTickInterval, manaRestore, _statSystem);
+            new PlayerSpellManaController(mana, primalMana, maxMana, manaRestoreTickInterval, manaRestore, _stats);
 
         if (!IsOwner) return;
 

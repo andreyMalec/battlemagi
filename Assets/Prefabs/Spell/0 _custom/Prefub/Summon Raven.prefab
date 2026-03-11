@@ -2124,6 +2124,7 @@ GameObject:
   - component: {fileID: 1952340303260357082}
   - component: {fileID: 8837328187846124951}
   - component: {fileID: 1999480522329447992}
+  - component: {fileID: 3239922229915750019}
   - component: {fileID: 5400000}
   - component: {fileID: 810504027569161947}
   - component: {fileID: 981143617963912211}
@@ -2288,6 +2289,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d72e0fa02c2444db966472241dace85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Statusable
+  _bridge: {fileID: 0}
+--- !u!114 &3239922229915750019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de56e174e26b44b0a58feea6433f9cb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Stats
   _bridge: {fileID: 0}
 --- !u!54 &5400000
 Rigidbody:

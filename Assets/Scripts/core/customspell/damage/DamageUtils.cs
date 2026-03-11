@@ -1,7 +1,7 @@
 using System.Linq;
 using UnityEngine;
 
-public static class NewDamageUtils {
+public static class DamageUtils {
     public static bool TryGetOwnerFromCollider(Collider other, out Damageable damageable, out ulong owner) {
         damageable = null;
         owner = ulong.MaxValue;

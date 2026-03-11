@@ -5,6 +5,7 @@ public interface IDamageableBridge {
 
     ulong OwnerId { get; }
 
+    void Bind(Damageable core);
     void TickFixed(Damageable core);
 
     void SyncFromCore(Damageable core);

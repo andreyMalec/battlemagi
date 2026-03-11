@@ -25,6 +25,8 @@ public class DamageDefinition : ScriptableObject, IValidate {
     public bool canHitAllies;
 
     public SpellDamageBaseType baseType;
+    public bool scaleWithRange;
+    public float structureMultiplier = 1f;
 
     [ShowIf("_flat")] public float amount = 10f;
 
@@ -50,4 +52,3 @@ public class DamageDefinition : ScriptableObject, IValidate {
     }
 #endif
 }
-

@@ -29,16 +29,12 @@ public class StatusableNetworkBridge : NetworkBehaviour, IStatusableBridge {
     public List<Statusable.DurationEffect> DurationEffects { get; private set; } = new();
 
     private void Awake() {
-        _core = GetComponentInChildren<Statusable>();;
-        _hasStatusable = _core != null;
-        if (!_hasStatusable) return;
         _synced = new NetworkList<NetDurationEffect>();
         _onSyncedChanged = _ => RebuildActiveEffectsFromSynced();
     }
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
-        if (!_hasStatusable) return;
         _synced.OnListChanged += _onSyncedChanged;
         RebuildActiveEffectsFromSynced();
         if (IsServer)
@@ -46,7 +42,6 @@ public class StatusableNetworkBridge : NetworkBehaviour, IStatusableBridge {
     }
 
     public override void OnNetworkDespawn() {
-        if (!_hasStatusable) return;
         _synced.OnListChanged -= _onSyncedChanged;
         base.OnNetworkDespawn();
     }
@@ -56,7 +51,15 @@ public class StatusableNetworkBridge : NetworkBehaviour, IStatusableBridge {
         TickFixed(_core);
     }
 
+    public void Bind(Statusable core) {
+        _core = GetComponentInChildren<Statusable>();
+        _hasStatusable = true;
+        if (IsServer)
+            SyncFromCore(_core);
+    }
+
     public void TickFixed(Statusable core) {
+        if (!_hasStatusable) return;
         if (!IsServer) return;
         if (!IsSpawned) return;
 

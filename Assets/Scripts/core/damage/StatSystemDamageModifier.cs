@@ -1,16 +1,16 @@
 using UnityEngine;
 
 public class StatSystemDamageModifier : MonoBehaviour, IDamageModifier {
-    [SerializeField] private NetworkStatSystem _stats;
+    [SerializeField] private Stats stats;
 
     private void Awake() {
-        if (_stats == null)
-            _stats = GetComponent<NetworkStatSystem>();
+        if (stats == null)
+            stats = GetComponent<Stats>();
     }
 
     public float ModifyIncoming(Damageable damageable, in DamageRequest request, float current) {
-        if (_stats == null) return current;
-        return current * _stats.Stats.GetFinal(StatType.DamageReduction);
+        if (stats == null) return current;
+        return current * stats.GetFinal(StatType.DamageReduction);
     }
 }
 

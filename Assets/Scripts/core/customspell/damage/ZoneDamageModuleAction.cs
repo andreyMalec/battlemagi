@@ -27,7 +27,7 @@ public class ZoneDamageModuleAction : ISpellAction {
 
     private void ApplyInstant(ISpellContext context, OnZoneStayEvent stay, SpellEvent evt) {
         foreach (var t in stay.Targets) {
-            if (!NewDamageUtils.TryGetOwnerFromCollider(t, out var damageable, out var owner))
+            if (!DamageUtils.TryGetOwnerFromCollider(t, out var damageable, out var owner))
                 continue;
 
             if (damageable.IsDead) continue;
@@ -48,7 +48,7 @@ public class ZoneDamageModuleAction : ISpellAction {
 
     private void ApplyOncePerTarget(ISpellContext context, OnZoneStayEvent stay, SpellEvent evt) {
         foreach (var t in stay.Targets) {
-            if (!NewDamageUtils.TryGetOwnerFromCollider(t, out var damageable, out var owner))
+            if (!DamageUtils.TryGetOwnerFromCollider(t, out var damageable, out var owner))
                 continue;
 
             if (_onceDamaged.Contains(damageable))
@@ -64,7 +64,7 @@ public class ZoneDamageModuleAction : ISpellAction {
 
     private void Deal(ISpellContext context, GameObject targetGo, SpellEvent evt) {
         if (targetGo == null) return;
-        if (!NewDamageUtils.TryGetOwnerFromCollider(targetGo, out var damageable, out var owner)) return;
+        if (!DamageUtils.TryGetOwnerFromCollider(targetGo, out var damageable, out var owner)) return;
         if (damageable.IsDead) return;
         if (!DamageRelationship.CanDamage(context, damageable, owner)) return;
 

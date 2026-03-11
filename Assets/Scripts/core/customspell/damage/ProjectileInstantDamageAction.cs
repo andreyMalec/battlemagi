@@ -4,7 +4,7 @@ public class ProjectileInstantDamageAction : ISpellAction {
         if (context.SpellDamage == null) return;
         if (context.SpellDamage.mode is not SpellDamageMode.Instant) return;
 
-        if (!NewDamageUtils.TryGetOwnerFromCollider(hit.Target, out var damageable, out var owner))
+        if (!DamageUtils.TryGetOwnerFromCollider(hit.Target, out var damageable, out var owner))
             return;
 
         if (damageable.IsDead) return;

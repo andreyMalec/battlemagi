@@ -5,7 +5,7 @@ using UnityEngine;
 
 public interface ISpellSpawn {
     private const float RayLength = 50f;
-    
+
     IEnumerator Request(SpawnContext context, Action<SpawnContext> spawn);
 
     IEnumerable<SpawnContext> ShapeCenter(SpawnContext context);
@@ -45,6 +45,14 @@ public interface ISpellSpawn {
         out RaycastHit hitInfo,
         Vector3 secondDirection = default
     ) {
+        if (context.branch) {
+            hitInfo = new RaycastHit {
+                point = context.position,
+                normal = context.forward
+            };
+            return context;
+        }
+
         var maxDistance = context.spawn.raycastMaxDistance;
         var origin = context.position;
         var mask = context.spell.defaultRaycast;

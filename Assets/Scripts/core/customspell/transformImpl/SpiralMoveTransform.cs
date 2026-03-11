@@ -14,6 +14,7 @@ public class SpiralMoveTransform : ISpellTransform {
     private Vector3 _center;
 
     private float _angle;
+    private ISpellContext _ctx;
 
     public SpiralMoveTransform(
         Vector3 forward, SpiralAxis axisMode, float radius, float angularSpeed, float forwardSpeed
@@ -31,12 +32,13 @@ public class SpiralMoveTransform : ISpellTransform {
         Transform = transform;
         _center = transform.position;
         Transform.position = _center;
+        _ctx = ctx;
     }
 
     public void Tick(float dt) {
         var prev = Transform.position;
 
-        _center += Motion.Velocity * dt;
+        _center += Motion.Velocity * (dt * _ctx.Stats.GetFinal(StatType.ProjectileSpeed));
         _angle += _angularSpeed * dt;
         Transform.position = _center + CalcRadial(_angle) * _radius;
 
@@ -46,7 +48,7 @@ public class SpiralMoveTransform : ISpellTransform {
     }
 
     public Vector3 Sample(float dt) {
-        var nextCenter = _center + Motion.Velocity * dt;
+        var nextCenter = _center + Motion.Velocity * (dt * _ctx.Stats.GetFinal(StatType.ProjectileSpeed));
         var nextAngle = _angle + _angularSpeed * dt;
         return nextCenter + CalcRadial(nextAngle) * _radius;
     }

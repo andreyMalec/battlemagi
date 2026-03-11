@@ -1,9 +1,9 @@
 using UnityEngine;
 
-public class SpawnZoneOnHitAction : SpawnOnEventAction {
+public class SpawnOnHitAction : SpawnOnEventAction {
     protected override SpellDefinition SpellDefinition(ISpellContext context) {
         if (context.Spell.projectile != null)
-            return context.Spell.projectile.onHitSpawnZone;
+            return context.Spell.projectile.onHitSpawn;
         return null;
     }
 

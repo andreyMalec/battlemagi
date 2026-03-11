@@ -31,7 +31,7 @@ public class BeamDamageModuleAction : ISpellAction {
     private void ApplyOncePerTarget(ISpellContext context, SpellEvent evt) {
         if (evt is not OnHitEvent hit) return;
 
-        if (!NewDamageUtils.TryGetOwnerFromCollider(hit.Target, out var damageable, out var owner))
+        if (!DamageUtils.TryGetOwnerFromCollider(hit.Target, out var damageable, out var owner))
             return;
 
         if (_onceDamaged.Contains(damageable))
@@ -51,7 +51,7 @@ public class BeamDamageModuleAction : ISpellAction {
 
     private void Deal(ISpellContext context, GameObject targetGo, SpellEvent evt) {
         if (targetGo == null) return;
-        if (!NewDamageUtils.TryGetOwnerFromCollider(targetGo, out var damageable, out var owner)) return;
+        if (!DamageUtils.TryGetOwnerFromCollider(targetGo, out var damageable, out var owner)) return;
         if (damageable.IsDead) return;
         if (!DamageRelationship.CanDamage(context, damageable, owner)) return;
 
