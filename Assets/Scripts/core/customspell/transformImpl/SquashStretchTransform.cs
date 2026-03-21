@@ -48,5 +48,8 @@ public class SquashStretchTransform : ISpellTransform {
         var s = Mathf.Max(0f, _baseScale * (1f + _amplitude * k * wave));
         Transform.localScale = Vector3.one * s;
     }
-}
 
+    public void SetForward(Vector3 forward) {
+        _inner.SetForward(forward);
+    }
+}

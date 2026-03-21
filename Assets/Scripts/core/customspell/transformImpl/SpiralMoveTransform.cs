@@ -5,7 +5,7 @@ public class SpiralMoveTransform : ISpellTransform {
 
     public SpellMotion Motion { get; set; }
 
-    private readonly Vector3 _forward;
+    private Vector3 _forward;
     private readonly SpiralAxis _axisMode;
 
     private readonly float _angularSpeed;
@@ -76,5 +76,15 @@ public class SpiralMoveTransform : ISpellTransform {
             SpiralAxis.LocalZ => Transform.forward,
             _ => _forward
         };
+    }
+
+    public void SetForward(Vector3 forward) {
+        var dir = forward.sqrMagnitude > 0f ? forward.normalized : Transform.forward;
+
+        var speed = Motion.Velocity.magnitude;
+        Motion = new SpellMotion { Velocity = dir * speed };
+
+        if (_axisMode == SpiralAxis.Forward)
+            _forward = dir;
     }
 }

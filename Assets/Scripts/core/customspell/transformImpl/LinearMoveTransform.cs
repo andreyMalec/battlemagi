@@ -23,4 +23,10 @@ public class LinearMoveTransform : ISpellTransform {
     public Vector3 Sample(float dt) {
         return Transform.position + Motion.Velocity * (dt * _ctx.Stats.GetFinal(StatType.ProjectileSpeed));
     }
+
+    public void SetForward(Vector3 forward) {
+        var speed = Motion.Velocity.magnitude;
+        var dir = forward.sqrMagnitude > 0f ? forward.normalized : Transform.forward;
+        Motion = new SpellMotion { Velocity = dir * speed };
+    }
 }

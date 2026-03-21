@@ -90,7 +90,7 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
         core.SetNetworkState(health.Value, armor.Value);
     }
 
-    public void PlayDamageSound(DamageSoundType sound, bool ignoreCooldown) {
+    public void PlayDamageSound(DamageKind sound, bool ignoreCooldown) {
         if (!IsServer) return;
 
         if (Time.time - _lastDamageSoundTime < _core.damageSoundCooldown && !ignoreCooldown)
@@ -126,7 +126,7 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
                         if (player != null) {
                             var reflectDamage = applied.incoming * _stats.GetFinal(StatType.DamageReflection);
                             player.GetComponent<Damageable>()
-                                .TakeDamage("Pain Mirror", OwnerId, reflectDamage, DamageSoundType.Reflect,
+                                .TakeDamage("Pain Mirror", OwnerId, reflectDamage, DamageKind.Reflect,
                                     ignoreSoundCooldown);
                         }
                     }
@@ -134,7 +134,7 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
             }
         }
 
-        PlayDamageSound((DamageSoundType)request.kind, ignoreSoundCooldown);
+        PlayDamageSound((DamageKind)request.kind, ignoreSoundCooldown);
     }
 
     public void DespawnOnDeath() {
@@ -148,7 +148,7 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
 
     [ServerRpc]
     private void SuicideServerRpc() {
-        _core.TakeDamage("Suicide", OwnerClientId, 9999f, DamageSoundType.Fall, true);
+        _core.TakeDamage("Suicide", OwnerClientId, 9999f, DamageKind.Fall, true);
     }
 
     private static DamageApplied PreviewDamageNoSideEffects(Damageable core, in DamageRequest request) {
@@ -166,9 +166,9 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
     }
 
     [ClientRpc]
-    private void PlayDamageSoundClientRpc(int damageSoundType) {
+    private void PlayDamageSoundClientRpc(int DamageKind) {
         if (_core.damageAudio == null) return;
-        var type = (DamageSoundType)damageSoundType;
+        var type = (DamageKind)DamageKind;
         var clip = AudioManager.Instance.GetDamageSound(type);
         if (clip != null)
             _core.damageAudio.PlayOneShot(clip);

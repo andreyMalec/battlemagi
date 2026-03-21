@@ -9,4 +9,6 @@ public interface ISpellTransform {
     void Tick(float dt);
 
     Vector3 Sample(float dt);
+
+    void SetForward(Vector3 forward);
 }

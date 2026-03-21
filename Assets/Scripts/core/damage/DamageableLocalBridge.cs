@@ -40,7 +40,7 @@ public class DamageableLocalBridge : MonoBehaviour, IDamageableBridge {
         health = core.Health.Health;
     }
 
-    public void PlayDamageSound(DamageSoundType sound, bool ignoreCooldown) {
+    public void PlayDamageSound(DamageKind sound, bool ignoreCooldown) {
         if (_core.damageAudio == null) return;
 
         if (Time.time - _lastDamageSoundTime < _core.damageSoundCooldown && !ignoreCooldown)
@@ -57,7 +57,7 @@ public class DamageableLocalBridge : MonoBehaviour, IDamageableBridge {
     }
 
     public void HandlePostApplyDamage(in DamageApplied applied, ref DamageRequest request, bool ignoreSoundCooldown) {
-        PlayDamageSound((DamageSoundType)request.kind, ignoreSoundCooldown);
+        PlayDamageSound((DamageKind)request.kind, ignoreSoundCooldown);
     }
 
     public void DespawnOnDeath() {
@@ -66,6 +66,6 @@ public class DamageableLocalBridge : MonoBehaviour, IDamageableBridge {
 
     public void Suicide() {
         var core = GetComponent<Damageable>();
-        core.TakeDamage("Suicide", OwnerId, 9999f, DamageSoundType.Fall, true);
+        core.TakeDamage("Suicide", OwnerId, 9999f, DamageKind.Fall, true);
     }
 }

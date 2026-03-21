@@ -5,4 +5,5 @@ public interface ITarget {
     public bool IsPlayer { get; }
     public bool IsSpell { get; }
     public OwnerId OwnerId { get; }
+    public GameObject Get { get; }
 }

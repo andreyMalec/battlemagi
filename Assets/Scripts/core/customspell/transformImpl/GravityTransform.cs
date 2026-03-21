@@ -36,4 +36,8 @@ public class GravityTransform : ISpellTransform {
         Motion = original;
         return sampled;
     }
+
+    public void SetForward(Vector3 forward) {
+        _inner.SetForward(forward);
+    }
 }

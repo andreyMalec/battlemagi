@@ -37,4 +37,7 @@ public class FollowCasterTransform : ISpellTransform {
             _ => Transform.position
         };
     }
+
+    public void SetForward(Vector3 forward) {
+    }
 }

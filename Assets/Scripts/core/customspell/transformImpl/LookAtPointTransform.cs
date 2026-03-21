@@ -59,4 +59,7 @@ public class LookAtPointTransform : ISpellTransform {
             ? _lastValidTarget
             : (_ctx.Caster.Origin + _ctx.Caster.Direction * _maxDistance);
     }
+
+    public void SetForward(Vector3 forward) {
+    }
 }

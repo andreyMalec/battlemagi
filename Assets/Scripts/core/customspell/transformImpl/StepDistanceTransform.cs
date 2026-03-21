@@ -55,4 +55,8 @@ public class StepDistanceTransform : ISpellTransform {
     public Vector3 Sample(float dt) {
         return _inner.Sample(dt);
     }
+
+    public void SetForward(Vector3 forward) {
+        _inner.SetForward(forward);
+    }
 }

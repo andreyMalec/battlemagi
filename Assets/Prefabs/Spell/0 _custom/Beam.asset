@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Beam
   m_EditorClassIdentifier: Assembly-CSharp::SpellDefinition
   coreType: 2
-  spawn: {fileID: 11400000, guid: 9abb3be42f2320740903de6f0c18c673, type: 2}
+  spawn: {fileID: 11400000, guid: 6d36877cf5a205e4bbd1fc2c3009ab9a, type: 2}
+  damage: {fileID: 0}
+  effects: []
   scale: 1
   lifetime: 4
   defaultRaycast:

@@ -21,6 +21,7 @@ public class SpellInstance : MonoBehaviour, ITarget {
     public bool IsSpell => true;
     public bool IsAlive => Bind.Context.View.IsAlive;
     public OwnerId OwnerId => _authorityService.OwnerId;
+    public GameObject Get => gameObject;
 
     public void Init(ISpellBind bind, IAuthorityService authorityService) {
         _initialized = true;
@@ -84,9 +85,9 @@ public class SpellInstance : MonoBehaviour, ITarget {
             if (!ps.main.loop) {
                 if (Mathf.Approximately(main.startLifetime.constant, main.duration))
                     main.startLifetime = lifetime;
+                main.duration = lifetime;
             }
 
-            main.duration = lifetime;
 
             ParticleUtils.Scale(ps, k, scaleShape);
             ps.Play(true);

@@ -24,6 +24,14 @@ public class ProjectileDefinition : ScriptableObject, IValidate {
     [ShowIf("_transformSpiral")] public float spiralRadius = 0.5f;
     [ShowIf("_transformSpiral")] public SpiralAxis spiralAxis = SpiralAxis.Forward;
 
+    [Header("Homing")]
+    [ShowIf("_canHoming")] public bool enableHoming;
+
+    [ShowIf("enableHoming")] public LayerMask obstacleMask = ~0;
+    [ShowIf("enableHoming")] public float homingRadius = 10f;
+    [ShowIf("enableHoming")] public float homingMaxTurnDegrees = 25f;
+    [ShowIf("enableHoming")] public float homingSlerp = 0.35f;
+
     [Header("SquashStretch")]
     public bool enableSquashStretch;
 
@@ -61,6 +69,7 @@ public class ProjectileDefinition : ScriptableObject, IValidate {
     private bool _transformSpiral = false;
     private bool _transformLookAtPoint = false;
     private bool _transformFollowCaster = false;
+    private bool _canHoming = false;
     [ShowIf("false")] [HideInInspector] public bool spawnAtStep = false;
 
     public void Validate() {
@@ -68,6 +77,7 @@ public class ProjectileDefinition : ScriptableObject, IValidate {
         _transformSpiral = moveType is SpellMovement.Spiral;
         _transformLookAtPoint = moveType is SpellMovement.LookAtPoint;
         _transformFollowCaster = moveType is SpellMovement.FollowCaster;
+        _canHoming = moveType is SpellMovement.Linear or SpellMovement.Spiral;
         spawnAtStep = atStepDistanceSpawn != null;
     }
 

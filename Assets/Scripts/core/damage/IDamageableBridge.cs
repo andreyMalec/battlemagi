@@ -9,7 +9,7 @@ public interface IDamageableBridge {
     void TickFixed(Damageable core);
 
     void SyncFromCore(Damageable core);
-    void PlayDamageSound(DamageSoundType sound, bool ignoreCooldown);
+    void PlayDamageSound(DamageKind sound, bool ignoreCooldown);
     bool HandlePreApplyDamage(ref DamageRequest request, float beforeHealth);
     void HandlePostApplyDamage(in DamageApplied applied, ref DamageRequest request, bool ignoreSoundCooldown);
     void DespawnOnDeath();

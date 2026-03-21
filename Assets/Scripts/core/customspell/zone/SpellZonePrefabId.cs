@@ -3,7 +3,12 @@ public enum SpellZonePrefabId {
     ZoneFire,
     ZoneExplosionIce,
     ZoneIce,
+    ZoneExplosionToxic,
     ZoneToxic,
+    ZoneExplosionForce,
     ZoneForce,
+    ZoneExplosionAir,
+    ZoneAir,
+    ZoneExplosionLightning,
+    ZoneLightning,
 }
-

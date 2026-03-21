@@ -372,6 +372,17 @@ public class SpellSystem {
             _ => new StaticTransform()
         };
 
+        if (def.enableHoming) {
+            move = new HomingTransform(
+                move,
+                def.homingMaxTurnDegrees,
+                def.homingSlerp,
+                def.homingRadius,
+                def.obstacleMask,
+                new UnityWorldQuery()
+            );
+        }
+
         if (def.enableGravity) {
             move = new GravityTransform(move, def.gravity);
         }
@@ -417,6 +428,17 @@ public class SpellSystem {
             SpellMovement.FollowCaster => new FollowCasterTransform(def.followTarget),
             _ => new StaticTransform()
         };
+
+        if (def.enableHoming) {
+            move = new HomingTransform(
+                move,
+                def.homingMaxTurnDegrees,
+                def.homingSlerp,
+                def.homingRadius,
+                def.obstacleMask,
+                new UnityWorldQuery()
+            );
+        }
 
         if (def.spawnAtStep) {
             move = new StepDistanceTransform(

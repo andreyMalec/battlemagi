@@ -294,9 +294,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74ebdd940d9a4fcaaae044fe12179c1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellRunner
-  def: {fileID: 11400000, guid: 7659d312640413c4bbe8f8065b466a2c, type: 2}
+  def: {fileID: 11400000, guid: 3b18caceee5e79f47b0f3be1f3a89f2a, type: 2}
   def2: {fileID: 11400000, guid: d851f47005e0eaf4ebf6766b0ecbcf16, type: 2}
-  def3: {fileID: 11400000, guid: 4aec248e4dfc7464381c95a332855769, type: 2}
+  def3: {fileID: 11400000, guid: 121f47b6c76c9f540854d677f2f3ede9, type: 2}
   def4: {fileID: 11400000, guid: 475fd1e9b5fe9c04990931ba46bb20fa, type: 2}
   spawnPos: {fileID: 5086674070281227999}
 --- !u!114 &8708466025697548998
@@ -311,6 +311,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06f55bf0e2cd43f989d01d5e3d21f0f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DebugTeleport
+  key: 116
 --- !u!114 &4537245233784347616
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -414,7 +415,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c45202fb7a55494fa61133a39222b391, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StatsLocalBridge
-  _isServer: 1
+  clientId: 0
 --- !u!1 &7750010650653659641
 GameObject:
   m_ObjectHideFlags: 0

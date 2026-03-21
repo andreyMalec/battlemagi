@@ -4,5 +4,6 @@ public enum SpellProjectilePrefabId {
     ProjectileToxic,
     ProjectileAir,
     ProjectileDirt,
+    ProjectileLightning,
 }
 

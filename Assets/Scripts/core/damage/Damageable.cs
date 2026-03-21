@@ -164,7 +164,7 @@ public class Damageable : MonoBehaviour {
         string source,
         ulong fromId,
         float amount,
-        DamageSoundType sound = DamageSoundType.Default,
+        DamageKind sound = DamageKind.Default,
         bool ignoreSoundCooldown = false
     ) {
         if (!_initialized) return;

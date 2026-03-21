@@ -7,18 +7,21 @@ public class SpellPrefabDatabase : ScriptableObject {
     public struct ProjectileEntry {
         public SpellProjectilePrefabId id;
         public GameObject prefab;
+        public DamageKind sound;
     }
 
     [Serializable]
     public struct ZoneEntry {
         public SpellZonePrefabId id;
         public GameObject prefab;
+        public DamageKind sound;
     }
 
     [Serializable]
     public struct BeamEntry {
         public SpellBeamPrefabId id;
         public GameObject prefab;
+        public DamageKind sound;
     }
 
     [Serializable]
@@ -76,6 +79,42 @@ public class SpellPrefabDatabase : ScriptableObject {
         }
 
         return null;
+    }
+
+    public DamageKind Sound(SpellDefinition def) {
+        return def.coreType switch {
+            CoreType.Projectile => Sound(def.projectile.prefabId),
+            CoreType.Zone => Sound(def.zone.prefabId),
+            CoreType.Beam => Sound(def.beam.prefabId),
+            _ => DamageKind.Default
+        };
+    }
+
+    public DamageKind Sound(SpellProjectilePrefabId id) {
+        for (int i = 0; i < projectiles.Length; i++) {
+            if (projectiles[i].id == id)
+                return projectiles[i].sound;
+        }
+
+        return DamageKind.Default;
+    }
+
+    public DamageKind Sound(SpellZonePrefabId id) {
+        for (int i = 0; i < zones.Length; i++) {
+            if (zones[i].id == id)
+                return zones[i].sound;
+        }
+
+        return DamageKind.Default;
+    }
+
+    public DamageKind Sound(SpellBeamPrefabId id) {
+        for (int i = 0; i < beams.Length; i++) {
+            if (beams[i].id == id)
+                return beams[i].sound;
+        }
+
+        return DamageKind.Default;
     }
 
     private static SpellPrefabDatabase _instance;

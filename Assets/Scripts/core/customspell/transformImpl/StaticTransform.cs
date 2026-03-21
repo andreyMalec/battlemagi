@@ -18,4 +18,7 @@ public class StaticTransform : ISpellTransform {
     public Vector3 Sample(float dt) {
         return Transform.position;
     }
+
+    public void SetForward(Vector3 forward) {
+    }
 }

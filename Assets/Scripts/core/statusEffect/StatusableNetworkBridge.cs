@@ -102,7 +102,7 @@ public class StatusableNetworkBridge : NetworkBehaviour, IStatusableBridge {
                         //     reflectDamage *= _statSystem.Stats.GetFinal(StatType.DamageReflection);
 
                         player.GetComponent<Damageable>()
-                            .TakeDamage("Pain Mirror", OwnerClientId, reflectDamage, DamageSoundType.Reflect,
+                            .TakeDamage("Pain Mirror", OwnerClientId, reflectDamage, DamageKind.Reflect,
                                 true);
                     }
                 }

@@ -6,19 +6,19 @@ public class AudioManager : MonoBehaviour {
 
     [System.Serializable]
     public struct DamageSoundEntry {
-        public DamageSoundType type;
+        public DamageKind type;
         public AudioClip clip;
     }
 
     [SerializeField] private List<DamageSoundEntry> damageSounds = new();
 
-    private Dictionary<DamageSoundType, AudioClip> soundMap;
+    private Dictionary<DamageKind, AudioClip> soundMap;
 
     private void Awake() {
         if (Instance == null) {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            soundMap = new Dictionary<DamageSoundType, AudioClip>();
+            soundMap = new Dictionary<DamageKind, AudioClip>();
             foreach (var entry in damageSounds) {
                 soundMap[entry.type] = entry.clip;
             }
@@ -27,7 +27,7 @@ public class AudioManager : MonoBehaviour {
         }
     }
 
-    public AudioClip GetDamageSound(DamageSoundType type) {
+    public AudioClip GetDamageSound(DamageKind type) {
         return soundMap.TryGetValue(type, out var clip) ? clip : null;
     }
 }

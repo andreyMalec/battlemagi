@@ -11,6 +11,7 @@ public enum DamageKind {
     Magic,
     Reflect,
     Fall,
+    Dirt,
 }
 
 [Flags]

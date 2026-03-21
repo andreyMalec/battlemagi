@@ -15,30 +15,66 @@ MonoBehaviour:
   projectiles:
   - id: 0
     prefab: {fileID: 7354784787554302670, guid: 98f9a507ceb843d49880363f9cf9869c, type: 3}
+    sound: 1
   - id: 1
     prefab: {fileID: 7354784787554302670, guid: c351ec4f3915fdc4f9b419e56ab6b15a, type: 3}
+    sound: 2
   - id: 2
     prefab: {fileID: 7354784787554302670, guid: ee07d649473c15a4aa299beb1786361e, type: 3}
+    sound: 4
   - id: 3
     prefab: {fileID: 7354784787554302670, guid: deccfb49d34218446a289493c2bcd223, type: 3}
+    sound: 6
   - id: 4
     prefab: {fileID: 7354784787554302670, guid: 65c56397af8e74447a954be67c63772a, type: 3}
+    sound: 10
+  - id: 5
+    prefab: {fileID: 4956434817817956126, guid: a20a50ba0d63be844bcc99e2e48c17e3, type: 3}
+    sound: 3
   zones:
   - id: 0
     prefab: {fileID: 1742013225946848, guid: e379ec8fb8f5df644a5751b78222d168, type: 3}
+    sound: 1
   - id: 1
     prefab: {fileID: 1315042845377307778, guid: 3574cef7da322704cab09ae8ef9741e1, type: 3}
+    sound: 1
   - id: 2
     prefab: {fileID: 1742013225946848, guid: dde68ffb88754c54c90a1b4c44a82d4f, type: 3}
+    sound: 2
   - id: 3
     prefab: {fileID: 1742013225946848, guid: dde68ffb88754c54c90a1b4c44a82d4f, type: 3}
+    sound: 2
   - id: 4
-    prefab: {fileID: 1315042845377307778, guid: 53a4bda83406bbd4bbda5afab393fd3b, type: 3}
+    prefab: {fileID: 1315042845377307778, guid: d97f82a68e4c9a24c8312785ff747acc, type: 3}
+    sound: 4
   - id: 5
+    prefab: {fileID: 1315042845377307778, guid: 53a4bda83406bbd4bbda5afab393fd3b, type: 3}
+    sound: 4
+  - id: 6
     prefab: {fileID: 7354784787554302670, guid: 66e6a5d1540abda42a96aca82537f0be, type: 3}
+    sound: 0
+  - id: 7
+    prefab: {fileID: 7354784787554302670, guid: 66e6a5d1540abda42a96aca82537f0be, type: 3}
+    sound: 0
+  - id: 8
+    prefab: {fileID: 4956434817817956126, guid: 99b005309d8bb9b429c8f26be867bc54, type: 3}
+    sound: 6
+  - id: 9
+    prefab: {fileID: 4956434817817956126, guid: 99b005309d8bb9b429c8f26be867bc54, type: 3}
+    sound: 6
+  - id: 10
+    prefab: {fileID: 4956434817817956126, guid: 6a4e04db022990741a74ec96da40669f, type: 3}
+    sound: 3
+  - id: 11
+    prefab: {fileID: 4956434817817956126, guid: 6a4e04db022990741a74ec96da40669f, type: 3}
+    sound: 3
   beams:
   - id: 0
     prefab: {fileID: 7354784787554302670, guid: c1d2b633082563743833579beaf20a95, type: 3}
+    sound: 1
+  - id: 1
+    prefab: {fileID: 6672414927786798936, guid: 4243315ec64823b4899d98ebd0fdc118, type: 3}
+    sound: 7
   summons:
   - id: 0
     prefab: {fileID: 7354784787554302670, guid: ec0db00414b873c459c84f2ace8aaa4b, type: 3}

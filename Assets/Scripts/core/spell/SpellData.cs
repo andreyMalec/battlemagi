@@ -16,7 +16,7 @@ public class SpellData : ScriptableObject {
     public GameObject impactPrefab;
     public ImpactEffect[] impactEffects;
     public StatusEffectData[] buffs;
-    public DamageSoundType damageSound;
+    public DamageKind damageSound;
 
     public int castWaitingIndex = 0;
     public int invocationIndex;

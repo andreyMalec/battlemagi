@@ -56,4 +56,8 @@ public class MaxDistanceTransform : ISpellTransform {
         if (_reached) return Transform.position;
         return _inner.Sample(dt);
     }
+
+    public void SetForward(Vector3 forward) {
+        _inner.SetForward(forward);
+    }
 }

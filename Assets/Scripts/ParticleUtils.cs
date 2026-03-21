@@ -1,6 +1,44 @@
 using UnityEngine;
 
 public static class ParticleUtils {
+    static AnimationCurve ScaleCurve(AnimationCurve c, float k) {
+        if (c == null)
+            return null;
+
+        var keys = c.keys;
+        for (int i = 0; i < keys.Length; i++) {
+            var key = keys[i];
+            key.value *= k;
+            key.inTangent *= k;
+            key.outTangent *= k;
+            keys[i] = key;
+        }
+
+        c.keys = keys;
+        return c;
+    }
+
+    static ParticleSystem.MinMaxCurve ScaleCurve(ParticleSystem.MinMaxCurve c, float k) {
+        switch (c.mode) {
+            case ParticleSystemCurveMode.Constant:
+                c.constant *= k;
+                return c;
+            case ParticleSystemCurveMode.TwoConstants:
+                c.constantMin *= k;
+                c.constantMax *= k;
+                return c;
+            case ParticleSystemCurveMode.Curve:
+                c.curve = ScaleCurve(c.curve, k);
+                return c;
+            case ParticleSystemCurveMode.TwoCurves:
+                c.curveMin = ScaleCurve(c.curveMin, k);
+                c.curveMax = ScaleCurve(c.curveMax, k);
+                return c;
+            default:
+                return c;
+        }
+    }
+
     public static void Scale(ParticleSystem ps, float k, bool scaleShape = false) {
         var main = ps.main;
         main.startSizeMultiplier *= k;
@@ -15,9 +53,9 @@ public static class ParticleUtils {
 
         var vel = ps.velocityOverLifetime;
         if (vel.enabled) {
-            vel.xMultiplier *= k;
-            vel.yMultiplier *= k;
-            vel.zMultiplier *= k;
+            vel.x = ScaleCurve(vel.x, k);
+            vel.y = ScaleCurve(vel.y, k);
+            vel.z = ScaleCurve(vel.z, k);
         }
 
         var inherit = ps.inheritVelocity;
