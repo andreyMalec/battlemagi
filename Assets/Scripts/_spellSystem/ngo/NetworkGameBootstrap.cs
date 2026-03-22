@@ -4,6 +4,7 @@ using UnityEngine;
 [DefaultExecutionOrder(-100)]
 public class NetworkGameBootstrap : NetworkBehaviour, IAuthorityService, SpellBootstrap {
     public OwnerId OwnerId => OwnerClientId;
+    public ulong ObjectId => NetworkObjectId;
 
     public void Init(SpellCaster caster) {
         var (spellSystem, authority) = InitializeSpellSystem();

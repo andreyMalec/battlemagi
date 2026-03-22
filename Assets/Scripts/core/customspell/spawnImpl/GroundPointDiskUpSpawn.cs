@@ -51,6 +51,7 @@ public class GroundPointDiskUpSpawn : ISpellSpawn, IDelayOriginRespect {
 
             return context with {
                 position = context.target.Position,
+                forward = Vector3.down,
             };
         }
 

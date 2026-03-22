@@ -29,7 +29,8 @@ public class NewGroundPointArcSpawn : ISpellSpawn {
         if (context.target == null)
             return context;
 
-        var dir = context.target.Position - context.position;
+        var targetPos = ISpellSpawn.GroundPos(context with { position = context.target.Position }, Vector3.down, out _);
+        var dir = targetPos.position - context.position;
         if (dir.sqrMagnitude <= 0f)
             return context;
 

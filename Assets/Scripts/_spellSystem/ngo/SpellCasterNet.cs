@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
@@ -7,12 +8,12 @@ using UnityEngine;
 public class SpellCasterNet : NetworkBehaviour {
     private readonly Dictionary<FixedString64Bytes, List<FixedString4096Bytes>> _pendingChunks = new();
 
-    public void RequestCast(SpellDefinition spell) {
+    public void RequestCast(SpellDefinition spell, [CanBeNull] ITarget target = null) {
         var json = SpellJsonSerializer.ToJson(spell);
         var id = SpellNetworkCodec.ComputeId(json);
         SpellNetworkCache.Put(id, json);
         SendSpellToServer(id, json);
-        RequestCastServerRpc(NetworkObjectId, id);
+        RequestCastServerRpc(NetworkObjectId, id, target?.ObjectId ?? ulong.MaxValue);
     }
 
     public void RequestSpawn(SpawnContext context) {
@@ -91,13 +92,23 @@ public class SpellCasterNet : NetworkBehaviour {
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void RequestCastServerRpc(ulong casterNetObjectId, FixedString64Bytes spellId) {
+    private void RequestCastServerRpc(
+        ulong casterNetObjectId,
+        FixedString64Bytes spellId,
+        ulong targetNetObjectId = ulong.MaxValue
+    ) {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(casterNetObjectId, out var casterNetObj))
             return;
         if (!SpellNetworkCache.TryGet(spellId, out var json))
             return;
 
-        Debug.Log($"[NetworkSpellSystemEvent] RequestCastServerRpc: {casterNetObj.name}");
+        NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetNetObjectId, out var targetNetObj);
+        ITarget target = null;
+        if (targetNetObj != null && targetNetObj.IsSpawned) {
+            target = targetNetObj.GetComponentInChildren<ITarget>();
+        }
+
+        Debug.Log($"[NetworkSpellSystemEvent] RequestCastServerRpc: {casterNetObj.name}, target={target}");
         var spell = SpellJsonSerializer.FromJson<SpellDefinition>(json);
         var caster = casterNetObj.GetComponentInChildren<SpellCaster>();
 
@@ -107,7 +118,8 @@ public class SpellCasterNet : NetworkBehaviour {
             position = caster.Origin,
             rotation = Quaternion.LookRotation(caster.Direction, Vector3.up),
             forward = caster.Direction,
-            caster = caster
+            caster = caster,
+            target = target
         };
         var spellSpawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
         StartCoroutine(spellSpawn!.Request(context, ServerSpawnMain));

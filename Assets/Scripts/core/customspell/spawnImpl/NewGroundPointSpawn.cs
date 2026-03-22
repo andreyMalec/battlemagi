@@ -10,8 +10,11 @@ public class NewGroundPointSpawn : ISpellSpawn, IDelayOriginRespect {
         var delay = context.spawn.multiInstanceDelay;
         var origin = context.DelayOrigin;
 
+        Debug.Log($"NewGroundPointSpawn: 0 target = {context.target?.Position}");
         var firstBase = BaseContext(context, origin, isFirst: true);
+        Debug.Log($"NewGroundPointSpawn: 1 firstBase = {firstBase.position}, forward = {firstBase.forward}");
         var onFirst = ISpellSpawn.GroundPos(firstBase, firstBase.forward, out _);
+        Debug.Log($"NewGroundPointSpawn: 2 firstBase = {onFirst.position}, forward = {onFirst.forward}");
 
         for (int i = count - 1; i >= 0; i--) {
             switch (origin) {
@@ -37,6 +40,7 @@ public class NewGroundPointSpawn : ISpellSpawn, IDelayOriginRespect {
 
             return context with {
                 position = context.target.Position,
+                forward = Vector3.down,
             };
         }
 

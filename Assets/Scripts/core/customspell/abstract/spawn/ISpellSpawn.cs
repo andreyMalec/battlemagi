@@ -57,7 +57,7 @@ public interface ISpellSpawn {
         var origin = context.position;
         var mask = context.spell.defaultRaycast;
 
-        if (Physics.Raycast(origin, direction, out var hit, maxDistance, mask)) {
+        if (Physics.Raycast(origin - direction * 0.1f, direction, out var hit, maxDistance, mask)) {
             if (secondDirection != Vector3.zero) {
                 origin = hit.point + hit.normal * 0.1f;
                 if (Physics.Raycast(origin, Vector3.down, out var hit2, maxDistance, context.spell.defaultRaycast)) {

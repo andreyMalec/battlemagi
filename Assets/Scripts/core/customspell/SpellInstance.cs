@@ -21,6 +21,7 @@ public class SpellInstance : MonoBehaviour, ITarget {
     public bool IsSpell => true;
     public bool IsAlive => Bind.Context.View.IsAlive;
     public OwnerId OwnerId => _authorityService.OwnerId;
+    public ulong ObjectId => _authorityService.ObjectId;
     public GameObject Get => gameObject;
 
     public void Init(ISpellBind bind, IAuthorityService authorityService) {

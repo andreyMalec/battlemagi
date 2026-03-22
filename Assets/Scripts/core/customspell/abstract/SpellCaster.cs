@@ -11,6 +11,7 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
     public abstract Vector3 Direction { get; }
 
     public OwnerId OwnerId { get; private set; }
+    public ulong ObjectId => Authority.ObjectId;
     public SpellSystem SpellSystem { get; private set; }
     public IAuthorityService Authority { get; private set; }
 
@@ -94,7 +95,7 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
      */
     public virtual void Cast(SpellDefinition spell, ITarget target) {
         if (_useNetwork && _casterNet.IsSpawned) {
-            _casterNet.RequestCast(spell);
+            _casterNet.RequestCast(spell, target);
             return;
         }
 
