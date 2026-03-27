@@ -1,15 +1,17 @@
+using System;
 using UnityEngine;
 
+[Serializable]
 public class PlayerSpellInput {
-    public KeyCode CastKey = KeyCode.Mouse0;
-    public KeyCode CancelKey = KeyCode.Mouse1;
+    [SerializeField] private KeyCode castKey = KeyCode.Mouse0;
+    [SerializeField] private KeyCode cancelKey = KeyCode.Mouse1;
 
     public bool CastPressedThisFrame() {
-        return Input.GetKeyDown(CastKey);
+        return Input.GetKeyDown(castKey);
     }
 
     public bool CancelPressedThisFrame() {
-        return Input.GetKeyDown(CancelKey);
+        return Input.GetKeyDown(cancelKey);
     }
 
     public int GetSpellIndexPressedThisFrame() {

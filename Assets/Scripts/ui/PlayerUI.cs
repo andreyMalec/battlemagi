@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerUI : NetworkBehaviour {
     private PlayerUIRenderer _renderer;
     private Damageable _damageable;
-    private PlayerSpellCaster _caster;
+    private SpellCasterPlayer _caster;
     private FirstPersonMovement _movement;
     private Statusable _statusable;
 
@@ -21,7 +21,7 @@ public class PlayerUI : NetworkBehaviour {
         _renderer = FindFirstObjectByType<PlayerUIRenderer>();
         _damageable = GetComponent<Damageable>();
         _statusable = GetComponent<Statusable>();
-        _caster = GetComponent<PlayerSpellCaster>();
+        _caster = GetComponent<SpellCasterPlayer>();
         _movement = GetComponent<FirstPersonMovement>();
         var ui = GetComponents<UICameraSway>();
         for (var i = 0; i < ui.Length; i++) {
@@ -54,14 +54,14 @@ public class PlayerUI : NetworkBehaviour {
         var armor = Math.Clamp(_damageable.CurrentArmor / _damageable.Armor.maxArmor, 0, 1);
         _renderer.armor.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _armorBarWidth * armor);
 
-        var primalMp = Math.Clamp(_caster.primalMana.Value / _caster.maxMana, 0, 1);
+        var primalMp = Math.Clamp(_caster.Mana.PrimalMana / _caster.Mana.MaxMana, 0, 1);
         _renderer.primalMp.transform.localScale = new Vector3(primalMp, 1, 1);
-        var mp = Math.Clamp(_caster.mana.Value / _caster.maxMana, 0, 1);
+        var mp = Math.Clamp(_caster.Mana.Mana / _caster.Mana.MaxMana, 0, 1);
         _renderer.mp.transform.localScale = new Vector3(mp, 1, 1);
-        if (_caster.primalMana.Value > 0) {
-            _renderer.mpText.text = $"-{_caster.primalMana.Value:0}/{_caster.maxMana:0}";
+        if (_caster.Mana.PrimalMana > 0) {
+            _renderer.mpText.text = $"-{_caster.Mana.PrimalMana:0}/{_caster.Mana.MaxMana:0}";
         } else {
-            _renderer.mpText.text = $"{_caster.mana.Value:0}/{_caster.maxMana:0}";
+            _renderer.mpText.text = $"{_caster.Mana.Mana:0}/{_caster.Mana.MaxMana:0}";
         }
 
         var stamina = Math.Clamp(_movement.stamina.Value / _movement.maxStamina, 0, 1);

@@ -5,7 +5,7 @@ public class LocalAuthority : IAuthorityService {
     public ulong ObjectId => 0;
 
     public bool IsServer => true;
-    public bool IsOwner => true;
+    public bool IsOwner => OwnerId == 0;
 
     public LocalAuthority(ulong ownerId) {
         OwnerId = ownerId;

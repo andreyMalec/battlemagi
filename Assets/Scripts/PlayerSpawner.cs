@@ -92,7 +92,7 @@ public class PlayerSpawner : NetworkBehaviour {
             player.GetComponentInChildren<MeshController>(true).SetRagdoll(true);
             player.GetComponentInChildren<Freeze>(true).gameObject.SetActive(false);
             player.GetComponent<CharacterController>().enabled = false;
-            player.GetComponent<PlayerSpellCaster>().enabled = false;
+            player.GetComponent<SpellCasterPlayer>().enabled = false;
             player.GetComponent<FirstPersonMovement>().enabled = false;
             player.GetComponent<FirstPersonLook>().enabled = false;
             player.GetComponent<Mouth>().enabled = false;

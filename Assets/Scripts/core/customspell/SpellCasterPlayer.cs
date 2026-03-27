@@ -2,14 +2,22 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SpellCasterPlayer : SpellCaster {
-    public SpellDefinition def;
-    public SpellDefinition def2;
-    public SpellDefinition def3;
-    public SpellDefinition def4;
     public Transform spawnPos;
+
+    [SerializeField] private PlayerSpellInput input = new();
+    [SerializeField] private ManaModule mana = new();
+    [SerializeField] private MonoBehaviour _bridge;
+
+    private ISpellCasterBridge _bridgeTyped;
+    private Stats _stats;
 
     private SpellDefinition _spell;
     private ISpellSpawnPreview _spawnPreview;
+
+    private bool _manaInitialized;
+    public int EchoCount;
+
+    public ManaModule Mana => mana;
 
     public override Vector3 Origin => spawnPos.position;
     public override Vector3 Direction => spawnPos.forward;
@@ -17,30 +25,63 @@ public class SpellCasterPlayer : SpellCaster {
     public override bool IsPlayer => true;
     public override bool IsSpell => false;
 
-    public override bool CanCast { get; } = true;
+    public override bool CanCast => Authority != null && Authority.IsOwner;
+
+    protected new void Awake() {
+        base.Awake();
+        _stats = GetComponent<Stats>();
+
+        if (_bridge != null)
+            _bridgeTyped = (ISpellCasterBridge)_bridge;
+        else
+            _bridgeTyped = GetComponentInParent<ISpellCasterBridge>();
+
+        if (_bridgeTyped != null)
+            _bridgeTyped.Bind(this);
+    }
+
+    internal void InitializeServerMana() {
+        if (_manaInitialized) return;
+        _manaInitialized = true;
+        mana.InitializeServer(_stats);
+    }
+
+    internal void TickServerMana(float dt) {
+        if (!_manaInitialized) InitializeServerMana();
+        if (Authority == null) return;
+        if (!Authority.IsServer) return;
+        mana.TickServer(dt);
+    }
 
     void Update() {
-        if (Authority == null || !Authority.IsOwner) return;
+        if (!CanCast) return;
 
-        if (Input.GetKeyDown(KeyCode.E))
-            _spell = def;
-        if (Input.GetKeyDown(KeyCode.R))
-            _spell = def2;
-        if (Input.GetKeyDown(KeyCode.Q))
-            _spell = def3;
-        if (Input.GetKeyDown(KeyCode.F))
-            _spell = def4;
+        var index = input.GetSpellIndexPressedThisFrame();
+        if (index >= 0 && index < SpellDatabase.Instance.data.Count) {
+            _spell = SpellDatabase.Instance.data[index];
+        }
 
         UpdatePreview();
 
-        if (_spell != null && Input.GetKeyDown(KeyCode.Mouse0)) {
-            Cast(_spell);
-            _spell = null;
-            _spawnPreview?.Clear();
-            _spawnPreview = null;
+        if (_spell != null && input.CastPressedThisFrame()) {
+            if (!mana.IsPrimalManaLocked(_spell, EchoCount)) {
+                if (mana.CanSpendForCast(_spell, EchoCount)) {
+                    mana.SpendManaServer(mana.CostForCast(_spell));
+                } else {
+                    mana.AddPrimalManaServer(mana.PrimalManaMissing(mana.CostForCast(_spell)));
+                }
+
+                Cast(_spell);
+
+                _spell = null;
+                _spawnPreview?.Clear();
+                _spawnPreview = null;
+            } else {
+                // TODO some feedback for primal mana locked
+            }
         }
 
-        if (_spell != null && Input.GetKeyDown(KeyCode.Mouse1)) {
+        if (_spell != null && input.CancelPressedThisFrame()) {
             _spell = null;
             _spawnPreview?.Clear();
             _spawnPreview = null;
@@ -78,8 +119,6 @@ public class SpellCasterPlayer : SpellCaster {
 
         if ((previewFlags & Preview.Mesh) != 0)
             list.Add(new MeshSpawnPreview());
-        if ((previewFlags & Preview.Sphere) != 0)
-            list.Add(new NonePreview());
         if ((previewFlags & Preview.Line) != 0)
             list.Add(new LinePreview());
         if ((previewFlags & Preview.GroundPoint) != 0)

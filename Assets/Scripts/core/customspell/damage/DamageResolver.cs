@@ -33,8 +33,8 @@ public static class DamageResolver {
     }
 
     private static float ResolveMaxMana(Damageable target) {
-        var caster = target.GetComponent<PlayerSpellCaster>();
+        var caster = target.GetComponent<SpellCasterPlayer>();
         if (caster == null) return 0f;
-        return caster.maxMana;
+        return caster.Mana.MaxMana;
     }
 }

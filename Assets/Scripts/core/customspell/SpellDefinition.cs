@@ -14,6 +14,11 @@ public class SpellDefinition : ScriptableObject, IValidate {
     public float lifetime = 5;
     public LayerMask defaultRaycast = ~0;
 
+    public float manaCost = 0f;
+    public int echoCount = 0;
+    public bool channeling = false;
+    public float channelDuration = 0f;
+
     [Header("Projectile")]
     [ShowIf("_typeProjectile")] public ProjectileDefinition projectile;
 

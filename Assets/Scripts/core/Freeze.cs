@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Freeze : MonoBehaviour {
     private FirstPersonMovement _movement;
-    private PlayerSpellCaster _caster;
+    private SpellCasterPlayer _caster;
     private FirstPersonLook _look;
     private Animator _animator;
     private PlayerAnimator _playerAnimator;
@@ -12,7 +12,7 @@ public class Freeze : MonoBehaviour {
     private void Awake() {
         var parent = transform.parent.gameObject;
         _movement = parent.GetComponent<FirstPersonMovement>();
-        _caster = parent.GetComponent<PlayerSpellCaster>();
+        _caster = parent.GetComponent<SpellCasterPlayer>();
         _look = parent.GetComponent<FirstPersonLook>();
         _playerAnimator = parent.GetComponent<PlayerAnimator>();
     }

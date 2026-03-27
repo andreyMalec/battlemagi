@@ -15,13 +15,16 @@ MonoBehaviour:
   coreType: 1
   spawn: {fileID: 11400000, guid: b1b312811b376b84b94785ed96abd146, type: 2}
   damage: {fileID: 11400000, guid: 51be6f1bc61f364489d09f5662eabcaa, type: 2}
-  effects:
-  - {fileID: 11400000, guid: 63381436f1c8cd14890b55c8512b9a45, type: 2}
+  effects: []
   scale: 2
   lifetime: 10
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 64
+  manaCost: 0
+  echoCount: 0
+  channeling: 0
+  channelDuration: 0
   projectile: {fileID: 0}
   zone: {fileID: 11400000, guid: edd265dfe2fcb2d47ad052f7251bf683, type: 2}
   beam: {fileID: 0}

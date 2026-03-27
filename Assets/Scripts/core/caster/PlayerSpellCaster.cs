@@ -6,6 +6,7 @@ using Unity.Netcode;
 using UnityEngine;
 using Voice;
 
+[Obsolete("Use new \"SpellCasterPlayer\" instead of this")]
 [RequireComponent(typeof(SpellManager))]
 public class PlayerSpellCaster : NetworkBehaviour {
     [SerializeField] private AudioSource disabledSound;
@@ -16,8 +17,6 @@ public class PlayerSpellCaster : NetworkBehaviour {
     private PlayerAnimator _playerAnimator;
     private SpellManager _spellManager;
 
-    public KeyCode spellCastKey = KeyCode.Mouse0;
-    public KeyCode spellCancelKey = KeyCode.Mouse1;
     public KeyCode alternateSpawnKey = KeyCode.F;
 
     [HideInInspector] public bool channeling = false;
@@ -57,9 +56,6 @@ public class PlayerSpellCaster : NetworkBehaviour {
             new PlayerSpellManaController(mana, primalMana, maxMana, manaRestoreTickInterval, manaRestore, _stats);
 
         if (!IsOwner) return;
-
-        _input.CastKey = spellCastKey;
-        _input.CancelKey = spellCancelKey;
 
         if (_mouth == null)
             Debug.Log($"[Mouth] is null on Player_{OwnerClientId}");

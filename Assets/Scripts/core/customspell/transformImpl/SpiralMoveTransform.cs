@@ -17,7 +17,11 @@ public class SpiralMoveTransform : ISpellTransform {
     private ISpellContext _ctx;
 
     public SpiralMoveTransform(
-        Vector3 forward, SpiralAxis axisMode, float radius, float angularSpeed, float forwardSpeed
+        Vector3 forward,
+        SpiralAxis axisMode,
+        float radius,
+        float angularSpeed,
+        float forwardSpeed
     ) {
         _forward = forward.sqrMagnitude > 0f ? forward.normalized : Vector3.forward;
         _axisMode = axisMode;

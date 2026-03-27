@@ -4,8 +4,7 @@ using System;
 public enum Preview {
     None = 0,
     Mesh = 1 << 0,
-    Sphere = 1 << 1,
-    Line = 1 << 2,
-    Disk = 1 << 3,
-    GroundPoint = 1 << 4,
+    Line = 1 << 1,
+    Disk = 1 << 2,
+    GroundPoint = 1 << 3,
 }

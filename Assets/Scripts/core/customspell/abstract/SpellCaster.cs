@@ -21,10 +21,9 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
     public Vector3 Position => transform.position;
     public abstract bool IsPlayer { get; }
     public abstract bool IsSpell { get; }
-    public OwnerId Ownerid => Authority.OwnerId;
     public GameObject Get => gameObject;
 
-    protected void Awake() {
+    protected virtual void Awake() {
         _casterNet = GetComponentInParent<SpellCasterNet>();
         _useNetwork = _casterNet != null;
 

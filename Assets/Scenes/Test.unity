@@ -323,6 +323,74 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!1 &147538646
+GameObject:
+  m_ObjectHideFlags: 17
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 147538648}
+  - component: {fileID: 147538647}
+  m_Layer: 0
+  m_Name: '[default-CSGModel]'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 124
+  m_IsActive: 1
+--- !u!114 &147538647
+MonoBehaviour:
+  m_ObjectHideFlags: 17
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 147538646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8672dcc90e16b0a489a41edf56e016f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp-firstpass::RealtimeCSG.Components.CSGModel
+  PrefabBehaviour: 0
+  PrefabSourceAlignment: 4
+  PrefabDestinationAlignment: 0
+  Version: 1.1
+  infiniteBrush: {fileID: 0}
+  Settings: 1025
+  VertexChannels: 14
+  ReceiveGI: 2
+  MeshColliderCookingOptions: 14
+  ShowGeneratedMeshes: 0
+  DefaultPhysicsMaterial: {fileID: 13400000, guid: 0c5fdfb44d6f19646a41a0720fbf751a, type: 2}
+  exportType: 0
+  originType: 0
+  exportColliders: 0
+  exportPath: 
+  angleError: 1
+  areaError: 1
+  hardAngle: 60
+  packMargin: 20
+  scaleInLightmap: 1
+  autoUVMaxDistance: 0.5
+  autoUVMaxAngle: 89
+  minimumChartSize: 4
+--- !u!4 &147538648
+Transform:
+  m_ObjectHideFlags: 17
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 147538646}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 487526081}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &209071249
 GameObject:
   m_ObjectHideFlags: 0
@@ -468,6 +536,7 @@ GameObject:
   - component: {fileID: 340026115}
   - component: {fileID: 340026118}
   - component: {fileID: 340026117}
+  - component: {fileID: 340026119}
   m_Layer: 0
   m_Name: SpellPrefab
   m_TagString: Untagged
@@ -550,6 +619,24 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &340026119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 340026114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07af858fcf064b6e856a2e3c8303585f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellDatabase
+  spells: []
+  data:
+  - {fileID: 11400000, guid: 121f47b6c76c9f540854d677f2f3ede9, type: 2}
+  - {fileID: 11400000, guid: 3b18caceee5e79f47b0f3be1f3a89f2a, type: 2}
+  - {fileID: 11400000, guid: 81699b3208973504db6cc3b54189fd34, type: 2}
+  - {fileID: 11400000, guid: 88ae3a7b24de22243a3f8eeb5e7797ca, type: 2}
 --- !u!1 &363908878
 GameObject:
   m_ObjectHideFlags: 0
@@ -970,6 +1057,53 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8058041468580978832, guid: 0b6887b79f2a2094587bb3c9b4c029db, type: 3}
   m_PrefabInstance: {fileID: 463341646}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &487526080
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 487526081}
+  - component: {fileID: 487526082}
+  m_Layer: 0
+  m_Name: '[generated-meshes]'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &487526081
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 487526080}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 147538648}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &487526082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 487526080}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c3643d4978096d4880d7edbf4f65a50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp-firstpass::InternalRealtimeCSG.GeneratedMeshes
+  Version: 1
+  owner: {fileID: 147538647}
+  helperSurfaces: []
 --- !u!1 &522286152
 GameObject:
   m_ObjectHideFlags: 0
@@ -2593,8 +2727,32 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 464983565747420828, guid: 735488dc8f38f2b4483df4c642215453, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 727058301}
   m_SourcePrefab: {fileID: 100100000, guid: 735488dc8f38f2b4483df4c642215453, type: 3}
+--- !u!1 &727058300 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 464983565747420828, guid: 735488dc8f38f2b4483df4c642215453, type: 3}
+  m_PrefabInstance: {fileID: 727058299}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &727058301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 727058300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70e898e36b3949cbaf97a752940a228a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PerformanceOverlay
+  updateInterval: 0.5
+  showMemory: 1
+  showFrameTime: 1
+  showGC: 1
 --- !u!1 &744316371
 GameObject:
   m_ObjectHideFlags: 0
@@ -3893,73 +4051,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5519904549856515634, guid: 7c0d6ecc5cda6cd4d8927102fcf65d17, type: 3}
   m_PrefabInstance: {fileID: 1114661287}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1241860685
-GameObject:
-  m_ObjectHideFlags: 17
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1241860687}
-  - component: {fileID: 1241860686}
-  m_Layer: 0
-  m_Name: '[default-CSGModel]'
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 124
-  m_IsActive: 1
---- !u!114 &1241860686
-MonoBehaviour:
-  m_ObjectHideFlags: 17
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1241860685}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8672dcc90e16b0a489a41edf56e016f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp-firstpass::RealtimeCSG.Components.CSGModel
-  PrefabBehaviour: 0
-  PrefabSourceAlignment: 4
-  PrefabDestinationAlignment: 0
-  Version: 1.1
-  infiniteBrush: {fileID: 0}
-  Settings: 1025
-  VertexChannels: 14
-  ReceiveGI: 2
-  MeshColliderCookingOptions: 14
-  ShowGeneratedMeshes: 0
-  DefaultPhysicsMaterial: {fileID: 13400000, guid: 0c5fdfb44d6f19646a41a0720fbf751a, type: 2}
-  exportType: 0
-  originType: 0
-  exportColliders: 0
-  exportPath: 
-  angleError: 1
-  areaError: 1
-  hardAngle: 60
-  packMargin: 20
-  scaleInLightmap: 1
-  autoUVMaxDistance: 0.5
-  autoUVMaxAngle: 89
-  minimumChartSize: 4
---- !u!4 &1241860687
-Transform:
-  m_ObjectHideFlags: 17
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1241860685}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1270142425
 GameObject:
   m_ObjectHideFlags: 0
@@ -4436,7 +4527,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7110108727449629982, guid: ed87c0ba1639c5c4db53f189a0262866, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.2500002
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 7110108727449629982, guid: ed87c0ba1639c5c4db53f189a0262866, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4724,11 +4815,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74ebdd940d9a4fcaaae044fe12179c1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellCasterPlayer
-  def: {fileID: 0}
-  def2: {fileID: 0}
-  def3: {fileID: 0}
-  def4: {fileID: 0}
   spawnPos: {fileID: 0}
+  input:
+    castKey: 323
+    cancelKey: 324
+  mana:
+    maxMana: 100
+    regenPerSecond: 5
+  _bridge: {fileID: 0}
+  EchoCount: 0
 --- !u!114 &1787711406
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5175,13 +5270,9 @@ PrefabInstance:
       propertyPath: def
       value: 
       objectReference: {fileID: 11400000, guid: 88ae3a7b24de22243a3f8eeb5e7797ca, type: 2}
-    - target: {fileID: 4815534646972923113, guid: 3388c675a04491247a96b13c5950bf10, type: 3}
-      propertyPath: _bridge
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 4815534646972923113, guid: 3388c675a04491247a96b13c5950bf10, type: 3}
-      propertyPath: _immortal
-      value: 1
+    - target: {fileID: 1760773015534472312, guid: 3388c675a04491247a96b13c5950bf10, type: 3}
+      propertyPath: mana.regenPerSecond
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 5056318315711601611, guid: 3388c675a04491247a96b13c5950bf10, type: 3}
       propertyPath: m_Name
@@ -5191,21 +5282,9 @@ PrefabInstance:
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7925304159844833790, guid: 3388c675a04491247a96b13c5950bf10, type: 3}
-      propertyPath: m_Pivot.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7925304159844833790, guid: 3388c675a04491247a96b13c5950bf10, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7925304159844833790, guid: 3388c675a04491247a96b13c5950bf10, type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7925304159844833790, guid: 3388c675a04491247a96b13c5950bf10, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 50
+    - target: {fileID: 6791132826984752259, guid: 3388c675a04491247a96b13c5950bf10, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4278190301
       objectReference: {fileID: 0}
     - target: {fileID: 8318835902796695180, guid: 3388c675a04491247a96b13c5950bf10, type: 3}
       propertyPath: m_AnchorMax.x
@@ -6273,11 +6352,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74ebdd940d9a4fcaaae044fe12179c1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellCasterPlayer
-  def: {fileID: 0}
-  def2: {fileID: 0}
-  def3: {fileID: 0}
-  def4: {fileID: 0}
   spawnPos: {fileID: 0}
+  input:
+    castKey: 323
+    cancelKey: 324
+  mana:
+    maxMana: 100
+    regenPerSecond: 5
+  _bridge: {fileID: 0}
+  EchoCount: 0
 --- !u!114 &7351032199263568251
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6418,4 +6501,4 @@ SceneRoots:
   - {fileID: 7351032199263568244}
   - {fileID: 1787711409}
   - {fileID: 2023091144}
-  - {fileID: 1241860687}
+  - {fileID: 147538648}
