@@ -2,8 +2,8 @@ using UnityEngine;
 
 [System.Serializable]
 public class ManaModule {
-    [SerializeField] private float maxMana = 100f;
-    [SerializeField] private float regenPerSecond = 5f;
+    [SerializeField] public float maxMana = 100f;
+    [SerializeField] public float regenPerSecond = 5f;
 
     public float MaxMana => maxMana;
     public float RegenPerSecond => regenPerSecond;

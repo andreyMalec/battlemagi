@@ -6,13 +6,15 @@ public class SpellCasterPlayer : SpellCaster {
 
     [SerializeField] private PlayerSpellInput input = new();
     [SerializeField] private ManaModule mana = new();
-    [SerializeField] private MonoBehaviour _bridge;
+    [SerializeField] private MonoBehaviour bridge;
+    [SerializeField] private bool animateCast = true;
 
     private ISpellCasterBridge _bridgeTyped;
     private Stats _stats;
 
     private SpellDefinition _spell;
-    private ISpellSpawnPreview _spawnPreview;
+    private SpellCasterPlayerPreview _preview;
+    private SpellCasterPlayerAnimator _animator;
 
     private bool _manaInitialized;
     public int EchoCount;
@@ -30,9 +32,12 @@ public class SpellCasterPlayer : SpellCaster {
     protected new void Awake() {
         base.Awake();
         _stats = GetComponent<Stats>();
+        _preview = GetComponent<SpellCasterPlayerPreview>();
+        if (animateCast)
+            _animator = GetComponent<SpellCasterPlayerAnimator>();
 
-        if (_bridge != null)
-            _bridgeTyped = (ISpellCasterBridge)_bridge;
+        if (bridge != null)
+            _bridgeTyped = (ISpellCasterBridge)bridge;
         else
             _bridgeTyped = GetComponentInParent<ISpellCasterBridge>();
 
@@ -61,21 +66,12 @@ public class SpellCasterPlayer : SpellCaster {
             _spell = SpellDatabase.Instance.data[index];
         }
 
-        UpdatePreview();
-
         if (_spell != null && input.CastPressedThisFrame()) {
             if (!mana.IsPrimalManaLocked(_spell, EchoCount)) {
-                if (mana.CanSpendForCast(_spell, EchoCount)) {
-                    mana.SpendManaServer(mana.CostForCast(_spell));
-                } else {
-                    mana.AddPrimalManaServer(mana.PrimalManaMissing(mana.CostForCast(_spell)));
-                }
-
-                Cast(_spell);
-
-                _spell = null;
-                _spawnPreview?.Clear();
-                _spawnPreview = null;
+                if (animateCast)
+                    _animator.AnimateCast(_spell);
+                else
+                    Cast(_spell);
             } else {
                 // TODO some feedback for primal mana locked
             }
@@ -83,55 +79,19 @@ public class SpellCasterPlayer : SpellCaster {
 
         if (_spell != null && input.CancelPressedThisFrame()) {
             _spell = null;
-            _spawnPreview?.Clear();
-            _spawnPreview = null;
         }
+
+        _preview?.SetSpell(_spell);
     }
 
-    private void UpdatePreview() {
-        if (_spell != null && _spawnPreview == null) {
-            _spawnPreview = CreatePreview(_spell.spawn.preview);
-            _spawnPreview.Show(new SpawnContext {
-                spell = _spell,
-                spawn = _spell.spawn,
-                position = spawnPos.position,
-                rotation = spawnPos.rotation,
-                forward = spawnPos.forward,
-                caster = this
-            }, ISpellSpawn.GetMode(_spell.spawn.spawnMode));
+    public override void Cast(SpellDefinition spell) {
+        base.Cast(spell);
+        if (mana.CanSpendForCast(_spell, EchoCount)) {
+            mana.SpendManaServer(mana.CostForCast(_spell));
+        } else {
+            mana.AddPrimalManaServer(mana.PrimalManaMissing(mana.CostForCast(_spell)));
         }
 
-        _spawnPreview?.Update(new SpawnContext {
-            spell = _spell,
-            spawn = _spell.spawn,
-            position = spawnPos.position,
-            rotation = spawnPos.rotation,
-            forward = spawnPos.forward,
-            caster = this
-        });
-    }
-
-    private static ISpellSpawnPreview CreatePreview(Preview previewFlags) {
-        if (previewFlags == Preview.None)
-            return new NonePreview();
-
-        var list = new List<ISpellSpawnPreview>(4);
-
-        if ((previewFlags & Preview.Mesh) != 0)
-            list.Add(new MeshSpawnPreview());
-        if ((previewFlags & Preview.Line) != 0)
-            list.Add(new LinePreview());
-        if ((previewFlags & Preview.GroundPoint) != 0)
-            list.Add(new GroundPointPreview());
-        if ((previewFlags & Preview.Disk) != 0) {
-            list.Add(new GroundRayPreview());
-            list.Add(new DiskPreview());
-        }
-
-        return list.Count switch {
-            0 => new NonePreview(),
-            1 => list[0],
-            _ => new CompositeSpawnPreview(list)
-        };
+        _spell = null;
     }
 }

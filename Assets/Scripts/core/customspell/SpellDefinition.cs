@@ -14,6 +14,7 @@ public class SpellDefinition : ScriptableObject, IValidate {
     public float lifetime = 5;
     public LayerMask defaultRaycast = ~0;
 
+    public float invocationIndex = 0f;
     public float manaCost = 0f;
     public int echoCount = 0;
     public bool channeling = false;

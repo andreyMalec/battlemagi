@@ -42,6 +42,9 @@ public class Player : NetworkBehaviour {
             pa.meshController = meshController;
         }
 
+        var scpa = GetComponent<SpellCasterPlayerAnimator>();
+        scpa?.BindAvatar(meshController, netAnim, animator, IsOwner);
+
         if (isDummy)
             return;
 
@@ -55,14 +58,12 @@ public class Player : NetworkBehaviour {
         look.BindAvatar(meshController);
         look.SetCameraOffset(archetype.cameraOffset);
 
-        var spellMgr = GetComponent<SpellManager>();
-        spellMgr.BindAvatar(meshController);
         var activeSpell = GetComponent<ActiveSpell>();
         activeSpell.BindAvatar(meshController);
-        var caster = GetComponent<PlayerSpellCaster>();
-        caster.maxMana = archetype.maxMana;
-        caster.manaRestore = archetype.manaRegen;
-        caster.BindAvatar(meshController);
+        var caster = GetComponent<SpellCasterPlayer>();
+        caster.Mana.maxMana = archetype.maxMana;
+        caster.Mana.regenPerSecond = archetype.manaRegen;
+        // caster.BindAvatar(meshController);/TODO
         var damageable = GetComponent<Damageable>();
         damageable.Health.maxHealth = archetype.maxHealth;
         damageable.Health.regenPerSecond = archetype.healthRegen;
@@ -147,12 +148,6 @@ public class Player : NetworkBehaviour {
         movement.spawnPoint.Value = position;
         Debug.Log($"[PlayerSpawner] Init Сервер: Player_{clientId} создан в {position}, {rotation}");
         movement.stamina.Value = archetype.maxStamina;
-
-        var damageable = GetComponent<Damageable>();
-        damageable.Health.maxHealth = archetype.maxHealth;
-
-        var caster = GetComponent<PlayerSpellCaster>();
-        caster.mana.Value = archetype.maxMana;
 
         InitClientRpc(clientId, rotation);
     }

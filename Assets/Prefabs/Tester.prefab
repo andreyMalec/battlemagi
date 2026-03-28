@@ -295,6 +295,8 @@ GameObject:
   - component: {fileID: 1174926313006942357}
   - component: {fileID: 283036274027162254}
   - component: {fileID: 3467911108821741378}
+  - component: {fileID: 2484748818470685067}
+  - component: {fileID: 9222345127503320384}
   m_Layer: 0
   m_Name: Tester
   m_TagString: Untagged
@@ -438,7 +440,8 @@ MonoBehaviour:
   mana:
     maxMana: 100
     regenPerSecond: 5
-  _bridge: {fileID: 0}
+  bridge: {fileID: 0}
+  animateCast: 0
   EchoCount: 0
 --- !u!114 &3544951281845238632
 MonoBehaviour:
@@ -571,6 +574,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StatsLocalBridge
   clientId: 0
+--- !u!114 &2484748818470685067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056318315711601611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f3d5d2bb83e4e9e99870f895f3dae6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellCasterPlayerPreview
+--- !u!114 &9222345127503320384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056318315711601611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d15ae0ab98c94f13ae52df0c1fd5f343, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellCasterPlayerAnimator
+  ikHand: {fileID: 0}
+  ikHandRight: {fileID: 0}
 --- !u!1 &7750010650653659641
 GameObject:
   m_ObjectHideFlags: 0
