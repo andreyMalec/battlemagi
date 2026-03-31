@@ -4,6 +4,7 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Spell", menuName = "Spells/Spell Definition")]
 public class SpellDefinition : ScriptableObject, IValidate {
+    public string words;
     public CoreType coreType;
     public SpawnDefinition spawn;
 

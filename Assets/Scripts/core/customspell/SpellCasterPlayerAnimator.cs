@@ -51,7 +51,8 @@ public class SpellCasterPlayerAnimator : MonoBehaviour {
         _spell = null;
     }
 
-    public void CancelSpellChanneling() {
+    public void CancelAnimate() {
+        _spell = null;
         _networkAnimator.SetTrigger(CancelChanneling);
     }
 

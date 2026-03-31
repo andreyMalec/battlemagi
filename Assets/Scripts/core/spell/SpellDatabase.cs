@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -50,7 +51,7 @@ public static class SpellDatabaseExt {
     }
 }
 
-public readonly struct SpellId {
+public readonly struct SpellId : IEquatable<SpellId> {
     public readonly int Value;
 
     private SpellId(int value) {
@@ -66,4 +67,16 @@ public readonly struct SpellId {
     }
 
     public override string ToString() => Value.ToString();
+
+    public bool Equals(SpellId other) {
+        return Value == other.Value;
+    }
+
+    public override bool Equals(object obj) {
+        return obj is SpellId other && Equals(other);
+    }
+
+    public override int GetHashCode() {
+        return Value;
+    }
 }

@@ -6,6 +6,8 @@ using Unity.Netcode;
 using UnityEngine;
 
 public class SpellCasterNet : NetworkBehaviour {
+    public Coroutine CastCoroutine;
+    
     private readonly Dictionary<FixedString64Bytes, List<FixedString4096Bytes>> _pendingChunks = new();
 
     public void RequestCast(SpellDefinition spell, [CanBeNull] ITarget target = null) {
@@ -122,7 +124,7 @@ public class SpellCasterNet : NetworkBehaviour {
             target = target
         };
         var spellSpawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
-        StartCoroutine(spellSpawn!.Request(context, ServerSpawnMain));
+        CastCoroutine = StartCoroutine(spellSpawn!.Request(context, ServerSpawnMain));
     }
 
     private void ServerSpawnMain(SpawnContext context) {

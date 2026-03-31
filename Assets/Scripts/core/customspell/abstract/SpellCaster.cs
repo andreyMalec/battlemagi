@@ -22,6 +22,9 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
     public abstract bool IsPlayer { get; }
     public abstract bool IsSpell { get; }
     public GameObject Get => gameObject;
+    
+    protected Coroutine CastCoroutine => _useNetwork ? _casterNet.CastCoroutine : _castCoroutine;
+    private Coroutine _castCoroutine;
 
     protected virtual void Awake() {
         _casterNet = GetComponentInParent<SpellCasterNet>();
@@ -58,7 +61,7 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
 
         Debug.Log($"{gameObject.name} Cast = {spell.coreType}");
         var spellSpawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
-        StartCoroutine(spellSpawn!.Request(CastContext(spell), SpawnMain));
+        _castCoroutine = StartCoroutine(spellSpawn!.Request(CastContext(spell), SpawnMain));
     }
 
     protected virtual SpawnContext CastContext(SpellDefinition spell) {

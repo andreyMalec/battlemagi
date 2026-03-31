@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 828b0ca3cf304def8ffca524fefb016c, type: 3}
   m_Name: New Projectile Spell
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileDefinition
-  prefabId: 2
-  moveType: 1
-  moveSpeed: 50
+  prefabId: 0
+  moveType: 4
+  moveSpeed: 10
   enableMaxDistance: 0
   maxDistance: 20
   enableGravity: 0
@@ -26,11 +26,18 @@ MonoBehaviour:
   angularSpeed: 0
   spiralRadius: 0.5
   spiralAxis: 0
+  enableHoming: 0
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  homingRadius: 10
+  homingMaxTurnDegrees: 25
+  homingSlerp: 0.35
   enableSquashStretch: 0
   stretchAmplitude: 0.2
   stretchFrequency: 8
   stretchDamping: 0
-  enableBounce: 1
+  enableBounce: 0
   maxBounces: 1
   bounceSpeedMultiplier: 0.7
   enablePierce: 0

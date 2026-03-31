@@ -869,6 +869,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellRunner
   spawnPos: {fileID: 3077521524520137575}
+  spellE: {fileID: 11400000, guid: 7659d312640413c4bbe8f8065b466a2c, type: 2}
   input:
     castKey: 323
     cancelKey: 324
@@ -876,6 +877,7 @@ MonoBehaviour:
     maxMana: 100
     regenPerSecond: 5
   bridge: {fileID: 0}
+  animateCast: 1
   EchoCount: 0
 --- !u!114 &7927841338553304458
 MonoBehaviour:

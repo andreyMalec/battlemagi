@@ -17,10 +17,15 @@ MonoBehaviour:
   damage: {fileID: 11400000, guid: 51be6f1bc61f364489d09f5662eabcaa, type: 2}
   effects: []
   scale: 1
-  lifetime: 5
+  lifetime: 10
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 576
+  invocationIndex: 1
+  manaCost: 5
+  echoCount: 0
+  channeling: 1
+  channelDuration: 10
   projectile: {fileID: 11400000, guid: 41bb151cb5bb8a147bb8d6c93ef9b739, type: 2}
   zone: {fileID: 0}
   beam: {fileID: 0}
