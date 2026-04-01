@@ -12,6 +12,8 @@ public record SpawnContext {
     public bool branch;
     public ITarget target;
 
+    public float spellDamageMultiplier = 1f;
+
     public DelayOrigin DelayOrigin => forceFirstOrigin
         ? DelayOrigin.First
         : (spawn.instanceCount > 1 ? spawn.delayOrigin : DelayOrigin.First);

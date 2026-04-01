@@ -64,7 +64,7 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
         _castCoroutine = StartCoroutine(spellSpawn!.Request(CastContext(spell), SpawnMain));
     }
 
-    protected virtual SpawnContext CastContext(SpellDefinition spell) {
+    public virtual SpawnContext CastContext(SpellDefinition spell) {
         var caster = this;
         var context = new SpawnContext {
             spell = spell,

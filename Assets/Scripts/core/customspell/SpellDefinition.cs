@@ -19,7 +19,10 @@ public class SpellDefinition : ScriptableObject, IValidate {
     public float manaCost = 0f;
     public int echoCount = 0;
     public bool channeling = false;
-    public float channelDuration = 0f;
+    [ShowIf("channeling")] public float channelDuration = 0f;
+
+    public bool charging = false;
+    [ShowIf("charging")] public float chargeDuration = 0f;
 
     [Header("Projectile")]
     [ShowIf("_typeProjectile")] public ProjectileDefinition projectile;
@@ -66,6 +69,14 @@ public class SpellDefinition : ScriptableObject, IValidate {
             projectile = null;
             zone = null;
             beam = null;
+        }
+
+        if (charging) {
+            channeling = false;
+        }
+
+        if (channeling) {
+            charging = false;
         }
 
         if (spawn != null && spawn is IValidate v) v.Validate();

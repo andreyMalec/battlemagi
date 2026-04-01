@@ -14,6 +14,8 @@ public static class DamageResolver {
         if (target.IsStructure)
             damageMulti *= def.structureMultiplier;
 
+        damageMulti *= context.View.Stats.GetFinal(StatType.SpellDamage);
+
         return damageMulti * def.baseType switch {
             SpellDamageBaseType.Flat => def.amount,
             SpellDamageBaseType.Percent => ResolvePercent(def, target),

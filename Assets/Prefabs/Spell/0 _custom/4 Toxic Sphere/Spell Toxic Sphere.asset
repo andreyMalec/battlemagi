@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70d6ac2600d5440ab45bcb7d2aabe7d3, type: 3}
   m_Name: Spell Toxic Sphere
   m_EditorClassIdentifier: Assembly-CSharp::SpellProjectileDefinition
+  words: Toxic Sphere
   coreType: 0
   spawn: {fileID: 11400000, guid: 67e7b8d0b54a5f54bbea0ca5689508df, type: 2}
   damage: {fileID: 0}
@@ -26,6 +27,9 @@ MonoBehaviour:
   echoCount: 0
   channeling: 0
   channelDuration: 0
+  charging: 0
+  chargeDuration: 0
+  chargeMultiplier: 1
   projectile: {fileID: 11400000, guid: fb0ee1b043ab5f04d8f37141f6463576, type: 2}
   zone: {fileID: 0}
   beam: {fileID: 0}

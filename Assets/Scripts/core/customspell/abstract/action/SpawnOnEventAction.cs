@@ -22,7 +22,8 @@ public abstract class SpawnOnEventAction : ISpellAction {
             rotation = context.Movement.Transform.rotation,
             forward = context.Movement.Transform.forward,
             caster = context.Caster,
-            forceFirstOrigin = true
+            forceFirstOrigin = true,
+            spellDamageMultiplier = context.Stats.GetFinal(StatType.SpellDamage)
         };
     }
 }

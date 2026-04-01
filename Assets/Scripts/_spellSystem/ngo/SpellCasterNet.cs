@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class SpellCasterNet : NetworkBehaviour {
     public Coroutine CastCoroutine;
-    
+
     private readonly Dictionary<FixedString64Bytes, List<FixedString4096Bytes>> _pendingChunks = new();
 
     public void RequestCast(SpellDefinition spell, [CanBeNull] ITarget target = null) {
@@ -23,7 +23,8 @@ public class SpellCasterNet : NetworkBehaviour {
         var id = SpellNetworkCodec.ComputeId(json);
         SpellNetworkCache.Put(id, json);
         SendSpellToServer(id, json);
-        RequestSpawnServerRpc(NetworkObjectId, id, context.position, context.forward, context.rotation);
+        RequestSpawnServerRpc(NetworkObjectId, id, context.position, context.forward, context.rotation,
+            context.spellDamageMultiplier);
     }
 
     private void SendSpellToServer(FixedString64Bytes id, string json) {
@@ -68,7 +69,8 @@ public class SpellCasterNet : NetworkBehaviour {
     private void RequestSpawnServerRpc(
         ulong casterNetObjectId,
         FixedString64Bytes spellId,
-        Vector3 position, Vector3 forward, Quaternion rotation
+        Vector3 position, Vector3 forward, Quaternion rotation,
+        float damageMultiplier
     ) {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(casterNetObjectId, out var casterNetObj))
             return;
@@ -76,7 +78,7 @@ public class SpellCasterNet : NetworkBehaviour {
             return;
 
         Debug.Log(
-            $"[NetworkSpellSystemEvent] RequestSpawnServerRpc: {casterNetObj.name}, position={position}, forward={forward}");
+            $"[NetworkSpellSystemEvent] RequestSpawnServerRpc: {casterNetObj.name}, position={position}, forward={forward}, damageMultiplier={damageMultiplier}");
         var spell = SpellJsonSerializer.FromJson<SpellDefinition>(json);
         var caster = casterNetObj.GetComponentInChildren<SpellCaster>();
 
@@ -87,7 +89,8 @@ public class SpellCasterNet : NetworkBehaviour {
             rotation = rotation,
             forward = forward,
             caster = caster,
-            forceFirstOrigin = true
+            forceFirstOrigin = true,
+            spellDamageMultiplier = damageMultiplier
         };
         var spellSpawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
         StartCoroutine(spellSpawn!.Request(context, ServerSpawnMain));
@@ -114,15 +117,8 @@ public class SpellCasterNet : NetworkBehaviour {
         var spell = SpellJsonSerializer.FromJson<SpellDefinition>(json);
         var caster = casterNetObj.GetComponentInChildren<SpellCaster>();
 
-        var context = new SpawnContext {
-            spell = spell,
-            spawn = spell.spawn,
-            position = caster.Origin,
-            rotation = Quaternion.LookRotation(caster.Direction, Vector3.up),
-            forward = caster.Direction,
-            caster = caster,
-            target = target
-        };
+        var context = caster.CastContext(spell);
+        context.target = target;
         var spellSpawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
         CastCoroutine = StartCoroutine(spellSpawn!.Request(context, ServerSpawnMain));
     }

@@ -14,6 +14,7 @@ public class SpellSystem {
     public void CastSpell(
         SpawnContext spawnContext
     ) {
+        Debug.Log($"__________ CAST SPELL: {spawnContext.spell.name} __________ {spawnContext.spellDamageMultiplier}");
         switch (spawnContext.spell.coreType) {
             case CoreType.Projectile:
                 CreateProjectile(spawnContext, spawnContext.branch);
@@ -122,6 +123,8 @@ public class SpellSystem {
 
         var bind = new SpellBind<ProjectileContext>(core, view, context, move);
         instance.Init(bind, _authority);
+        if (!Mathf.Approximately(spawnContext.spellDamageMultiplier, 1f))
+            view.Stats.AddModifier(StatType.SpellDamage, spawnContext.spellDamageMultiplier);
     }
 
     private void CreateZone(
@@ -206,6 +209,8 @@ public class SpellSystem {
 
         var bind = new SpellBind<ZoneContext>(core, view, context, move);
         instance.Init(bind, _authority);
+        if (!Mathf.Approximately(spawnContext.spellDamageMultiplier, 1f))
+            view.Stats.AddModifier(StatType.SpellDamage, spawnContext.spellDamageMultiplier);
     }
 
     private void CreateBeam(
@@ -284,6 +289,8 @@ public class SpellSystem {
 
         var bind = new SpellBind<BeamContext>(core, view, context, move);
         instance.Init(bind, _authority);
+        if (!Mathf.Approximately(spawnContext.spellDamageMultiplier, 1f))
+            view.Stats.AddModifier(StatType.SpellDamage, spawnContext.spellDamageMultiplier);
     }
 
     private void CreateSummon(
@@ -355,6 +362,8 @@ public class SpellSystem {
 
         var bind = new SummonBind<SummonContext>(core, view, context, move, caster, brain, sensors);
         instance.Init(bind, _authority);
+        if (!Mathf.Approximately(spawnContext.spellDamageMultiplier, 1f))
+            view.Stats.AddModifier(StatType.SpellDamage, spawnContext.spellDamageMultiplier);
     }
 
     private static ISpellTransform Move(ProjectileDefinition def, Vector3 direction) {

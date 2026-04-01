@@ -27,6 +27,11 @@ public class SpellCasterPlayer : SpellCaster {
     private SpellDefinition _channelingSpell;
     private SpellInstance _channelingSpellInstance;
 
+    public bool Charging { get; private set; }
+    private Coroutine _chargingRoutine;
+    private SpellDefinition _chargingSpell;
+    private float _chargingDamageMultiplier = 1f;
+
     public ManaModule Mana => mana;
 
     public override Vector3 Origin => spawnPos.position;
@@ -78,14 +83,20 @@ public class SpellCasterPlayer : SpellCaster {
             _spell = spellE;
         }
 
-        if (!Channeling && _spell != null && input.CastPressedThisFrame()) {
+        if (Charging && input.CastPressedThisFrame()) {
+            ReleaseCharged(_chargingSpell);
+        }
+
+        if (!Channeling && !Charging && _spell != null && input.CastPressedThisFrame()) {
             if (!mana.IsPrimalManaLocked(_spell, EchoCount)) {
-                if (animateCast)
-                    _animator.AnimateCast(_spell);
-                else
-                    Cast(_spell);
-            } else {
-                // TODO some feedback for primal mana locked
+                if (_spell.charging) {
+                    StartCharging(_spell);
+                } else {
+                    if (animateCast)
+                        _animator.AnimateCast(_spell);
+                    else
+                        Cast(_spell);
+                }
             }
         }
 
@@ -98,10 +109,12 @@ public class SpellCasterPlayer : SpellCaster {
 
     public override void Cast(SpellDefinition spell) {
         base.Cast(spell);
-        if (mana.CanSpendForCast(_spell, EchoCount)) {
-            mana.SpendManaServer(mana.CostForCast(_spell));
-        } else {
-            mana.AddPrimalManaServer(mana.PrimalManaMissing(mana.CostForCast(_spell)));
+        if (!spell.charging && !spell.channeling) {
+            if (mana.CanSpendForCast(_spell, EchoCount)) {
+                mana.SpendManaServer(mana.CostForCast(_spell));
+            } else {
+                mana.AddPrimalManaServer(mana.PrimalManaMissing(mana.CostForCast(_spell)));
+            }
         }
 
         if (_spell?.channeling == true) {
@@ -111,12 +124,34 @@ public class SpellCasterPlayer : SpellCaster {
         _spell = null;
     }
 
+    public override SpawnContext CastContext(SpellDefinition spell) {
+        var context = base.CastContext(spell);
+        if (spell.charging) {
+            context.spellDamageMultiplier = _chargingDamageMultiplier;
+        }
+
+        return context;
+    }
+
     private void CancelCast() {
+        if (Charging) {
+            ReleaseCharged(_chargingSpell);
+            return;
+        }
+
         _animator.CancelAnimate();
 
         if (CastCoroutine != null) {
             StopCoroutine(CastCoroutine);
         }
+
+        if (_chargingRoutine != null) {
+            StopCoroutine(_chargingRoutine);
+            _chargingRoutine = null;
+        }
+
+        Charging = false;
+        _chargingDamageMultiplier = 1f;
 
         if (_channelingRoutine != null) {
             StopCoroutine(_channelingRoutine);
@@ -138,6 +173,61 @@ public class SpellCasterPlayer : SpellCaster {
         }
 
         _spell = null;
+    }
+
+    private void StartCharging(SpellDefinition spell) {
+        if (_chargingRoutine != null) StopCoroutine(_chargingRoutine);
+        Charging = true;
+        _chargingSpell = spell;
+        _chargingDamageMultiplier = 1f;
+
+        if (animateCast)
+            _animator.AnimateCast(spell);
+
+        _chargingRoutine = StartCoroutine(ChargingTick(spell));
+    }
+
+    private IEnumerator ChargingTick(SpellDefinition spell) {
+        var duration = Mathf.Max(0f, spell.chargeDuration);
+        var costPerSecond = mana.CostPerSecond(spell);
+
+        var elapsed = 0f;
+        while (Charging && elapsed < duration) {
+            var dt = Time.deltaTime;
+            elapsed += dt;
+
+            var cost = costPerSecond * dt;
+            if (mana.CanSpendForChannelTick(spell, dt)) {
+                mana.SpendManaServer(cost);
+            } else {
+                mana.AddPrimalManaServer(mana.PrimalManaMissing(cost));
+                ReleaseCharged(spell);
+                yield break;
+            }
+
+            _chargingDamageMultiplier = Mathf.Clamp01(elapsed / duration);
+            yield return null;
+        }
+
+        ReleaseCharged(spell);
+    }
+
+    private void ReleaseCharged(SpellDefinition spell) {
+        if (!Charging) return;
+        _animator.CancelAnimate();
+
+        if (_chargingRoutine != null) {
+            StopCoroutine(_chargingRoutine);
+            _chargingRoutine = null;
+        }
+
+        Charging = false;
+        var toCast = spell;
+        _chargingSpell = null;
+
+        Cast(toCast);
+
+        _chargingDamageMultiplier = 1f;
     }
 
     private IEnumerator Channel(SpellDefinition spell) {

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70d6ac2600d5440ab45bcb7d2aabe7d3, type: 3}
   m_Name: Spell Fireball
   m_EditorClassIdentifier: Assembly-CSharp::SpellProjectileDefinition
+  words: Fireball
   coreType: 0
   spawn: {fileID: 11400000, guid: 156c1e33f4762a942a6a6bc7860d44b8, type: 2}
   damage: {fileID: 0}
@@ -21,11 +22,14 @@ MonoBehaviour:
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 576
-  invocationIndex: 3
+  invocationIndex: 10
   manaCost: 25
   echoCount: 0
   channeling: 0
-  channelDuration: 0
+  channelDuration: 3
+  charging: 1
+  chargeDuration: 3
+  chargeMultiplier: 0
   projectile: {fileID: 11400000, guid: 4dd9e7151c125764fa9338d2f36053ba, type: 2}
   zone: {fileID: 0}
   beam: {fileID: 0}

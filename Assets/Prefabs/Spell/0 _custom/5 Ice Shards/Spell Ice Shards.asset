@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70d6ac2600d5440ab45bcb7d2aabe7d3, type: 3}
   m_Name: Spell Ice Shards
   m_EditorClassIdentifier: Assembly-CSharp::SpellDefinition
+  words: Ice Shards
   coreType: 0
   spawn: {fileID: 11400000, guid: a3bb3ef979add7b4381083fe44e99064, type: 2}
   damage: {fileID: 11400000, guid: dbc9850ef2684024cb34d797209c4f73, type: 2}
@@ -27,6 +28,9 @@ MonoBehaviour:
   echoCount: 0
   channeling: 0
   channelDuration: 0
+  charging: 0
+  chargeDuration: 0
+  chargeMultiplier: 1
   projectile: {fileID: 11400000, guid: b268ddc40a86ccc4d89debbc8a19a6a7, type: 2}
   zone: {fileID: 0}
   beam: {fileID: 0}

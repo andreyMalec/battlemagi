@@ -22,7 +22,8 @@ public class SpawnOnHitAction : SpawnOnEventAction {
             rotation = rotation,
             forward = rotation * Vector3.forward,
             caster = context.Caster,
-            forceFirstOrigin = true
+            forceFirstOrigin = true,
+            spellDamageMultiplier = context.Stats.GetFinal(StatType.SpellDamage)
         };
         return spawnContext;
     }

@@ -26,16 +26,24 @@ public class Stats : MonoBehaviour {
 
     public void AddModifier(StatType type, float multiplier) {
         if (!_bridgeTyped.IsServer) return;
-        if (!_bridgeTyped.IsSpawned) return;
+
         System.AddModifier(type, multiplier);
-        _bridgeTyped.SyncFromCore(this);
+
+        if (_bridgeTyped.IsSpawned) {
+            _bridgeTyped.SyncFromCore(this);
+        }
+
+        Debug.Log($"[Stats]({gameObject.name}) Added modifier: {type} x{multiplier}");
     }
 
     public void RemoveModifier(StatType type, float multiplier) {
         if (!_bridgeTyped.IsServer) return;
-        if (!_bridgeTyped.IsSpawned) return;
+
         System.RemoveModifier(type, multiplier);
-        _bridgeTyped.SyncFromCore(this);
+
+        if (_bridgeTyped.IsSpawned) {
+            _bridgeTyped.SyncFromCore(this);
+        }
     }
 
     internal void SetSnapshot(StatSnapshot snapshot) {
@@ -54,4 +62,3 @@ public class Stats : MonoBehaviour {
         _bridgeTyped.SyncFromCore(this);
     }
 }
-
