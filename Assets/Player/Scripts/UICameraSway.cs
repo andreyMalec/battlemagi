@@ -33,7 +33,7 @@ public class UICameraSway : MonoBehaviour {
     private FirstPersonLook _firstPersonLook;
 
     public void Bind(RectTransform uiContainer) {
-        _firstPersonLook = GetComponent<FirstPersonLook>();
+        _firstPersonLook = GetComponentInParent<FirstPersonLook>();
         _uiContainer = uiContainer;
         _lastViewRotation = _firstPersonLook.ViewRotation;
 

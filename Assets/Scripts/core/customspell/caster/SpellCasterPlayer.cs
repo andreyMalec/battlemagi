@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SpellCasterPlayer : SpellCaster {
@@ -20,7 +18,6 @@ public class SpellCasterPlayer : SpellCaster {
     private SpellCasterPlayerAnimator _animator;
 
     private bool _manaInitialized;
-    public int EchoCount;
     public bool Channeling { get; private set; }
     private float _channelingElapsed;
     private Coroutine _channelingRoutine;
@@ -44,6 +41,21 @@ public class SpellCasterPlayer : SpellCaster {
     public override bool IsSpell => false;
 
     public override bool CanCast => Authority != null && Authority.IsOwner;
+
+    public void RestoreEcho(SpellDefinition spell, int amount = 1) {
+        if (spell == null || spell.echoCount <= 0 || amount <= 0) return;
+
+        if (_echoSpell != spell) {
+            _echoSpell = spell;
+            _echoRemaining = 0;
+        }
+
+        _echoRemaining = Mathf.Clamp(_echoRemaining + amount, 0, spell.echoCount);
+        SyncEchoCount();
+
+        if (_echoRemaining > 0)
+            _spell = spell;
+    }
 
     protected new void Awake() {
         base.Awake();
@@ -98,14 +110,13 @@ public class SpellCasterPlayer : SpellCaster {
 
         if (!Channeling && !Charging && _spell != null && input.CastPressedThisFrame()) {
             if (TryCastEcho(_spell)) {
-            } else if (!mana.IsPrimalManaLocked(_spell, EchoCount)) {
+            } else if (!mana.IsPrimalManaLocked(_spell, GetEchoBudget(_spell))) {
                 if (_spell.charging) {
                     StartCharging(_spell);
                 } else {
                     if (animateCast) {
                         _animator.AnimateCast(_spell);
-                    }
-                    else
+                    } else
                         Cast(_spell);
                 }
             }
@@ -115,6 +126,7 @@ public class SpellCasterPlayer : SpellCaster {
     }
 
     public override void Cast(SpellDefinition spell) {
+        var usedEcho = _echoSpell == spell && _echoRemaining > 0;
         base.Cast(spell);
 
         if (!spell.charging && !spell.channeling) {
@@ -126,16 +138,17 @@ public class SpellCasterPlayer : SpellCaster {
         }
 
         _spell = null;
-        BeginEcho(spell);
+        BeginEcho(spell, usedEcho);
     }
 
     private void ConsumeManaOrEcho(SpellDefinition spell) {
         if (_echoSpell == spell && _echoRemaining > 0) {
             _echoRemaining--;
+            SyncEchoCount();
             return;
         }
 
-        if (mana.CanSpendForCast(spell, EchoCount)) {
+        if (mana.CanSpendForCast(spell, GetEchoBudget(spell))) {
             mana.SpendManaServer(mana.CostForCast(spell));
         } else {
             mana.AddPrimalManaServer(mana.PrimalManaMissing(mana.CostForCast(spell)));
@@ -154,26 +167,51 @@ public class SpellCasterPlayer : SpellCaster {
         return true;
     }
 
-    private void BeginEcho(SpellDefinition spell) {
+    private void BeginEcho(SpellDefinition spell, bool usedEcho) {
         if (spell == null || spell.echoCount <= 0) {
             ResetEcho();
             return;
         }
 
-        if (_echoRemaining > 0 && _echoRemaining != spell.echoCount) return;
+        if (usedEcho) {
+            if (_echoRemaining <= 0) {
+                ResetEcho();
+                return;
+            }
+
+            if (animateCast) {
+                _animator.CastWaitingAnim(true, spell.castWaitingIndex);
+            }
+
+            _spell = spell;
+            SyncEchoCount();
+            return;
+        }
 
         if (animateCast) {
             _animator.CastWaitingAnim(true, spell.castWaitingIndex);
         }
+
         _spell = spell;
         _echoSpell = spell;
         _echoRemaining = spell.echoCount;
+        SyncEchoCount();
     }
 
     private void ResetEcho() {
         _spell = null;
         _echoSpell = null;
         _echoRemaining = 0;
+        SyncEchoCount();
+    }
+
+    private int GetEchoBudget(SpellDefinition spell) {
+        if (spell == null) return 0;
+        if (_echoSpell == spell) return _echoRemaining;
+        return spell.echoCount;
+    }
+
+    private void SyncEchoCount() {
     }
 
     private void CancelCast() {

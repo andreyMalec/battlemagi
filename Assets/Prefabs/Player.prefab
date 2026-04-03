@@ -773,9 +773,7 @@ GameObject:
   - component: {fileID: 8271153046618425552}
   - component: {fileID: 3269581595495701639}
   - component: {fileID: 6425691076356515085}
-  - component: {fileID: 8745711078365152283}
   - component: {fileID: 3595582522434657761}
-  - component: {fileID: 2894542456545687865}
   - component: {fileID: 1874046057587579816}
   - component: {fileID: 1540340668546877596}
   - component: {fileID: 2342397811680414283}
@@ -785,11 +783,7 @@ GameObject:
   - component: {fileID: 4273735624293180111}
   - component: {fileID: 3149046875761574569}
   - component: {fileID: 334994221300718969}
-  - component: {fileID: 9038200127585152614}
   - component: {fileID: 5412534736573094780}
-  - component: {fileID: 2323875734396528773}
-  - component: {fileID: 7527429836848279379}
-  - component: {fileID: 61866278598921742}
   - component: {fileID: 2821027763571427141}
   - component: {fileID: 129843703706901327}
   - component: {fileID: 2591686918436872089}
@@ -830,6 +824,7 @@ Transform:
   - {fileID: 1983326224943658370}
   - {fileID: 1983242037409218633}
   - {fileID: 4785237571442939822}
+  - {fileID: 8715957163245037916}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6341828913972651628
@@ -879,7 +874,6 @@ MonoBehaviour:
     regenPerSecond: 5
   bridge: {fileID: 0}
   animateCast: 1
-  EchoCount: 0
 --- !u!114 &7927841338553304458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -912,7 +906,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   isDummy: 0
   scriptsToDisable:
-  - {fileID: 8745711078365152283}
+  - {fileID: 2352745554653042792}
   objectsToDisable:
   - {fileID: 3049812759064434572}
   - {fileID: 7506481885274717685}
@@ -1018,20 +1012,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &8745711078365152283
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5793509697026975924}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45d3243764fb4780b488a7b439ea3650, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HideCloak
-  firstPersonCamera: {fileID: 3561322077568356742}
-  thirdPersonCamera: {fileID: 5894542900604772476}
 --- !u!114 &3595582522434657761
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1078,19 +1058,6 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 0
   SlerpPosition: 1
---- !u!114 &2894542456545687865
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5793509697026975924}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1b14352e8df4285b10c4f1ce69afe25, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerDamageable
-  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!143 &1874046057587579816
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1308,21 +1275,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CharacterMotor
   _impulseDamping: 5
   _groundFriction: 8
---- !u!114 &9038200127585152614
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5793509697026975924}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 323d105e963a4d02afd065a9a6e80891, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ActiveSpell
-  ShowTopMostFoldoutHeaderGroup: 1
-  spellManager: {fileID: 0}
-  invocation: {fileID: 0}
 --- !u!95 &5412534736573094780
 Animator:
   serializedVersion: 7
@@ -1345,60 +1297,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &2323875734396528773
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5793509697026975924}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a899d3d23f944dc39b9b4d0daa60eba7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UICameraSway
-  positionAmplitudeX: 20
-  positionAmplitudeY: 40
-  rotationAmplitudeYaw: 5
-  rotationAmplitudePitch: 0
-  followSmoothTime: 0.1
-  angularSmoothTime: 0.05
---- !u!114 &7527429836848279379
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5793509697026975924}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a899d3d23f944dc39b9b4d0daa60eba7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UICameraSway
-  positionAmplitudeX: 10
-  positionAmplitudeY: 20
-  rotationAmplitudeYaw: 2
-  rotationAmplitudePitch: 0
-  followSmoothTime: 0.1
-  angularSmoothTime: 0.05
---- !u!114 &61866278598921742
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5793509697026975924}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a899d3d23f944dc39b9b4d0daa60eba7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UICameraSway
-  positionAmplitudeX: 10
-  positionAmplitudeY: 10
-  rotationAmplitudeYaw: 2
-  rotationAmplitudePitch: 0.2
-  followSmoothTime: 0.1
-  angularSmoothTime: 0.05
 --- !u!114 &2821027763571427141
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2111,6 +2009,109 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   distanceThreshold: 0.15
   isGrounded: 0
+--- !u!1 &7477955511304325520
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8715957163245037916}
+  - component: {fileID: 2352745554653042792}
+  - component: {fileID: 1516827778010977096}
+  - component: {fileID: 5658292801286515235}
+  - component: {fileID: 7562000388329866392}
+  m_Layer: 0
+  m_Name: UtilScripts
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8715957163245037916
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7477955511304325520}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.63675, y: 127.08366, z: -38.65113}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3580683726391601925}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2352745554653042792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7477955511304325520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45d3243764fb4780b488a7b439ea3650, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HideCloak
+  firstPersonCamera: {fileID: 3561322077568356742}
+  thirdPersonCamera: {fileID: 5894542900604772476}
+--- !u!114 &1516827778010977096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7477955511304325520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a899d3d23f944dc39b9b4d0daa60eba7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UICameraSway
+  positionAmplitudeX: 20
+  positionAmplitudeY: 40
+  rotationAmplitudeYaw: 5
+  rotationAmplitudePitch: 0
+  followSmoothTime: 0.1
+  angularSmoothTime: 0.05
+--- !u!114 &5658292801286515235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7477955511304325520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a899d3d23f944dc39b9b4d0daa60eba7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UICameraSway
+  positionAmplitudeX: 10
+  positionAmplitudeY: 20
+  rotationAmplitudeYaw: 2
+  rotationAmplitudePitch: 0
+  followSmoothTime: 0.1
+  angularSmoothTime: 0.05
+--- !u!114 &7562000388329866392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7477955511304325520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a899d3d23f944dc39b9b4d0daa60eba7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UICameraSway
+  positionAmplitudeX: 10
+  positionAmplitudeY: 10
+  rotationAmplitudeYaw: 2
+  rotationAmplitudePitch: 0.2
+  followSmoothTime: 0.1
+  angularSmoothTime: 0.05
 --- !u!1 &7837667844889081322
 GameObject:
   m_ObjectHideFlags: 0

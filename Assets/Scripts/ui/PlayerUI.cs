@@ -23,7 +23,7 @@ public class PlayerUI : NetworkBehaviour {
         _statusable = GetComponent<Statusable>();
         _caster = GetComponent<SpellCasterPlayer>();
         _movement = GetComponent<FirstPersonMovement>();
-        var ui = GetComponents<UICameraSway>();
+        var ui = GetComponentsInChildren<UICameraSway>();
         for (var i = 0; i < ui.Length; i++) {
             ui[i].Bind(_renderer.uiContainers[i]);
         }

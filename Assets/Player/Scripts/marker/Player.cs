@@ -60,15 +60,13 @@ public class Player : NetworkBehaviour {
         look.BindAvatar(meshController);
         look.SetCameraOffset(archetype.cameraOffset);
 
-        var activeSpell = GetComponent<ActiveSpell>();
-        activeSpell.BindAvatar(meshController);
         var caster = GetComponent<SpellCasterPlayer>();
         caster.Mana.maxMana = archetype.maxMana;
         caster.Mana.regenPerSecond = archetype.manaRegen;
         var damageable = GetComponent<Damageable>();
         damageable.Health.maxHealth = archetype.maxHealth;
         damageable.Health.regenPerSecond = archetype.healthRegen;
-        var camSel = GetComponent<CameraSelector>();
+        var camSel = GetComponentInChildren<CameraSelector>();
         camSel.BindAvatar(meshController);
         var fpss = GetComponentInChildren<FirstPersonSounds>();
         fpss.BindAvatar(animator);
