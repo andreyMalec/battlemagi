@@ -22,14 +22,14 @@ MonoBehaviour:
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 576
-  invocationIndex: 10
+  castWaitingIndex: 0
+  invocationIndex: 3
   manaCost: 25
   echoCount: 0
   channeling: 0
   channelDuration: 3
-  charging: 1
+  charging: 0
   chargeDuration: 3
-  chargeMultiplier: 0
   projectile: {fileID: 11400000, guid: 4dd9e7151c125764fa9338d2f36053ba, type: 2}
   zone: {fileID: 0}
   beam: {fileID: 0}

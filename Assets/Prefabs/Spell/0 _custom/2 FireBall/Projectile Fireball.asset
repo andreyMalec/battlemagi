@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Projectile Fireball
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileDefinition
   prefabId: 0
-  moveType: 4
+  moveType: 1
   moveSpeed: 30
   enableMaxDistance: 0
   maxDistance: 20
@@ -45,6 +45,7 @@ MonoBehaviour:
   enableFork: 0
   forkCount: 3
   forkSpreadAngle: 35
+  echoOnHit: 0
   onHitSpawn: {fileID: 11400000, guid: 83bbf096275ff23468defedbc64033d2, type: 2}
   atMaxDistanceSpawn: {fileID: 0}
   atStepDistanceSpawn: {fileID: 0}

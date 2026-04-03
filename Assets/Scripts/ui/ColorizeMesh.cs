@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Globalization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -94,21 +95,21 @@ public class ColorizeMesh : MonoBehaviour {
         _contrastColors = PlayerPrefs.GetInt("ContrastColors", 0) == 1;
 
         sliderHue.onValueChanged.AddListener(h => {
-            fieldHue.text = h.ToString("0");
+            fieldHue.text = h.ToString("0", CultureInfo.InvariantCulture);
             hue = h;
         });
         sliderSaturation.onValueChanged.AddListener(s => {
-            fieldSaturation.text = s.ToString("0.00");
+            fieldSaturation.text = s.ToString("0.00", CultureInfo.InvariantCulture);
             saturation = s;
         });
 
         fieldHue.onValueChanged.AddListener(h => {
-            var hh = float.Parse(h);
+            var hh = float.Parse(h, CultureInfo.InvariantCulture);
             sliderHue.value = hh;
             hue = hh;
         });
         fieldSaturation.onValueChanged.AddListener(s => {
-            var ss = float.Parse(s);
+            var ss = float.Parse(s, CultureInfo.InvariantCulture);
             sliderSaturation.value = ss;
             saturation = ss;
         });

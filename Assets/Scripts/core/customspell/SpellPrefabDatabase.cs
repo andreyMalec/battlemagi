@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "SpellPrefabDatabase", menuName = "Spells/Spell Prefab Database")]
@@ -7,6 +8,7 @@ public class SpellPrefabDatabase : ScriptableObject {
     public struct ProjectileEntry {
         public SpellProjectilePrefabId id;
         public GameObject prefab;
+        [CanBeNull] public GameObject inHandPrefab;
         public DamageKind sound;
     }
 
@@ -14,6 +16,7 @@ public class SpellPrefabDatabase : ScriptableObject {
     public struct ZoneEntry {
         public SpellZonePrefabId id;
         public GameObject prefab;
+        [CanBeNull] public GameObject inHandPrefab;
         public DamageKind sound;
     }
 
@@ -21,6 +24,7 @@ public class SpellPrefabDatabase : ScriptableObject {
     public struct BeamEntry {
         public SpellBeamPrefabId id;
         public GameObject prefab;
+        [CanBeNull] public GameObject inHandPrefab;
         public DamageKind sound;
     }
 
@@ -28,6 +32,7 @@ public class SpellPrefabDatabase : ScriptableObject {
     public struct SummonEntry {
         public SpellSummonPrefabId id;
         public GameObject prefab;
+        [CanBeNull] public GameObject inHandPrefab;
     }
 
     public ProjectileEntry[] projectiles;
@@ -115,6 +120,62 @@ public class SpellPrefabDatabase : ScriptableObject {
         }
 
         return DamageKind.Default;
+    }
+
+    public GameObject Hand(SpellDefinition def) {
+        return def.coreType switch {
+            CoreType.Projectile => Hand(def.projectile.prefabId),
+            CoreType.Zone => Hand(def.zone.prefabId),
+            CoreType.Beam => Hand(def.beam.prefabId),
+            CoreType.Summon => Hand(def.summon.prefabId),
+            _ => null
+        };
+    }
+
+    public GameObject Hand(int core, int prefab) {
+        return (CoreType)core switch {
+            CoreType.Projectile => Hand((SpellProjectilePrefabId)prefab),
+            CoreType.Zone => Hand((SpellZonePrefabId)prefab),
+            CoreType.Beam => Hand((SpellBeamPrefabId)prefab),
+            CoreType.Summon => Hand((SpellSummonPrefabId)prefab),
+            _ => null
+        };
+    }
+
+    public GameObject Hand(SpellProjectilePrefabId id) {
+        for (int i = 0; i < projectiles.Length; i++) {
+            if (projectiles[i].id == id)
+                return projectiles[i].inHandPrefab;
+        }
+
+        return null;
+    }
+
+    public GameObject Hand(SpellZonePrefabId id) {
+        for (int i = 0; i < zones.Length; i++) {
+            if (zones[i].id == id)
+                return zones[i].inHandPrefab;
+        }
+
+        return null;
+    }
+
+    public GameObject Hand(SpellBeamPrefabId id) {
+        for (int i = 0; i < beams.Length; i++) {
+            if (beams[i].id == id)
+                return beams[i].inHandPrefab;
+        }
+
+        return null;
+    }
+
+    public GameObject Hand(SpellSummonPrefabId id) {
+        for (int i = 0; i < summons.Length; i++) {
+            if (summons[i].id == id)
+                return summons[i].inHandPrefab;
+        }
+
+        return null;
     }
 
     private static SpellPrefabDatabase _instance;

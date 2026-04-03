@@ -54,9 +54,11 @@ public class SpellCasterPlayerAnimator : MonoBehaviour {
     public void CancelAnimate() {
         _spell = null;
         _networkAnimator.SetTrigger(CancelChanneling);
+        CastWaitingAnim(false);
     }
 
     public void AnimateCast(SpellDefinition spell) {
+        CastWaitingAnim(false);
         _spell = spell;
         if (spell.invocationIndex <= 0)
             OnSpellCasted(true);

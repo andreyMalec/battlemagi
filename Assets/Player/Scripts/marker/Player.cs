@@ -44,6 +44,8 @@ public class Player : NetworkBehaviour {
 
         var scpa = GetComponent<SpellCasterPlayerAnimator>();
         scpa?.BindAvatar(meshController, netAnim, animator, IsOwner);
+        var scpp = GetComponent<SpellCasterPlayerPreview>();
+        scpp?.BindAvatar(meshController);
 
         if (isDummy)
             return;
@@ -63,7 +65,6 @@ public class Player : NetworkBehaviour {
         var caster = GetComponent<SpellCasterPlayer>();
         caster.Mana.maxMana = archetype.maxMana;
         caster.Mana.regenPerSecond = archetype.manaRegen;
-        // caster.BindAvatar(meshController);/TODO
         var damageable = GetComponent<Damageable>();
         damageable.Health.maxHealth = archetype.maxHealth;
         damageable.Health.regenPerSecond = archetype.healthRegen;

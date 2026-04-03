@@ -6,6 +6,7 @@ public class PlayerTester : MonoBehaviour {
     [SerializeField] private LookSettings lookSettings;
     [SerializeField] private GroundCheck groundCheck;
     [SerializeField] private Camera mainCamera;
+    [SerializeField] private Transform hand;
 
     public float movementSpeed = 2;
     public float runSpeed = 5;
@@ -19,6 +20,8 @@ public class PlayerTester : MonoBehaviour {
     private void Awake() {
         _characterController = GetComponent<CharacterController>();
         _stats = GetComponent<Stats>();
+        var preview = GetComponent<SpellCasterPlayerPreview>();
+        preview.BindHand(hand);
     }
 
     private void Update() {

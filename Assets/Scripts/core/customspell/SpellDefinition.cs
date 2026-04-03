@@ -15,6 +15,7 @@ public class SpellDefinition : ScriptableObject, IValidate {
     public float lifetime = 5;
     public LayerMask defaultRaycast = ~0;
 
+    public int castWaitingIndex = 0;
     public float invocationIndex = 0f;
     public float manaCost = 0f;
     public int echoCount = 0;
@@ -69,14 +70,6 @@ public class SpellDefinition : ScriptableObject, IValidate {
             projectile = null;
             zone = null;
             beam = null;
-        }
-
-        if (charging) {
-            channeling = false;
-        }
-
-        if (channeling) {
-            charging = false;
         }
 
         if (spawn != null && spawn is IValidate v) v.Validate();

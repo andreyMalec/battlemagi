@@ -800,6 +800,7 @@ GameObject:
   - component: {fileID: 3925545904756289942}
   - component: {fileID: 1928086510590880151}
   - component: {fileID: 8151359896217736792}
+  - component: {fileID: 9206681557752848795}
   m_Layer: 9
   m_Name: Player
   m_TagString: Untagged
@@ -843,7 +844,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1910923140
+  GlobalObjectIdHash: 2196398029
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -1545,6 +1546,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f3d5d2bb83e4e9e99870f895f3dae6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellCasterPlayerPreview
+--- !u!114 &9206681557752848795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cf61ec61c3d4355bba76a1858843a63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellPreviewNetworkBridge
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &5894542900604772476
 GameObject:
   m_ObjectHideFlags: 0

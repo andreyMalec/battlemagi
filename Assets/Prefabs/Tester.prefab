@@ -297,6 +297,7 @@ GameObject:
   - component: {fileID: 3467911108821741378}
   - component: {fileID: 2484748818470685067}
   - component: {fileID: 9222345127503320384}
+  - component: {fileID: -2114292743755080758}
   m_Layer: 0
   m_Name: Tester
   m_TagString: Untagged
@@ -419,6 +420,7 @@ MonoBehaviour:
   lookSettings: {fileID: 11400000, guid: 5e09a9892218f1a49acfc9e000c99915, type: 2}
   groundCheck: {fileID: 6803069950537442686}
   mainCamera: {fileID: 8854033999867419295}
+  hand: {fileID: 0}
   movementSpeed: 6
   runSpeed: 5
 --- !u!114 &1760773015534472312
@@ -601,6 +603,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpellCasterPlayerAnimator
   ikHand: {fileID: 0}
   ikHandRight: {fileID: 0}
+--- !u!114 &-2114292743755080758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056318315711601611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e08f628a3ce4010a754f7dcd99529e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellPreviewLocalBridge
+  ShowTopMostFoldoutHeaderGroup: 1
+  clientId: 0
 --- !u!1 &7750010650653659641
 GameObject:
   m_ObjectHideFlags: 0

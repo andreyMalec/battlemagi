@@ -14,7 +14,6 @@ public class SpellSystem {
     public void CastSpell(
         SpawnContext spawnContext
     ) {
-        Debug.Log($"__________ CAST SPELL: {spawnContext.spell.name} __________ {spawnContext.spellDamageMultiplier}");
         switch (spawnContext.spell.coreType) {
             case CoreType.Projectile:
                 CreateProjectile(spawnContext, spawnContext.branch);
@@ -524,6 +523,8 @@ public class SpellSystem {
             actions.Add(new ProjectileInstantDamageAction());
         if (spell.effects != null && spell.effects.Count > 0)
             actions.Add(new ProjectileStatusEffectAction());
+        if (def.echoOnHit)
+            actions.Add(new EchoOnHitAction());
         return actions;
     }
 }

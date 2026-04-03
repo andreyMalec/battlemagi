@@ -32,6 +32,9 @@ public class SpellCasterPlayer : SpellCaster {
     private SpellDefinition _chargingSpell;
     private float _chargingDamageMultiplier = 1f;
 
+    private int _echoRemaining;
+    private SpellDefinition _echoSpell;
+
     public ManaModule Mana => mana;
 
     public override Vector3 Origin => spawnPos.position;
@@ -76,11 +79,17 @@ public class SpellCasterPlayer : SpellCaster {
 
         var index = input.GetSpellIndexPressedThisFrame();
         if (index >= 0 && index < SpellDatabase.Instance.data.Count) {
-            _spell = SpellDatabase.Instance.data[index];
+            var selected = SpellDatabase.Instance.data[index];
+            if (selected != _spell)
+                ResetEcho();
+            _spell = selected;
+
+            if (animateCast)
+                _animator.CastWaitingAnim(true, _spell.castWaitingIndex);
         }
 
-        if (Input.GetKeyDown(KeyCode.E)) {
-            _spell = spellE;
+        if (input.CancelPressedThisFrame()) {
+            CancelCast();
         }
 
         if (Charging && input.CastPressedThisFrame()) {
@@ -88,20 +97,18 @@ public class SpellCasterPlayer : SpellCaster {
         }
 
         if (!Channeling && !Charging && _spell != null && input.CastPressedThisFrame()) {
-            if (!mana.IsPrimalManaLocked(_spell, EchoCount)) {
+            if (TryCastEcho(_spell)) {
+            } else if (!mana.IsPrimalManaLocked(_spell, EchoCount)) {
                 if (_spell.charging) {
                     StartCharging(_spell);
                 } else {
-                    if (animateCast)
+                    if (animateCast) {
                         _animator.AnimateCast(_spell);
+                    }
                     else
                         Cast(_spell);
                 }
             }
-        }
-
-        if (input.CancelPressedThisFrame()) {
-            CancelCast();
         }
 
         _preview?.SetSpell(_spell);
@@ -109,28 +116,64 @@ public class SpellCasterPlayer : SpellCaster {
 
     public override void Cast(SpellDefinition spell) {
         base.Cast(spell);
+
         if (!spell.charging && !spell.channeling) {
-            if (mana.CanSpendForCast(_spell, EchoCount)) {
-                mana.SpendManaServer(mana.CostForCast(_spell));
-            } else {
-                mana.AddPrimalManaServer(mana.PrimalManaMissing(mana.CostForCast(_spell)));
-            }
+            ConsumeManaOrEcho(spell);
         }
 
-        if (_spell?.channeling == true) {
-            _channelingRoutine = StartCoroutine(Channel(_spell));
+        if (spell.channeling) {
+            _channelingRoutine = StartCoroutine(Channel(spell));
         }
 
         _spell = null;
+        BeginEcho(spell);
     }
 
-    public override SpawnContext CastContext(SpellDefinition spell) {
-        var context = base.CastContext(spell);
-        if (spell.charging) {
-            context.spellDamageMultiplier = _chargingDamageMultiplier;
+    private void ConsumeManaOrEcho(SpellDefinition spell) {
+        if (_echoSpell == spell && _echoRemaining > 0) {
+            _echoRemaining--;
+            return;
         }
 
-        return context;
+        if (mana.CanSpendForCast(spell, EchoCount)) {
+            mana.SpendManaServer(mana.CostForCast(spell));
+        } else {
+            mana.AddPrimalManaServer(mana.PrimalManaMissing(mana.CostForCast(spell)));
+        }
+    }
+
+    private bool TryCastEcho(SpellDefinition spell) {
+        if (_echoSpell != spell) return false;
+        if (_echoRemaining <= 0) return false;
+
+        if (animateCast)
+            _animator.AnimateCast(spell);
+        else
+            Cast(spell);
+
+        return true;
+    }
+
+    private void BeginEcho(SpellDefinition spell) {
+        if (spell == null || spell.echoCount <= 0) {
+            ResetEcho();
+            return;
+        }
+
+        if (_echoRemaining > 0 && _echoRemaining != spell.echoCount) return;
+
+        if (animateCast) {
+            _animator.CastWaitingAnim(true, spell.castWaitingIndex);
+        }
+        _spell = spell;
+        _echoSpell = spell;
+        _echoRemaining = spell.echoCount;
+    }
+
+    private void ResetEcho() {
+        _spell = null;
+        _echoSpell = null;
+        _echoRemaining = 0;
     }
 
     private void CancelCast() {
@@ -139,7 +182,11 @@ public class SpellCasterPlayer : SpellCaster {
             return;
         }
 
-        _animator.CancelAnimate();
+        ResetEcho();
+
+        if (animateCast) {
+            _animator.CancelAnimate();
+        }
 
         if (CastCoroutine != null) {
             StopCoroutine(CastCoroutine);
@@ -181,8 +228,9 @@ public class SpellCasterPlayer : SpellCaster {
         _chargingSpell = spell;
         _chargingDamageMultiplier = 1f;
 
-        if (animateCast)
+        if (animateCast) {
             _animator.AnimateCast(spell);
+        }
 
         _chargingRoutine = StartCoroutine(ChargingTick(spell));
     }
@@ -214,7 +262,10 @@ public class SpellCasterPlayer : SpellCaster {
 
     private void ReleaseCharged(SpellDefinition spell) {
         if (!Charging) return;
-        _animator.CancelAnimate();
+        ResetEcho();
+        if (animateCast) {
+            _animator.CancelAnimate();
+        }
 
         if (_chargingRoutine != null) {
             StopCoroutine(_chargingRoutine);
@@ -231,6 +282,7 @@ public class SpellCasterPlayer : SpellCaster {
     }
 
     private IEnumerator Channel(SpellDefinition spell) {
+        ResetEcho();
         _channelingSpell = spell;
         _channelingElapsed = 0;
         Channeling = true;
@@ -262,5 +314,11 @@ public class SpellCasterPlayer : SpellCaster {
         }
 
         CancelCast();
+    }
+
+    public override SpawnContext CastContext(SpellDefinition spell) {
+        var c = base.CastContext(spell);
+        c.spellDamageMultiplier = _chargingDamageMultiplier;
+        return c;
     }
 }

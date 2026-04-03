@@ -8,14 +8,30 @@ public class SpellCasterPlayerPreview : MonoBehaviour {
     private ISpellSpawnPreview _spawnPreview;
     private SpellDefinition _spell;
 
+    private ISpellPreviewBridge _bridgeTyped;
+
     private void Awake() {
         _caster = GetComponent<SpellCasterPlayer>();
+        _bridgeTyped = GetComponentInParent<ISpellPreviewBridge>();
+    }
+
+    public void BindAvatar(MeshController mc) {
+        BindHand(mc.invocation);
+    }
+
+    public void BindHand(Transform hand) {
+        _bridgeTyped.BindHand(hand);
     }
 
     public void SetSpell([CanBeNull] SpellDefinition spell) {
         if (spell == null && _spell != null) {
             _spawnPreview?.Clear();
             _spawnPreview = null;
+            _bridgeTyped.Hide();
+        }
+
+        if (spell != null && _spell == null) {
+            _bridgeTyped.Show(spell);
         }
 
         _spell = spell;
