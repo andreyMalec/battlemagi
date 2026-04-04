@@ -6,6 +6,13 @@ public class NetworkGameBootstrap : NetworkBehaviour, IAuthorityService, SpellBo
     public OwnerId OwnerId => OwnerClientId;
     public ulong ObjectId => NetworkObjectId;
 
+    public override void OnNetworkSpawn() {
+        base.OnNetworkSpawn();
+
+        var caster = GetComponentInChildren<SpellCaster>();
+        Init(caster);
+    }
+
     public void Init(SpellCaster caster) {
         var (spellSystem, authority) = InitializeSpellSystem();
         caster?.Initialize(OwnerClientId, spellSystem, authority);

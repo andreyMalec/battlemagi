@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using UnityEngine;
 
@@ -36,5 +35,22 @@ public class SpellCasterLocalBridge : MonoBehaviour, ISpellCasterBridge {
 
     public void TickFixed(SpellCasterPlayer core) {
         core.TickServerMana(Time.fixedDeltaTime);
+    }
+
+    public bool TrySpendMana(float amount) {
+        if (!_hasCore) return false;
+        return _core.Mana.SpendWithPrimalServer(amount);
+    }
+
+    public bool TrySpendHealth(float amount) {
+        if (!_hasCore) return false;
+        var damageable = _core.GetComponent<Damageable>();
+        if (damageable == null) return false;
+        return damageable.SpendHealthCostServer(amount);
+    }
+
+    public void RestoreEcho(SpellDefinition spell, int amount) {
+        if (!_hasCore) return;
+        _core.ApplyRestoreEcho(spell, amount);
     }
 }

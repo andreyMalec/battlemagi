@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
@@ -10,12 +9,13 @@ public class SpellCasterNet : NetworkBehaviour {
 
     private readonly Dictionary<FixedString64Bytes, List<FixedString4096Bytes>> _pendingChunks = new();
 
-    public void RequestCast(SpellDefinition spell, [CanBeNull] ITarget target = null) {
-        var json = SpellJsonSerializer.ToJson(spell);
+    public void RequestCast(SpawnContext context) {
+        var json = SpellJsonSerializer.ToJson(context.spell);
         var id = SpellNetworkCodec.ComputeId(json);
         SpellNetworkCache.Put(id, json);
         SendSpellToServer(id, json);
-        RequestCastServerRpc(NetworkObjectId, id, target?.ObjectId ?? ulong.MaxValue);
+        RequestCastServerRpc(NetworkObjectId, id, context.target?.ObjectId ?? ulong.MaxValue,
+            context.spellDamageMultiplier);
     }
 
     public void RequestSpawn(SpawnContext context) {
@@ -100,7 +100,8 @@ public class SpellCasterNet : NetworkBehaviour {
     private void RequestCastServerRpc(
         ulong casterNetObjectId,
         FixedString64Bytes spellId,
-        ulong targetNetObjectId = ulong.MaxValue
+        ulong targetNetObjectId = ulong.MaxValue,
+        float damageMultiplier = 1f
     ) {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(casterNetObjectId, out var casterNetObj))
             return;
@@ -113,12 +114,14 @@ public class SpellCasterNet : NetworkBehaviour {
             target = targetNetObj.GetComponentInChildren<ITarget>();
         }
 
-        Debug.Log($"[NetworkSpellSystemEvent] RequestCastServerRpc: {casterNetObj.name}, target={target}");
+        Debug.Log(
+            $"[NetworkSpellSystemEvent] RequestCastServerRpc: {casterNetObj.name}, target={target}, damageMultiplier={damageMultiplier}");
         var spell = SpellJsonSerializer.FromJson<SpellDefinition>(json);
         var caster = casterNetObj.GetComponentInChildren<SpellCaster>();
 
         var context = caster.CastContext(spell);
         context.target = target;
+        context.spellDamageMultiplier = damageMultiplier;
         var spellSpawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
         CastCoroutine = StartCoroutine(spellSpawn!.Request(context, ServerSpawnMain));
     }

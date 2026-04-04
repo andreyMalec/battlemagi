@@ -7,5 +7,8 @@ public interface ISpellCasterBridge {
 
     void Bind(SpellCasterPlayer core);
     void TickFixed(SpellCasterPlayer core);
+    bool TrySpendMana(float amount);
+    bool TrySpendHealth(float amount);
+    void RestoreEcho(SpellDefinition spell, int amount);
 }
 

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -30,8 +29,6 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
         _casterNet = GetComponentInParent<SpellCasterNet>();
         _useNetwork = _casterNet != null;
 
-        var bootstrap = GetComponentInParent<SpellBootstrap>();
-        bootstrap.Init(this);
         Active.Add(this);
     }
 
@@ -55,7 +52,7 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
      */
     public virtual void Cast(SpellDefinition spell) {
         if (_useNetwork && _casterNet.IsSpawned) {
-            _casterNet.RequestCast(spell);
+            _casterNet.RequestCast(CastContext(spell));
             return;
         }
 
@@ -97,7 +94,9 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
      */
     public virtual void Cast(SpellDefinition spell, ITarget target) {
         if (_useNetwork && _casterNet.IsSpawned) {
-            _casterNet.RequestCast(spell, target);
+            var castContext = CastContext(spell);
+            castContext.target = target;
+            _casterNet.RequestCast(castContext);
             return;
         }
 

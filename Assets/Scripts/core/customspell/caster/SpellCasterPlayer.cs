@@ -1,17 +1,22 @@
 using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(Damageable))]
 public class SpellCasterPlayer : SpellCaster {
     public Transform spawnPos;
 
+    [SerializeField] private int EchoCount => _echoRemaining;
     [SerializeField] private SpellDefinition spellE;
     [SerializeField] private PlayerSpellInput input = new();
     [SerializeField] private ManaModule mana = new();
     [SerializeField] private MonoBehaviour bridge;
     [SerializeField] private bool animateCast = true;
+    [SerializeField] private StatusEffectData primalManaStatus;
 
     private ISpellCasterBridge _bridgeTyped;
     private Stats _stats;
+    private Statusable _statusable;
+    private Damageable _damageable;
 
     private SpellDefinition _spell;
     private SpellCasterPlayerPreview _preview;
@@ -43,6 +48,10 @@ public class SpellCasterPlayer : SpellCaster {
     public override bool CanCast => Authority != null && Authority.IsOwner;
 
     public void RestoreEcho(SpellDefinition spell, int amount = 1) {
+        _bridgeTyped.RestoreEcho(spell, amount);
+    }
+
+    internal void ApplyRestoreEcho(SpellDefinition spell, int amount) {
         if (spell == null || spell.echoCount <= 0 || amount <= 0) return;
 
         if (_echoSpell != spell) {
@@ -51,15 +60,29 @@ public class SpellCasterPlayer : SpellCaster {
         }
 
         _echoRemaining = Mathf.Clamp(_echoRemaining + amount, 0, spell.echoCount);
-        SyncEchoCount();
 
-        if (_echoRemaining > 0)
+        if (_echoRemaining > 0) {
             _spell = spell;
+
+            if (animateCast) {
+                _animator.CastWaitingAnim(true, spell.castWaitingIndex);
+            }
+        }
+    }
+
+    internal void ApplyRestoreEcho(string spellWords, int amount) {
+        if (string.IsNullOrEmpty(spellWords) || amount <= 0) return;
+
+        var spell = FindSpellByWords(spellWords);
+        if (spell == null) return;
+        ApplyRestoreEcho(spell, amount);
     }
 
     protected new void Awake() {
         base.Awake();
         _stats = GetComponent<Stats>();
+        _statusable = GetComponent<Statusable>();
+        _damageable = GetComponent<Damageable>();
         _preview = GetComponent<SpellCasterPlayerPreview>();
         if (animateCast)
             _animator = GetComponent<SpellCasterPlayerAnimator>();
@@ -84,6 +107,8 @@ public class SpellCasterPlayer : SpellCaster {
         if (Authority == null) return;
         if (!Authority.IsServer) return;
         mana.TickServer(dt);
+        if (mana.PrimalMana > 0)
+            _statusable.AddEffect(OwnerId, primalManaStatus);
     }
 
     void Update() {
@@ -110,7 +135,7 @@ public class SpellCasterPlayer : SpellCaster {
 
         if (!Channeling && !Charging && _spell != null && input.CastPressedThisFrame()) {
             if (TryCastEcho(_spell)) {
-            } else if (!mana.IsPrimalManaLocked(_spell, GetEchoBudget(_spell))) {
+            } else if (CanStartCast(_spell)) {
                 if (_spell.charging) {
                     StartCharging(_spell);
                 } else {
@@ -130,7 +155,7 @@ public class SpellCasterPlayer : SpellCaster {
         base.Cast(spell);
 
         if (!spell.charging && !spell.channeling) {
-            ConsumeManaOrEcho(spell);
+            ConsumeCostOrEcho(spell);
         }
 
         if (spell.channeling) {
@@ -141,14 +166,37 @@ public class SpellCasterPlayer : SpellCaster {
         BeginEcho(spell, usedEcho);
     }
 
-    private void ConsumeManaOrEcho(SpellDefinition spell) {
+    private void ConsumeCostOrEcho(SpellDefinition spell) {
         if (_echoSpell == spell && _echoRemaining > 0) {
             _echoRemaining--;
-            SyncEchoCount();
             return;
         }
 
-        mana.SpendWithPrimalServer(mana.CostForCast(spell));
+        SpendResourceServer(spell, mana.CostForCast(spell));
+    }
+
+    private bool CanStartCast(SpellDefinition spell) {
+        if (spell == null) return false;
+        if (spell.bloodMagic) {
+            if (_echoSpell == spell && _echoRemaining > 0)
+                return true;
+
+            if (spell.channeling || spell.charging)
+                return _damageable.CanSpendHealthCost(0f);
+
+            return _damageable.CanSpendHealthCost(mana.CostForCast(spell));
+        }
+
+        return !mana.IsPrimalManaLocked(spell, GetEchoBudget(spell));
+    }
+
+    private bool SpendResourceServer(SpellDefinition spell, float amount) {
+        if (spell == null || amount <= 0f) return true;
+
+        if (spell.bloodMagic)
+            return _bridgeTyped.TrySpendHealth(amount);
+
+        return _bridgeTyped.TrySpendMana(amount);
     }
 
     private bool TryCastEcho(SpellDefinition spell) {
@@ -180,7 +228,6 @@ public class SpellCasterPlayer : SpellCaster {
             }
 
             _spell = spell;
-            SyncEchoCount();
             return;
         }
 
@@ -191,14 +238,12 @@ public class SpellCasterPlayer : SpellCaster {
         _spell = spell;
         _echoSpell = spell;
         _echoRemaining = spell.echoCount;
-        SyncEchoCount();
     }
 
     private void ResetEcho() {
         _spell = null;
         _echoSpell = null;
         _echoRemaining = 0;
-        SyncEchoCount();
     }
 
     private int GetEchoBudget(SpellDefinition spell) {
@@ -207,7 +252,15 @@ public class SpellCasterPlayer : SpellCaster {
         return spell.echoCount;
     }
 
-    private void SyncEchoCount() {
+    private SpellDefinition FindSpellByWords(string spellWords) {
+        var spells = SpellDatabase.Instance.data;
+        for (var i = 0; i < spells.Count; i++) {
+            var spell = spells[i];
+            if (spell == null) continue;
+            if (spell.words == spellWords) return spell;
+        }
+
+        return null;
     }
 
     private void CancelCast() {
@@ -279,7 +332,7 @@ public class SpellCasterPlayer : SpellCaster {
             elapsed += dt;
 
             var cost = costPerSecond * dt;
-            if (!mana.SpendWithPrimalServer(cost)) {
+            if (!SpendResourceServer(spell, cost)) {
                 ReleaseCharged(spell);
                 yield break;
             }
@@ -333,7 +386,7 @@ public class SpellCasterPlayer : SpellCaster {
 
             var dt = Time.deltaTime;
             var costPerTick = costPerSecond * dt;
-            if (!mana.SpendWithPrimalServer(costPerTick)) {
+            if (!SpendResourceServer(spell, costPerTick)) {
                 break;
             }
 

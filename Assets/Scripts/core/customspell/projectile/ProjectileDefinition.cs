@@ -56,6 +56,7 @@ public class ProjectileDefinition : ScriptableObject, IValidate {
     [ShowIf("enableFork")] public int forkCount = 3;
     [ShowIf("enableFork")] public float forkSpreadAngle = 35f;
 
+    [Header("On Hit effects")]
     public bool echoOnHit;
 
     [Header("Spawned Spells")]

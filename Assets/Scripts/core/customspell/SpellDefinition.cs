@@ -19,6 +19,7 @@ public class SpellDefinition : ScriptableObject, IValidate {
     public int castWaitingIndex = 0;
     public float invocationIndex = 0f;
     public float manaCost = 0f;
+    public bool bloodMagic = false;
     public int echoCount = 0;
     public bool channeling = false;
     [ShowIf("channeling")] public float channelDuration = 0f;

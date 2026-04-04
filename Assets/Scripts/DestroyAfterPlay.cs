@@ -26,10 +26,12 @@ public class DestroyAfterPlay : MonoBehaviour {
 
         if (_audio != null && !_audio.isPlaying && _particle == null) {
             Destroy(gameObject);
+            return;
         }
 
         if (_audio != null && !_audio.isPlaying && _particle != null && !_particle.isPlaying) {
             Destroy(gameObject);
+            return;
         }
 
         if (_audio == null && _particle != null && !_particle.isPlaying) {

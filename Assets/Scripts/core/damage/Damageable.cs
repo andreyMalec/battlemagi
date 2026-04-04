@@ -163,6 +163,31 @@ public class Damageable : MonoBehaviour {
         _bridgeTyped.SyncFromCore(this);
     }
 
+    public bool CanSpendHealthCost(float amount) {
+        if (amount < 0f) return false;
+
+        if (_bridgeTyped != null && _bridgeTyped.IsServer && !_initialized) {
+            InitializeServer();
+        }
+
+        if (_initialized && !IsAlive) return false;
+        return CurrentHealth - amount > 0.0001f;
+    }
+
+    public bool SpendHealthCostServer(float amount) {
+        if (amount <= 0f) return true;
+        if (!_bridgeTyped.IsServer) return false;
+
+        if (!_initialized) InitializeServer();
+        if (!IsAlive) return false;
+        if (_health.Health - amount <= 0.0001f) return false;
+
+        _health.ApplyDamage(amount);
+        CurrentHealth = _health.Health;
+        _bridgeTyped.SyncFromCore(this);
+        return true;
+    }
+
     public void TakeDamage(
         string source,
         ulong fromId,

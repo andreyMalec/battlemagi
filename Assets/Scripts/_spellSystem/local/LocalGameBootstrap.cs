@@ -1,9 +1,15 @@
+using System;
 using UnityEngine;
 
 [DefaultExecutionOrder(-100)]
 public class LocalGameBootstrap : MonoBehaviour, SpellBootstrap {
     [SerializeField] private ulong ownerId;
     private bool _initialized;
+
+    private void Awake() {
+        var caster = GetComponentInChildren<SpellCaster>();
+        Init(caster);
+    }
 
     public void Init(SpellCaster caster) {
         if (_initialized) return;

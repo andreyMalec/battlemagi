@@ -126,7 +126,9 @@ public class HomingTransform : ISpellTransform {
             if (TeamManager.Instance.AreAllies(it.OwnerId, _ctx.OwnerId))
                 return false;
 
-            return it.IsPlayer;
+            return it.IsPlayer
+                   && it.Get.TryGetComponent<Damageable>(out var damageable) && !damageable.IsDead
+                   && damageable.GetComponentInChildren<Freeze>() == null;
         });
     }
 
