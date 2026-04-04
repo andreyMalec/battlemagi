@@ -147,6 +147,13 @@ public class SpellSystem {
             });
         }
 
+        if (def.knockback != null) {
+            triggers.Add(new SpellTrigger {
+                eventType = typeof(OnZoneStayEvent),
+                actions = new ISpellAction[] { new ZoneKnockbackAction() }
+            });
+        }
+
         if (def.effects != null && def.effects.Count > 0) {
             triggers.Add(new SpellTrigger {
                 eventType = typeof(OnZoneStayEvent),
@@ -229,6 +236,14 @@ public class SpellSystem {
             triggers.Add(new SpellTrigger {
                 eventType = typeof(OnHitEvent),
                 actions = new ISpellAction[] { new BeamDamageModuleAction() }
+            });
+        }
+
+        var beamKnockback = KnockbackAction(def);
+        if (beamKnockback != null) {
+            triggers.Add(new SpellTrigger {
+                eventType = typeof(OnHitEvent),
+                actions = new ISpellAction[] { beamKnockback }
             });
         }
 
@@ -521,10 +536,23 @@ public class SpellSystem {
             actions.Add(new SpawnOnHitAction());
         if (spell.damage != null)
             actions.Add(new ProjectileInstantDamageAction());
+        var knockback = KnockbackAction(spell);
+        if (knockback != null)
+            actions.Add(knockback);
         if (spell.effects != null && spell.effects.Count > 0)
             actions.Add(new ProjectileStatusEffectAction());
         if (def.echoOnHit)
             actions.Add(new EchoOnHitAction());
         return actions;
+    }
+
+    private static ISpellAction KnockbackAction(SpellDefinition spell) {
+        if (spell == null || spell.knockback == null) return null;
+
+        return spell.knockback.mode switch {
+            SpellKnockbackMode.Impulse => new ImpulseKnockbackOnHitAction(),
+            SpellKnockbackMode.Continuous => new ContinuousPointKnockbackOnHitAction(),
+            _ => null
+        };
     }
 }

@@ -1,7 +1,16 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerPhysics : MonoBehaviour {
+    private class PointForceState {
+        public Vector3 point;
+        public float forcePerSecond;
+        public float remaining;
+        public SpellKnockbackVectorMode vectorMode;
+        public float upBias;
+    }
+
     private MovementSettings _settings;
     private GroundCheck _groundCheck;
 
@@ -10,6 +19,8 @@ public class PlayerPhysics : MonoBehaviour {
     private float _velocityY; // managed by gravity/jumps
 
     private Vector3 _externalVelocity;
+    private readonly Dictionary<int, PointForceState> _pointForces = new();
+    private readonly List<int> _pointForcesToRemove = new();
 
     [Tooltip("Generic decay (per second)")] [SerializeField]
     private float _impulseDamping = 5f;
@@ -35,26 +46,59 @@ public class PlayerPhysics : MonoBehaviour {
         float dt = Time.deltaTime;
         if (_noSnapTimer > 0f) _noSnapTimer -= dt;
 
-        // Ignore ground snap for a brief window after jump
-        _groundedForPhysics = _groundCheck.isGrounded && _noSnapTimer <= 0f;
+        var breaksGroundSnap = ApplyPointForces(dt);
+        if (breaksGroundSnap && _velocityY < 0f) {
+            _velocityY = 0f;
+        }
+
+        _groundedForPhysics = _groundCheck.isGrounded && _noSnapTimer <= 0f && !breaksGroundSnap && _externalVelocity.y <= 0f;
 
         ApplyGravity(dt);
 
-        // Combine desired movement (from input), external impulses, and vertical velocity
         Vector3 combinedVelocity = desiredWorldVelocity + _externalVelocity + Vector3.up * _velocityY;
         Vector3 motion = combinedVelocity * dt;
 
-        // Move and capture collisions to clamp external velocity if blocked
         if (!_controller.enabled) return;
         CollisionFlags flags = _controller.Move(motion);
 
-        // Decay external velocity over time
         DecayExternalVelocity(dt, flags);
     }
 
-    // Instant impulse interpreted as delta-velocity (units ~= m/s)
     public void ApplyImpulse(Vector3 impulse) {
         _externalVelocity += impulse;
+    }
+
+    public void ApplyForce(Vector3 force, float dt) {
+        if (dt <= 0f) return;
+        _externalVelocity += force * dt;
+    }
+
+    public void SetPointForce(
+        int id,
+        Vector3 point,
+        float forcePerSecond,
+        float duration,
+        SpellKnockbackVectorMode vectorMode,
+        float upBias
+    ) {
+        if (forcePerSecond <= 0f || duration <= 0f) return;
+
+        if (_pointForces.TryGetValue(id, out var state)) {
+            state.point = point;
+            state.forcePerSecond = forcePerSecond;
+            state.remaining = duration;
+            state.vectorMode = vectorMode;
+            state.upBias = upBias;
+            return;
+        }
+
+        _pointForces.Add(id, new PointForceState {
+            point = point,
+            forcePerSecond = forcePerSecond,
+            remaining = duration,
+            vectorMode = vectorMode,
+            upBias = upBias,
+        });
     }
 
     public void ApplyImpulseWithoutSnap(Vector3 impulse) {
@@ -63,11 +107,43 @@ public class PlayerPhysics : MonoBehaviour {
         Jump(impulse.y);
     }
 
-    // Jump by setting vertical velocity derived from settings gravity
     public void Jump(float jumpStrength) {
-        // v = sqrt(strength * -2 * g)
         _velocityY = Mathf.Sqrt(jumpStrength * -2f * _settings.gravity);
         _noSnapTimer = NoSnapDuration;
+    }
+
+    private bool ApplyPointForces(float dt) {
+        if (_pointForces.Count == 0) return false;
+
+        _pointForcesToRemove.Clear();
+        var breaksGroundSnap = false;
+        foreach (var pair in _pointForces) {
+            var state = pair.Value;
+            state.remaining -= dt;
+            if (state.remaining <= 0f) {
+                _pointForcesToRemove.Add(pair.Key);
+                continue;
+            }
+
+            var direction = ComputePointForceDirection(state.point, state.vectorMode, state.upBias);
+            ApplyForce(direction * state.forcePerSecond, dt);
+            if (direction.y > 0.0001f) {
+                breaksGroundSnap = true;
+            }
+        }
+
+        for (var i = 0; i < _pointForcesToRemove.Count; i++)
+            _pointForces.Remove(_pointForcesToRemove[i]);
+
+        if (breaksGroundSnap) {
+            _noSnapTimer = Mathf.Max(_noSnapTimer, NoSnapDuration);
+        }
+
+        return breaksGroundSnap;
+    }
+
+    private Vector3 ComputePointForceDirection(Vector3 point, SpellKnockbackVectorMode vectorMode, float upBias) {
+        return SpellKnockbackDirectionUtility.ComputeDirection(transform, point, vectorMode, upBias);
     }
 
     private void ApplyGravity(float dt) {
@@ -81,9 +157,7 @@ public class PlayerPhysics : MonoBehaviour {
     }
 
     private void DecayExternalVelocity(float dt, CollisionFlags flags) {
-        // Clamp external velocity when hitting environment
         if ((flags & CollisionFlags.Sides) != 0) {
-            // Cancel horizontal push if we hit a wall
             _externalVelocity.x = 0f;
             _externalVelocity.z = 0f;
         }
@@ -92,7 +166,6 @@ public class PlayerPhysics : MonoBehaviour {
             _externalVelocity.y = 0f;
         }
 
-        // Horizontal damping: generic + extra ground friction
         Vector3 horiz = new Vector3(_externalVelocity.x, 0f, _externalVelocity.z);
         float horizDamp = _impulseDamping + (_groundedForPhysics ? _groundFriction : 0f);
         float horizReduce = horizDamp * dt;
@@ -105,7 +178,6 @@ public class PlayerPhysics : MonoBehaviour {
             }
         }
 
-        // Vertical external velocity: kill on ground, damp in air
         float y = _externalVelocity.y;
         if (_groundedForPhysics) {
             y = 0f;

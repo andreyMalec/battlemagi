@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using NaughtyAttributes;
 using UnityEngine;
 
 public class Damageable : MonoBehaviour {
@@ -96,9 +97,11 @@ public class Damageable : MonoBehaviour {
         _bridgeTyped?.SyncFromCore(this);
     }
 
-    public void SetImmortal(bool value) {
+    [Button("Toggle Immortal")]
+    public void ToggleImmortal() {
+        _immortal = !_immortal;
         var prev = State;
-        State = value ? (State | DamageableState.Immortal) : (State & ~DamageableState.Immortal);
+        State = _immortal ? (State | DamageableState.Immortal) : (State & ~DamageableState.Immortal);
         if (State != prev) OnStateChanged?.Invoke(State);
     }
 

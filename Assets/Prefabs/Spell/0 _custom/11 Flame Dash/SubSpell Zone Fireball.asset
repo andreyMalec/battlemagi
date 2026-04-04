@@ -10,29 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 70d6ac2600d5440ab45bcb7d2aabe7d3, type: 3}
-  m_Name: SubSpell Toxic Sphere
+  m_Name: SubSpell Zone Fireball
   m_EditorClassIdentifier: Assembly-CSharp::SpellProjectileDefinition
-  words: 
   coreType: 1
-  spawn: {fileID: 11400000, guid: 97de1d8eb3b62b748a8f2d8d2787303a, type: 2}
-  damage: {fileID: 11400000, guid: 71ee375cb562cd6459f1735dfc99dec3, type: 2}
-  knockback: {fileID: 0}
-  effects:
-  - {fileID: 11400000, guid: 0b25735c137b9e84dbeb634097eb4607, type: 2}
+  spawn: {fileID: 11400000, guid: 156c1e33f4762a942a6a6bc7860d44b8, type: 2}
+  damage: {fileID: 11400000, guid: 8ccb27aa5f1a3c44b95dca73c8d740be, type: 2}
+  effects: []
   scale: 3
-  lifetime: 20
+  lifetime: 3
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 576
-  castWaitingIndex: 0
-  invocationIndex: 0
-  manaCost: 0
-  echoCount: 0
-  channeling: 0
-  channelDuration: 0
-  charging: 0
-  chargeDuration: 0
   projectile: {fileID: 0}
-  zone: {fileID: 11400000, guid: 7d7b0a7b1ab5bde4dba142ffd82040f7, type: 2}
+  zone: {fileID: 11400000, guid: fa98eb92eea2b8d499dc6f59d9255642, type: 2}
   beam: {fileID: 0}
   summon: {fileID: 0}

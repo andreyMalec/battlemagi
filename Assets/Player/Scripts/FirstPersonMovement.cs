@@ -175,4 +175,17 @@ public class FirstPersonMovement : NetworkBehaviour {
     public void ApplyImpulseClientRpc(Vector3 impulse, ClientRpcParams clientRpcParams = default) {
         _physics.ApplyImpulse(impulse);
     }
+
+    [ClientRpc]
+    public void SetPointForceClientRpc(
+        int id,
+        Vector3 point,
+        float forcePerSecond,
+        float duration,
+        SpellKnockbackVectorMode vectorMode,
+        float upBias,
+        ClientRpcParams clientRpcParams = default
+    ) {
+        _physics.SetPointForce(id, point, forcePerSecond, duration, vectorMode, upBias);
+    }
 }

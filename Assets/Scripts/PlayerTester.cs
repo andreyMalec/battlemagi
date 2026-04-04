@@ -1,24 +1,25 @@
-using System;
 using UnityEngine;
 
+[RequireComponent(typeof(PlayerPhysics))]
 public class PlayerTester : MonoBehaviour {
     [SerializeField] private MovementSettings movementSettings;
     [SerializeField] private LookSettings lookSettings;
     [SerializeField] private GroundCheck groundCheck;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private Transform hand;
+    [SerializeField] private float jumpStrength = 2f;
 
     public float movementSpeed = 2;
     public float runSpeed = 5;
 
-    private CharacterController _characterController;
+    private PlayerPhysics _physics;
     private Stats _stats;
-    private float _velocityY;
     private Vector2 _currentRotation;
     private Vector2 _frameVelocity;
 
     private void Awake() {
-        _characterController = GetComponent<CharacterController>();
+        _physics = GetComponent<PlayerPhysics>();
+        _physics.Configure(movementSettings, groundCheck);
         _stats = GetComponent<Stats>();
         var preview = GetComponent<SpellCasterPlayerPreview>();
         preview.BindHand(hand);
@@ -58,8 +59,7 @@ public class PlayerTester : MonoBehaviour {
             input.y * targetSpeed * speedMultiplier
         ));
 
-        ApplyGravity();
-        _characterController.Move((moveDirection + Vector3.up * _velocityY) * Time.deltaTime);
+        _physics.MoveWithGravity(moveDirection);
     }
 
     private void TryJump() {
@@ -68,14 +68,6 @@ public class PlayerTester : MonoBehaviour {
     }
 
     private void PerformJump() {
-        _velocityY = Mathf.Sqrt(2 * -2f * movementSettings.gravity);
-    }
-
-    private void ApplyGravity() {
-        if (groundCheck.isGrounded && _velocityY < 0)
-            _velocityY = -2f;
-        else
-            _velocityY += movementSettings.gravity * (_velocityY < 0 ? movementSettings.fallGravityMultiplier : 1f) *
-                          Time.deltaTime;
+        _physics.Jump(jumpStrength);
     }
 }

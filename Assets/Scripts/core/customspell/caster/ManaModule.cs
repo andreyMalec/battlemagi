@@ -64,6 +64,19 @@ public class ManaModule {
         return Mathf.Max(0f, cost - Mana);
     }
 
+    public bool SpendWithPrimalServer(float amount) {
+        if (amount <= 0f) return true;
+
+        var spend = Mathf.Min(Mana, amount);
+        Mana -= spend;
+
+        var missing = amount - spend;
+        if (missing > 0f)
+            PrimalMana += missing;
+
+        return missing <= 0f;
+    }
+
     public void SpendManaServer(float amount) {
         Mana -= amount;
     }

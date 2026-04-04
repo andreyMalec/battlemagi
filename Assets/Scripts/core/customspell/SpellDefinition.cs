@@ -9,6 +9,7 @@ public class SpellDefinition : ScriptableObject, IValidate {
     public SpawnDefinition spawn;
 
     public DamageDefinition damage;
+    public KnockbackDefinition knockback;
     public List<EffectDefinition> effects;
 
     public float scale = 1;
@@ -74,6 +75,7 @@ public class SpellDefinition : ScriptableObject, IValidate {
 
         if (spawn != null && spawn is IValidate v) v.Validate();
         if (damage != null && damage is IValidate dv) dv.Validate();
+        if (knockback != null && knockback is IValidate kv) kv.Validate();
         if (projectile != null && projectile is IValidate pv) pv.Validate();
         if (zone != null && zone is IValidate zv) zv.Validate();
         if (beam != null && beam is IValidate bv) bv.Validate();

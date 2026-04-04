@@ -148,11 +148,7 @@ public class SpellCasterPlayer : SpellCaster {
             return;
         }
 
-        if (mana.CanSpendForCast(spell, GetEchoBudget(spell))) {
-            mana.SpendManaServer(mana.CostForCast(spell));
-        } else {
-            mana.AddPrimalManaServer(mana.PrimalManaMissing(mana.CostForCast(spell)));
-        }
+        mana.SpendWithPrimalServer(mana.CostForCast(spell));
     }
 
     private bool TryCastEcho(SpellDefinition spell) {
@@ -283,10 +279,7 @@ public class SpellCasterPlayer : SpellCaster {
             elapsed += dt;
 
             var cost = costPerSecond * dt;
-            if (mana.CanSpendForChannelTick(spell, dt)) {
-                mana.SpendManaServer(cost);
-            } else {
-                mana.AddPrimalManaServer(mana.PrimalManaMissing(cost));
+            if (!mana.SpendWithPrimalServer(cost)) {
                 ReleaseCharged(spell);
                 yield break;
             }
@@ -340,10 +333,7 @@ public class SpellCasterPlayer : SpellCaster {
 
             var dt = Time.deltaTime;
             var costPerTick = costPerSecond * dt;
-            if (mana.CanSpendForChannelTick(spell, dt)) {
-                mana.SpendManaServer(costPerTick);
-            } else {
-                mana.AddPrimalManaServer(mana.PrimalManaMissing(costPerTick));
+            if (!mana.SpendWithPrimalServer(costPerTick)) {
                 break;
             }
 
