@@ -5,9 +5,15 @@ using UnityEngine;
 public class BeamDefinition : ScriptableObject, IValidate {
     public SpellBeamPrefabId prefabId;
 
-    public SpellMovement moveType;
+    public BeamShapeType shapeType;
 
-    public float beamMaxLength = 15f;
+    [ShowIf("_shapeStraight")] public float beamMaxLength = 15f;
+
+    [ShowIf("_shapeCone")] public float coneRadius;
+    [ShowIf("_shapeCone")] public float coneAngle = 25f;
+    [ShowIf("_shapeCone")] public float coneLength = 15f;
+
+    public SpellMovement moveType;
 
     [ShowIf("_canMove")] public float moveSpeed;
 
@@ -56,12 +62,21 @@ public class BeamDefinition : ScriptableObject, IValidate {
     public SpellDefinition onLifetimeHalfSpawn;
 
     private bool _canMove = false;
+    private bool _shapeStraight = true;
+    private bool _shapeCone = false;
     private bool _transformSpiral = false;
     private bool _transformLookAtPoint = false;
     private bool _transformFollowCaster = false;
     [ShowIf("false")] [HideInInspector] public bool spawnAtStep = false;
 
+    public float MaxLength => shapeType switch {
+        BeamShapeType.Cone => coneLength,
+        _ => beamMaxLength
+    };
+
     public void Validate() {
+        _shapeStraight = shapeType is BeamShapeType.Straight;
+        _shapeCone = shapeType is BeamShapeType.Cone;
         _canMove = moveType is not SpellMovement.Static;
         _transformSpiral = moveType is SpellMovement.Spiral;
         _transformLookAtPoint = moveType is SpellMovement.LookAtPoint;

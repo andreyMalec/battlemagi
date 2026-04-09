@@ -21,7 +21,7 @@ public class BeamContext : IBeamContext {
 
     public Vector3 Origin => Caster.Origin;
     public Vector3 Direction => Caster.Direction;
-    public float MaxLength => Spell.beam.beamMaxLength;
+    public float MaxLength => Spell.beam.MaxLength;
 
     public BeamContext(
         SpellCaster caster,

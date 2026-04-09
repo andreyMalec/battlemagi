@@ -31,6 +31,65 @@ public class SpellInstance : MonoBehaviour, ITarget {
         _authorityService = authorityService;
 
         Scale(bind.Context.Spell.scale, bind.Context.Lifetime);
+        ParticleUtils.ApplyBeamShape(gameObject, bind.Context.Spell.beam);
+    }
+
+    private void OnDrawGizmos() {
+        var beam = Bind.Context.Spell.beam;
+        var zone = Bind.Context.Spell.zone;
+        var c = Color.red;
+        c.a = 0.5f;
+        Gizmos.color = c;
+        if (beam != null) {
+            if (beam.shapeType is BeamShapeType.Cone)
+                DrawConeGizmos(beam);
+            else
+                Gizmos.DrawRay(transform.position, transform.forward * beam.MaxLength);
+        }
+
+        if (zone != null) {
+            Gizmos.DrawSphere(transform.position, Bind.Context.Spell.scale);
+        }
+    }
+
+    private void DrawConeGizmos(BeamDefinition beam) {
+        var startCenter = transform.position;
+        var forward = transform.forward;
+        var up = transform.up;
+        var right = transform.right;
+        var length = beam.coneLength;
+        var endCenter = startCenter + forward * length;
+        var startRadius = Mathf.Max(0f, beam.coneRadius);
+        var endRadius = ParticleUtils.GetConeEndRadius(beam);
+        var midCenter = Vector3.Lerp(startCenter, endCenter, 0.5f);
+        var midRadius = Mathf.Lerp(startRadius, endRadius, 0.5f);
+
+        DrawCircleGizmos(startCenter, right, up, startRadius);
+        DrawCircleGizmos(midCenter, right, up, midRadius);
+        DrawCircleGizmos(endCenter, right, up, endRadius);
+
+        DrawConeSide(startCenter, endCenter, right, startRadius, endRadius);
+        DrawConeSide(startCenter, endCenter, -right, startRadius, endRadius);
+        DrawConeSide(startCenter, endCenter, up, startRadius, endRadius);
+        DrawConeSide(startCenter, endCenter, -up, startRadius, endRadius);
+    }
+
+    private static void DrawConeSide(Vector3 startCenter, Vector3 endCenter, Vector3 axis, float startRadius, float endRadius) {
+        Gizmos.DrawLine(startCenter + axis * startRadius, endCenter + axis * endRadius);
+    }
+
+    private static void DrawCircleGizmos(Vector3 center, Vector3 axisX, Vector3 axisY, float radius) {
+        if (radius <= 0.0001f)
+            return;
+
+        const int segments = 24;
+        var prev = center + axisX * radius;
+        for (var i = 1; i <= segments; i++) {
+            var angle = i / (float)segments * Mathf.PI * 2f;
+            var next = center + (axisX * Mathf.Cos(angle) + axisY * Mathf.Sin(angle)) * radius;
+            Gizmos.DrawLine(prev, next);
+            prev = next;
+        }
     }
 
     void FixedUpdate() {

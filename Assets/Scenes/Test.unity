@@ -635,6 +635,7 @@ MonoBehaviour:
   data:
   - {fileID: 11400000, guid: 121f47b6c76c9f540854d677f2f3ede9, type: 2}
   - {fileID: 11400000, guid: 3b18caceee5e79f47b0f3be1f3a89f2a, type: 2}
+  - {fileID: 11400000, guid: c8ba8d225ad32144195361c0cc390e0d, type: 2}
   - {fileID: 11400000, guid: 81699b3208973504db6cc3b54189fd34, type: 2}
   - {fileID: 11400000, guid: 88ae3a7b24de22243a3f8eeb5e7797ca, type: 2}
 --- !u!1 &363908878
@@ -4816,14 +4817,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellCasterPlayer
   spawnPos: {fileID: 0}
+  spellE: {fileID: 0}
   input:
     castKey: 323
     cancelKey: 324
   mana:
     maxMana: 100
     regenPerSecond: 5
-  _bridge: {fileID: 0}
-  EchoCount: 0
+  bridge: {fileID: 0}
+  animateCast: 1
+  primalManaStatus: {fileID: 0}
 --- !u!114 &1787711406
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6353,14 +6356,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellCasterPlayer
   spawnPos: {fileID: 0}
+  spellE: {fileID: 0}
   input:
     castKey: 323
     cancelKey: 324
   mana:
     maxMana: 100
     regenPerSecond: 5
-  _bridge: {fileID: 0}
-  EchoCount: 0
+  bridge: {fileID: 0}
+  animateCast: 1
+  primalManaStatus: {fileID: 0}
 --- !u!114 &7351032199263568251
 MonoBehaviour:
   m_ObjectHideFlags: 0

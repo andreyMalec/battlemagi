@@ -292,7 +292,7 @@ public class SpellSystem {
             spawned
         );
 
-        var shape = new StraightBeamShape();
+        var shape = BeamShape(def.beam);
         shape.Init(context);
 
         var core = new BeamCore(
@@ -522,6 +522,13 @@ public class SpellSystem {
         }
 
         return move;
+    }
+
+    private static IShape BeamShape(BeamDefinition def) {
+        return def.shapeType switch {
+            BeamShapeType.Cone => new ConeBeamShape(),
+            _ => new StraightBeamShape()
+        };
     }
 
     private static List<ISpellAction> HitActions(SpellDefinition spell, ProjectileDefinition def) {
