@@ -31,9 +31,12 @@ public class TriggerSphereShape : IShape {
             if (d.sqrMagnitude > _radiusSqr) continue;
 
             _buffer.Add(targetGo);
-            if (_inside.Add(targetGo))
+            if (_inside.Add(targetGo)) {
+                Debug.Log($"[{_context.View.name}] OnZoneEnterEvent {targetGo}");
                 _context.SendEvent(new OnZoneEnterEvent(targetGo));
+            }
         }
+
         foreach (var inst in Damageable.Active) {
             if (inst == null) continue;
             if (inst.IsDead) continue;
@@ -55,6 +58,7 @@ public class TriggerSphereShape : IShape {
             foreach (var go in _insideCopy) {
                 if (_buffer.Contains(go)) continue;
                 _inside.Remove(go);
+                Debug.Log($"[{_context.View.name}] OnZoneExitEvent {go}");
                 _context.SendEvent(new OnZoneExitEvent(go));
             }
         }

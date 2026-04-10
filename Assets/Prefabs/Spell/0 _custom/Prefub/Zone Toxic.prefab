@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 6947208530669493739}
   - component: {fileID: 4537263949077999207}
   - component: {fileID: 2180470630544922799}
-  - component: {fileID: 3562020664764842706}
   m_Layer: 2
   m_Name: Zone Toxic
   m_TagString: Untagged
@@ -245,6 +244,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95a013b49884445fb29a6af511334745, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellView
+  beforeEndThreshold: 1
+  scaleShape: 0
 --- !u!114 &2180470630544922799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -257,33 +258,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fd067c9361d43908ab7c673b844449b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellInstance
---- !u!54 &3562020664764842706
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1315042845377307778}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
+  scale: []
+  exclude: []
 --- !u!1 &5258406658752718919
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 public class ZoneCore : ISpellCore<ZoneContext> {
@@ -13,7 +14,7 @@ public class ZoneCore : ISpellCore<ZoneContext> {
 
     protected override void TickInner(float delta) {
         context.Lifetime -= delta;
-        var hits = _shape.Query();
+        var hits = _shape.Query().ToList();
 
         HandleEvent(new OnZoneStayEvent(hits.Map(it => it.Target.gameObject), delta));
     }

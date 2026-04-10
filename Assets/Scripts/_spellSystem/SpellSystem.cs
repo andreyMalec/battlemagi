@@ -193,6 +193,23 @@ public class SpellSystem {
                 new SpawnOnLifetimeEndAction(),
             }
         });
+        if (def.zone.teleportOnSpawn) {
+            triggers.Add(new SpellTrigger {
+                eventType = typeof(OnLifetimeStartEvent),
+                actions = new ISpellAction[] {
+                    new TeleportCasterToSpellAction(),
+                }
+            });
+        }
+
+        if (def.zone.destroyIncomingSpells) {
+            triggers.Add(new SpellTrigger {
+                eventType = typeof(OnZoneEnterEvent),
+                actions = new ISpellAction[] {
+                    new KillOnZoneEnterAction(),
+                }
+            });
+        }
 
         var move = Move(def.zone, spawnContext.forward);
 
@@ -215,6 +232,8 @@ public class SpellSystem {
 
         var bind = new SpellBind<ZoneContext>(core, view, context, move);
         instance.Init(bind, _authority);
+        if (def.zone.impassableForEnemies)
+            ZoneEnemyColliderBlocker.Attach(spawnContext.main, context.OwnerId, def.scale, view);
         if (!Mathf.Approximately(spawnContext.spellDamageMultiplier, 1f))
             view.Stats.AddModifier(StatType.SpellDamage, spawnContext.spellDamageMultiplier);
     }

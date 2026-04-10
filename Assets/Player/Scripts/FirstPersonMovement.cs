@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Unity.Netcode;
 using System.Collections;
 using Unity.Netcode.Components;
@@ -36,6 +37,10 @@ public class FirstPersonMovement : NetworkBehaviour {
     private bool _runLock; // серверный лок: запрещает авто-включение пока не отпустили кнопку
 
     private const float MinStaminaThreshold = 0.05f;
+
+    private Vector3 _teleportPosition;
+    private Quaternion _teleportRotation;
+    private bool _teleporting;
 
     private void Awake() {
         _stats = GetComponent<Stats>();
@@ -78,6 +83,27 @@ public class FirstPersonMovement : NetworkBehaviour {
     private void OnIsJumpingChanged(bool oldValue, bool newValue) {
         if (newValue && !oldValue && !IsOwner)
             Jumped?.Invoke();
+    }
+
+    public void Teleport(Transform target) {
+        TeleportClientRpc(target.position, target.rotation, new ClientRpcParams() {
+            Send = new ClientRpcSendParams { TargetClientIds = new[] { OwnerClientId } }
+        });
+    }
+
+    [ClientRpc]
+    private void TeleportClientRpc(Vector3 position, Quaternion rotation, ClientRpcParams clientRpcParams = default) {
+        _teleportPosition = position;
+        _teleportRotation = rotation;
+        _teleporting = true;
+    }
+
+    private void FixedUpdate() {
+        if (IsOwner && _teleporting) {
+            _teleporting = false;
+            transform.position = _teleportPosition;
+            transform.rotation = _teleportRotation;
+        }
     }
 
     private void Update() {

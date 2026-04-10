@@ -9,21 +9,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 828b0ca3cf304def8ffca524fefb016c, type: 3}
-  m_Name: Projectile Fireball
-  m_EditorClassIdentifier: Assembly-CSharp::ProjectileDefinition
-  prefabId: 0
-  moveType: 1
-  moveSpeed: 30
+  m_Script: {fileID: 11500000, guid: 6aed9f25a87b4df799fdec2a0637e94d, type: 3}
+  m_Name: Zone Force Field
+  m_EditorClassIdentifier: Assembly-CSharp::ZoneDefinition
+  prefabId: 7
+  moveType: 0
+  moveSpeed: 0
   enableMaxDistance: 0
   maxDistance: 20
-  enableGravity: 1
-  gravity: {x: 0, y: -9.81, z: 0}
   lookAtMaxDistance: 50
   lookAtRayMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  angularSpeed: 5
+  followTarget: 0
+  angularSpeed: 0
   spiralRadius: 0.5
   spiralAxis: 0
   enableHoming: 0
@@ -37,16 +36,9 @@ MonoBehaviour:
   stretchAmplitude: 0.2
   stretchFrequency: 8
   stretchDamping: 0
-  enableBounce: 0
-  maxBounces: 1
-  bounceSpeedMultiplier: 0.9
-  enablePierce: 0
-  maxPierces: 1
-  enableFork: 0
-  forkCount: 3
-  forkSpreadAngle: 35
-  echoOnHit: 0
-  onHitSpawn: {fileID: 11400000, guid: 83bbf096275ff23468defedbc64033d2, type: 2}
+  teleportOnSpawn: 0
+  destroyIncomingSpells: 1
+  impassableForEnemies: 1
   atMaxDistanceSpawn: {fileID: 0}
   atStepDistanceSpawn: {fileID: 0}
   spawnStep: 10

@@ -10,29 +10,29 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 70d6ac2600d5440ab45bcb7d2aabe7d3, type: 3}
-  m_Name: Spell Fireball
-  m_EditorClassIdentifier: Assembly-CSharp::SpellProjectileDefinition
-  words: Fireball
-  coreType: 0
-  spawn: {fileID: 11400000, guid: 156c1e33f4762a942a6a6bc7860d44b8, type: 2}
+  m_Name: Spell Shadow Step
+  m_EditorClassIdentifier: Assembly-CSharp::SpellDefinition
+  words: Shadow Step
+  coreType: 1
+  spawn: {fileID: 11400000, guid: 40d51be7fdabead48a9e9fdb1f4474d2, type: 2}
   damage: {fileID: 0}
   knockback: {fileID: 0}
   effects: []
-  scale: 1
-  lifetime: 10
+  scale: 3
+  lifetime: 1
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 576
   castWaitingIndex: 0
-  invocationIndex: 3
-  manaCost: 25
+  invocationIndex: 0
+  manaCost: 0
   bloodMagic: 0
   echoCount: 0
   channeling: 0
-  channelDuration: 3
+  channelDuration: 0
   charging: 0
-  chargeDuration: 3
-  projectile: {fileID: 11400000, guid: 4dd9e7151c125764fa9338d2f36053ba, type: 2}
-  zone: {fileID: 0}
+  chargeDuration: 0
+  projectile: {fileID: 0}
+  zone: {fileID: 11400000, guid: 186ac54a62ec3d74785fb24dd2dc513a, type: 2}
   beam: {fileID: 0}
   summon: {fileID: 0}

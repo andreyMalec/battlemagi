@@ -35,6 +35,7 @@ public class SpellInstance : MonoBehaviour, ITarget {
     }
 
     private void OnDrawGizmos() {
+        if (Bind == null) return;
         var beam = Bind.Context.Spell.beam;
         var zone = Bind.Context.Spell.zone;
         var c = Color.red;
@@ -74,7 +75,9 @@ public class SpellInstance : MonoBehaviour, ITarget {
         DrawConeSide(startCenter, endCenter, -up, startRadius, endRadius);
     }
 
-    private static void DrawConeSide(Vector3 startCenter, Vector3 endCenter, Vector3 axis, float startRadius, float endRadius) {
+    private static void DrawConeSide(
+        Vector3 startCenter, Vector3 endCenter, Vector3 axis, float startRadius, float endRadius
+    ) {
         Gizmos.DrawLine(startCenter + axis * startRadius, endCenter + axis * endRadius);
     }
 
@@ -159,6 +162,11 @@ public class SpellInstance : MonoBehaviour, ITarget {
 
         foreach (var tr in GetComponentsInChildren<TrailRenderer>(true)) {
             tr.widthMultiplier = k;
+        }
+
+        foreach (var rz in GetComponentsInChildren<AudioReverbZone>(true)) {
+            rz.minDistance *= k;
+            rz.maxDistance *= k;
         }
     }
 }

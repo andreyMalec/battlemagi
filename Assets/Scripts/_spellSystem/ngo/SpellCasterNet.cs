@@ -142,6 +142,7 @@ public class SpellCasterNet : NetworkBehaviour {
             CoreType.Summon => (int)context.spell.summon.prefabId,
             _ => -1
         };
+        var impassableForEnemies = context.spell.coreType is CoreType.Zone && context.spell.zone.impassableForEnemies;
         context.main = main;
         context.caster.SpellSystem.CastSpell(context);
         var excludeHost = new ClientRpcParams {
@@ -150,7 +151,7 @@ public class SpellCasterNet : NetworkBehaviour {
         };
         if (prefabId > -1)
             OnCastClientRpc(id, casterNetObj.NetworkObjectId, (int)context.spell.coreType, prefabId,
-                context.spell.scale, context.spell.lifetime, excludeHost);
+                context.spell.scale, context.spell.lifetime, impassableForEnemies, excludeHost);
     }
 
     [ClientRpc]
@@ -161,6 +162,7 @@ public class SpellCasterNet : NetworkBehaviour {
         int prefabId,
         float scale,
         float lifetime,
+        bool impassableForEnemies,
         ClientRpcParams rpcParams = default
     ) {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(casterNetObjectId, out var casterNetObj))
@@ -174,5 +176,7 @@ public class SpellCasterNet : NetworkBehaviour {
         caster.SpellSystem.ShowSpell(main.gameObject, (CoreType)coreType, prefabId);
         var instance = main.GetComponentInChildren<SpellInstance>();
         instance.Scale(scale, lifetime);
+        if (impassableForEnemies)
+            ZoneEnemyColliderBlocker.Attach(main.gameObject, main.OwnerClientId, scale, instance.GetComponent<SpellView>());
     }
 }
