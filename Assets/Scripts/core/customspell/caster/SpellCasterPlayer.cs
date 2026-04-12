@@ -73,7 +73,7 @@ public class SpellCasterPlayer : SpellCaster {
     internal void ApplyRestoreEcho(string spellWords, int amount) {
         if (string.IsNullOrEmpty(spellWords) || amount <= 0) return;
 
-        var spell = FindSpellByWords(spellWords);
+        var spell = DefaultSpells.Get(spellWords)?.spell;
         if (spell == null) return;
         ApplyRestoreEcho(spell, amount);
     }
@@ -115,8 +115,8 @@ public class SpellCasterPlayer : SpellCaster {
         if (!CanCast) return;
 
         var index = input.GetSpellIndexPressedThisFrame();
-        if (index >= 0 && index < SpellDatabase.Instance.data.Count) {
-            var selected = SpellDatabase.Instance.data[index];
+        if (index >= 0 && index < DefaultSpells.Instance.list.Count) {
+            var selected = DefaultSpells.Instance.list[index].spell;
             if (selected != _spell)
                 ResetEcho();
             _spell = selected;
@@ -250,17 +250,6 @@ public class SpellCasterPlayer : SpellCaster {
         if (spell == null) return 0;
         if (_echoSpell == spell) return _echoRemaining;
         return spell.echoCount;
-    }
-
-    private SpellDefinition FindSpellByWords(string spellWords) {
-        var spells = SpellDatabase.Instance.data;
-        for (var i = 0; i < spells.Count; i++) {
-            var spell = spells[i];
-            if (spell == null) continue;
-            if (spell.words == spellWords) return spell;
-        }
-
-        return null;
     }
 
     private void CancelCast() {

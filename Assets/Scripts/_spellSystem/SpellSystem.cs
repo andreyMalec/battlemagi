@@ -8,7 +8,6 @@ public class SpellSystem {
         IAuthorityService authority
     ) {
         _authority = authority;
-        Debug.Log("SpellSystem initialized");
     }
 
     public void CastSpell(

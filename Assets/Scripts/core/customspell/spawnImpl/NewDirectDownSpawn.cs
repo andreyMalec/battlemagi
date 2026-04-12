@@ -9,7 +9,7 @@ public class NewDirectDownSpawn : ISpellSpawn, IDelayOriginRespect {
         var delay = context.spawn.multiInstanceDelay;
         var origin = context.DelayOrigin;
 
-        var downWithDirection = Vector3.down + context.forward * 0.7f;
+        var downWithDirection = Vector3.down + context.forward * 0.01f;
         var first = ISpellSpawn.GroundPos(context, downWithDirection, out _);
         // first = ApplyDirectionToTarget(first);
 

@@ -161,7 +161,7 @@ public class SpellManager : NetworkBehaviour {
 
         // Enforce instance limit (server-side authoritative). Remove older beyond limit before spawning new.
         if (spell.instanceLimit > 0) {
-            var removed = SpellInstanceLimiter.Register(casterId, spell, netObj);
+            var removed = SpellInstanceLimiter.Register(casterId, spell, obj);
             foreach (var old in removed) {
                 if (old == null) continue;
                 if (old.TryGetComponent<SpellLifetime>(out var oldSpell)) {

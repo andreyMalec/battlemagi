@@ -110,6 +110,10 @@ public class SpellInstance : MonoBehaviour, ITarget {
         foreach (var ps in GetComponentsInChildren<ParticleSystem>()) {
             ps.Stop(true, ParticleSystemStopBehavior.StopEmitting);
         }
+
+        if (_authorityService.IsServer) {
+            SpellInstanceLimiter.Unregister(OwnerId, Bind.Context.Spell, gameObject);
+        }
     }
 
     public void FadeOutAudio() {
@@ -166,7 +170,6 @@ public class SpellInstance : MonoBehaviour, ITarget {
 
         foreach (var rz in GetComponentsInChildren<AudioReverbZone>(true)) {
             rz.minDistance *= k;
-            rz.maxDistance *= k;
         }
     }
 }

@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2543264403459149607
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3747895045380484652}
+  - component: {fileID: 2288459728434322602}
+  m_Layer: 0
+  m_Name: DefaultSpells
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3747895045380484652
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2543264403459149607}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 12.36933, y: 5.85344, z: 43.46957}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2288459728434322602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2543264403459149607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce1bb97890344ec4be7e1a6c9de7bcba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DefaultSpells
+  items:
+  - name: Ball Lightning
+    bookImage: {fileID: 2800000, guid: cdfa91e56d0ea014ab38e77719261f07, type: 3}
+    inHandPrefab: {fileID: 7389778017922607859, guid: 827b8d0da4590634d987663f3bf58ab1, type: 3}
+    spell: {fileID: 11400000, guid: 121f47b6c76c9f540854d677f2f3ede9, type: 2}
+  - name: FireBall
+    bookImage: {fileID: 2800000, guid: a71e1d617aef2024790b3ddd6de6a405, type: 3}
+    inHandPrefab: {fileID: 7389778017922607859, guid: 2b566a5c3741b34499ed38cda5628702, type: 3}
+    spell: {fileID: 11400000, guid: 3b18caceee5e79f47b0f3be1f3a89f2a, type: 2}
+  - name: Scorching Ray
+    bookImage: {fileID: 2800000, guid: 7663bfc2c85b7324b81396f95c7cdbda, type: 3}
+    inHandPrefab: {fileID: 7389778017922607859, guid: e684813edeb1e7540b57bf8904d4ca7b, type: 3}
+    spell: {fileID: 11400000, guid: c8ba8d225ad32144195361c0cc390e0d, type: 2}
+  - name: Toxic Sphere
+    bookImage: {fileID: 2800000, guid: f040f455d549b614b986d8e801cdb7dd, type: 3}
+    inHandPrefab: {fileID: 7389778017922607859, guid: ffd1cdf6c29632048b794b359542a260, type: 3}
+    spell: {fileID: 11400000, guid: 81699b3208973504db6cc3b54189fd34, type: 2}
+  - name: Ice Shards
+    bookImage: {fileID: 2800000, guid: 9ff8c3b35e30ee346b52a7d0feb755eb, type: 3}
+    inHandPrefab: {fileID: 7389778017922607859, guid: 86576e4838a60bc4fa994eb438fa16f1, type: 3}
+    spell: {fileID: 11400000, guid: 88ae3a7b24de22243a3f8eeb5e7797ca, type: 2}
+  - name: Shadow Step
+    bookImage: {fileID: 2800000, guid: e839b1b2c39b322419e1c2e161878f39, type: 3}
+    inHandPrefab: {fileID: 7389778017922607859, guid: c71ed5a0f5a361941a35c16dab463988, type: 3}
+    spell: {fileID: 11400000, guid: b86df27e043dcf140a7e00735b82fe0f, type: 2}
+  - name: Force Field
+    bookImage: {fileID: 2800000, guid: 8e5b241e0760fc64aad156b95b35b10d, type: 3}
+    inHandPrefab: {fileID: 7389778017922607859, guid: 2cae14545263ab142bae5e8307564f1e, type: 3}
+    spell: {fileID: 11400000, guid: 168fdab00aaae2240a7ea58cdabc7f9d, type: 2}
+  - name: Air bullet
+    bookImage: {fileID: 2800000, guid: ccab4863f16749f47a4ee47521812140, type: 3}
+    inHandPrefab: {fileID: 0}
+    spell: {fileID: 11400000, guid: 4c479c57913ccd44c977e389d0ca1834, type: 2}
+  - name: Dirt Wall
+    bookImage: {fileID: 2800000, guid: ed4bb8b28774b0447ab249bc06e6c9b5, type: 3}
+    inHandPrefab: {fileID: 0}
+    spell: {fileID: 11400000, guid: 13c31c2fd21801d4e8f1878679aae445, type: 2}
+  - name: Shockwave Totem
+    bookImage: {fileID: 2800000, guid: e381027c133f3d741a8cfbf107e00771, type: 3}
+    inHandPrefab: {fileID: 0}
+    spell: {fileID: 11400000, guid: 4acd7c47414d2e3468a708ff2246c063, type: 2}
+  - name: Flame Dash
+    bookImage: {fileID: 2800000, guid: 8f073c7af4418294f8f30a86972e7370, type: 3}
+    inHandPrefab: {fileID: 7389778017922607859, guid: c15bbb0dfcac1cc439c3f7d773e87cd4, type: 3}
+    spell: {fileID: 11400000, guid: f3742bf9783df9d47a41877ef220043b, type: 2}
+  - name: Rune Trap
+    bookImage: {fileID: 2800000, guid: 8abfa09e974dc424685d2238e47a6df4, type: 3}
+    inHandPrefab: {fileID: 0}
+    spell: {fileID: 11400000, guid: 01cb80203dda3e542a26c58add5c877e, type: 2}

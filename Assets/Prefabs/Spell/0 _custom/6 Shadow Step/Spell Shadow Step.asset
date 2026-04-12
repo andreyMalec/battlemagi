@@ -16,7 +16,7 @@ MonoBehaviour:
   coreType: 1
   spawn: {fileID: 11400000, guid: 40d51be7fdabead48a9e9fdb1f4474d2, type: 2}
   damage: {fileID: 0}
-  knockback: {fileID: 0}
+  knockback: {fileID: 11400000, guid: e1849cbfe2f767f43ad2b5dbe2b62151, type: 2}
   effects: []
   scale: 3
   lifetime: 1
@@ -24,7 +24,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 576
   castWaitingIndex: 0
-  invocationIndex: 0
+  invocationIndex: 4
   manaCost: 0
   bloodMagic: 0
   echoCount: 0

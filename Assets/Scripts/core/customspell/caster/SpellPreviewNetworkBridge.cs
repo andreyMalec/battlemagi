@@ -14,14 +14,7 @@ public class SpellPreviewNetworkBridge : NetworkBehaviour, ISpellPreviewBridge {
 
     public void Show(SpellDefinition spell) {
         Hide();
-        var prefab = spell.coreType switch {
-            CoreType.Projectile => (int)spell.projectile.prefabId,
-            CoreType.Zone => (int)spell.zone.prefabId,
-            CoreType.Beam => (int)spell.beam.prefabId,
-            CoreType.Summon => (int)spell.summon.prefabId,
-            _ => -1
-        };
-        ShowServerRpc((int)spell.coreType, prefab, OwnerId);
+        ShowServerRpc(spell.words, OwnerId);
     }
 
     public void Hide() {
@@ -29,16 +22,17 @@ public class SpellPreviewNetworkBridge : NetworkBehaviour, ISpellPreviewBridge {
     }
 
     [ServerRpc]
-    private void ShowServerRpc(int spellCore, int spellPrefab, ulong clientId) {
-        ShowInHandClientRpc(spellCore, spellPrefab, clientId);
+    private void ShowServerRpc(string spellWords, ulong clientId) {
+        ShowInHandClientRpc(spellWords, clientId);
     }
 
     [ClientRpc]
-    private void ShowInHandClientRpc(int spellCore, int spellPrefab, ulong clientId) {
+    private void ShowInHandClientRpc(string spellWords, ulong clientId) {
         if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client)) return;
         if (!client.PlayerObject.TryGetComponent<SpellPreviewNetworkBridge>(out var bridge)) return;
 
-        var prefab = SpellPrefabDatabase.Instance.Hand(spellCore, spellPrefab);
+        var prefab = DefaultSpells.Get(spellWords)?.inHandPrefab;
+        if (prefab == null) return;
         GameObject obj = Instantiate(prefab, bridge._hand);
         obj.transform.localPosition = Vector3.zero;
         obj.transform.localRotation = Quaternion.identity;

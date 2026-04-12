@@ -12,25 +12,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70d6ac2600d5440ab45bcb7d2aabe7d3, type: 3}
   m_Name: Spell Flame Dash
   m_EditorClassIdentifier: Assembly-CSharp::SpellProjectileDefinition
-  words: Fireball
-  coreType: 0
+  words: Flame Dash
+  coreType: 1
   spawn: {fileID: 11400000, guid: 156c1e33f4762a942a6a6bc7860d44b8, type: 2}
   damage: {fileID: 0}
+  knockback: {fileID: 0}
   effects: []
   scale: 1
-  lifetime: 10
+  lifetime: 7
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 576
   castWaitingIndex: 0
-  invocationIndex: 3
-  manaCost: 25
+  invocationIndex: 7
+  manaCost: 10
+  bloodMagic: 0
   echoCount: 0
-  channeling: 0
-  channelDuration: 1
+  channeling: 1
+  channelDuration: 7
   charging: 0
   chargeDuration: 3
-  projectile: {fileID: 11400000, guid: 4dd9e7151c125764fa9338d2f36053ba, type: 2}
-  zone: {fileID: 0}
+  projectile: {fileID: 0}
+  zone: {fileID: 11400000, guid: 96a2ec750bca2c544a0d4cae9bd2c8b1, type: 2}
   beam: {fileID: 0}
   summon: {fileID: 0}

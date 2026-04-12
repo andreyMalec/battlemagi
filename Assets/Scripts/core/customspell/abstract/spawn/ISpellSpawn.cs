@@ -11,7 +11,7 @@ public interface ISpellSpawn {
     IEnumerable<SpawnContext> ShapeCenter(SpawnContext context);
 
     public static int InstanceCount(SpawnContext context) {
-        var instanceMulti = 1f; //context.caster.statSystem.Stats.GetFinal(StatType.ProjectileCount);
+        var instanceMulti = context.caster.GetComponent<Stats>()?.GetFinal(StatType.ProjectileCount) ?? 1f;
         var instanceCount = (int)Math.Floor(context.spawn.instanceCount * instanceMulti);
         if (context.spawn.instanceLimit > 0 && instanceCount > context.spawn.instanceLimit)
             instanceCount = context.spawn.instanceLimit;
@@ -45,7 +45,7 @@ public interface ISpellSpawn {
         out RaycastHit hitInfo,
         Vector3 secondDirection = default
     ) {
-        if (context.branch) {
+        if (context.branch && context.spawn.spawnMode != SpawnMode.DirectDown) {
             hitInfo = new RaycastHit {
                 point = context.position,
                 normal = context.forward

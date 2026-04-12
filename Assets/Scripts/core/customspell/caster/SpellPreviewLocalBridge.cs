@@ -19,7 +19,8 @@ public class SpellPreviewLocalBridge : MonoBehaviour, ISpellPreviewBridge {
 
     public void Show(SpellDefinition spell) {
         Hide();
-        var prefab = SpellPrefabDatabase.Instance.Hand(spell);
+        var prefab = DefaultSpells.Get(spell)?.inHandPrefab;
+        if (prefab == null) return;
         GameObject obj = Instantiate(prefab, _hand);
         obj.transform.localPosition = Vector3.zero;
         obj.transform.localRotation = Quaternion.identity;

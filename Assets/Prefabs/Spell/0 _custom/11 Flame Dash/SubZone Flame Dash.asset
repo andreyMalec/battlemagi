@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6aed9f25a87b4df799fdec2a0637e94d, type: 3}
-  m_Name: Zone Fireball
+  m_Name: SubZone Flame Dash
   m_EditorClassIdentifier: Assembly-CSharp::ZoneDefinition
-  prefabId: 0
+  prefabId: 1
   moveType: 0
   moveSpeed: 0
   enableMaxDistance: 0
@@ -36,6 +36,9 @@ MonoBehaviour:
   stretchAmplitude: 0.2
   stretchFrequency: 8
   stretchDamping: 0
+  teleportOnSpawn: 0
+  destroyIncomingSpells: 0
+  impassableForEnemies: 0
   atMaxDistanceSpawn: {fileID: 0}
   atStepDistanceSpawn: {fileID: 0}
   spawnStep: 10

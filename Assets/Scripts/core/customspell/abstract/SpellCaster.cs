@@ -21,7 +21,7 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
     public abstract bool IsPlayer { get; }
     public abstract bool IsSpell { get; }
     public GameObject Get => gameObject;
-    
+
     protected Coroutine CastCoroutine => _useNetwork ? _casterNet.CastCoroutine : _castCoroutine;
     private Coroutine _castCoroutine;
 
@@ -56,7 +56,7 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
             return;
         }
 
-        Debug.Log($"{gameObject.name} Cast = {spell.coreType}");
+        Debug.Log($"{gameObject.name} Cast = {spell.words}");
         var spellSpawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
         _castCoroutine = StartCoroutine(spellSpawn!.Request(CastContext(spell), SpawnMain));
     }
@@ -110,7 +110,20 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
     private void SpawnMain(SpawnContext context) {
         var prefab = SpellPrefab.Instance.GetPrefab(_useNetwork);
         var main = Instantiate(prefab, context.position, context.rotation);
-        Debug.Log($"{gameObject.name} SpawnMain = {context.spell.coreType}, main={main.name}");
+        HandleSpellLimit(context.spell, main);
         SpellSystem.CastSpell(context with { main = main });
+        Debug.Log($"{gameObject.name} SpawnMain = {context.spell.coreType}, main={main.name}");
+    }
+
+    public void HandleSpellLimit(SpellDefinition spell, GameObject target) {
+        if (spell.spawn.instanceLimit > 0) {
+            var removed = SpellInstanceLimiter.Register(OwnerId, spell, target);
+            foreach (var old in removed) {
+                if (old == null) continue;
+                var view = old.GetComponentInChildren<SpellView>();
+                var instance = old.GetComponentInChildren<SpellInstance>();
+                view.Kill(instance.Bind.Context);
+            }
+        }
     }
 }

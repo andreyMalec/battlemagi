@@ -13,4 +13,9 @@ public enum SpellZonePrefabId {
     ZoneLightning,
     ZoneExplosionShadow,
     ZoneShadow,
+    ZoneEmpty,
+    ZoneExplosionDirt,
+    ZoneDirt,
+    ZoneExplosionArcane,
+    ZoneArcane,
 }

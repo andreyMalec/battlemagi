@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70d6ac2600d5440ab45bcb7d2aabe7d3, type: 3}
   m_Name: SubSpell Toxic Sphere
   m_EditorClassIdentifier: Assembly-CSharp::SpellProjectileDefinition
-  words: 
+  words: Toxic Sphere Zone
   coreType: 1
   spawn: {fileID: 11400000, guid: 97de1d8eb3b62b748a8f2d8d2787303a, type: 2}
   damage: {fileID: 11400000, guid: 71ee375cb562cd6459f1735dfc99dec3, type: 2}
@@ -27,6 +27,7 @@ MonoBehaviour:
   castWaitingIndex: 0
   invocationIndex: 0
   manaCost: 0
+  bloodMagic: 0
   echoCount: 0
   channeling: 0
   channelDuration: 0

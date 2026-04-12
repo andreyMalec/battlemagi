@@ -223,9 +223,9 @@ public class BaseSpell : NetworkBehaviour {
         ClearVisual();
         if (IsServer) {
             if (spellData != null)
-                SpellInstanceLimiter.Unregister(OwnerClientId, spellData, NetworkObject);
+                SpellInstanceLimiter.Unregister(OwnerClientId, spellData, gameObject);
             else
-                SpellInstanceLimiter.UnregisterByObject(NetworkObject);
+                SpellInstanceLimiter.UnregisterByObject(gameObject);
         }
     }
 

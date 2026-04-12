@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 [DefaultExecutionOrder(-100)]
@@ -7,6 +8,11 @@ public class LocalGameBootstrap : MonoBehaviour, SpellBootstrap {
     private bool _initialized;
 
     private void Awake() {
+        StartCoroutine(Start());
+    }
+
+    public IEnumerator Start() {
+        yield return new WaitForEndOfFrame();
         var caster = GetComponentInChildren<SpellCaster>();
         Init(caster);
     }
@@ -17,6 +23,7 @@ public class LocalGameBootstrap : MonoBehaviour, SpellBootstrap {
         var (spellSystem, authority) = InitializeSpellSystem();
         caster?.Initialize(ownerId, spellSystem, authority);
         _initialized = true;
+        Debug.Log($"Local SpellSystem initialized for [{caster}], ownerId={ownerId}");
     }
 
     private (SpellSystem, IAuthorityService) InitializeSpellSystem() {
@@ -24,8 +31,6 @@ public class LocalGameBootstrap : MonoBehaviour, SpellBootstrap {
         IAuthorityService authority = new LocalAuthority(ownerId);
 
         var spellSystem = new SpellSystem(authority);
-        Debug.Log(
-            $" Local SpellSystem initialized with manager={manager}, authority={authority}");
 
         DI.Register(manager);
         DI.Register(authority);

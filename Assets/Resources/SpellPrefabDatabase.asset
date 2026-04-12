@@ -37,6 +37,10 @@ MonoBehaviour:
     prefab: {fileID: 4956434817817956126, guid: a20a50ba0d63be844bcc99e2e48c17e3, type: 3}
     inHandPrefab: {fileID: 7389778017922607859, guid: 827b8d0da4590634d987663f3bf58ab1, type: 3}
     sound: 3
+  - id: 6
+    prefab: {fileID: 7354784787554302670, guid: 3bc52da95b7c7a746a030b6e78db76f3, type: 3}
+    inHandPrefab: {fileID: 0}
+    sound: 0
   zones:
   - id: 0
     prefab: {fileID: 1742013225946848, guid: e379ec8fb8f5df644a5751b78222d168, type: 3}
@@ -94,6 +98,26 @@ MonoBehaviour:
     prefab: {fileID: 1315042845377307778, guid: 5ebf6396e449e1d438960330c358534a, type: 3}
     inHandPrefab: {fileID: 7389778017922607859, guid: c71ed5a0f5a361941a35c16dab463988, type: 3}
     sound: 0
+  - id: 14
+    prefab: {fileID: 7354784787554302670, guid: 3bc52da95b7c7a746a030b6e78db76f3, type: 3}
+    inHandPrefab: {fileID: 0}
+    sound: 0
+  - id: 15
+    prefab: {fileID: 1742013225946848, guid: 78323a98917659f4c9aa917a7a9375a9, type: 3}
+    inHandPrefab: {fileID: 0}
+    sound: 10
+  - id: 16
+    prefab: {fileID: 1742013225946848, guid: 78323a98917659f4c9aa917a7a9375a9, type: 3}
+    inHandPrefab: {fileID: 0}
+    sound: 10
+  - id: 17
+    prefab: {fileID: 1742013225946848, guid: 63d438fa6a153444ab10f6e3c61481a5, type: 3}
+    inHandPrefab: {fileID: 0}
+    sound: 7
+  - id: 18
+    prefab: {fileID: 1742013225946848, guid: 63d438fa6a153444ab10f6e3c61481a5, type: 3}
+    inHandPrefab: {fileID: 0}
+    sound: 7
   beams:
   - id: 0
     prefab: {fileID: 7354784787554302670, guid: c1d2b633082563743833579beaf20a95, type: 3}

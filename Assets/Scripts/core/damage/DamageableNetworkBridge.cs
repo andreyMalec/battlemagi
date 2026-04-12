@@ -10,6 +10,7 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
 
     private Damageable _core;
     private bool _hasCore;
+    private bool _networkStateBound;
     private float _lastDamageSoundTime;
 
     public NetworkVariable<float> health = new();
@@ -30,16 +31,32 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
     public void Bind(Damageable core) {
         _core = core;
         _hasCore = true;
-        if (IsServer)
-            SyncFromCore(_core);
+        TryBindNetworkState();
     }
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
-        if (!_hasCore) return;
+        TryBindNetworkState();
+    }
 
-        health.OnValueChanged += OnHealthChanged;
-        armor.OnValueChanged += OnArmorChanged;
+    public override void OnNetworkDespawn() {
+        if (_networkStateBound) {
+            health.OnValueChanged -= OnHealthChanged;
+            armor.OnValueChanged -= OnArmorChanged;
+            _networkStateBound = false;
+        }
+        base.OnNetworkDespawn();
+    }
+
+    private void TryBindNetworkState() {
+        if (!_hasCore) return;
+        if (!IsSpawned) return;
+
+        if (!_networkStateBound) {
+            health.OnValueChanged += OnHealthChanged;
+            armor.OnValueChanged += OnArmorChanged;
+            _networkStateBound = true;
+        }
 
         _core.SetNetworkState(health.Value, armor.Value);
 
@@ -47,12 +64,6 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
             SyncFromCore(_core);
     }
 
-    public override void OnNetworkDespawn() {
-        if (!_hasCore) return;
-        health.OnValueChanged -= OnHealthChanged;
-        armor.OnValueChanged -= OnArmorChanged;
-        base.OnNetworkDespawn();
-    }
 
     private void OnHealthChanged(float prev, float next) {
         _core.SetNetworkState(next, _core.CurrentArmor);
