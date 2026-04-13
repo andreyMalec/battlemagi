@@ -89,7 +89,7 @@ public class SpellManager : NetworkBehaviour {
             } else {
                 foreach (var no in NetworkManager.SpawnManager.GetClientOwnedObjects(OwnerClientId)) {
                     if (no.TryGetComponent<BaseSpell>(out var spell) && spell.spellData.id == spellData?.id) {
-                        if (spell.TryGetComponent<SpellLifetime>(out var lifetime)) {
+                        if (spell.TryGetComponent<OLDSpellLifetime>(out var lifetime)) {
                             lifetime.Destroy();
                             break;
                         }
@@ -164,7 +164,7 @@ public class SpellManager : NetworkBehaviour {
             var removed = SpellInstanceLimiter.Register(casterId, spell, obj);
             foreach (var old in removed) {
                 if (old == null) continue;
-                if (old.TryGetComponent<SpellLifetime>(out var oldSpell)) {
+                if (old.TryGetComponent<OLDSpellLifetime>(out var oldSpell)) {
                     oldSpell.Destroy();
                 }
             }

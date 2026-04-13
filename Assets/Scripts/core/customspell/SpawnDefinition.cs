@@ -7,7 +7,7 @@ public class SpawnDefinition : ScriptableObject, IValidate {
     public Preview preview;
     public int instanceCount = 1;
     public int instanceLimit = 0;
-    [ShowIf("_isMultiInstance")] public float multiInstanceDelay = 0.2f;
+    public float multiInstanceDelay = 0.2f;
 
     [ShowIf(EConditionOperator.And, "_isDelayed", "_respectDelayOrigin")]
     public DelayOrigin delayOrigin = DelayOrigin.First;
@@ -32,14 +32,12 @@ public class SpawnDefinition : ScriptableObject, IValidate {
     private bool _isCone = false;
     private bool _isCircleUp = false;
 
-    private bool _isMultiInstance = false;
     private bool _isDelayed = false;
     private bool _respectDelayOrigin = false;
 
     public void Validate() {
-        _isMultiInstance = instanceCount > 1;
         _isDelayed = multiInstanceDelay > 0;
-        _respectDelayOrigin = RespectOrigin(spawnMode) && _isMultiInstance;
+        _respectDelayOrigin = RespectOrigin(spawnMode);
         _isArc = IsArc(spawnMode) || IsArc(alternativeSpawnMode);
         _isRaycast = IsRay(spawnMode) || IsRay(alternativeSpawnMode);
         _isForward = IsForward(spawnMode) || IsForward(alternativeSpawnMode);

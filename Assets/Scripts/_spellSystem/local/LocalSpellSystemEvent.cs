@@ -28,4 +28,9 @@ public class LocalSpellSystemEvent : MonoBehaviour, SpellSystemEvent {
     public void OnAttack(SpellCasterSummon caster) {
         caster.OnAttack();
     }
+
+    public void OnLifetimePercent(SpellView view, float percent) {
+        var lifetime = view.GetComponent<SpellLifetime>();
+        lifetime.OnLifetimePercent(percent);
+    }
 }

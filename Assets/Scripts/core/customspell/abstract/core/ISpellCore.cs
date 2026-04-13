@@ -36,6 +36,20 @@ public abstract class ISpellCore<TContext>
             HandleEvent(new OnLifetimeEndingEvent { remaining = context.Lifetime });
         }
 
+        if (context.Spell.blinkAtLifetime) {
+            var percent = (int)(context.Lifetime / context.Spell.lifetime * 100);
+            switch (percent) {
+                case 50:
+                case 25:
+                case 12:
+                case 6:
+                case 3:
+                case 1:
+                    context.Event.OnLifetimePercent(context.View, percent);
+                    break;
+            }
+        }
+
         TickInner(deltaTime);
 
         if (context.Lifetime <= 0f) {

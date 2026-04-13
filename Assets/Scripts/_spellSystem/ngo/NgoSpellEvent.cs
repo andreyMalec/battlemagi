@@ -76,6 +76,20 @@ public class NgoSpellSystemEvent : NetworkBehaviour, SpellSystemEvent {
         var caster = obj.GetComponentInChildren<SpellCasterSummon>();
         caster.OnAttack();
     }
+
+    public void OnLifetimePercent(SpellView view, float percent) {
+        OnLifetimePercentClientRpc(view.Id(), percent);
+    }
+
+    [ClientRpc]
+    private void OnLifetimePercentClientRpc(ulong netObjectId, float percent) {
+        var obj = netObjectId.Get();
+        if (obj == null) return;
+        Debug.Log($"[NetworkSpellSystemEvent] OnLifetimePercentClientRpc: {netObjectId} percent: {percent}");
+
+        var lifetime = obj.GetComponentInChildren<SpellLifetime>();
+        lifetime.OnLifetimePercent(percent);
+    }
 }
 
 internal static class NetworkSpellSystemEventExt {

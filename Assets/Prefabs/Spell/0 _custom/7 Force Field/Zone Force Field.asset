@@ -39,8 +39,9 @@ MonoBehaviour:
   teleportOnSpawn: 0
   destroyIncomingSpells: 1
   impassableForEnemies: 1
-  atMaxDistanceSpawn: {fileID: 0}
   atStepDistanceSpawn: {fileID: 0}
+  atMaxDistanceSpawn: {fileID: 0}
+  onEnemySpellDestroyedSpawn: {fileID: 11400000, guid: fbd1d40dadc3f074ca285ca565287aff, type: 2}
   spawnStep: 10
   onLifetimeEndSpawn: {fileID: 0}
   onLifetimeHalfSpawn: {fileID: 0}

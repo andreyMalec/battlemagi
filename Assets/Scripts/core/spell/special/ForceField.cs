@@ -46,7 +46,7 @@ public class ForceField : NetworkBehaviour {
             }
         }
 
-        GetComponent<SpellLifetime>().LifetimePercent += LifetimePercent;
+        GetComponent<OLDSpellLifetime>().LifetimePercent += LifetimePercent;
     }
 
     private void OnCollisionEnter(Collision other) {
@@ -60,7 +60,7 @@ public class ForceField : NetworkBehaviour {
     private void BlockIncomingSpell(GameObject go) {
         if (!IsServer) return;
         if (!go.TryGetComponent<NetworkObject>(out var netObj)) return;
-        if (!netObj.TryGetComponent<SpellLifetime>(out var spell)) return;
+        if (!netObj.TryGetComponent<OLDSpellLifetime>(out var spell)) return;
         if (TeamManager.Instance.AreAllies(netObj.OwnerClientId, OwnerClientId)) return;
         spell.Destroy();
         var spellData = baseSpell.spellData;

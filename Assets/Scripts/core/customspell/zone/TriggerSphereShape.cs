@@ -5,6 +5,7 @@ public class TriggerSphereShape : IShape {
     private readonly HashSet<GameObject> _inside = new();
     private readonly List<GameObject> _buffer = new();
     private readonly List<GameObject> _insideCopy = new();
+    private readonly Dictionary<GameObject, Vector3> _points = new();
 
     private ISpellContext _context;
     private float _radius;
@@ -20,6 +21,7 @@ public class TriggerSphereShape : IShape {
         var center = _context.Movement.Transform.position;
 
         _buffer.Clear();
+        _points.Clear();
         foreach (var inst in SpellInstance.Active) {
             if (inst == null) continue;
             if (inst.Bind == null) continue;
@@ -31,6 +33,7 @@ public class TriggerSphereShape : IShape {
             if (d.sqrMagnitude > _radiusSqr) continue;
 
             _buffer.Add(targetGo);
+            _points[targetGo] = targetGo.transform.position;
             if (_inside.Add(targetGo)) {
                 Debug.Log($"[{_context.View.name}] OnZoneEnterEvent {targetGo}");
                 _context.SendEvent(new OnZoneEnterEvent(targetGo));
@@ -42,10 +45,25 @@ public class TriggerSphereShape : IShape {
             if (inst.IsDead) continue;
 
             var targetGo = inst.gameObject;
-            var d = targetGo.transform.position - center;
+            var point = targetGo.transform.position;
+            if (inst.IsStructure) {
+                var zoneCollider = inst.Collider;
+                if (zoneCollider.type is DamageableColliderType.Box) {
+                    var localPoint = zoneCollider.transform.InverseTransformPoint(center) - zoneCollider.center;
+                    var clampedLocalPoint = new Vector3(
+                        Mathf.Clamp(localPoint.x, -zoneCollider.halfExtents.x, zoneCollider.halfExtents.x),
+                        Mathf.Clamp(localPoint.y, -zoneCollider.halfExtents.y, zoneCollider.halfExtents.y),
+                        Mathf.Clamp(localPoint.z, -zoneCollider.halfExtents.z, zoneCollider.halfExtents.z)
+                    );
+                    point = zoneCollider.transform.TransformPoint(clampedLocalPoint + zoneCollider.center);
+                }
+            }
+
+            var d = point - center;
             if (d.sqrMagnitude > _radiusSqr) continue;
 
             _buffer.Add(targetGo);
+            _points[targetGo] = point;
             if (_inside.Add(targetGo))
                 _context.SendEvent(new OnZoneEnterEvent(targetGo));
         }
@@ -58,13 +76,18 @@ public class TriggerSphereShape : IShape {
             foreach (var go in _insideCopy) {
                 if (_buffer.Contains(go)) continue;
                 _inside.Remove(go);
+                _points.Remove(go);
                 Debug.Log($"[{_context.View.name}] OnZoneExitEvent {go}");
                 _context.SendEvent(new OnZoneExitEvent(go));
             }
         }
 
         foreach (var go in _inside) {
-            yield return new ShapeHit { Target = go, Point = go.transform.position };
+            if (go == null) continue;
+            yield return new ShapeHit {
+                Target = go,
+                Point = _points.TryGetValue(go, out var point) ? point : go.transform.position
+            };
         }
 
 #if UNITY_EDITOR

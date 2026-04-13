@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Damage Scorching Ray
   m_EditorClassIdentifier: Assembly-CSharp::DamageDefinition
   mode: 1
-  canHitAllies: 0
+  canHitAllies: 1
   baseType: 0
   scaleWithRange: 0
-  structureMultiplier: 1
+  structureMultiplier: 3
   amount: 0.5
   percentOf: 0
   percent: 0.1

@@ -38,7 +38,8 @@ public class SpellCasterNet : NetworkBehaviour {
             forward = forward,
             caster = caster,
             forceFirstOrigin = true,
-            spellDamageMultiplier = damageMultiplier
+            spellDamageMultiplier = damageMultiplier,
+            branch = true
         };
         var spellSpawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
         StartCoroutine(spellSpawn!.Request(context, ServerSpawnMain));

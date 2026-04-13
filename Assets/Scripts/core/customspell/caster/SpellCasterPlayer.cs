@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -11,6 +12,7 @@ public class SpellCasterPlayer : SpellCaster {
     [SerializeField] private ManaModule mana = new();
     [SerializeField] private MonoBehaviour bridge;
     [SerializeField] private bool animateCast = true;
+    [SerializeField] private bool animateHand = true;
     [SerializeField] private StatusEffectData primalManaStatus;
 
     private ISpellCasterBridge _bridgeTyped;
@@ -64,7 +66,7 @@ public class SpellCasterPlayer : SpellCaster {
         if (_echoRemaining > 0) {
             _spell = spell;
 
-            if (animateCast) {
+            if (animateHand) {
                 _animator.CastWaitingAnim(true, spell.castWaitingIndex);
             }
         }
@@ -84,7 +86,7 @@ public class SpellCasterPlayer : SpellCaster {
         _statusable = GetComponent<Statusable>();
         _damageable = GetComponent<Damageable>();
         _preview = GetComponent<SpellCasterPlayerPreview>();
-        if (animateCast)
+        if (animateCast || animateHand)
             _animator = GetComponent<SpellCasterPlayerAnimator>();
 
         if (bridge != null)
@@ -121,7 +123,7 @@ public class SpellCasterPlayer : SpellCaster {
                 ResetEcho();
             _spell = selected;
 
-            if (animateCast)
+            if (animateHand)
                 _animator.CastWaitingAnim(true, _spell.castWaitingIndex);
         }
 
@@ -163,7 +165,7 @@ public class SpellCasterPlayer : SpellCaster {
         }
 
         _spell = null;
-        BeginEcho(spell, usedEcho);
+        StartCoroutine(BeginEcho(spell, usedEcho));
     }
 
     private void ConsumeCostOrEcho(SpellDefinition spell) {
@@ -211,27 +213,29 @@ public class SpellCasterPlayer : SpellCaster {
         return true;
     }
 
-    private void BeginEcho(SpellDefinition spell, bool usedEcho) {
+    private IEnumerator BeginEcho(SpellDefinition spell, bool usedEcho) {
         if (spell == null || spell.echoCount <= 0) {
             ResetEcho();
-            return;
+            yield break;
         }
 
         if (usedEcho) {
             if (_echoRemaining <= 0) {
                 ResetEcho();
-                return;
+                yield break;
             }
 
-            if (animateCast) {
+            if (animateHand) {
+                yield return new WaitForEndOfFrame(); // задержка чтобы успел обновиться Rig для руки
                 _animator.CastWaitingAnim(true, spell.castWaitingIndex);
             }
 
             _spell = spell;
-            return;
+            yield break;
         }
 
-        if (animateCast) {
+        if (animateHand) {
+            yield return new WaitForEndOfFrame();
             _animator.CastWaitingAnim(true, spell.castWaitingIndex);
         }
 
@@ -260,7 +264,7 @@ public class SpellCasterPlayer : SpellCaster {
 
         ResetEcho();
 
-        if (animateCast) {
+        if (animateCast || animateHand) {
             _animator.CancelAnimate();
         }
 
@@ -303,6 +307,7 @@ public class SpellCasterPlayer : SpellCaster {
         Charging = true;
         _chargingSpell = spell;
         _chargingDamageMultiplier = 1f;
+        _preview.StartCharging();
 
         if (animateCast) {
             _animator.AnimateCast(spell);
@@ -326,7 +331,7 @@ public class SpellCasterPlayer : SpellCaster {
                 yield break;
             }
 
-            _chargingDamageMultiplier = Mathf.Clamp01(elapsed / duration);
+            _chargingDamageMultiplier = Mathf.Clamp01((float)Math.Pow(2, elapsed / duration));
             yield return null;
         }
 
@@ -336,7 +341,7 @@ public class SpellCasterPlayer : SpellCaster {
     private void ReleaseCharged(SpellDefinition spell) {
         if (!Charging) return;
         ResetEcho();
-        if (animateCast) {
+        if (animateCast || animateHand) {
             _animator.CancelAnimate();
         }
 

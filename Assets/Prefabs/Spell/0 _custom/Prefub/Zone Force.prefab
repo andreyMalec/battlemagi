@@ -5084,6 +5084,7 @@ GameObject:
   - component: {fileID: 8210015613394022047}
   - component: {fileID: 8946880874929170982}
   - component: {fileID: 4647211017428273314}
+  - component: {fileID: -6763958554930820252}
   m_Layer: 2
   m_Name: Zone Force
   m_TagString: Untagged
@@ -5355,3 +5356,16 @@ MonoBehaviour:
   scale:
   - {fileID: 641456430593986090}
   exclude: []
+--- !u!114 &-6763958554930820252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7354784787554302670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f41b0b66ae54c92b8826b39ce4581a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellLifetime
+  blinkDuration: 0.15

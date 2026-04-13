@@ -4451,10 +4451,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4244353405721423492, guid: 3f81652f893573a47991621ecf1d237d, type: 3}
-      propertyPath: damageSounds.Array.data[10].clip
-      value: 
-      objectReference: {fileID: 8300000, guid: e734ef0317bdf6f47ac5d05e01d3e942, type: 3}
     - target: {fileID: 5290250459907953229, guid: 3f81652f893573a47991621ecf1d237d, type: 3}
       propertyPath: m_Name
       value: AudioManager
@@ -4776,6 +4772,7 @@ MonoBehaviour:
     regenPerSecond: 5
   bridge: {fileID: 0}
   animateCast: 1
+  animateHand: 1
   primalManaStatus: {fileID: 0}
 --- !u!114 &1787711406
 MonoBehaviour:
@@ -6372,6 +6369,7 @@ MonoBehaviour:
     regenPerSecond: 5
   bridge: {fileID: 0}
   animateCast: 1
+  animateHand: 1
   primalManaStatus: {fileID: 0}
 --- !u!114 &7351032199263568251
 MonoBehaviour:

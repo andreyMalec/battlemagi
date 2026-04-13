@@ -31,4 +31,8 @@ public class SpellPreviewLocalBridge : MonoBehaviour, ISpellPreviewBridge {
             Destroy(_hand.GetChild(i).gameObject);
         }
     }
+
+    public void StartCharging() {
+        GetComponentInChildren<SpellInHand>()?.StartCharging();
+    }
 }

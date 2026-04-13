@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70d6ac2600d5440ab45bcb7d2aabe7d3, type: 3}
+  m_Name: Spell Ember lash
+  m_EditorClassIdentifier: Assembly-CSharp::SpellDefinition
+  words: Ember lash
+  coreType: 1
+  spawn: {fileID: 11400000, guid: 26ad544c09225b546be6e8338a14d4a0, type: 2}
+  damage: {fileID: 0}
+  knockback: {fileID: 0}
+  effects:
+  - {fileID: 11400000, guid: 1f9bac19cc57d2444be5273c82d6f076, type: 2}
+  - {fileID: 11400000, guid: d500be0367c040f419a40c1122e900e3, type: 2}
+  scale: 4
+  lifetime: 0.5
+  blinkAtLifetime: 0
+  defaultRaycast:
+    serializedVersion: 2
+    m_Bits: 576
+  castWaitingIndex: 0
+  invocationIndex: 11
+  manaCost: 75
+  bloodMagic: 0
+  echoCount: 0
+  channeling: 0
+  channelDuration: 0
+  charging: 0
+  chargeDuration: 0
+  projectile: {fileID: 0}
+  zone: {fileID: 11400000, guid: 61b1ad3bc6fd264418cc085a194f7eb0, type: 2}
+  beam: {fileID: 0}
+  summon: {fileID: 0}

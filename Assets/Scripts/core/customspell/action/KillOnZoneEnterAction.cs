@@ -4,6 +4,7 @@ public class KillOnZoneEnterAction : ISpellAction {
         if (!enter.Target.TryGetComponent<SpellInstance>(out var instance)) return;
         if (TeamManager.Instance.AreAllies(context.OwnerId, instance.OwnerId)) return;
         base.Apply(context, evt);
+        context.SendEvent(new OnEnemySpellKillEvent());
         instance.Bind.Context.View.Kill(context);
     }
 }

@@ -14,6 +14,7 @@ public class SpellDefinition : ScriptableObject, IValidate {
 
     public float scale = 1;
     public float lifetime = 5;
+    public bool blinkAtLifetime;
     public LayerMask defaultRaycast = ~0;
 
     public int castWaitingIndex = 0;

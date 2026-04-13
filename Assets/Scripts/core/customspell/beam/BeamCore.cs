@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 public class BeamCore : ISpellCore<BeamContext> {
     private readonly IShape _shape;
-    private readonly HashSet<object> _inside = new();
+    private readonly HashSet<GameObject> _inside = new();
     private bool _started;
 
     public BeamCore(
@@ -22,14 +24,14 @@ public class BeamCore : ISpellCore<BeamContext> {
 
         HandleEvent(new OnBeamTickEvent { delta = delta });
 
-        var hits = _shape.Query();
+        var hits = _shape.Query().ToList();
 
-        var current = new HashSet<object>();
+        var current = new HashSet<GameObject>();
         foreach (var hit in hits) {
             if (hit.Target == null)
                 continue;
 
-            var key = (object)hit.Target;
+            var key = hit.Target;
             current.Add(key);
 
             if (!_inside.Contains(key)) {
@@ -51,7 +53,7 @@ public class BeamCore : ISpellCore<BeamContext> {
         }
 
         if (_inside.Count > 0) {
-            var toRemove = new List<object>();
+            var toRemove = new List<GameObject>();
             foreach (var key in _inside)
                 if (!current.Contains(key))
                     toRemove.Add(key);

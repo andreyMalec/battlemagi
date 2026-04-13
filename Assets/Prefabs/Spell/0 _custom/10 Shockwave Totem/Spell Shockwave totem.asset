@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 70d6ac2600d5440ab45bcb7d2aabe7d3, type: 3}
-  m_Name: Spell Shockwave totem
+  m_Name: Spell Shockwave Totem
   m_EditorClassIdentifier: Assembly-CSharp::SpellDefinition
   words: Shockwave Totem
   coreType: 4
@@ -20,6 +20,7 @@ MonoBehaviour:
   effects: []
   scale: 1
   lifetime: 10
+  blinkAtLifetime: 0
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 64

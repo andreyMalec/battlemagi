@@ -24,3 +24,6 @@ public sealed class OnLifetimeHalfEvent : SpellEvent {
 public sealed class OnLifetimeEndingEvent : SpellEvent {
     public float remaining;
 }
+
+public sealed class OnEnemySpellKillEvent : SpellEvent {
+}

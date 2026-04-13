@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1907b37ed1aa4ddd80c76a48f1db8862, type: 3}
-  m_Name: Spawn Shockwave totem
+  m_Name: Spawn Shockwave Totem
   m_EditorClassIdentifier: Assembly-CSharp::SpawnDefinition
   spawnMode: 5
   preview: 1
   instanceCount: 1
   instanceLimit: 3
-  multiInstanceDelay: 0
+  multiInstanceDelay: 0.1
   delayOrigin: 1
   useAlternativeSpawnMode: 0
   alternativeSpawnMode: 0

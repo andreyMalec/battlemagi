@@ -1,8 +1,8 @@
 using System.Linq;
-using UnityEngine;
 
 public class ZoneCore : ISpellCore<ZoneContext> {
     private readonly IShape _shape;
+    private bool _isInitialTick = true;
 
     public ZoneCore(
         ZoneContext ctx,
@@ -16,7 +16,8 @@ public class ZoneCore : ISpellCore<ZoneContext> {
         context.Lifetime -= delta;
         var hits = _shape.Query().ToList();
 
-        HandleEvent(new OnZoneStayEvent(hits.Map(it => it.Target.gameObject), delta));
+        HandleEvent(new OnZoneStayEvent(hits.Map(it => it.Target.gameObject), delta, _isInitialTick));
+        _isInitialTick = false;
     }
 
     protected override void AttachEventSink() {

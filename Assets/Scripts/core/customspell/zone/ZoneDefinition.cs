@@ -26,6 +26,9 @@ public class ZoneDefinition : ScriptableObject, IValidate {
     [ShowIf("_transformSpiral")] public float spiralRadius = 0.5f;
     [ShowIf("_transformSpiral")] public SpiralAxis spiralAxis = SpiralAxis.Forward;
 
+    [Header("Accelerated")]
+    [ShowIf("_transformAccelerated")] public float acceleration;
+
     [Header("Homing")]
     [ShowIf("_canHoming")] public bool enableHoming;
 
@@ -48,10 +51,10 @@ public class ZoneDefinition : ScriptableObject, IValidate {
     public bool impassableForEnemies;
 
     [Header("Spawned Spells")]
-    [ShowIf("enableMaxDistance")] public SpellDefinition atMaxDistanceSpawn;
-
-    [Header("Spawned Spells")]
     public SpellDefinition atStepDistanceSpawn;
+
+    [ShowIf("enableMaxDistance")] public SpellDefinition atMaxDistanceSpawn;
+    [ShowIf("destroyIncomingSpells")] public SpellDefinition onEnemySpellDestroyedSpawn;
 
     [ShowIf("spawnAtStep")] public float spawnStep = 10f;
     public SpellDefinition onLifetimeEndSpawn;
@@ -59,6 +62,7 @@ public class ZoneDefinition : ScriptableObject, IValidate {
 
     private bool _canMove = false;
     private bool _transformSpiral = false;
+    private bool _transformAccelerated = false;
     private bool _transformLookAtPoint = false;
     private bool _transformFollowCaster = false;
     private bool _canHoming = false;
@@ -67,9 +71,10 @@ public class ZoneDefinition : ScriptableObject, IValidate {
     public void Validate() {
         _canMove = moveType is not SpellMovement.Static;
         _transformSpiral = moveType is SpellMovement.Spiral;
+        _transformAccelerated = moveType is SpellMovement.Accelerated;
         _transformLookAtPoint = moveType is SpellMovement.LookAtPoint;
         _transformFollowCaster = moveType is SpellMovement.FollowCaster;
-        _canHoming = moveType is SpellMovement.Linear or SpellMovement.Spiral;
+        _canHoming = moveType is SpellMovement.Linear or SpellMovement.Spiral or SpellMovement.Accelerated;
         spawnAtStep = atStepDistanceSpawn != null;
     }
 

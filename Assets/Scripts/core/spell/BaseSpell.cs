@@ -6,7 +6,7 @@ using Unity.Netcode.Components;
 using UnityEngine;
 
 [RequireComponent(typeof(NetworkObject))]
-[RequireComponent(typeof(SpellLifetime))]
+[RequireComponent(typeof(OLDSpellLifetime))]
 public class BaseSpell : NetworkBehaviour {
     private int terrainLayer;
 
@@ -15,7 +15,7 @@ public class BaseSpell : NetworkBehaviour {
 
     private ISpellMovement movement;
     private ISpellDamage damage;
-    private SpellLifetime lifetime;
+    private OLDSpellLifetime lifetime;
 
     public SpellData spellData;
     [HideInInspector] public float damageMultiplier = 1;
@@ -41,7 +41,7 @@ public class BaseSpell : NetworkBehaviour {
         var mode = GetComponent<NetworkTransform>().AuthorityMode;
         movementAuthority = (mode == NetworkTransform.AuthorityModes.Owner && IsOwner) ||
                             (mode == NetworkTransform.AuthorityModes.Server && IsServer);
-        lifetime = GetComponent<SpellLifetime>();
+        lifetime = GetComponent<OLDSpellLifetime>();
         terrainLayer = LayerMask.NameToLayer("Terrain");
 
         foreach (var ally in TeamManager.Instance.FindAllies(OwnerClientId)) {

@@ -21,6 +21,21 @@ public class SpellPreviewNetworkBridge : NetworkBehaviour, ISpellPreviewBridge {
         HideServerRpc(OwnerId);
     }
 
+    public void StartCharging() {
+        StartChargingServerRpc(OwnerId);
+    }
+
+    [ServerRpc]
+    private void StartChargingServerRpc(ulong clientId) {
+        StartChargingClientRpc(clientId);
+    }
+
+    [ClientRpc]
+    private void StartChargingClientRpc(ulong clientId) {
+        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client)) return;
+        client.PlayerObject.GetComponentInChildren<SpellInHand>()?.StartCharging();
+    }
+
     [ServerRpc]
     private void ShowServerRpc(string spellWords, ulong clientId) {
         ShowInHandClientRpc(spellWords, clientId);

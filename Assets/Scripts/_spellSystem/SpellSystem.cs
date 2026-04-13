@@ -26,6 +26,9 @@ public class SpellSystem {
             case CoreType.Summon:
                 CreateSummon(spawnContext, spawnContext.branch);
                 break;
+            case CoreType.Self:
+                CreateSelf(spawnContext, spawnContext.branch);
+                break;
         }
     }
 
@@ -166,6 +169,12 @@ public class SpellSystem {
             });
         }
 
+        triggers.Add(new SpellTrigger {
+            eventType = typeof(OnEnemySpellKillEvent),
+            actions = new ISpellAction[] {
+                new SpawnOnEnemySpellKilledAction(),
+            }
+        });
         triggers.Add(new SpellTrigger {
             eventType = typeof(OnMaxDistanceEvent),
             actions = new ISpellAction[] {
@@ -398,9 +407,31 @@ public class SpellSystem {
             view.Stats.AddModifier(StatType.SpellDamage, spawnContext.spellDamageMultiplier);
     }
 
+    private void CreateSelf(
+        SpawnContext spawnContext,
+        bool spawned = false
+    ) {
+        SpellDefinition def = spawnContext.spell;
+        spawnContext.main.name = "Spell " + def.name;
+        var spellEvent = spawnContext.main.GetComponent<SpellSystemEvent>();
+
+        var context = new SummonContext(
+            spawnContext.caster,
+            null,
+            def,
+            spellEvent,
+            spawned
+        );
+
+        var applyStatusAction = new SelfStatusEffectAction();
+        applyStatusAction.Apply(context, new OnLifetimeStartEvent());
+        DI.Get<IEntityManager>().Despawn(spawnContext.main.gameObject);
+    }
+
     private static ISpellTransform Move(ProjectileDefinition def, Vector3 direction) {
         ISpellTransform move = def.moveType switch {
             SpellMovement.Linear => new LinearMoveTransform(direction, def.moveSpeed),
+            SpellMovement.Accelerated => new AcceleratedMoveTransform(direction, def.moveSpeed, def.acceleration),
             SpellMovement.LookAtPoint => new LookAtPointTransform(def.moveSpeed, def.lookAtMaxDistance,
                 def.lookAtRayMask),
             SpellMovement.Spiral => new SpiralMoveTransform(
@@ -457,6 +488,7 @@ public class SpellSystem {
     private static ISpellTransform Move(ZoneDefinition def, Vector3 direction) {
         ISpellTransform move = def.moveType switch {
             SpellMovement.Linear => new LinearMoveTransform(direction, def.moveSpeed),
+            SpellMovement.Accelerated => new AcceleratedMoveTransform(direction, def.moveSpeed, def.acceleration),
             SpellMovement.LookAtPoint => new LookAtPointTransform(def.moveSpeed, def.lookAtMaxDistance,
                 def.lookAtRayMask),
             SpellMovement.Spiral => new SpiralMoveTransform(
@@ -510,6 +542,7 @@ public class SpellSystem {
     private static ISpellTransform Move(BeamDefinition def, Vector3 direction) {
         ISpellTransform move = def.moveType switch {
             SpellMovement.Linear => new LinearMoveTransform(direction, def.moveSpeed),
+            SpellMovement.Accelerated => new AcceleratedMoveTransform(direction, def.moveSpeed, def.acceleration),
             SpellMovement.LookAtPoint => new LookAtPointTransform(def.moveSpeed, def.lookAtMaxDistance,
                 def.lookAtRayMask),
             SpellMovement.FollowCaster => new FollowCasterTransform(def.followTarget),

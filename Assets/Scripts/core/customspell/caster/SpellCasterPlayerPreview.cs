@@ -39,6 +39,10 @@ public class SpellCasterPlayerPreview : MonoBehaviour {
         UpdatePreview();
     }
 
+    public void StartCharging() {
+        _bridgeTyped.StartCharging();
+    }
+
     private void UpdatePreview() {
         if (_spell != null && _spawnPreview == null) {
             _spawnPreview = CreatePreview(_spell.spawn.preview);

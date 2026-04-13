@@ -2,7 +2,7 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 
-public class SpellLifetime : NetworkBehaviour {
+public class OLDSpellLifetime : NetworkBehaviour {
     public event Action<float> LifetimePercent;
 
     [Header("Failsafe")]

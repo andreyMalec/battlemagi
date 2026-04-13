@@ -10,4 +10,5 @@ public interface ISpellPreviewBridge {
     public void BindHand(Transform hand);
     void Show(SpellDefinition spell);
     void Hide();
+    void StartCharging();
 }

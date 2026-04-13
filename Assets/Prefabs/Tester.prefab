@@ -296,13 +296,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4965203729396201442}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0.1585916, y: -0.5443283, z: -0.121303156, w: 0.8147644}
   m_LocalPosition: {x: -0.281, y: -0.094, z: 0.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1008279433977117322}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 7.26, y: -68.9, z: -21.92}
 --- !u!1 &5056318315711601611
 GameObject:
   m_ObjectHideFlags: 0
@@ -328,6 +328,7 @@ GameObject:
   - component: {fileID: 3467911108821741378}
   - component: {fileID: 2484748818470685067}
   - component: {fileID: -2114292743755080758}
+  - component: {fileID: 5476031713649994788}
   m_Layer: 0
   m_Name: Tester
   m_TagString: Untagged
@@ -451,6 +452,7 @@ MonoBehaviour:
   groundCheck: {fileID: 6803069950537442686}
   mainCamera: {fileID: 8854033999867419295}
   hand: {fileID: 257510196640723666}
+  jumpStrength: 2
   movementSpeed: 6
   runSpeed: 5
 --- !u!114 &1760773015534472312
@@ -475,6 +477,8 @@ MonoBehaviour:
     regenPerSecond: 5
   bridge: {fileID: 0}
   animateCast: 0
+  animateHand: 0
+  primalManaStatus: {fileID: 0}
 --- !u!114 &3544951281845238632
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -631,6 +635,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellPreviewLocalBridge
   clientId: 0
+--- !u!114 &5476031713649994788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056318315711601611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c6d0012fe04f9c4883e05973bcae165, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerPhysics
+  _impulseDamping: 5
+  _groundFriction: 8
 --- !u!1 &7750010650653659641
 GameObject:
   m_ObjectHideFlags: 0

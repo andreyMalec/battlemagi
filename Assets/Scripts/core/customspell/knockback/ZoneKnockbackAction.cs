@@ -7,6 +7,7 @@ public class ZoneKnockbackAction : PointPhysicsActionBase {
         if (evt is not OnZoneStayEvent stay) return;
         var def = context.Spell.knockback;
         if (def == null) return;
+        if (def.mode is SpellKnockbackMode.Impulse && !stay.IsInitial) return;
 
         var point = context.Movement.Transform.position;
         foreach (var target in stay.Targets) {

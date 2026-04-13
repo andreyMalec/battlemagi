@@ -3,6 +3,20 @@ using System.Collections.Generic;
 using NaughtyAttributes;
 using UnityEngine;
 
+public enum DamageableColliderType {
+    Point,
+    Box
+}
+
+[Serializable]
+public struct DamageableCollider {
+    public DamageableColliderType type;
+    public Transform transform;
+    public Vector3 center;
+    public Vector3 size;
+    public Vector3 halfExtents;
+}
+
 public class Damageable : MonoBehaviour {
     public static readonly List<Damageable> Active = new();
 
@@ -30,6 +44,7 @@ public class Damageable : MonoBehaviour {
     public float CurrentHealth { get; private set; }
     public float CurrentArmor { get; private set; }
     public bool IsStructure => _isStructure;
+    public DamageableCollider Collider => _collider;
 
     public DamageableState State { get; private set; }
 
@@ -52,8 +67,10 @@ public class Damageable : MonoBehaviour {
 
     private IDamageableBridge _bridgeTyped;
     private bool _initialized;
+    private DamageableCollider _collider;
 
     private void Awake() {
+        CacheZoneCollider();
         if (_bridge != null)
             _bridgeTyped = (IDamageableBridge)_bridge;
         else
@@ -61,6 +78,28 @@ public class Damageable : MonoBehaviour {
         _bridgeTyped.Bind(this);
         _statusable = GetComponent<Statusable>();
         _stats = GetComponent<Stats>();
+    }
+
+    private void CacheZoneCollider() {
+        _collider = new DamageableCollider {
+            type = DamageableColliderType.Point,
+            center = transform.position
+        };
+
+        if (!IsStructure)
+            return;
+
+        var boxCollider = GetComponentInChildren<BoxCollider>(true);
+        if (boxCollider == null || boxCollider.isTrigger)
+            return;
+
+        _collider = new DamageableCollider {
+            type = DamageableColliderType.Box,
+            transform = boxCollider.transform,
+            center = boxCollider.center,
+            size = boxCollider.size,
+            halfExtents = boxCollider.size * 0.5f
+        };
     }
 
     internal void SetNetworkState(float health, float armor) {

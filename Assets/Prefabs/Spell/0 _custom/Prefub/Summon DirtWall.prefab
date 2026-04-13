@@ -239,6 +239,7 @@ GameObject:
   - component: {fileID: 8709536170782105465}
   - component: {fileID: 8992203459555133444}
   - component: {fileID: 3629886563686316068}
+  - component: {fileID: 1341539025401903161}
   m_Layer: 6
   m_Name: Mesh
   m_TagString: Untagged
@@ -338,6 +339,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.1, y: 3.1, z: 0.6}
   m_Center: {x: 0, y: 1.5, z: 0}
+--- !u!114 &1341539025401903161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1628171665663855978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
 --- !u!1 &6049366011902456422
 GameObject:
   m_ObjectHideFlags: 0
@@ -5279,7 +5292,7 @@ MonoBehaviour:
     armorEffect: 0.75
   _immortal: 0
   _invulnerable: 0
-  _isStructure: 0
+  _isStructure: 1
   _bridge: {fileID: 0}
 --- !u!114 &8296131274992698551
 MonoBehaviour:

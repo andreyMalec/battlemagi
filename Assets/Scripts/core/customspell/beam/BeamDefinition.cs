@@ -28,6 +28,9 @@ public class BeamDefinition : ScriptableObject, IValidate {
     [Header("FollowCaster")]
     [ShowIf("_transformFollowCaster")] public FollowCasterTarget followTarget;
 
+    [Header("Accelerated")]
+    [ShowIf("_transformAccelerated")] public float acceleration;
+
     [Header("SquashStretch")]
     public bool enableSquashStretch;
 
@@ -65,6 +68,7 @@ public class BeamDefinition : ScriptableObject, IValidate {
     private bool _shapeStraight = true;
     private bool _shapeCone = false;
     private bool _transformSpiral = false;
+    private bool _transformAccelerated = false;
     private bool _transformLookAtPoint = false;
     private bool _transformFollowCaster = false;
     [ShowIf("false")] [HideInInspector] public bool spawnAtStep = false;
@@ -79,6 +83,7 @@ public class BeamDefinition : ScriptableObject, IValidate {
         _shapeCone = shapeType is BeamShapeType.Cone;
         _canMove = moveType is not SpellMovement.Static;
         _transformSpiral = moveType is SpellMovement.Spiral;
+        _transformAccelerated = moveType is SpellMovement.Accelerated;
         _transformLookAtPoint = moveType is SpellMovement.LookAtPoint;
         _transformFollowCaster = moveType is SpellMovement.FollowCaster;
         spawnAtStep = atStepDistanceSpawn != null;
