@@ -7,6 +7,7 @@ public class SpawnDefinition : ScriptableObject, IValidate {
     public Preview preview;
     public int instanceCount = 1;
     public int instanceLimit = 0;
+    public bool disableInstanceMultiplier;
     public float multiInstanceDelay = 0.2f;
 
     [ShowIf(EConditionOperator.And, "_isDelayed", "_respectDelayOrigin")]
@@ -62,7 +63,7 @@ public class SpawnDefinition : ScriptableObject, IValidate {
 
     private static bool IsRay(SpawnMode spawnMode) {
         return spawnMode is SpawnMode.GroundPoint or SpawnMode.GroundPointArc or SpawnMode.GroundPointArcDown
-            or SpawnMode.DirectDown or SpawnMode.DirectDownForward;
+            or SpawnMode.DirectDown or SpawnMode.DirectDownForward or SpawnMode.RayCast;
     }
 
     private static bool IsForward(SpawnMode spawnMode) {

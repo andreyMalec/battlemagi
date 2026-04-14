@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NewGroundPointSpawn : ISpellSpawn, IDelayOriginRespect {
+public class RayCastSpawn : ISpellSpawn, IDelayOriginRespect {
     public IEnumerator Request(SpawnContext context, Action<SpawnContext> spawn) {
         var count = ISpellSpawn.InstanceCount(context);
 
@@ -11,7 +11,7 @@ public class NewGroundPointSpawn : ISpellSpawn, IDelayOriginRespect {
         var origin = context.DelayOrigin;
 
         var firstBase = BaseContext(context, origin, isFirst: true);
-        var onFirst = ISpellSpawn.GroundPos(firstBase, firstBase.forward, out _);
+        var onFirst = RayCast(firstBase, firstBase.forward);
 
         for (int i = count - 1; i >= 0; i--) {
             switch (origin) {
@@ -20,7 +20,7 @@ public class NewGroundPointSpawn : ISpellSpawn, IDelayOriginRespect {
                     break;
                 case DelayOrigin.Continuous:
                     var currentBase = BaseContext(context, origin, isFirst: false);
-                    var ctx = ISpellSpawn.GroundPos(currentBase, currentBase.forward, out _);
+                    var ctx = RayCast(currentBase, currentBase.forward);
                     spawn(ctx);
                     break;
             }
@@ -56,6 +56,29 @@ public class NewGroundPointSpawn : ISpellSpawn, IDelayOriginRespect {
         var baseCtx = context.target != null
             ? context with { position = context.target.Position }
             : context;
-        yield return ISpellSpawn.GroundPos(baseCtx, baseCtx.forward, out _);
+        yield return RayCast(baseCtx, baseCtx.forward);
+    }
+
+    private static SpawnContext RayCast(
+        SpawnContext context,
+        Vector3 direction
+    ) {
+        if (context.branch) {
+            return context;
+        }
+
+        var maxDistance = context.spawn.raycastMaxDistance;
+        var origin = context.position;
+        var mask = context.spell.defaultRaycast;
+
+        if (Physics.Raycast(origin - direction * 0.1f, direction, out var hit, maxDistance, mask)) {
+            return ISpellSpawn.FromHit(context, hit, direction);
+        }
+
+        return context with {
+            position = origin + direction * maxDistance,
+            rotation = Quaternion.identity,
+            forward = Vector3.zero
+        };
     }
 }

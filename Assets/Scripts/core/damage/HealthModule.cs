@@ -16,6 +16,12 @@ public class HealthModule : IDamageModule {
         Health = maxHealth;
     }
 
+    public void SetDefaults(float defaultMaxHealth, float defaultRegenPerSecond) {
+        maxHealth = defaultMaxHealth;
+        Health = maxHealth;
+        regenPerSecond = defaultRegenPerSecond;
+    }
+
     public void TickServer(float dt) {
         if (!_damageable.IsAlive) return;
         if (regenPerSecond <= 0f) return;

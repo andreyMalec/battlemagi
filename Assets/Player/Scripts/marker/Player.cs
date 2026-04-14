@@ -61,11 +61,9 @@ public class Player : NetworkBehaviour {
         look.SetCameraOffset(archetype.cameraOffset);
 
         var caster = GetComponent<SpellCasterPlayer>();
-        caster.Mana.maxMana = archetype.maxMana;
-        caster.Mana.regenPerSecond = archetype.manaRegen;
+        caster.Mana.SetDefaults(archetype.maxMana, archetype.manaRegen);
         var damageable = GetComponent<Damageable>();
-        damageable.Health.maxHealth = archetype.maxHealth;
-        damageable.Health.regenPerSecond = archetype.healthRegen;
+        damageable.Health.SetDefaults(archetype.maxHealth, archetype.healthRegen);
         var camSel = GetComponentInChildren<CameraSelector>();
         camSel.BindAvatar(meshController);
         var fpss = GetComponentInChildren<FirstPersonSounds>();

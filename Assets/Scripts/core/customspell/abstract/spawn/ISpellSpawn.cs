@@ -12,6 +12,8 @@ public interface ISpellSpawn {
 
     public static int InstanceCount(SpawnContext context) {
         var instanceMulti = context.caster.GetComponent<Stats>()?.GetFinal(StatType.ProjectileCount) ?? 1f;
+        if (context.spell.spawn.disableInstanceMultiplier)
+            instanceMulti = 1f;
         var instanceCount = (int)Math.Floor(context.spawn.instanceCount * instanceMulti);
         if (context.spawn.instanceLimit > 0 && instanceCount > context.spawn.instanceLimit)
             instanceCount = context.spawn.instanceLimit;
@@ -101,6 +103,7 @@ public interface ISpellSpawn {
             SpawnMode.GroundPointCircleUp => new GroundPointCircleUpSpawn(),
             SpawnMode.GroundPointDiskUp => new GroundPointDiskUpSpawn(),
             SpawnMode.Cone => new ConeSpawn(),
+            SpawnMode.RayCast => new RayCastSpawn(),
             _ => null
         };
     }

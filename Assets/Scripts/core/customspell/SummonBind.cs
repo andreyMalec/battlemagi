@@ -43,7 +43,7 @@ public class SummonBind<TContext> : ISpellBind
     public void Tick(float deltaTime) {
         _core.Tick(deltaTime);
 
-        _ai.HomePosition = _context.Caster.Origin;
+        _ai.HomePosition = _context.Caster?.Origin ?? _ai.Self.position;
 
         foreach (var sensor in _sensors)
             sensor.Sense(_ai);

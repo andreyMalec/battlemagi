@@ -14,9 +14,14 @@ public class ManaModule {
     private Stats _stats;
 
     public void InitializeServer(Stats stats) {
-        Mana = maxMana;
         PrimalMana = 0f;
         _stats = stats;
+    }
+
+    public void SetDefaults(float defaultMaxMana, float defaultRegenPerSecond) {
+        maxMana = defaultMaxMana;
+        Mana = maxMana;
+        regenPerSecond = defaultRegenPerSecond;
     }
 
     public void SetNetworkState(float mana, float primalMana) {

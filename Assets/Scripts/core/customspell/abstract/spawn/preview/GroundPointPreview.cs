@@ -35,7 +35,8 @@ public class GroundPointPreview : ISpellSpawnPreview {
         if (context.spawn.spawnMode is not SpawnMode.GroundPoint
             && context.spawn.spawnMode is not SpawnMode.GroundPointArc
             && context.spawn.spawnMode is not SpawnMode.GroundPointArcDown
-            && context.spawn.spawnMode is not SpawnMode.GroundPointForward)
+            && context.spawn.spawnMode is not SpawnMode.GroundPointForward
+            && context.spawn.spawnMode is not SpawnMode.RayCast)
             return;
 
         foreach (var ctx in _spawnMode.ShapeCenter(context)) {

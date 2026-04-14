@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1907b37ed1aa4ddd80c76a48f1db8862, type: 3}
   m_Name: Spawn Shadow Step
   m_EditorClassIdentifier: Assembly-CSharp::SpawnDefinition
-  spawnMode: 4
+  spawnMode: 11
   preview: 8
   instanceCount: 1
-  instanceLimit: 0
+  instanceLimit: 1
+  disableInstanceMultiplier: 0
   multiInstanceDelay: 0.2
   delayOrigin: 1
   useAlternativeSpawnMode: 0

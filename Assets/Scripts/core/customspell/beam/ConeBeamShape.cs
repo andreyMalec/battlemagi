@@ -1,11 +1,14 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ConeBeamShape : IShape {
     private const int MaxHits = 64;
+    private const int MaxLosHits = 32;
 
     private IBeamContext _ctx;
     private readonly Collider[] _hits = new Collider[MaxHits];
+    private readonly RaycastHit[] _losHits = new RaycastHit[MaxLosHits];
 
     public void Init(ISpellContext context) {
         _ctx = (IBeamContext)context;
@@ -40,7 +43,7 @@ public class ConeBeamShape : IShape {
             if (collider == null)
                 continue;
 
-            var target = collider.gameObject;
+            var target = ResolveTarget(collider);
             if (!yielded.Add(target))
                 continue;
 
@@ -61,12 +64,69 @@ public class ConeBeamShape : IShape {
             if (radial.sqrMagnitude > allowedRadius * allowedRadius)
                 continue;
 
+            if (!HasLineOfSight(origin, point, target))
+                continue;
+
             var normal = radial.sqrMagnitude > 0.0001f ? radial.normalized : -dir;
             yield return new ShapeHit {
                 Target = target,
                 Point = point,
                 Normal = normal
             };
+        }
+    }
+
+    private GameObject ResolveTarget(Collider collider) {
+        if (DamageUtils.TryGetOwnerFromCollider(collider, out var damageable, out _))
+            return damageable.gameObject;
+
+        return collider.gameObject;
+    }
+
+    private bool HasLineOfSight(Vector3 origin, Vector3 point, GameObject target) {
+        var toPoint = point - origin;
+        var distance = toPoint.magnitude;
+        if (distance <= 0.01f)
+            return true;
+
+        var dir = toPoint / distance;
+        var count = Physics.RaycastNonAlloc(
+            origin,
+            dir,
+            _losHits,
+            distance,
+            _ctx.Spell.defaultRaycast,
+            QueryTriggerInteraction.Ignore
+        );
+
+        if (count <= 0)
+            return true;
+
+        Array.Sort(_losHits, 0, count, RaycastHitDistanceComparer.Instance);
+
+        for (var i = 0; i < count; i++) {
+            var hitCollider = _losHits[i].collider;
+            if (hitCollider == null)
+                continue;
+
+            if (IsCasterCollider(hitCollider))
+                continue;
+
+            return ResolveTarget(hitCollider) == target;
+        }
+
+        return true;
+    }
+
+    private bool IsCasterCollider(Collider collider) {
+        return collider.transform.root == _ctx.Caster.transform.root;
+    }
+
+    private sealed class RaycastHitDistanceComparer : IComparer<RaycastHit> {
+        public static readonly RaycastHitDistanceComparer Instance = new();
+
+        public int Compare(RaycastHit x, RaycastHit y) {
+            return x.distance.CompareTo(y.distance);
         }
     }
 }

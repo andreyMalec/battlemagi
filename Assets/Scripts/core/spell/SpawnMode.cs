@@ -66,4 +66,10 @@ public enum SpawnMode {
      * Конус по направлению forward: высота @{coneHeight}, радиус основания @{coneRadius}
      */
     Cone,
+
+    /**
+     * Точка напротив прицела на максимальную дальность @{raycastMaxDistance},
+     * только временное распространение
+     */
+    RayCast,
 }
