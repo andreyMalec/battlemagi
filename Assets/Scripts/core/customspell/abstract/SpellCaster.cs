@@ -58,7 +58,7 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
             return;
         }
 
-        Debug.Log($"{gameObject.name} Cast = {spell.words}");
+        Debug.Log($"{gameObject.name} Cast = {spell.name}");
         var spellSpawn = ISpellSpawn.GetMode(alternativeSpawn && spell.spawn.useAlternativeSpawnMode
             ? spell.spawn.alternativeSpawnMode
             : spell.spawn.spawnMode);

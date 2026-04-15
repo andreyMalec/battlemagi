@@ -12,7 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70d6ac2600d5440ab45bcb7d2aabe7d3, type: 3}
   m_Name: Spell Pain Mirror
   m_EditorClassIdentifier: Assembly-CSharp::SpellDefinition
-  words: Pain Mirror
+  spellName: Pain Mirror
+  words:
+  - Pain Mirror
+  wordsRu:
+  - "\u0417\u0435\u0440\u043A\u0430\u043B\u043E \u0411\u043E\u043B\u0438"
   coreType: 3
   spawn: {fileID: 11400000, guid: 67f86027e60c34f4abcecef01fe8e2e4, type: 2}
   damage: {fileID: 0}

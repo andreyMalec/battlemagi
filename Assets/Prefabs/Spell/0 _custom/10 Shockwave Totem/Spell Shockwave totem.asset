@@ -12,7 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70d6ac2600d5440ab45bcb7d2aabe7d3, type: 3}
   m_Name: Spell Shockwave Totem
   m_EditorClassIdentifier: Assembly-CSharp::SpellDefinition
-  words: Shockwave Totem
+  spellName: Shockwave Totem
+  words:
+  - Shockwave Totem
+  wordsRu:
+  - "\u0423\u0434\u0430\u0440\u043D\u044B\u0439 \u0422\u043E\u0442\u0435\u043C"
   coreType: 4
   spawn: {fileID: 11400000, guid: c64e8382aa43ce94cab4ac92821d7d92, type: 2}
   damage: {fileID: 0}
@@ -37,3 +41,4 @@ MonoBehaviour:
   zone: {fileID: 0}
   beam: {fileID: 0}
   summon: {fileID: 11400000, guid: bfc288a027f32ca4198deac69d131ff4, type: 2}
+  self: {fileID: 0}

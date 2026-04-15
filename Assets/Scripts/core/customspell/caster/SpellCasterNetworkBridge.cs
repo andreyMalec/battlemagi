@@ -52,7 +52,7 @@ public class SpellCasterNetworkBridge : NetworkBehaviour, ISpellCasterBridge {
         var sendParams = new ClientRpcParams {
             Send = new ClientRpcSendParams { TargetClientIds = new[] { OwnerClientId } }
         };
-        RestoreEchoClientRpc(spell.words, amount, sendParams);
+        RestoreEchoClientRpc(spell.name, amount, sendParams);
     }
 
     public void Bind(SpellCasterPlayer core) {

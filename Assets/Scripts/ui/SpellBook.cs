@@ -33,6 +33,9 @@ public class SpellBook : MonoBehaviour {
     [SerializeField] private TMP_Text spellManaCostText;
     [SerializeField] private GameObject helperUI;
 
+    [SerializeField] private Color manaColor;
+    [SerializeField] private Color healthColor;
+
     [Header("Audio")]
     [SerializeField] private AudioClip[] pageSounds;
 
@@ -75,7 +78,7 @@ public class SpellBook : MonoBehaviour {
             if (arch != null) {
                 var all = DefaultSpells.Instance.list.ToList();
                 var typed = ArchetypeDatabase.Instance.GetArchetype(arch.Value.Archetype).spells;
-                list = all.Filter(s => typed.Any(t => t.words == s.spell.words)).ToList();
+                list = typed.Map(s => all.Find(sp => sp.spell.spellName == s.spellName)).ToList();
                 currentIndex = Math.Clamp(currentIndex, 0, list.Count - 1);
                 return list;
             }
@@ -286,13 +289,18 @@ public class SpellBook : MonoBehaviour {
     private void UpdateLeftPage(DefaultSpell spell) {
         if (spell == null || spell.bookImage == null) return;
         spellImage.material.mainTexture = spell.bookImage;
-        spellManaCostText.text =
-            spell.spell.channeling ? $"{spell.spell.manaCost:0}/{R.String("perSecond")}" : $"{spell.spell.manaCost:0}";
+        spellManaCostText.text = ManaCost(spell.spell);
+        spellManaCostText.color = spell.spell.bloodMagic ? healthColor : manaColor;
     }
 
     #endregion
 
     #region Helpers: visuals/audio/UI
+
+    private string ManaCost(SpellDefinition spell) {
+        var perSecond = spell.channeling || spell.charging;
+        return perSecond ? $"{spell.manaCost:0}/{R.String("perSecond")}" : $"{spell.manaCost:0}";
+    }
 
     private void SetUIVisibility(bool show) {
         if (spellImage != null) spellImage.enabled = show;
@@ -301,14 +309,14 @@ public class SpellBook : MonoBehaviour {
         if (spellDescriptionText != null) spellDescriptionText.enabled = show;
     }
 
-    private void UpdateSpellUI(DefaultSpell spell = null) {
+    private void UpdateSpellUI() {
         if (spells == null || spells.Count == 0) return;
 
-        var s = spell ?? spells[currentIndex];
+        var s = spells[currentIndex];
         spellNameText.text = R.String($"spell.name.{s.name}");
         spellDescriptionText.text = R.String($"spell.description.{s.name}");
-        spellManaCostText.text =
-            s.spell.channeling ? $"{s.spell.manaCost:0}/{R.String("perSecond")}" : $"{s.spell.manaCost:0}";
+        spellManaCostText.text = ManaCost(s.spell);
+        spellManaCostText.color = s.spell.bloodMagic ? healthColor : manaColor;
         if (s.bookImage != null)
             spellImage.material.mainTexture = s.bookImage;
     }

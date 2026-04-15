@@ -12,7 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70d6ac2600d5440ab45bcb7d2aabe7d3, type: 3}
   m_Name: Spell Ball Lightning
   m_EditorClassIdentifier: Assembly-CSharp::SpellProjectileDefinition
-  words: Ball Lightning
+  spellName: Ball Lightning
+  words:
+  - Ball Light
+  wordsRu:
+  - "\u0428\u0430\u0440\u043E\u0432\u0430\u044F \u041C\u043E\u043B\u043D\u0438\u044F"
   coreType: 0
   spawn: {fileID: 11400000, guid: fa3cc91c8f74bdd4d8614288641d5839, type: 2}
   damage: {fileID: 11400000, guid: 519c464bd9c48a349af9c40f1c83d845, type: 2}
@@ -20,6 +24,7 @@ MonoBehaviour:
   effects: []
   scale: 3
   lifetime: 10
+  blinkAtLifetime: 0
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 576
@@ -36,3 +41,4 @@ MonoBehaviour:
   zone: {fileID: 0}
   beam: {fileID: 0}
   summon: {fileID: 0}
+  self: {fileID: 0}

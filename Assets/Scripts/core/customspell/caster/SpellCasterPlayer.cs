@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(Damageable))]
@@ -39,7 +41,11 @@ public class SpellCasterPlayer : SpellCaster {
     private int _echoRemaining;
     private SpellDefinition _echoSpell;
 
+    private List<SpellDefinition> _availableSpells;
+
     public ManaModule Mana => mana;
+
+    public bool CastWaiting => _spell != null || _echoSpell != null;
 
     public override Vector3 Origin => spawnPos.position;
     public override Vector3 Direction => spawnPos.forward;
@@ -86,6 +92,7 @@ public class SpellCasterPlayer : SpellCaster {
         _statusable = GetComponent<Statusable>();
         _damageable = GetComponent<Damageable>();
         _preview = GetComponent<SpellCasterPlayerPreview>();
+
         if (animateCast || animateHand)
             _animator = GetComponent<SpellCasterPlayerAnimator>();
 
@@ -96,6 +103,10 @@ public class SpellCasterPlayer : SpellCaster {
 
         if (_bridgeTyped != null)
             _bridgeTyped.Bind(this);
+    }
+
+    public void UpdateAvailableSpells(List<SpellDefinition> availableSpells) {
+        _availableSpells = availableSpells;
     }
 
     internal void InitializeServerMana() {
@@ -121,14 +132,9 @@ public class SpellCasterPlayer : SpellCaster {
         }
 
         var index = input.GetSpellIndexPressedThisFrame();
-        if (index >= 0 && index < DefaultSpells.Instance.list.Count) {
-            var selected = DefaultSpells.Instance.list[index].spell;
-            if (selected != _spell)
-                ResetEcho();
-            _spell = selected;
-
-            if (animateHand)
-                _animator.CastWaitingAnim(true, _spell.castWaitingIndex);
+        if (index >= 0 && index < _availableSpells.Count) {
+            var selected = _availableSpells[index];
+            SelectSpell(selected);
         }
 
         if (input.CancelPressedThisFrame()) {
@@ -154,6 +160,16 @@ public class SpellCasterPlayer : SpellCaster {
         }
 
         _preview?.SetSpell(_spell);
+    }
+
+    public void SelectSpell(SpellDefinition spell) {
+        if (spell != _spell)
+            ResetEcho();
+        _spell = spell;
+
+        Debug.Log($"{gameObject.name} Selected spell: " + spell?.spellName);
+        if (animateHand)
+            _animator.CastWaitingAnim(true, _spell.castWaitingIndex);
     }
 
     public override void Cast(SpellDefinition spell) {
@@ -294,7 +310,7 @@ public class SpellCasterPlayer : SpellCaster {
                 if (active.OwnerId != OwnerId) continue;
                 if (!active.IsAlive) continue;
                 var spell = active.Bind.Context.Spell;
-                if (_channelingSpell.words != spell.words) continue;
+                if (_channelingSpell.name != spell.name) continue;
                 active.Bind.Context.View.Kill(active.Bind.Context);
                 break;
             }
@@ -375,7 +391,7 @@ public class SpellCasterPlayer : SpellCaster {
 
             if (_channelingSpellInstance == null) {
                 _channelingSpellInstance = SpellInstance.Active.Find(it =>
-                    it.OwnerId == OwnerId && it.IsAlive && it.Bind.Context.Spell.words == spell.words);
+                    it.OwnerId == OwnerId && it.IsAlive && it.Bind.Context.Spell.spellName == spell.spellName);
             }
 
             if (_channelingSpellInstance?.IsAlive == false) {

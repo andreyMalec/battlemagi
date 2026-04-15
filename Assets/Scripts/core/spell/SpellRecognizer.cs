@@ -39,16 +39,16 @@ public sealed class SpellRecognizer {
     }
 
     public List<string> SpellWords() {
-        return spells.Map(it => string.Join(", ", _language == Language.Ru ? it.words : it.words)).ToList();
+        return spells.Map(it => string.Join(", ", _language == Language.Ru ? it.wordsRu : it.words)).ToList();
     }
 
     public RecognizedSpell Recognize(string words) {
         var result = spells
             .Select(spell => {
                 var r = new RecognizedSpell { spell = spell };
-                string spellWords = _language == Language.Ru ? spell.words : spell.words;
+                string[] spellWords = _language == Language.Ru ? spell.wordsRu : spell.words;
 
-                r.similarity = new[] { spellWords }
+                r.similarity = spellWords
                     .Select(phrase => TokenSimilarity(words.ToLowerInvariant(), phrase.ToLowerInvariant()))
                     .DefaultIfEmpty(0.0)
                     .Max();
@@ -71,9 +71,9 @@ public sealed class SpellRecognizer {
         var result = spells
             .Select(spell => {
                 var r = new RecognizedSpell { spell = spell };
-                string spellWords = _language == Language.Ru ? spell.words : spell.words;
+                string[] spellWords = _language == Language.Ru ? spell.wordsRu : spell.words;
 
-                r.similarity = new [] {spellWords}
+                r.similarity = spellWords
                     .Select(phrase => PhraseAgainstTokensScoreInternal(heardTokens, phrase))
                     .DefaultIfEmpty(0.0)
                     .Max();

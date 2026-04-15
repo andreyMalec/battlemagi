@@ -10,9 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 70d6ac2600d5440ab45bcb7d2aabe7d3, type: 3}
-  m_Name: Spell Air bullet
+  m_Name: Spell Air Bullet
   m_EditorClassIdentifier: Assembly-CSharp::SpellDefinition
-  words: Air bullet
+  spellName: Air Bullet
+  words:
+  - Air Bullet
+  wordsRu:
+  - "\u0412\u043E\u0437\u0434\u0443\u0448\u043D\u0430\u044F \u041F\u0443\u043B\u044F"
   coreType: 0
   spawn: {fileID: 11400000, guid: 434a3e1270c90ae448497d6a692dd5af, type: 2}
   damage: {fileID: 11400000, guid: 4289f1acd8e319348bb48fd111b9c01f, type: 2}
@@ -20,6 +24,7 @@ MonoBehaviour:
   effects: []
   scale: 1
   lifetime: 5
+  blinkAtLifetime: 0
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -36,3 +41,4 @@ MonoBehaviour:
   zone: {fileID: 0}
   beam: {fileID: 0}
   summon: {fileID: 0}
+  self: {fileID: 0}

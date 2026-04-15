@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerPhysics))]
@@ -23,6 +24,8 @@ public class PlayerTester : MonoBehaviour {
         _stats = GetComponent<Stats>();
         var preview = GetComponent<SpellCasterPlayerPreview>();
         preview.BindHand(hand);
+        var caster = GetComponent<SpellCasterPlayer>();
+        caster.UpdateAvailableSpells(DefaultSpells.Instance.list.Map(s => s.spell).ToList());
     }
 
     private void Update() {

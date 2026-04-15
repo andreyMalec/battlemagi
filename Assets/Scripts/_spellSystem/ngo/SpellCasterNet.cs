@@ -6,20 +6,20 @@ public class SpellCasterNet : NetworkBehaviour {
     public Coroutine CastCoroutine;
 
     public void RequestCast(SpawnContext context) {
-        RequestCastServerRpc(NetworkObjectId, context.spell.words, context.alternativeSpawn,
+        RequestCastServerRpc(NetworkObjectId, context.spell.name, context.alternativeSpawn,
             context.target?.ObjectId ?? ulong.MaxValue,
             context.spellDamageMultiplier);
     }
 
     public void RequestSpawn(SpawnContext context) {
-        RequestSpawnServerRpc(NetworkObjectId, context.spell.words, context.position, context.forward, context.rotation,
+        RequestSpawnServerRpc(NetworkObjectId, context.spell.name, context.position, context.forward, context.rotation,
             context.spellDamageMultiplier);
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void RequestSpawnServerRpc(
         ulong casterNetObjectId,
-        string spellWords,
+        string spellName,
         Vector3 position, Vector3 forward, Quaternion rotation,
         float damageMultiplier
     ) {
@@ -28,7 +28,7 @@ public class SpellCasterNet : NetworkBehaviour {
 
         Debug.Log(
             $"[NetworkSpellSystemEvent] RequestSpawnServerRpc: {casterNetObj.name}, position={position}, forward={forward}, damageMultiplier={damageMultiplier}");
-        var spell = DefaultSpells.Get(spellWords)?.spell ?? DefaultSpells.GetSubSpell(spellWords);
+        var spell = DefaultSpells.Get(spellName)?.spell ?? DefaultSpells.GetSubSpell(spellName);
         var caster = casterNetObj.GetComponentInChildren<SpellCaster>();
 
         var context = new SpawnContext {
@@ -49,7 +49,7 @@ public class SpellCasterNet : NetworkBehaviour {
     [ServerRpc(RequireOwnership = false)]
     private void RequestCastServerRpc(
         ulong casterNetObjectId,
-        string spellWords,
+        string spellName,
         bool alternativeSpawn,
         ulong targetNetObjectId = ulong.MaxValue,
         float damageMultiplier = 1f
@@ -65,7 +65,7 @@ public class SpellCasterNet : NetworkBehaviour {
 
         Debug.Log(
             $"[NetworkSpellSystemEvent] RequestCastServerRpc: {casterNetObj.name}, target={target}, damageMultiplier={damageMultiplier}");
-        var spell = DefaultSpells.Get(spellWords)?.spell ?? DefaultSpells.GetSubSpell(spellWords);
+        var spell = DefaultSpells.Get(spellName)?.spell ?? DefaultSpells.GetSubSpell(spellName);
         var caster = casterNetObj.GetComponentInChildren<SpellCaster>();
 
         var context = caster.CastContext(spell);

@@ -12,7 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70d6ac2600d5440ab45bcb7d2aabe7d3, type: 3}
   m_Name: Spell Rune Trap
   m_EditorClassIdentifier: Assembly-CSharp::SpellDefinition
-  words: Rune Trap
+  spellName: Rune Trap
+  words:
+  - Rune Trap
+  wordsRu:
+  - "\u0420\u0443\u043D\u043D\u0430\u044F \u041B\u043E\u0432\u0443\u0448\u043A\u0430"
+  - "\u0420\u0443\u0447\u043D\u0430\u044F \u041B\u043E\u0432\u0443\u0448\u043A\u0430"
   coreType: 4
   spawn: {fileID: 11400000, guid: 9407cbd1e2a49124bbf223fd6528eb8c, type: 2}
   damage: {fileID: 0}
@@ -20,6 +25,7 @@ MonoBehaviour:
   effects: []
   scale: 1
   lifetime: 60
+  blinkAtLifetime: 0
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 64
@@ -36,3 +42,4 @@ MonoBehaviour:
   zone: {fileID: 0}
   beam: {fileID: 0}
   summon: {fileID: 11400000, guid: 0095452cc86e8ea41a18a38ea4560aaa, type: 2}
+  self: {fileID: 0}

@@ -12,7 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70d6ac2600d5440ab45bcb7d2aabe7d3, type: 3}
   m_Name: Spell Dirt Wall
   m_EditorClassIdentifier: Assembly-CSharp::SpellDefinition
-  words: 9 Dirt Wall
+  spellName: Dirt Wall
+  words:
+  - Dirt Wall
+  wordsRu:
+  - "\u0421\u0442\u0435\u043D\u0430 \u0417\u0435\u043C\u043B\u0438"
+  - "\u0417\u0435\u043C\u043B\u044F\u043D\u0430\u044F \u0421\u0442\u0435\u043D\u0430"
+  - "\u0421\u0442\u0435\u043D\u0430 \u0417\u0435\u043C\u043B\u044F\u043D\u0430\u044F"
+  - "\u0421\u0442\u0435\u043D\u0430 \u0413\u0440\u044F\u0437\u0435\u0432\u0430\u044F"
+  - "\u0413\u0440\u044F\u0437\u0435\u0432\u0430\u044F \u0421\u0442\u0435\u043D\u0430"
   coreType: 4
   spawn: {fileID: 11400000, guid: ef5f327501527c9468ac94df50e522a6, type: 2}
   damage: {fileID: 0}
@@ -20,6 +28,7 @@ MonoBehaviour:
   effects: []
   scale: 1
   lifetime: 30
+  blinkAtLifetime: 0
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -36,3 +45,4 @@ MonoBehaviour:
   zone: {fileID: 0}
   beam: {fileID: 0}
   summon: {fileID: 11400000, guid: b4f63585b7a6db74183122df81df3043, type: 2}
+  self: {fileID: 0}

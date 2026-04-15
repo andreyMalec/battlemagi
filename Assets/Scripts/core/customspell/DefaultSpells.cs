@@ -21,9 +21,9 @@ public class DefaultSpells : MonoBehaviour {
     }
 
     [CanBeNull]
-    public static DefaultSpell Get(string words) {
+    public static DefaultSpell Get(string name) {
         for (int i = 0; i < Instance.items.Count; i++) {
-            if (Instance.items[i].spell.words == words)
+            if (Instance.items[i].spell.name == name)
                 return Instance.items[i];
         }
 
@@ -31,9 +31,9 @@ public class DefaultSpells : MonoBehaviour {
     }
 
     [CanBeNull]
-    public static SpellDefinition GetSubSpell(string words) {
+    public static SpellDefinition GetSubSpell(string name) {
         for (int i = 0; i < Instance.subSpells.Count; i++) {
-            if (Instance.subSpells[i].words == words)
+            if (Instance.subSpells[i].name == name)
                 return Instance.subSpells[i];
         }
 
@@ -42,7 +42,7 @@ public class DefaultSpells : MonoBehaviour {
 
     [CanBeNull]
     public static DefaultSpell Get(SpellDefinition spell) {
-        return Get(spell.words);
+        return Get(spell.name);
     }
 }
 

@@ -50,11 +50,11 @@ public static class SpellInstanceLimiter {
     }
 
     public static List<GameObject> Register(ulong ownerId, SpellDefinition data, GameObject obj) {
-        return Register(ownerId, data.spawn.instanceLimit, data.words, obj);
+        return Register(ownerId, data.spawn.instanceLimit, data.spellName, obj);
     }
 
     public static void Unregister(ulong ownerId, SpellDefinition data, GameObject obj) {
-        Unregister(ownerId, data.spawn.instanceLimit, data.words, obj);
+        Unregister(ownerId, data.spawn.instanceLimit, data.spellName, obj);
     }
 
     // Fallback when spell data isn't available; scans all lists and removes the object.

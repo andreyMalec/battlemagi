@@ -12,7 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70d6ac2600d5440ab45bcb7d2aabe7d3, type: 3}
   m_Name: Spell Fireball
   m_EditorClassIdentifier: Assembly-CSharp::SpellProjectileDefinition
-  words: Fireball
+  spellName: Fireball
+  words:
+  - Fire Ball
+  wordsRu:
+  - "\u041E\u0433\u043D\u0435\u043D\u043D\u044B\u0439 \u0428\u0430\u0440"
+  - "\u0428\u0430\u0440 \u041E\u0433\u043D\u044F"
   coreType: 0
   spawn: {fileID: 11400000, guid: 156c1e33f4762a942a6a6bc7860d44b8, type: 2}
   damage: {fileID: 0}
@@ -20,6 +25,7 @@ MonoBehaviour:
   effects: []
   scale: 1
   lifetime: 10
+  blinkAtLifetime: 0
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 576
@@ -36,3 +42,4 @@ MonoBehaviour:
   zone: {fileID: 0}
   beam: {fileID: 0}
   summon: {fileID: 0}
+  self: {fileID: 0}

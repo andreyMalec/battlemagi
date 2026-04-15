@@ -14,7 +14,7 @@ public class SpellPreviewNetworkBridge : NetworkBehaviour, ISpellPreviewBridge {
 
     public void Show(SpellDefinition spell) {
         Hide();
-        ShowServerRpc(spell.words, OwnerId);
+        ShowServerRpc(spell.name, OwnerId);
     }
 
     public void Hide() {
@@ -37,16 +37,16 @@ public class SpellPreviewNetworkBridge : NetworkBehaviour, ISpellPreviewBridge {
     }
 
     [ServerRpc]
-    private void ShowServerRpc(string spellWords, ulong clientId) {
-        ShowInHandClientRpc(spellWords, clientId);
+    private void ShowServerRpc(string spellName, ulong clientId) {
+        ShowInHandClientRpc(spellName, clientId);
     }
 
     [ClientRpc]
-    private void ShowInHandClientRpc(string spellWords, ulong clientId) {
+    private void ShowInHandClientRpc(string spellName, ulong clientId) {
         if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client)) return;
         if (!client.PlayerObject.TryGetComponent<SpellPreviewNetworkBridge>(out var bridge)) return;
 
-        var prefab = DefaultSpells.Get(spellWords)?.inHandPrefab;
+        var prefab = DefaultSpells.Get(spellName)?.inHandPrefab;
         if (prefab == null) return;
         GameObject obj = Instantiate(prefab, bridge._hand);
         obj.transform.localPosition = Vector3.zero;
