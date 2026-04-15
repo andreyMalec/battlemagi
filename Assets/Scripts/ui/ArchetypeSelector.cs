@@ -15,7 +15,7 @@ public class ArchetypeSelector : MonoBehaviour {
     }
 
     private void OnEnable() {
-        // UpdateLabel();
+        UpdateLabel();
     }
 
     private void OnPrev() {

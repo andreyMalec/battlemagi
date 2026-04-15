@@ -13,13 +13,13 @@ public class SpellBind<TContext> : ISpellBind
         _core = core;
         _context = context;
         _transform = transform;
-        _transform.Init(view.transform.parent, _context);
+        _transform?.Init(view.transform.parent, _context);
     }
 
     public void Tick(float deltaTime) {
         _core.Tick(deltaTime);
         try {
-            _transform.Tick(deltaTime);
+            _transform?.Tick(deltaTime);
         } catch (Exception e) {
             Debug.LogWarning(e);
         }

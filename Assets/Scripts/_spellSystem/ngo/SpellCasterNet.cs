@@ -6,7 +6,8 @@ public class SpellCasterNet : NetworkBehaviour {
     public Coroutine CastCoroutine;
 
     public void RequestCast(SpawnContext context) {
-        RequestCastServerRpc(NetworkObjectId, context.spell.words, context.target?.ObjectId ?? ulong.MaxValue,
+        RequestCastServerRpc(NetworkObjectId, context.spell.words, context.alternativeSpawn,
+            context.target?.ObjectId ?? ulong.MaxValue,
             context.spellDamageMultiplier);
     }
 
@@ -49,6 +50,7 @@ public class SpellCasterNet : NetworkBehaviour {
     private void RequestCastServerRpc(
         ulong casterNetObjectId,
         string spellWords,
+        bool alternativeSpawn,
         ulong targetNetObjectId = ulong.MaxValue,
         float damageMultiplier = 1f
     ) {
@@ -69,7 +71,9 @@ public class SpellCasterNet : NetworkBehaviour {
         var context = caster.CastContext(spell);
         context.target = target;
         context.spellDamageMultiplier = damageMultiplier;
-        var spellSpawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
+        var spellSpawn = ISpellSpawn.GetMode(alternativeSpawn && spell.spawn.useAlternativeSpawnMode
+            ? spell.spawn.alternativeSpawnMode
+            : spell.spawn.spawnMode);
         CastCoroutine = StartCoroutine(spellSpawn!.Request(context, ServerSpawnMain));
     }
 

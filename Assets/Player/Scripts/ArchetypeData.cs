@@ -7,7 +7,7 @@ public class ArchetypeData : ScriptableObject {
     public GameObject avatarPrefab;
     public Shader bodyShader;
     public Shader cloakShader;
-    public SpellData[] spells;
+    public SpellDefinition[] spells;
     public float maxHealth = 100f;
     public float maxMana = 125f;
     public float maxStamina = 3f;

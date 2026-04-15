@@ -35,10 +35,18 @@ public class SpellPrefabDatabase : ScriptableObject {
         [CanBeNull] public GameObject inHandPrefab;
     }
 
+    [Serializable]
+    public struct SelfEntry {
+        public SpellSelfPrefabId id;
+        public GameObject prefab;
+        [CanBeNull] public GameObject inHandPrefab;
+    }
+
     public ProjectileEntry[] projectiles;
     public ZoneEntry[] zones;
     public BeamEntry[] beams;
     public SummonEntry[] summons;
+    public SelfEntry[] selfs;
 
     public GameObject Get(SpellDefinition def) {
         return def.coreType switch {
@@ -46,6 +54,7 @@ public class SpellPrefabDatabase : ScriptableObject {
             CoreType.Zone => Get(def.zone.prefabId),
             CoreType.Beam => Get(def.beam.prefabId),
             CoreType.Summon => Get(def.summon.prefabId),
+            CoreType.Self => Get(def.self.prefabId),
             _ => null
         };
     }
@@ -81,6 +90,15 @@ public class SpellPrefabDatabase : ScriptableObject {
         for (int i = 0; i < summons.Length; i++) {
             if (summons[i].id == id)
                 return summons[i].prefab;
+        }
+
+        return null;
+    }
+
+    public GameObject Get(SpellSelfPrefabId id) {
+        for (int i = 0; i < selfs.Length; i++) {
+            if (selfs[i].id == id)
+                return selfs[i].prefab;
         }
 
         return null;

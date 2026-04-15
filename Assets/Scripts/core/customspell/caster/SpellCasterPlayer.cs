@@ -8,7 +8,7 @@ public class SpellCasterPlayer : SpellCaster {
 
     [SerializeField] private int EchoCount => _echoRemaining;
     [SerializeField] private SpellDefinition spellE;
-    [SerializeField] private PlayerSpellInput input = new();
+    [SerializeField] public PlayerSpellInput input = new();
     [SerializeField] private ManaModule mana = new();
     [SerializeField] private MonoBehaviour bridge;
     [SerializeField] private bool animateCast = true;
@@ -115,6 +115,10 @@ public class SpellCasterPlayer : SpellCaster {
 
     void Update() {
         if (!CanCast) return;
+
+        if (input.AlternativeSpawnPressedThisFrame()) {
+            alternativeSpawn = !alternativeSpawn;
+        }
 
         var index = input.GetSpellIndexPressedThisFrame();
         if (index >= 0 && index < DefaultSpells.Instance.list.Count) {

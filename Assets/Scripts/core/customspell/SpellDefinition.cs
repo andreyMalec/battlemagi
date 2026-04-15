@@ -40,39 +40,55 @@ public class SpellDefinition : ScriptableObject, IValidate {
     [Header("Summon")]
     [ShowIf("_typeSummon")] public SummonDefinition summon;
 
+    [Header("Self")]
+    [ShowIf("_typeSelf")] public SelfDefinition self;
+
     private bool _typeProjectile = false;
     private bool _typeZone = false;
     private bool _typeBeam = false;
     private bool _typeSummon = false;
+    private bool _typeSelf = false;
 
     public void Validate() {
         _typeProjectile = coreType is CoreType.Projectile;
         _typeZone = coreType is CoreType.Zone;
         _typeBeam = coreType is CoreType.Beam;
         _typeSummon = coreType is CoreType.Summon;
+        _typeSelf = coreType is CoreType.Self;
 
         if (_typeProjectile) {
             zone = null;
             beam = null;
             summon = null;
+            self = null;
         }
 
         if (_typeZone) {
             projectile = null;
             beam = null;
             summon = null;
+            self = null;
         }
 
         if (_typeBeam) {
             projectile = null;
             zone = null;
             summon = null;
+            self = null;
         }
 
         if (_typeSummon) {
             projectile = null;
             zone = null;
             beam = null;
+            self = null;
+        }
+
+        if (_typeSelf) {
+            projectile = null;
+            zone = null;
+            beam = null;
+            summon = null;
         }
 
         if (spawn != null && spawn is IValidate v) v.Validate();
@@ -82,6 +98,7 @@ public class SpellDefinition : ScriptableObject, IValidate {
         if (zone != null && zone is IValidate zv) zv.Validate();
         if (beam != null && beam is IValidate bv) bv.Validate();
         if (summon != null && summon is IValidate sv) sv.Validate();
+        if (self != null && self is IValidate se) se.Validate();
     }
 
 #if UNITY_EDITOR

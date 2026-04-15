@@ -220,7 +220,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
             return;
 
         var spell = _recognition.Spells[index];
-        _recognition.EmulateRecognitionFromSpell(spell, SpeechToTextHolder.Instance.Language, OnMouthClose);
+        // _recognition.EmulateRecognitionFromSpell(spell, SpeechToTextHolder.Instance.Language, OnMouthClose);
     }
 
     private bool DisableWhileCarrying(SpellData spell) {
@@ -233,19 +233,19 @@ public class PlayerSpellCaster : NetworkBehaviour {
         if (_state.CastWaiting || _state.Channeling) return;
 
         var result = _recognition.Recognize(lastWords);
-        _state.RecognizedSpell = result.spell;
-
-        if (result.similarity < GameConfig.Instance.recognitionThreshold)
-            return;
-
-        if (DisableWhileCarrying(_state.RecognizedSpell)) {
-            if (!disabledSound.isPlaying)
-                disabledSound.Play();
-            _state.RecognizedSpell = null;
-            return;
-        }
-
-        StartSpellRecognition(result.spell);
+        // _state.RecognizedSpell = result.spell;
+        //
+        // if (result.similarity < GameConfig.Instance.recognitionThreshold)
+        //     return;
+        //
+        // if (DisableWhileCarrying(_state.RecognizedSpell)) {
+        //     if (!disabledSound.isPlaying)
+        //         disabledSound.Play();
+        //     _state.RecognizedSpell = null;
+        //     return;
+        // }
+        //
+        // StartSpellRecognition(result.spell);
     }
 
     private void StartSpellRecognition(SpellData spell) {

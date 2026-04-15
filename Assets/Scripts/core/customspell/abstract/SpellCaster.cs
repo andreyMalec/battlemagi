@@ -25,6 +25,8 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
     protected Coroutine CastCoroutine => _useNetwork ? _casterNet.CastCoroutine : _castCoroutine;
     private Coroutine _castCoroutine;
 
+    public bool alternativeSpawn { get; protected set; }
+
     protected virtual void Awake() {
         _casterNet = GetComponentInParent<SpellCasterNet>();
         _useNetwork = _casterNet != null;
@@ -57,7 +59,9 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
         }
 
         Debug.Log($"{gameObject.name} Cast = {spell.words}");
-        var spellSpawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
+        var spellSpawn = ISpellSpawn.GetMode(alternativeSpawn && spell.spawn.useAlternativeSpawnMode
+            ? spell.spawn.alternativeSpawnMode
+            : spell.spawn.spawnMode);
         _castCoroutine = StartCoroutine(spellSpawn!.Request(CastContext(spell), SpawnMain));
     }
 
@@ -69,7 +73,8 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
             position = caster.Origin,
             rotation = Quaternion.LookRotation(caster.Direction, Vector3.up),
             forward = caster.Direction,
-            caster = caster
+            caster = caster,
+            alternativeSpawn = alternativeSpawn
         };
         return context;
     }

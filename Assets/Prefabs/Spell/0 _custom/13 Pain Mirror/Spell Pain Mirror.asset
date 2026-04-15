@@ -20,7 +20,7 @@ MonoBehaviour:
   effects:
   - {fileID: 11400000, guid: b701d0abfa843fe4fa6091587d3c8173, type: 2}
   scale: 1
-  lifetime: 1
+  lifetime: 2
   blinkAtLifetime: 0
   defaultRaycast:
     serializedVersion: 2
@@ -38,3 +38,4 @@ MonoBehaviour:
   zone: {fileID: 0}
   beam: {fileID: 0}
   summon: {fileID: 0}
+  self: {fileID: 11400000, guid: 338b49ae9f81b234e8a3b37901c6a241, type: 2}

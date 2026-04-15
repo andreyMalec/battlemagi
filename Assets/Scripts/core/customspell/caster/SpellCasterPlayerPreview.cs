@@ -36,24 +36,21 @@ public class SpellCasterPlayerPreview : MonoBehaviour {
 
         _spell = spell;
 
-        UpdatePreview();
+        UpdatePreview(_caster.input.AlternativeSpawnPressedThisFrame());
     }
 
     public void StartCharging() {
         _bridgeTyped.StartCharging();
     }
 
-    private void UpdatePreview() {
+    private void UpdatePreview(bool force) {
+        if (force) {
+            ShowPreview();
+        }
+
         if (_spell != null && _spawnPreview == null) {
             _spawnPreview = CreatePreview(_spell.spawn.preview);
-            _spawnPreview.Show(new SpawnContext {
-                spell = _spell,
-                spawn = _spell.spawn,
-                position = _caster.spawnPos.position,
-                rotation = _caster.spawnPos.rotation,
-                forward = _caster.spawnPos.forward,
-                caster = _caster
-            }, ISpellSpawn.GetMode(_spell.spawn.spawnMode));
+            ShowPreview();
         }
 
         _spawnPreview?.Update(new SpawnContext {
@@ -64,6 +61,22 @@ public class SpellCasterPlayerPreview : MonoBehaviour {
             forward = _caster.spawnPos.forward,
             caster = _caster
         });
+    }
+
+    private void ShowPreview() {
+        if (_spawnPreview == null) return;
+
+        var mode = _caster.alternativeSpawn && _spell.spawn.useAlternativeSpawnMode
+            ? ISpellSpawn.GetMode(_spell.spawn.alternativeSpawnMode)
+            : ISpellSpawn.GetMode(_spell.spawn.spawnMode);
+        _spawnPreview.Show(new SpawnContext {
+            spell = _spell,
+            spawn = _spell.spawn,
+            position = _caster.spawnPos.position,
+            rotation = _caster.spawnPos.rotation,
+            forward = _caster.spawnPos.forward,
+            caster = _caster
+        }, mode);
     }
 
     private static ISpellSpawnPreview CreatePreview(Preview previewFlags) {

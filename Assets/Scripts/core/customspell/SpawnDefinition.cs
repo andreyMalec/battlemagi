@@ -16,7 +16,10 @@ public class SpawnDefinition : ScriptableObject, IValidate {
     public bool useAlternativeSpawnMode = false;
     [ShowIf("useAlternativeSpawnMode")] public SpawnMode alternativeSpawnMode = SpawnMode.Direct;
 
+    [ShowIf("_isForward")] public bool useVectorStep;
     [ShowIf("_isForward")] public float forwardStep = 3;
+    [ShowIf(EConditionOperator.And, "_isForward", "useVectorStep")] public Vector3 forwardVectorStep;
+    [ShowIf(EConditionOperator.And, "_isForward", "useVectorStep")] public Vector3 forwardAngleStep;
     [ShowIf("_isArc")] public float arcAngleStep = 15f;
 
     [ShowIf("_isCone")] public float coneRadius = 2f;

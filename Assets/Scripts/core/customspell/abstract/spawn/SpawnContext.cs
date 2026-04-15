@@ -13,6 +13,7 @@ public record SpawnContext {
     public ITarget target;
 
     public float spellDamageMultiplier = 1f;
+    public bool alternativeSpawn;
 
     public DelayOrigin DelayOrigin => forceFirstOrigin
         ? DelayOrigin.First

@@ -46,9 +46,9 @@ public class SpellBook : MonoBehaviour {
     [SerializeField] private KeyCode prevKey = KeyCode.Q;
 
     // data
-    private List<SpellData> spells;
+    private List<DefaultSpell> spells;
     private int currentIndex = 0;
-    private SpellData pendingSpell;
+    private DefaultSpell pendingSpell;
 
     // state
     private bool isVisible = false;
@@ -68,18 +68,20 @@ public class SpellBook : MonoBehaviour {
         helperUI.SetActive(false);
     }
 
-    private List<SpellData> GetSpells() {
-        List<SpellData> list;
+    private List<DefaultSpell> GetSpells() {
+        List<DefaultSpell> list;
         if (NetworkManager.Singleton.IsClient) {
             var arch = PlayerManager.Instance.FindByClientId(NetworkManager.Singleton.LocalClientId);
             if (arch != null) {
-                list = ArchetypeDatabase.Instance.GetArchetype(arch.Value.Archetype).spells.ToList();
+                var all = DefaultSpells.Instance.list.ToList();
+                var typed = ArchetypeDatabase.Instance.GetArchetype(arch.Value.Archetype).spells;
+                list = all.Filter(s => typed.Any(t => t.words == s.spell.words)).ToList();
                 currentIndex = Math.Clamp(currentIndex, 0, list.Count - 1);
                 return list;
             }
         }
 
-        list = SpellDatabase.Instance.spells.Filter(it => it.enabled).ToList();
+        list = DefaultSpells.Instance.list.ToList();
         currentIndex = Math.Clamp(currentIndex, 0, list.Count - 1);
         return list;
     }
@@ -275,17 +277,17 @@ public class SpellBook : MonoBehaviour {
         pageCoroutine = null;
     }
 
-    private void UpdateRightPageText(SpellData spell) {
+    private void UpdateRightPageText(DefaultSpell spell) {
         if (spell == null) return;
         spellNameText.text = R.String($"spell.name.{spell.name}");
         spellDescriptionText.text = R.String($"spell.description.{spell.name}");
     }
 
-    private void UpdateLeftPage(SpellData spell) {
+    private void UpdateLeftPage(DefaultSpell spell) {
         if (spell == null || spell.bookImage == null) return;
         spellImage.material.mainTexture = spell.bookImage;
         spellManaCostText.text =
-            spell.isChanneling ? $"{spell.manaCost:0}/{R.String("perSecond")}" : $"{spell.manaCost:0}";
+            spell.spell.channeling ? $"{spell.spell.manaCost:0}/{R.String("perSecond")}" : $"{spell.spell.manaCost:0}";
     }
 
     #endregion
@@ -299,13 +301,14 @@ public class SpellBook : MonoBehaviour {
         if (spellDescriptionText != null) spellDescriptionText.enabled = show;
     }
 
-    private void UpdateSpellUI(SpellData spell = null) {
+    private void UpdateSpellUI(DefaultSpell spell = null) {
         if (spells == null || spells.Count == 0) return;
 
         var s = spell ?? spells[currentIndex];
         spellNameText.text = R.String($"spell.name.{s.name}");
         spellDescriptionText.text = R.String($"spell.description.{s.name}");
-        spellManaCostText.text = s.isChanneling ? $"{s.manaCost:0}/{R.String("perSecond")}" : $"{s.manaCost:0}";
+        spellManaCostText.text =
+            s.spell.channeling ? $"{s.spell.manaCost:0}/{R.String("perSecond")}" : $"{s.spell.manaCost:0}";
         if (s.bookImage != null)
             spellImage.material.mainTexture = s.bookImage;
     }

@@ -11,17 +11,39 @@ public class NewGroundPointForwardSpawn : ISpellSpawn {
         var baseCtx = ApplyDirectionToTarget(context);
 
         var ground = ISpellSpawn.GroundPos(baseCtx, baseCtx.forward, out var hit);
-        var step = baseCtx.spawn.forwardStep;
 
-        for (int i = 0; i < count; i++) {
-            var forward = RotationFromNormal(baseCtx.forward, hit.normal);
-            spawn(ground with {
-                position = ground.position + forward * (step * i),
-                forward = forward
-            });
+        if (context.spawn.useVectorStep) {
+            Vector3 groundUp = ground.rotation * Vector3.up;
+            Vector3 groundForward = ground.rotation * Vector3.forward;
+            Vector3 groundRight = ground.rotation * Vector3.right;
+        
+            Vector3 localStep = baseCtx.spawn.forwardVectorStep;
+            Vector3 step = groundRight * localStep.x + groundUp * localStep.y + groundForward * localStep.z;
 
-            if (delay > 0f && i < count - 1)
-                yield return new WaitForSeconds(delay);
+            for (int i = 0; i < count; i++) {
+                var forward = RotationFromNormal(baseCtx.forward, hit.normal);
+                spawn(ground with {
+                    position = ground.position + step * i,
+                    rotation = ground.rotation * Quaternion.Euler(baseCtx.spawn.forwardAngleStep),
+                    forward = forward
+                });
+
+                if (delay > 0f && i < count - 1)
+                    yield return new WaitForSeconds(delay);
+            }
+        } else {
+            var step = baseCtx.spawn.forwardStep;
+
+            for (int i = 0; i < count; i++) {
+                var forward = RotationFromNormal(baseCtx.forward, hit.normal);
+                spawn(ground with {
+                    position = ground.position + forward * (step * i),
+                    forward = forward
+                });
+
+                if (delay > 0f && i < count - 1)
+                    yield return new WaitForSeconds(delay);
+            }
         }
     }
 

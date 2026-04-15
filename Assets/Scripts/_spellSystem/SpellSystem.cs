@@ -412,20 +412,36 @@ public class SpellSystem {
         bool spawned = false
     ) {
         SpellDefinition def = spawnContext.spell;
+        var prefab = SpellPrefabDatabase.Instance.Get(def.self.prefabId);
         spawnContext.main.name = "Spell " + def.name;
+        var viewGo = Object.Instantiate(prefab, spawnContext.main.transform);
+        var view = viewGo.GetComponent<SpellView>();
+        var instance = viewGo.GetComponent<SpellInstance>();
         var spellEvent = spawnContext.main.GetComponent<SpellSystemEvent>();
 
-        var context = new SummonContext(
+        var triggers = new List<SpellTrigger>();
+        triggers.Add(new SpellTrigger {
+            eventType = typeof(OnLifetimeStartEvent),
+            actions = new ISpellAction[] {
+                new SelfStatusEffectAction(),
+            }
+        });
+
+        var context = new SelfContext(
             spawnContext.caster,
-            null,
+            view,
             def,
             spellEvent,
             spawned
         );
 
-        var applyStatusAction = new SelfStatusEffectAction();
-        applyStatusAction.Apply(context, new OnLifetimeStartEvent());
-        DI.Get<IEntityManager>().Despawn(spawnContext.main.gameObject);
+        var core = new SelfCore(
+            context,
+            triggers.ToArray()
+        );
+
+        var bind = new SpellBind<SelfContext>(core, view, context, null);
+        instance.Init(bind, _authority);
     }
 
     private static ISpellTransform Move(ProjectileDefinition def, Vector3 direction) {

@@ -1,7 +1,7 @@
 using System;
 using Unity.VisualScripting;
 
-public class SummonContext : ISpellContext {
+public class SelfContext : ISpellContext {
     public SpellCaster Caster { get; }
     public OwnerId OwnerId { get; }
     public SpellView View { get; }
@@ -20,7 +20,7 @@ public class SummonContext : ISpellContext {
 
     public Action<SpellEvent> eventSink;
 
-    public SummonContext(
+    public SelfContext(
         SpellCaster caster,
         SpellView view,
         SpellDefinition data,

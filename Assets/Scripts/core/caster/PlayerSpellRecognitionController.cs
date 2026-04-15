@@ -19,7 +19,7 @@ public class PlayerSpellRecognitionController {
         _mouth.RestrictWords(_recognizer.SpellWords());
     }
 
-    public IReadOnlyList<SpellData> Spells {
+    public IReadOnlyList<SpellDefinition> Spells {
         get { return _recognizer.spells; }
     }
 

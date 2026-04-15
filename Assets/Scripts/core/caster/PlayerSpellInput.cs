@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerSpellInput {
     [SerializeField] private KeyCode castKey = KeyCode.Mouse0;
     [SerializeField] private KeyCode cancelKey = KeyCode.Mouse1;
+    [SerializeField] private KeyCode alternativeSpawnKey = KeyCode.F;
 
     public bool CastPressedThisFrame() {
         return Input.GetKeyDown(castKey);
@@ -12,6 +13,10 @@ public class PlayerSpellInput {
 
     public bool CancelPressedThisFrame() {
         return Input.GetKeyDown(cancelKey);
+    }
+
+    public bool AlternativeSpawnPressedThisFrame() {
+        return Input.GetKeyDown(alternativeSpawnKey);
     }
 
     public int GetSpellIndexPressedThisFrame() {
