@@ -10,6 +10,7 @@ public class ProjectileCore : ISpellCore<ProjectileContext> {
     }
 
     protected override void TickInner(float delta) {
+        using var _ = SpellMetrics.Measure(SpellMetricSection.ProjectileCoreTick);
         context.Lifetime -= delta;
         var hits = _shape.Query();
 

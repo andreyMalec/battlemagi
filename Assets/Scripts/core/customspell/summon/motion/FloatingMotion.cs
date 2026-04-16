@@ -37,7 +37,6 @@ public class FloatingMotion : ILocomotion {
         }
 
         var desired = dist - _minDistance;
-        Debug.Log($"__________________ {ctx.Stats}");
         var step = Mathf.Min(desired, _speed * Time.deltaTime * ctx.Stats.GetFinal(StatType.MoveSpeed));
         if (step <= 0f) return;
 

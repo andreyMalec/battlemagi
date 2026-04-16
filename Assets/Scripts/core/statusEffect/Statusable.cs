@@ -36,7 +36,7 @@ public class Statusable : MonoBehaviour {
         if (!_bridgeTyped.IsServer) return;
         if (!_bridgeTyped.IsSpawned) return;
 
-        Debug.Log($"Adding effect {data.effectName} to {gameObject.name} from client {ownerClientId}");
+        SpellLog.Log($"Adding effect {data.effectName} to {gameObject.name} from client {ownerClientId}");
         if (_active.TryGetValue(data.effectName, out var previous)) {
             switch (data.CompareTo(previous.data)) {
                 case StatusEffectData.RESET_TIME:

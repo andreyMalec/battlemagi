@@ -23,7 +23,7 @@ public class NetworkGameBootstrap : NetworkBehaviour, IAuthorityService, SpellBo
         IAuthorityService authority = this;
 
         var spellSystem = new SpellSystem(authority);
-        Debug.Log(
+        SpellLog.Log(
             $" Network SpellSystem initialized with manager={manager}, authority={authority}");
 
         DI.Register(manager);

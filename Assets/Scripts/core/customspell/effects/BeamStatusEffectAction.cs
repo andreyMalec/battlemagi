@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 public class BeamStatusEffectAction : ISpellAction {
     private float _accumulator;
@@ -43,7 +42,7 @@ public class BeamStatusEffectAction : ISpellAction {
             if (_accumulator < interval) continue;
             _accumulator = 0f;
 
-            Debug.Log($"SpellAction {GetType().Name} applied to {statusable.name}. Event: {evt.GetType().Name}");
+            SpellLog.Log($"SpellAction {GetType().Name} applied to {statusable.name}. Event: {evt.GetType().Name}");
             statusable.AddEffect(context.OwnerId, def.effect);
         }
     }

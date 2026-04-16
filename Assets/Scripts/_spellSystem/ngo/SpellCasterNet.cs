@@ -26,7 +26,7 @@ public class SpellCasterNet : NetworkBehaviour {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(casterNetObjectId, out var casterNetObj))
             return;
 
-        Debug.Log(
+        SpellLog.Log(
             $"[NetworkSpellSystemEvent] RequestSpawnServerRpc: {casterNetObj.name}, position={position}, forward={forward}, damageMultiplier={damageMultiplier}");
         var spell = DefaultSpells.Get(spellName)?.spell ?? DefaultSpells.GetSubSpell(spellName);
         var caster = casterNetObj.GetComponentInChildren<SpellCaster>();
@@ -63,7 +63,7 @@ public class SpellCasterNet : NetworkBehaviour {
             target = targetNetObj.GetComponentInChildren<ITarget>();
         }
 
-        Debug.Log(
+        SpellLog.Log(
             $"[NetworkSpellSystemEvent] RequestCastServerRpc: {casterNetObj.name}, target={target}, damageMultiplier={damageMultiplier}");
         var spell = DefaultSpells.Get(spellName)?.spell ?? DefaultSpells.GetSubSpell(spellName);
         var caster = casterNetObj.GetComponentInChildren<SpellCaster>();
@@ -123,7 +123,7 @@ public class SpellCasterNet : NetworkBehaviour {
             return;
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(spellNetObjectId, out var main)) return;
 
-        Debug.Log(
+        SpellLog.Log(
             $"[NetworkSpellSystemEvent] OnCastClientRpc: netObjectId={spellNetObjectId}, caster={casterNetObj.gameObject.name}");
         var caster = casterNetObj.GetComponentInChildren<SpellCaster>();
         EnsureCasterInitialized(casterNetObj.gameObject, caster);

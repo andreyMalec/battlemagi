@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,40 +9,55 @@ public interface ISpellBind {
 
 public class SpellInstance : MonoBehaviour, ITarget {
     public static readonly List<SpellInstance> Active = new();
+    private static SpellInstanceTicker _ticker;
 
     [SerializeField] private GameObject[] scale;
     [SerializeField] private ParticleSystem[] exclude;
     public ISpellBind Bind { get; private set; }
     private IAuthorityService _authorityService;
     private bool _initialized;
+    private SpellView _view;
+    private int _activeIndex = -1;
 
     public Vector3 Position => transform.position;
     public bool IsPlayer => false;
     public bool IsSpell => true;
-    public bool IsAlive => Bind.Context.View.IsAlive;
+    public bool IsAlive => _view.IsAlive;
     public OwnerId OwnerId => _authorityService.OwnerId;
     public ulong ObjectId => _authorityService.ObjectId;
     public GameObject Get => gameObject;
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatics() {
+        Active.Clear();
+        _ticker = null;
+    }
+
     public void Init(ISpellBind bind, IAuthorityService authorityService) {
-        _initialized = true;
-        Active.Add(this);
         Bind = bind;
         _authorityService = authorityService;
+        _view = bind.Context.View;
+        _initialized = true;
+        RegisterActive();
 
         Scale(bind.Context.Spell.scale, bind.Context.Lifetime);
         ParticleUtils.ApplyBeamShape(gameObject, bind.Context.Spell.beam);
     }
 
-    void FixedUpdate() {
+    private void OnDestroy() {
+        UnregisterActive();
+    }
+
+    private void TickFixed(float deltaTime) {
+        using var _ = SpellMetrics.Measure(SpellMetricSection.InstanceTick);
         if (!_initialized) return;
         if (IsAlive) {
             if (_authorityService.IsServer)
-                Bind.Tick(Time.deltaTime);
+                Bind.Tick(deltaTime);
             return;
         }
 
-        Active.Remove(this);
+        UnregisterActive();
     }
 
     public void Kill() {
@@ -83,7 +97,7 @@ public class SpellInstance : MonoBehaviour, ITarget {
     }
 
     public void Scale(float k, float lifetime) {
-        var scaleShape = GetComponent<SpellView>().scaleShape;
+        var scaleShape = _view.scaleShape;
         foreach (var ps in GetComponentsInChildren<ParticleSystem>(true)) {
             if (exclude.Contains(ps))
                 continue;
@@ -172,6 +186,102 @@ public class SpellInstance : MonoBehaviour, ITarget {
             var next = center + (axisX * Mathf.Cos(angle) + axisY * Mathf.Sin(angle)) * radius;
             Gizmos.DrawLine(prev, next);
             prev = next;
+        }
+    }
+
+    private void RegisterActive() {
+        EnsureTicker();
+        if (_activeIndex >= 0)
+            return;
+
+        _activeIndex = Active.Count;
+        Active.Add(this);
+        _ticker.enabled = true;
+    }
+
+    private void UnregisterActive() {
+        var index = _activeIndex;
+        if (index < 0)
+            return;
+
+        _activeIndex = -1;
+
+        if ((uint)index >= (uint)Active.Count)
+            return;
+
+        if (Active[index] != this) {
+            index = Active.IndexOf(this);
+            if (index < 0)
+                return;
+        }
+
+        RemoveAt(index);
+        if (_ticker != null)
+            _ticker.enabled = Active.Count > 0;
+    }
+
+    private static void TickActive(float deltaTime) {
+        using var _ = SpellMetrics.Measure(SpellMetricSection.ActiveTick);
+        SpellMetrics.RecordActiveSpells(Active.Count);
+        for (var i = Active.Count - 1; i >= 0; i--) {
+            var instance = Active[i];
+            if (instance == null) {
+                RemoveAt(i);
+                continue;
+            }
+
+            instance.TickFixed(deltaTime);
+        }
+
+        SpellMetrics.FlushIfNeeded();
+    }
+
+    private static void RemoveAt(int index) {
+        if ((uint)index >= (uint)Active.Count)
+            return;
+
+        var lastIndex = Active.Count - 1;
+        var removed = Active[index];
+        var last = Active[lastIndex];
+        if (index != lastIndex) {
+            Active[index] = last;
+            if (last != null)
+                last._activeIndex = index;
+        }
+
+        Active.RemoveAt(lastIndex);
+        if (removed != null)
+            removed._activeIndex = -1;
+    }
+
+    private static void EnsureTicker() {
+        if (_ticker != null)
+            return;
+
+        _ticker = FindAnyObjectByType<SpellInstanceTicker>();
+        if (_ticker != null)
+            return;
+
+        var go = new GameObject(nameof(SpellInstanceTicker));
+        DontDestroyOnLoad(go);
+        _ticker = go.AddComponent<SpellInstanceTicker>();
+        _ticker.enabled = false;
+    }
+
+    private sealed class SpellInstanceTicker : MonoBehaviour {
+        private void FixedUpdate() {
+            using var _ = SpellMetrics.Measure(SpellMetricSection.TickerFixedUpdate);
+            if (Active.Count == 0) {
+                enabled = false;
+                return;
+            }
+
+            TickActive(Time.fixedDeltaTime);
+        }
+
+        private void OnDestroy() {
+            if (_ticker == this)
+                _ticker = null;
         }
     }
 }

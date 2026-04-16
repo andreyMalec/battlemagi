@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 public class ZoneStatusEffectAction : ISpellAction {
     private readonly Dictionary<EffectDefinition, HashSet<Statusable>> _onceApplied = new();
@@ -38,7 +37,7 @@ public class ZoneStatusEffectAction : ISpellAction {
                 set.Add(statusable);
             }
 
-            Debug.Log($"SpellAction {GetType().Name} applied to {statusable.name}. Event: {evt.GetType().Name}");
+            SpellLog.Log($"SpellAction {GetType().Name} applied to {statusable.name}. Event: {evt.GetType().Name}");
             statusable.AddEffect(context.OwnerId, def.effect);
         }
     }

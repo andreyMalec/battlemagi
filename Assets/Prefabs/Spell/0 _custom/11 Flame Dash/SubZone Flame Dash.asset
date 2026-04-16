@@ -25,6 +25,7 @@ MonoBehaviour:
   angularSpeed: 0
   spiralRadius: 0.5
   spiralAxis: 0
+  acceleration: 0
   enableHoming: 0
   obstacleMask:
     serializedVersion: 2
@@ -39,8 +40,9 @@ MonoBehaviour:
   teleportOnSpawn: 0
   destroyIncomingSpells: 0
   impassableForEnemies: 0
-  atMaxDistanceSpawn: {fileID: 0}
   atStepDistanceSpawn: {fileID: 0}
+  atMaxDistanceSpawn: {fileID: 0}
+  onEnemySpellDestroyedSpawn: {fileID: 0}
   spawnStep: 10
   onLifetimeEndSpawn: {fileID: 0}
   onLifetimeHalfSpawn: {fileID: 0}

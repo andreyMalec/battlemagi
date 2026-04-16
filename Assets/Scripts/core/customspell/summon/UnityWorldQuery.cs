@@ -1,28 +1,48 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class UnityWorldQuery : IWorldQuery {
+    private struct TargetCandidate {
+        public GameObject GameObject;
+        public ITarget Target;
+        public float DistanceSqr;
+    }
+
     private readonly int _enemyMask = 1 << LayerMask.NameToLayer("Player");
+    private Collider[] _overlapBuffer = new Collider[64];
+    private readonly List<SpellCaster> _nearbyCasters = new();
+    private readonly List<SpellInstance> _nearbySpells = new();
+    private readonly List<TargetCandidate> _candidates = new();
+    private readonly List<ITarget> _results = new();
+    private readonly HashSet<GameObject> _seen = new();
 
     public ITarget FindClosestEnemy(Vector3 pos, float radius) {
-        var colliders = Physics.OverlapSphere(pos, radius, _enemyMask);
-
-        ITarget closest = null;
-        float best = float.MaxValue;
-
-        foreach (var c in colliders) {
-            var target = c.GetComponent<ITarget>();
-            if (target == null) continue;
-
-            float d = (target.Position - pos).sqrMagnitude;
-            if (d < best) {
-                best = d;
-                closest = target;
+        using (SpellMetrics.Measure(SpellMetricSection.WorldQueryFindClosestEnemy)) {
+            var count = Physics.OverlapSphereNonAlloc(pos, radius, _overlapBuffer, _enemyMask);
+            while (count == _overlapBuffer.Length) {
+                _overlapBuffer = new Collider[_overlapBuffer.Length * 2];
+                count = Physics.OverlapSphereNonAlloc(pos, radius, _overlapBuffer, _enemyMask);
             }
-        }
 
-        return closest;
+            ITarget closest = null;
+            float best = float.MaxValue;
+
+            for (var i = 0; i < count; i++) {
+                var c = _overlapBuffer[i];
+                if (c == null) continue;
+
+                var target = c.GetComponent<ITarget>();
+                if (target == null) continue;
+
+                float d = (target.Position - pos).sqrMagnitude;
+                if (d < best) {
+                    best = d;
+                    closest = target;
+                }
+            }
+
+            return closest;
+        }
     }
 
     public bool HasLineOfSight(Vector3 from, Vector3 to) {
@@ -30,29 +50,55 @@ public class UnityWorldQuery : IWorldQuery {
     }
 
     public IEnumerable<ITarget> FindEnemiesInRadius(Vector3 pos, float r) {
-        var targets = new List<(GameObject, ITarget)>();
-        var casters = new List<SpellCaster>(SpellCaster.Active);
-        foreach (var caster in casters) {
-            if (caster == null) continue;
-            if (caster.gameObject == null) continue;
-            if ((caster.transform.position - pos).sqrMagnitude <= r * r)
-                targets.Add((caster.gameObject, caster));
-        }
+        using (SpellMetrics.Measure(SpellMetricSection.WorldQueryFindEnemiesInRadius)) {
+            var radiusSqr = r * r;
 
-        var spells = new List<SpellInstance>(SpellInstance.Active);
-        foreach (var spellInstance in spells) {
-            if (spellInstance == null) continue;
-            if (spellInstance.gameObject == null) continue;
-            if (!spellInstance.Bind.Context.View.IsAlive) continue;
-            if ((spellInstance.transform.position - pos).sqrMagnitude <= r * r)
-                targets.Add((spellInstance.gameObject, spellInstance));
-        }
+            _candidates.Clear();
+            _results.Clear();
+            _seen.Clear();
 
-        targets.Sort((x, y) => (x.Item2.Position - pos).sqrMagnitude.CompareTo((y.Item2.Position - pos).sqrMagnitude));
-        return RemoveDuplicatedGameObject(targets);
+            WorldTargetIndex.GetCasters(pos, r, _nearbyCasters);
+            for (var i = 0; i < _nearbyCasters.Count; i++) {
+                var caster = _nearbyCasters[i];
+                if (caster == null) continue;
+                if (caster.gameObject == null) continue;
+
+                AddCandidate(caster.gameObject, caster, pos, radiusSqr);
+            }
+
+            WorldTargetIndex.GetSpells(pos, r, _nearbySpells);
+            for (var i = 0; i < _nearbySpells.Count; i++) {
+                var spellInstance = _nearbySpells[i];
+                if (spellInstance == null) continue;
+                if (spellInstance.gameObject == null) continue;
+                if (!spellInstance.Bind.Context.View.IsAlive) continue;
+
+                AddCandidate(spellInstance.gameObject, spellInstance, pos, radiusSqr);
+            }
+
+            _candidates.Sort((x, y) => x.DistanceSqr.CompareTo(y.DistanceSqr));
+            for (var i = 0; i < _candidates.Count; i++) {
+                var candidate = _candidates[i];
+                if (!_seen.Add(candidate.GameObject))
+                    continue;
+
+                _results.Add(candidate.Target);
+            }
+
+            return _results;
+        }
     }
 
-    private List<ITarget> RemoveDuplicatedGameObject(List<(GameObject, ITarget)> list) {
-        return list.GroupBy(x => x.Item1).Select(g => g.First().Item2).ToList();
+
+    private void AddCandidate(GameObject gameObject, ITarget target, Vector3 pos, float radiusSqr) {
+        var distanceSqr = (target.Position - pos).sqrMagnitude;
+        if (distanceSqr > radiusSqr)
+            return;
+
+        _candidates.Add(new TargetCandidate {
+            GameObject = gameObject,
+            Target = target,
+            DistanceSqr = distanceSqr
+        });
     }
 }

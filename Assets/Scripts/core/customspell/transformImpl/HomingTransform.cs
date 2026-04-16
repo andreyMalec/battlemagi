@@ -57,31 +57,45 @@ public class HomingTransform : ISpellTransform {
     }
 
     public void Tick(float dt) {
+        using var _ = SpellMetrics.Measure(SpellMetricSection.HomingTick);
         if (dt <= 0f) {
             _inner.Tick(dt);
             return;
         }
 
-        if (!IsTargetValid())
+        if (!IsTargetValid()) {
+            using var __ = SpellMetrics.Measure(SpellMetricSection.HomingAcquireTarget);
             AcquireTarget();
+        }
 
         if (_target != null) {
             var desiredDir = TargetPosition() - Transform.position;
             if (desiredDir.sqrMagnitude > AimEpsilonSqr) {
                 desiredDir.Normalize();
 
-                if (HasLineOfSightToTarget()) {
+                bool hasLineOfSight;
+                using (SpellMetrics.Measure(SpellMetricSection.HomingLineOfSight))
+                    hasLineOfSight = HasLineOfSightToTarget();
+
+                if (hasLineOfSight) {
                     _avoidSign = 0;
                     var toDesired =
                         Vector3.RotateTowards(_lastDirection, desiredDir, Mathf.Deg2Rad * _maxTurnDegrees, 0f);
                     _lastDirection = Vector3.Slerp(_lastDirection, toDesired, _aimSlerp).normalized;
-                } else if (TryGetObstacleAvoidanceDirection(desiredDir, out var avoidDir)) {
+                } else {
+                    Vector3 avoidDir;
+                    bool hasAvoidance;
+                    using (SpellMetrics.Measure(SpellMetricSection.HomingObstacleAvoidance))
+                        hasAvoidance = TryGetObstacleAvoidanceDirection(desiredDir, out avoidDir);
+
+                    if (hasAvoidance) {
                     _lastDirection =
                         Vector3.RotateTowards(_lastDirection, avoidDir, Mathf.Deg2Rad * _maxTurnDegrees, 0f);
-                } else {
-                    var toDesired =
-                        Vector3.RotateTowards(_lastDirection, desiredDir, Mathf.Deg2Rad * _maxTurnDegrees, 0f);
-                    _lastDirection = Vector3.Slerp(_lastDirection, toDesired, 0.2f).normalized;
+                    } else {
+                        var toDesired =
+                            Vector3.RotateTowards(_lastDirection, desiredDir, Mathf.Deg2Rad * _maxTurnDegrees, 0f);
+                        _lastDirection = Vector3.Slerp(_lastDirection, toDesired, 0.2f).normalized;
+                    }
                 }
 
                 _inner.SetForward(_lastDirection);

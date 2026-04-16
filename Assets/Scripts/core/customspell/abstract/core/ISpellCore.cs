@@ -16,11 +16,12 @@ public abstract class ISpellCore<TContext>
     ) {
         this.context = context;
         _triggers = triggers;
-        Debug.Log($"Created {GetType().Name} for spell {context.Spell.name} with context {context.GetType().Name}");
+        SpellLog.Log($"Created {GetType().Name} for spell {context.Spell.name} with context {context.GetType().Name}");
         AttachEventSink();
     }
 
     public void Tick(float deltaTime) {
+        using var _ = SpellMetrics.Measure(SpellMetricSection.CoreTick);
         if (!_sentLifetimeStart) {
             _sentLifetimeStart = true;
             HandleEvent(new OnLifetimeStartEvent { remaining = context.Lifetime });
@@ -66,6 +67,7 @@ public abstract class ISpellCore<TContext>
     protected abstract void AttachEventSink();
 
     protected virtual void HandleEvent(SpellEvent evt) {
+        using var _ = SpellMetrics.Measure(SpellMetricSection.EventDispatch);
         foreach (var trigger in _triggers) {
             try {
                 trigger.TryFire(context, evt);

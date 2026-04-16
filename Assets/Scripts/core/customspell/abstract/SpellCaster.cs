@@ -46,7 +46,7 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
         SpellSystem = spellSystem;
         OwnerId = ownerId;
         Authority = authority;
-        Debug.Log($"{gameObject.name} initialized, ownerId={ownerId}, spellSystem={spellSystem}");
+        SpellLog.Log($"{gameObject.name} initialized, ownerId={ownerId}, spellSystem={spellSystem}");
     }
 
     /**
@@ -58,7 +58,7 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
             return;
         }
 
-        Debug.Log($"{gameObject.name} Cast = {spell.name}");
+        SpellLog.Log($"{gameObject.name} Cast = {spell.name}");
         var spellSpawn = ISpellSpawn.GetMode(alternativeSpawn && spell.spawn.useAlternativeSpawnMode
             ? spell.spawn.alternativeSpawnMode
             : spell.spawn.spawnMode);
@@ -88,7 +88,7 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
             return;
         }
 
-        Debug.Log($"{gameObject.name} Spawn = {context.spell.coreType}");
+        SpellLog.Log($"{gameObject.name} Spawn = {context.spell.coreType}");
         context.branch = true;
         var spellSpawn = ISpellSpawn.GetMode(context.spawn.spawnMode);
         StartCoroutine(spellSpawn!.Request(context, SpawnMain));
@@ -105,7 +105,7 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
             return;
         }
 
-        Debug.Log($"{gameObject.name} Cast2 = {spell.coreType}");
+        SpellLog.Log($"{gameObject.name} Cast2 = {spell.coreType}");
         var spellSpawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
         var context = CastContext(spell);
         context.target = target;
@@ -117,7 +117,7 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
         var main = Instantiate(prefab, context.position, context.rotation);
         HandleSpellLimit(context.spell, main);
         SpellSystem.CastSpell(context with { main = main });
-        Debug.Log($"{gameObject.name} SpawnMain = {context.spell.coreType}, main={main.name}");
+        SpellLog.Log($"{gameObject.name} SpawnMain = {context.spell.coreType}, main={main.name}");
     }
 
     public void HandleSpellLimit(SpellDefinition spell, GameObject target) {

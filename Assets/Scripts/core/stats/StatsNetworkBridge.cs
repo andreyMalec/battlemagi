@@ -1,5 +1,4 @@
 using Unity.Netcode;
-using UnityEngine;
 
 public class StatsNetworkBridge : NetworkBehaviour, IStatsBridge {
     private Stats _core;
@@ -33,20 +32,10 @@ public class StatsNetworkBridge : NetworkBehaviour, IStatsBridge {
         base.OnNetworkDespawn();
     }
 
-    private void FixedUpdate() {
-        if (!_hasCore) return;
-        TickFixed(_core);
-    }
-
     private void OnSyncedChanged(StatSnapshot prev, StatSnapshot next) {
         _core.SetSnapshot(next);
     }
 
-    public void TickFixed(Stats core) {
-        if (!IsServer) return;
-        if (!IsSpawned) return;
-        SyncFromCore(core);
-    }
 
     public void SyncFromCore(Stats core) {
         if (!_hasCore) return;

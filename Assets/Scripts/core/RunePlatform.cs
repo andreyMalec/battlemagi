@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NaughtyAttributes;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -40,6 +41,18 @@ public class RunePlatform : NetworkBehaviour {
 
             // нет активной — сбросить счетчик жизни, чтобы не накапливался
             _durationTimer = 0f;
+        }
+    }
+
+    [Button("Respawn Rune")]
+    public void RespawnRune() {
+        NetworkObject activeNetObj = GetActiveRune();
+        bool hasActive = activeNetObj != null && activeNetObj.IsSpawned;
+
+        if (hasActive) {
+            DespawnRune(activeNetObj);
+        } else {
+            SpawnRune();
         }
     }
 

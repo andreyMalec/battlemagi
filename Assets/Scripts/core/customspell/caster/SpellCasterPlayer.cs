@@ -167,7 +167,7 @@ public class SpellCasterPlayer : SpellCaster {
             ResetEcho();
         _spell = spell;
 
-        Debug.Log($"{gameObject.name} Selected spell: " + spell?.spellName);
+        SpellLog.Log($"{gameObject.name} Selected spell: " + spell?.spellName);
         if (animateHand)
             _animator.CastWaitingAnim(true, _spell.castWaitingIndex);
     }

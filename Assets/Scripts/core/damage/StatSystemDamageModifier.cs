@@ -10,7 +10,7 @@ public class StatSystemDamageModifier : MonoBehaviour, IDamageModifier {
 
     public float ModifyIncoming(Damageable damageable, in DamageRequest request, float current) {
         if (stats == null) return current;
-        Debug.Log($"Damage modifier applied: {current} -> {current * stats.GetFinal(StatType.DamageReduction)}");
+        SpellLog.Log($"Damage modifier applied: {current} -> {current * stats.GetFinal(StatType.DamageReduction)}");
         return current * stats.GetFinal(StatType.DamageReduction);
     }
 }

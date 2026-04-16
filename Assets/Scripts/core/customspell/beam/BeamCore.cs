@@ -1,10 +1,11 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class BeamCore : ISpellCore<BeamContext> {
     private readonly IShape _shape;
     private readonly HashSet<GameObject> _inside = new();
+    private readonly HashSet<GameObject> _current = new();
+    private readonly List<GameObject> _exited = new();
     private bool _started;
 
     public BeamCore(
@@ -16,6 +17,7 @@ public class BeamCore : ISpellCore<BeamContext> {
     }
 
     protected override void TickInner(float delta) {
+        using var _ = SpellMetrics.Measure(SpellMetricSection.BeamCoreTick);
         context.Lifetime -= delta;
         if (!_started) {
             _started = true;
@@ -24,18 +26,15 @@ public class BeamCore : ISpellCore<BeamContext> {
 
         HandleEvent(new OnBeamTickEvent { delta = delta });
 
-        var hits = _shape.Query().ToList();
-
-        var current = new HashSet<GameObject>();
-        foreach (var hit in hits) {
+        _current.Clear();
+        foreach (var hit in _shape.Query()) {
             if (hit.Target == null)
                 continue;
 
             var key = hit.Target;
-            current.Add(key);
+            _current.Add(key);
 
-            if (!_inside.Contains(key)) {
-                _inside.Add(key);
+            if (_inside.Add(key)) {
                 HandleEvent(new OnTargetEnterEvent {
                     target = hit.Target,
                     point = hit.Point,
@@ -52,15 +51,18 @@ public class BeamCore : ISpellCore<BeamContext> {
             HandleEvent(hitEvent);
         }
 
-        if (_inside.Count > 0) {
-            var toRemove = new List<GameObject>();
-            foreach (var key in _inside)
-                if (!current.Contains(key))
-                    toRemove.Add(key);
+        if (_inside.Count > _current.Count) {
+            _exited.Clear();
+            foreach (var key in _inside) {
+                if (_current.Contains(key))
+                    continue;
 
-            foreach (var key in toRemove) {
+                _exited.Add(key);
+            }
+
+            foreach (var key in _exited) {
                 _inside.Remove(key);
-                HandleEvent(new OnTargetExitEvent { target = (UnityEngine.GameObject)key });
+                HandleEvent(new OnTargetExitEvent { target = key });
             }
         }
     }
@@ -74,7 +76,7 @@ public class BeamCore : ISpellCore<BeamContext> {
             _started = false;
             if (_inside.Count > 0) {
                 foreach (var key in _inside)
-                    HandleEvent(new OnTargetExitEvent { target = (UnityEngine.GameObject)key });
+                    HandleEvent(new OnTargetExitEvent { target = key });
                 _inside.Clear();
             }
 

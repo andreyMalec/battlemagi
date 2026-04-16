@@ -29,21 +29,13 @@ public class Stats : MonoBehaviour {
 
         System.AddModifier(type, multiplier);
 
-        if (_bridgeTyped.IsSpawned) {
-            _bridgeTyped.SyncFromCore(this);
-        }
-
-        Debug.Log($"[Stats]({gameObject.name}) Added modifier: {type} x{multiplier}");
+        SpellLog.Log($"[Stats]({gameObject.name}) Added modifier: {type} x{multiplier}");
     }
 
     public void RemoveModifier(StatType type, float multiplier) {
         if (!_bridgeTyped.IsServer) return;
 
         System.RemoveModifier(type, multiplier);
-
-        if (_bridgeTyped.IsSpawned) {
-            _bridgeTyped.SyncFromCore(this);
-        }
     }
 
     internal void SetSnapshot(StatSnapshot snapshot) {

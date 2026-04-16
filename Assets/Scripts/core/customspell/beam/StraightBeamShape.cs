@@ -12,16 +12,18 @@ public class StraightBeamShape : IShape {
     }
 
     public IEnumerable<ShapeHit> Query() {
-        var ray = new Ray(_ctx.Origin, _ctx.Direction);
-        var count = Physics.RaycastNonAlloc(ray, _hits, _ctx.MaxLength, _ctx.Spell.defaultRaycast,
-            QueryTriggerInteraction.Ignore);
-        for (var i = 0; i < count; i++) {
-            var hit = _hits[i];
-            yield return new ShapeHit {
-                Target = hit.collider.gameObject,
-                Point = hit.point,
-                Normal = hit.normal
-            };
+        using (SpellMetrics.Measure(SpellMetricSection.StraightBeamShapeQuery)) {
+            var ray = new Ray(_ctx.Origin, _ctx.Direction);
+            var count = Physics.RaycastNonAlloc(ray, _hits, _ctx.MaxLength, _ctx.Spell.defaultRaycast,
+                QueryTriggerInteraction.Ignore);
+            for (var i = 0; i < count; i++) {
+                var hit = _hits[i];
+                yield return new ShapeHit {
+                    Target = hit.collider.gameObject,
+                    Point = hit.point,
+                    Normal = hit.normal
+                };
+            }
         }
     }
 }

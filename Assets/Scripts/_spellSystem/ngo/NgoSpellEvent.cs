@@ -15,7 +15,7 @@ public class NgoSpellSystemEvent : NetworkBehaviour, SpellSystemEvent {
     private void OnApplyScaleClientRpc(ulong netObjectId, float k, float lifetime) {
         var obj = netObjectId.Get();
         if (obj == null) return;
-        Debug.Log($"[NetworkSpellSystemEvent] OnApplyScaleClientRpc: {netObjectId} k: {k} lifetime: {lifetime}");
+        SpellLog.Log($"[NetworkSpellSystemEvent] OnApplyScaleClientRpc: {netObjectId} k: {k} lifetime: {lifetime}");
 
         var instance = obj.GetComponentInChildren<SpellInstance>();
         instance.Scale(k, lifetime);
@@ -29,7 +29,7 @@ public class NgoSpellSystemEvent : NetworkBehaviour, SpellSystemEvent {
     private void OnKillClientRpc(ulong netObjectId) {
         var obj = netObjectId.Get();
         if (obj == null) return;
-        Debug.Log($"[NetworkSpellSystemEvent] OnKillClientRpc: {netObjectId}");
+        SpellLog.Log($"[NetworkSpellSystemEvent] OnKillClientRpc: {netObjectId}");
 
         var instance = obj.GetComponentInChildren<SpellInstance>();
         instance.Kill();
@@ -43,7 +43,7 @@ public class NgoSpellSystemEvent : NetworkBehaviour, SpellSystemEvent {
     private void OnFadeOutAudioClientRpc(ulong netObjectId) {
         var obj = netObjectId.Get();
         if (obj == null) return;
-        Debug.Log($"[NetworkSpellSystemEvent] OnFadeOutAudioClientRpc: {netObjectId}");
+        SpellLog.Log($"[NetworkSpellSystemEvent] OnFadeOutAudioClientRpc: {netObjectId}");
 
         var instance = obj.GetComponentInChildren<SpellInstance>();
         instance.FadeOutAudio();
@@ -57,7 +57,7 @@ public class NgoSpellSystemEvent : NetworkBehaviour, SpellSystemEvent {
     private void OnRemoveVisibleClientRpc(ulong netObjectId) {
         var obj = netObjectId.Get();
         if (obj == null) return;
-        Debug.Log($"[NetworkSpellSystemEvent] OnRemoveVisibleClientRpc: {netObjectId}");
+        SpellLog.Log($"[NetworkSpellSystemEvent] OnRemoveVisibleClientRpc: {netObjectId}");
 
         var instance = obj.GetComponentInChildren<SpellInstance>();
         instance.RemoveVisual();
@@ -71,7 +71,7 @@ public class NgoSpellSystemEvent : NetworkBehaviour, SpellSystemEvent {
     private void OnAttackClientRpc(ulong netObjectId) {
         var obj = netObjectId.Get();
         if (obj == null) return;
-        Debug.Log($"[NetworkSpellSystemEvent] OnAttackClientRpc: {netObjectId}");
+        SpellLog.Log($"[NetworkSpellSystemEvent] OnAttackClientRpc: {netObjectId}");
 
         var caster = obj.GetComponentInChildren<SpellCasterSummon>();
         caster.OnAttack();
@@ -85,7 +85,7 @@ public class NgoSpellSystemEvent : NetworkBehaviour, SpellSystemEvent {
     private void OnLifetimePercentClientRpc(ulong netObjectId, float percent) {
         var obj = netObjectId.Get();
         if (obj == null) return;
-        Debug.Log($"[NetworkSpellSystemEvent] OnLifetimePercentClientRpc: {netObjectId} percent: {percent}");
+        SpellLog.Log($"[NetworkSpellSystemEvent] OnLifetimePercentClientRpc: {netObjectId} percent: {percent}");
 
         var lifetime = obj.GetComponentInChildren<SpellLifetime>();
         lifetime.OnLifetimePercent(percent);

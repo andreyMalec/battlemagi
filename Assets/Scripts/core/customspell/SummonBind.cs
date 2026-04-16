@@ -41,14 +41,19 @@ public class SummonBind<TContext> : ISpellBind
     }
 
     public void Tick(float deltaTime) {
+        using var _ = SpellMetrics.Measure(SpellMetricSection.SummonBindTick);
         _core.Tick(deltaTime);
 
         _ai.HomePosition = _context.Caster?.Origin ?? _ai.Self.position;
 
-        foreach (var sensor in _sensors)
-            sensor.Sense(_ai);
+        using (SpellMetrics.Measure(SpellMetricSection.SummonSensorsTick)) {
+            foreach (var sensor in _sensors)
+                sensor.Sense(_ai);
+        }
 
-        _brain.Tick(_ai);
-        _commands.Tick(_ai);
+        using (SpellMetrics.Measure(SpellMetricSection.SummonBrainTick))
+            _brain.Tick(_ai);
+        using (SpellMetrics.Measure(SpellMetricSection.SummonCommandsTick))
+            _commands.Tick(_ai);
     }
 }

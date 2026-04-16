@@ -17,8 +17,10 @@ public class SpellBind<TContext> : ISpellBind
     }
 
     public void Tick(float deltaTime) {
+        using var _ = SpellMetrics.Measure(SpellMetricSection.BindTick);
         _core.Tick(deltaTime);
         try {
+            using var __ = SpellMetrics.Measure(SpellMetricSection.TransformTick);
             _transform?.Tick(deltaTime);
         } catch (Exception e) {
             Debug.LogWarning(e);
