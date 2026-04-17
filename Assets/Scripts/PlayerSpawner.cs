@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Steamworks;
 
 public class PlayerSpawner : NetworkBehaviour {
     [SerializeField] private GameObject playerPrefab;
@@ -32,9 +31,17 @@ public class PlayerSpawner : NetworkBehaviour {
         }
     }
 
+    private bool IsMatchInProgress() {
+        return IsServer && LobbyManager.Instance != null &&
+               LobbyManager.Instance.State == LobbyManager.PlayerState.InGame;
+    }
+
     private void OnClientConnected(ulong clientId) {
         if (IsServer) {
-            SpawnLobbyEnjoyer(clientId);
+            if (IsMatchInProgress())
+                StartCoroutine(RespawnPlayer(clientId));
+            else
+                SpawnLobbyEnjoyer(clientId);
         }
     }
 
@@ -46,13 +53,17 @@ public class PlayerSpawner : NetworkBehaviour {
         }
     }
 
+    private IEnumerator RespawnPlayer(ulong clientId) {
+        yield return new WaitForSeconds(.2f);
+        SpawnPlayer(clientId);
+    }
+
     private IEnumerator HandleDeath(ulong clientId) {
         Debug.Log($"[PlayerSpawner] Сервер: Ждем перед тем как удалить игрока {clientId}");
         yield return new WaitForSeconds(5);
-        if (DestroyClient(clientId)) {
-            yield return new WaitForEndOfFrame();
-            SpawnPlayer(clientId);
-        }
+        DestroyClient(clientId);
+        yield return new WaitForEndOfFrame();
+        SpawnPlayer(clientId);
     }
 
     private bool DestroyClient(ulong clientId) {
@@ -132,9 +143,11 @@ public class PlayerSpawner : NetworkBehaviour {
         var team = TeamManager.Instance.GetTeam(clientId);
         var spawn = FindFirstObjectByType<Spawn>();
         if (spawn == null) {
-            Debug.LogError($"[PlayerSpawner] Сервер: Ошибка! Не найден объект Spawn для спавна игрока {clientId} (Возможно сцена сменилась на не игровую)");
+            Debug.LogError(
+                $"[PlayerSpawner] Сервер: Ошибка! Не найден объект Spawn для спавна игрока {clientId} (Возможно сцена сменилась на не игровую)");
             return;
         }
+
         Debug.Log($"[PlayerSpawner] Сервер: Спавним игрока {clientId} в команде {team}");
         var spawnPoint = spawn.Get(team);
         var position = spawnPoint.position;

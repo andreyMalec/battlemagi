@@ -12,14 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70d6ac2600d5440ab45bcb7d2aabe7d3, type: 3}
   m_Name: SubSpell Zone Fireball
   m_EditorClassIdentifier: Assembly-CSharp::SpellProjectileDefinition
-  words: Fireball Explosion
+  spellName: Fireball Explosion
+  words: []
+  wordsRu: []
   coreType: 1
-  spawn: {fileID: 11400000, guid: 156c1e33f4762a942a6a6bc7860d44b8, type: 2}
+  spawn: {fileID: 11400000, guid: 86bc7d3dc01665749a028ac308c55b0f, type: 2}
   damage: {fileID: 11400000, guid: 8ccb27aa5f1a3c44b95dca73c8d740be, type: 2}
   knockback: {fileID: 11400000, guid: 702589812329f364a9d73ba8f31d679d, type: 2}
   effects: []
   scale: 3
   lifetime: 3
+  blinkAtLifetime: 0
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 576
@@ -36,3 +39,4 @@ MonoBehaviour:
   zone: {fileID: 11400000, guid: fa98eb92eea2b8d499dc6f59d9255642, type: 2}
   beam: {fileID: 0}
   summon: {fileID: 0}
+  self: {fileID: 0}

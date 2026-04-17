@@ -97,7 +97,7 @@ public class SpellInstance : MonoBehaviour, ITarget {
     }
 
     public void Scale(float k, float lifetime) {
-        var scaleShape = _view.scaleShape;
+        var scaleShape = GetComponent<SpellView>().scaleShape;// _view инициализируется только на сервере
         foreach (var ps in GetComponentsInChildren<ParticleSystem>(true)) {
             if (exclude.Contains(ps))
                 continue;
