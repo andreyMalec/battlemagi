@@ -16,6 +16,8 @@ public class BeamDefinition : ScriptableObject, IValidate {
     public SpellMovement moveType;
 
     [ShowIf("_canMove")] public float moveSpeed;
+    [ShowIf("_transformLinear")] public bool moveAlongGround;
+    [ShowIf(EConditionOperator.And, "_transformLinear", "moveAlongGround")] public float groundOffset = 0.1f;
 
     [ShowIf("_canMove")] public bool enableMaxDistance;
     [ShowIf("enableMaxDistance")] public float maxDistance = 20f;
@@ -67,6 +69,7 @@ public class BeamDefinition : ScriptableObject, IValidate {
     private bool _canMove = false;
     private bool _shapeStraight = true;
     private bool _shapeCone = false;
+    private bool _transformLinear = false;
     private bool _transformSpiral = false;
     private bool _transformAccelerated = false;
     private bool _transformLookAtPoint = false;
@@ -82,6 +85,7 @@ public class BeamDefinition : ScriptableObject, IValidate {
         _shapeStraight = shapeType is BeamShapeType.Straight;
         _shapeCone = shapeType is BeamShapeType.Cone;
         _canMove = moveType is not SpellMovement.Static;
+        _transformLinear = moveType is SpellMovement.Linear;
         _transformSpiral = moveType is SpellMovement.Spiral;
         _transformAccelerated = moveType is SpellMovement.Accelerated;
         _transformLookAtPoint = moveType is SpellMovement.LookAtPoint;

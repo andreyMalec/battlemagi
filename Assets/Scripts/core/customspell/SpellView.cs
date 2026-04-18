@@ -9,6 +9,7 @@ public class SpellView : MonoBehaviour {
 
     private void Awake() {
         Stats = gameObject.AddComponent<Stats>();
+        gameObject.AddComponent<Statusable>();
     }
 
     public void Kill(ISpellContext context) {
