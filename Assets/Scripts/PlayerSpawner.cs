@@ -54,8 +54,30 @@ public class PlayerSpawner : NetworkBehaviour {
     }
 
     private IEnumerator RespawnPlayer(ulong clientId) {
-        yield return new WaitForSeconds(.2f);
+        const float timeout = 10f;
+        var elapsed = 0f;
+
+        while (!IsPlayerSpawnDataReady(clientId)) {
+            if (!NetworkManager.Singleton.ConnectedClients.ContainsKey(clientId))
+                yield break;
+
+            if (elapsed >= timeout) {
+                Debug.LogError($"[PlayerSpawner] Сервер: Не дождались синхронизации PlayerManager/TeamManager для игрока {clientId}");
+                yield break;
+            }
+
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
         SpawnPlayer(clientId);
+    }
+
+    private bool IsPlayerSpawnDataReady(ulong clientId) {
+        return PlayerManager.Instance != null &&
+               TeamManager.Instance != null &&
+               PlayerManager.Instance.TryGetPlayerData(clientId, out _) &&
+               TeamManager.Instance.HasTeam(clientId);
     }
 
     private IEnumerator HandleDeath(ulong clientId) {
@@ -127,7 +149,7 @@ public class PlayerSpawner : NetworkBehaviour {
         if (!IsServer) return;
         if (sceneName == GameProgress.Instance.SceneName) {
             foreach (var id in clientsCompleted) {
-                SpawnPlayer(id);
+                StartCoroutine(RespawnPlayer(id));
             }
         }
 
@@ -139,7 +161,11 @@ public class PlayerSpawner : NetworkBehaviour {
     }
 
     private void SpawnPlayer(ulong clientId) {
-        //TODO crash here NPE
+        if (!PlayerManager.Instance.TryGetPlayerData(clientId, out var playerData)) {
+            Debug.LogError($"[PlayerSpawner] Сервер: Не найдены данные PlayerManager для игрока {clientId}");
+            return;
+        }
+
         var team = TeamManager.Instance.GetTeam(clientId);
         var spawn = FindFirstObjectByType<Spawn>();
         if (spawn == null) {
@@ -155,10 +181,12 @@ public class PlayerSpawner : NetworkBehaviour {
 
         GameObject newPlayer = Instantiate(playerPrefab, position, rotation);
         newPlayer.transform.SetPositionAndRotation(position, rotation);
+        var player = newPlayer.GetComponent<Player>();
+        player.ApplyPlayerState(playerData.SteamId, playerData.Archetype, playerData.Hue, playerData.Saturation);
         var netObj = newPlayer.GetComponent<NetworkObject>();
         netObj.SpawnAsPlayerObject(clientId, true);
 
-        newPlayer.GetComponent<Player>().Init(clientId, position, rotation);
+        player.Init(clientId, position, rotation);
     }
 
     private void SpawnLobbyEnjoyer(ulong clientId) {

@@ -22,7 +22,7 @@ public class SpellInstance : MonoBehaviour, ITarget {
     public Vector3 Position => transform.position;
     public bool IsPlayer => false;
     public bool IsSpell => true;
-    public bool IsAlive => _view.IsAlive;
+    public bool IsAlive => _view != null && _view.IsAlive;
     public OwnerId OwnerId => _authorityService.OwnerId;
     public ulong ObjectId => _authorityService.ObjectId;
     public GameObject Get => gameObject;
@@ -65,7 +65,7 @@ public class SpellInstance : MonoBehaviour, ITarget {
             ps.Stop(true, ParticleSystemStopBehavior.StopEmitting);
         }
 
-        if (_authorityService.IsServer) {
+        if (_authorityService != null && _authorityService.IsServer) {
             SpellInstanceLimiter.Unregister(OwnerId, Bind.Context.Spell, gameObject);
         }
     }

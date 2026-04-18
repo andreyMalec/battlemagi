@@ -220,15 +220,38 @@ public class TeamManager : NetworkBehaviour {
     // ===============================
     // Utility
     // ===============================
-    public Team GetTeam(ulong? clientId) {
-        if (clientId == null) return Team.None;
-
-        foreach (var entry in _teams) {
-            if (entry.clientId == clientId)
-                return entry.team;
+    public bool TryGetTeam(ulong? clientId, out Team team) {
+        if (clientId == null) {
+            team = Team.None;
+            return false;
         }
 
-        return Team.None;
+        foreach (var entry in _teams) {
+            if (entry.clientId == clientId) {
+                team = entry.team;
+                return true;
+            }
+        }
+
+        team = Team.None;
+        return false;
+    }
+
+    public bool HasTeam(ulong clientId) {
+        return TryGetTeam(clientId, out _);
+    }
+
+    public bool TryGetLocalTeam(out Team team) {
+        if (NetworkManager.Singleton == null) {
+            team = Team.None;
+            return false;
+        }
+
+        return TryGetTeam(NetworkManager.Singleton.LocalClientId, out team);
+    }
+
+    public Team GetTeam(ulong? clientId) {
+        return TryGetTeam(clientId, out var team) ? team : Team.None;
     }
 
     public List<ulong> FindAllies(ulong clientId) {

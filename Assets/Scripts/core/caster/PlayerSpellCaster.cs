@@ -40,7 +40,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
         _stats = GetComponent<Stats>();
         _mouth = GetComponent<Mouth>();
         _playerAnimator = GetComponent<PlayerAnimator>();
-        _recognition = new PlayerSpellRecognitionController(_mouth);
+        _recognition = new PlayerSpellRecognitionController(_mouth, GetComponent<Player>());
         _statusable = GetComponent<Statusable>();
     }
 
@@ -60,7 +60,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
         if (_mouth == null)
             Debug.Log($"[Mouth] is null on Player_{OwnerClientId}");
 
-        _recognition.Initialize(OwnerClientId, SpeechToTextHolder.Instance.Language);
+        _recognition.Initialize(SpeechToTextHolder.Instance.Language);
     }
 
     public void BindAvatar(MeshController mc) {

@@ -1,5 +1,4 @@
 using System;
-using Steamworks;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
@@ -16,8 +15,17 @@ public class Player : NetworkBehaviour {
     [SerializeField] private Camera mainCamera;
     private MeshController meshController;
     private Animator animator;
+    private bool _avatarSpawned;
+
+    public readonly NetworkVariable<ulong> SteamIdValue = new();
+    public readonly NetworkVariable<int> ArchetypeValue = new();
+    public readonly NetworkVariable<float> HueValue = new();
+    public readonly NetworkVariable<float> SaturationValue = new();
 
     private MethodInfo _networkAnimatorAwake;
+
+    public int ArchetypeId => ArchetypeValue.Value;
+    public ulong SteamId => SteamIdValue.Value;
 
     private void Awake() {
         // invoke Awake via reflection to rebuild internal state
@@ -26,8 +34,12 @@ public class Player : NetworkBehaviour {
     }
 
     private void SpawnAvatar(int arch) {
+        if (_avatarSpawned)
+            return;
+
         var archetype = ArchetypeDatabase.Instance.GetArchetype(arch);
         var currentAvatar = Instantiate(archetype.avatarPrefab, transform); //TODO crash
+        _avatarSpawned = true;
         meshController = currentAvatar.GetComponent<MeshController>();
         animator = currentAvatar.GetComponent<Animator>();
         var netAnim = GetComponent<NetworkAnimator>();
@@ -79,12 +91,12 @@ public class Player : NetworkBehaviour {
         base.OnNetworkSpawn();
 
         var clientId = OwnerClientId;
-        Debug.Log($" [Player] OnNetworkPreSpawn called on Player_{clientId}");
-        var arch = PlayerManager.Instance.FindByClientId(clientId)!.Value.Archetype;
+        var arch = ArchetypeValue.Value;
+        Debug.Log($" [Player] OnNetworkSpawn called on Player_{clientId} with archetype {arch}");
 
         SpawnAvatar(arch);
 
-        ApplyMaterial(clientId, arch);
+        ApplyMaterial(arch, HueValue.Value, SaturationValue.Value);
 
         gameObject.name = $"Player_{OwnerClientId}";
 
@@ -138,8 +150,7 @@ public class Player : NetworkBehaviour {
     }
 
     public void Init(ulong clientId, Vector3 position, Quaternion rotation) {
-        var arch = PlayerManager.Instance.FindByClientId(clientId)!.Value.Archetype;
-        var archetype = ArchetypeDatabase.Instance.GetArchetype(arch);
+        var archetype = ArchetypeDatabase.Instance.GetArchetype(ArchetypeValue.Value);
 
         var movement = GetComponent<FirstPersonMovement>();
         movement.spawnPoint.Value = position;
@@ -149,26 +160,30 @@ public class Player : NetworkBehaviour {
         InitClientRpc(clientId, rotation);
     }
 
+    public void ApplyPlayerState(ulong steamId, int archetype, float hue, float saturation) {
+        SteamIdValue.Value = steamId;
+        ArchetypeValue.Value = archetype;
+        HueValue.Value = hue;
+        SaturationValue.Value = saturation;
+    }
+
     [ClientRpc]
     private void InitClientRpc(ulong clientId, Quaternion rotation) {
         Debug.Log($" [PlayerSpawner] InitClientRpc Клиент: Инициализация Player_{clientId}");
         GetComponent<FirstPersonLook>().ApplyInitialRotation(rotation);
     }
 
-    private void ApplyMaterial(ulong clientId, int arch) {
-        var steamId = PlayerManager.Instance.GetSteamId(clientId);
-        if (!steamId.HasValue) return;
+    private void ApplyMaterial(int arch, float hue, float saturation) {
         var archetype = ArchetypeDatabase.Instance.GetArchetype(arch);
-        var color = new Friend(steamId.Value).GetColor();
         var bodyMat = new Material(archetype.bodyShader);
-        bodyMat.SetFloat(ColorizeMesh.Hue, color.hue);
-        bodyMat.SetFloat(ColorizeMesh.Saturation, color.saturation);
+        bodyMat.SetFloat(ColorizeMesh.Hue, hue);
+        bodyMat.SetFloat(ColorizeMesh.Saturation, saturation);
         bodyMat.SetFloat(ColorizeMesh.Value, ColorizeMesh.CalculateValue());
         GetComponentInChildren<MeshBody>().gameObject.GetComponent<SkinnedMeshRenderer>().material = bodyMat;
         if (archetype.cloakShader == null) return;
         var cloakMat = new Material(archetype.cloakShader);
-        cloakMat.SetFloat(ColorizeMesh.Hue, color.hue);
-        cloakMat.SetFloat(ColorizeMesh.Saturation, color.saturation);
+        cloakMat.SetFloat(ColorizeMesh.Hue, hue);
+        cloakMat.SetFloat(ColorizeMesh.Saturation, saturation);
         var meshCloak = GetComponentInChildren<MeshCloak>();
         if (meshCloak != null)
             meshCloak.gameObject.GetComponent<SkinnedMeshRenderer>().material = cloakMat;

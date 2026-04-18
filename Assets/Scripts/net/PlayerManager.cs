@@ -134,7 +134,7 @@ public class PlayerManager : NetworkBehaviour {
     private void SyncExistingPlayersToClient(ulong clientId) {
         foreach (var member in players) {
             if (member.ClientId == clientId) continue;
-            RegisterPlayerClientRpc(member.SteamId, member.ClientId, new ClientRpcParams {
+            RegisterPlayerClientRpc(member, new ClientRpcParams {
                 Send = new ClientRpcSendParams { TargetClientIds = new[] { clientId } }
             });
         }
@@ -174,10 +174,9 @@ public class PlayerManager : NetworkBehaviour {
     }
 
     [ClientRpc]
-    private void RegisterPlayerClientRpc(ulong steamId, ulong clientId, ClientRpcParams rpcParams = default) {
-        PlayerData data = new PlayerData(clientId, steamId);
+    private void RegisterPlayerClientRpc(PlayerData data, ClientRpcParams rpcParams = default) {
         OnPlayerAdded?.Invoke(data);
-        Debug.Log($"[PlayerManager] Клиент: Зарегистрирован SteamId {steamId} для clientId={clientId}");
+        Debug.Log($"[PlayerManager] Клиент: Зарегистрирован SteamId {data.SteamId} для clientId={data.ClientId}");
     }
 
     private void OnClientDisconnected(ulong clientId) {
@@ -215,6 +214,28 @@ public class PlayerManager : NetworkBehaviour {
             return null;
 
         return new PlayerColor(player.Value.Hue, player.Value.Saturation);
+    }
+
+    public bool TryGetPlayerData(ulong clientId, out PlayerData data) {
+        var player = FindByClientId(clientId);
+        if (player.HasValue) {
+            data = player.Value;
+            return true;
+        }
+
+        data = default;
+        return false;
+    }
+
+    public bool TryGetPlayerDataBySteamId(ulong steamId, out PlayerData data) {
+        var player = FindBySteamId(steamId);
+        if (player.HasValue) {
+            data = player.Value;
+            return true;
+        }
+
+        data = default;
+        return false;
     }
 
     public PlayerData? FindByClientId(ulong clientId) {

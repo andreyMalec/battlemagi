@@ -13,15 +13,19 @@ public class Mouth : MonoBehaviour {
 
     private SpeechToTextManager _manager;
     private SpeechToTextHolder _holder;
+    private bool _open;
 
     public event OnMouthClose OnMouthClose;
 
-    private void OnDisable() {
+    public void Close() {
+        if (!_open) return;
         if (!_holder.IsInitialized) return;
         _manager.StopRecognition();
+        _open  = false;
     }
 
-    private void Awake() {
+    public void Open() {
+        if (_open) return;
         _holder = SpeechToTextHolder.Instance;
         if (!_holder.IsInitialized) return;
         _manager = _holder.Manager;
@@ -30,26 +34,31 @@ public class Mouth : MonoBehaviour {
             _manager.StartRecognition(microphoneRecord);
             _manager.OnSegmentResult += OnSegmentUpdated;
         }
+        _open = true;
     }
 
     public void RestrictWords(List<string> words) {
+        if (!_open) return;
         if (!_holder.IsInitialized) return;
         _manager.UpdatePrompt(words);
         Debug.Log($"[Mouth] RestrictWords: {string.Join(", ", words)}");
     }
 
     public void ShutUp() {
+        if (!_open) return;
         if (!_holder.IsInitialized) return;
         _manager.Reset();
     }
 
     public void ChangeVoice() {
+        if (!_open) return;
         if (!_holder.IsInitialized) return;
         _manager.StopRecognition();
         _manager.StartRecognition(microphoneRecord);
     }
 
     public void CanSpeak(bool canSpeak) {
+        if (!_open) return;
         if (!_holder.IsInitialized) return;
         if (_manager.Mute == canSpeak) {
             _manager.Mute = !canSpeak;

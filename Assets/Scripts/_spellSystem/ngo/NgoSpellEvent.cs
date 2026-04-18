@@ -32,7 +32,7 @@ public class NgoSpellSystemEvent : NetworkBehaviour, SpellSystemEvent {
         SpellLog.Log($"[NetworkSpellSystemEvent] OnKillClientRpc: {netObjectId}");
 
         var instance = obj.GetComponentInChildren<SpellInstance>();
-        instance.Kill();
+        instance?.Kill();
     }
 
     public void OnFadeOutAudio(SpellView view) {
