@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -24,6 +25,9 @@ public class PlayerTester : MonoBehaviour {
         _stats = GetComponent<Stats>();
         var preview = GetComponent<SpellCasterPlayerPreview>();
         preview.BindHand(hand);
+    }
+
+    private void Start() {
         var caster = GetComponent<SpellCasterPlayer>();
         caster.UpdateAvailableSpells(DefaultSpells.Instance.list.Map(s => s.spell).ToList());
     }

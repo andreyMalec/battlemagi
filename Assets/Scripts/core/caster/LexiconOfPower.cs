@@ -38,7 +38,7 @@ public class LexiconOfPower : NetworkBehaviour {
 
     private void OnMouthClose(string[] lastWords) {
         if (_caster.Mana.PrimalMana > 0) return;
-        if (_caster.CastWaiting || _caster.Channeling || _caster.Charging) return;
+        if (!_caster.CanSelectSpell) return;
 
         var result = _recognizer.Recognize(lastWords);
 

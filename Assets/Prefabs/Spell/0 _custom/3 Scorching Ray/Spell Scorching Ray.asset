@@ -21,18 +21,18 @@ MonoBehaviour:
   coreType: 2
   spawn: {fileID: 11400000, guid: d9257056d6ea268459efde82acb3f067, type: 2}
   damage: {fileID: 11400000, guid: 140a7fffba34ad7438632f3927bc4ff7, type: 2}
-  knockback: {fileID: 0}
+  knockback: {fileID: 11400000, guid: ae48b0a525134473b28870a74f0a5f23, type: 2}
   effects:
   - {fileID: 11400000, guid: 20c1745acbdcfe747a2b302243c9aca4, type: 2}
   scale: 1
-  lifetime: 3.5
+  lifetime: 3.75
   blinkAtLifetime: 0
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 576
   castWaitingIndex: 0
   invocationIndex: 5
-  manaCost: 15
+  manaCost: 0.15
   bloodMagic: 0
   echoCount: 0
   channeling: 1

@@ -12,15 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1907b37ed1aa4ddd80c76a48f1db8862, type: 3}
   m_Name: Spawn Charged Shot
   m_EditorClassIdentifier: Assembly-CSharp::SpawnDefinition
-  spawnMode: 0
+  spawnMode: 3
   preview: 0
   instanceCount: 1
   instanceLimit: 0
-  multiInstanceDelay: 0.2
+  disableInstanceMultiplier: 0
+  multiInstanceDelay: 0
   delayOrigin: 0
   useAlternativeSpawnMode: 0
   alternativeSpawnMode: 0
+  useVectorStep: 0
   forwardStep: 3
+  forwardVectorStep: {x: 0, y: 0, z: 0}
+  forwardAngleStep: {x: 0, y: 0, z: 0}
   arcAngleStep: 15
   coneRadius: 2
   coneHeight: 5

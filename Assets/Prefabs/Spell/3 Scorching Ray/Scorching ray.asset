@@ -14,13 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpellData
   id: 2
   name: Scorching ray
-  description: 'A focused stream of flame that burns through flesh, will, and shadow
-    alike.
-
-
-    Channels a continuous beam of fire; caster is slowed while maintaining
-    it.'
-  nameRu: "\u041E\u043F\u0430\u043B\u044F\u044E\u0449\u0438\u0439 \u041B\u0443\u0447"
+  enabled: 1
   spellWords:
   - Scorching Ray
   spellWordsRu:
@@ -58,7 +52,11 @@ MonoBehaviour:
   baseSpeed: 0
   projCount: 1
   multiProjDelay: 0
-  spawnMode: 2
+  spawnMode: 3
+  useAlternativeSpawnMode: 0
+  alternativeSpawnMode: 0
+  forwardStep: {x: 0, y: 0, z: 0}
+  forwardAngle: {x: 0, y: 0, z: 0}
   arcAngleStep: 30
   raycastMaxDistance: 50
   isBeam: 1

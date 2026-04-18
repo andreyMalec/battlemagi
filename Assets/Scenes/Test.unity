@@ -4767,6 +4767,7 @@ MonoBehaviour:
   input:
     castKey: 323
     cancelKey: 324
+    alternativeSpawnKey: 102
   mana:
     maxMana: 100
     regenPerSecond: 5
@@ -6364,6 +6365,7 @@ MonoBehaviour:
   input:
     castKey: 323
     cancelKey: 324
+    alternativeSpawnKey: 102
   mana:
     maxMana: 100
     regenPerSecond: 5
@@ -6489,6 +6491,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1731465163}
+  - {fileID: 92303860811732788}
   - {fileID: 340026116}
   - {fileID: 410087041}
   - {fileID: 832575519}
@@ -6511,5 +6514,4 @@ SceneRoots:
   - {fileID: 7351032199263568244}
   - {fileID: 1787711409}
   - {fileID: 2023091144}
-  - {fileID: 92303860811732788}
   - {fileID: 1637455124}

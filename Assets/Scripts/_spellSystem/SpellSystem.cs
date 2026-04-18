@@ -269,7 +269,9 @@ public class SpellSystem {
         var beamKnockback = KnockbackAction(def);
         if (beamKnockback != null) {
             triggers.Add(new SpellTrigger {
-                eventType = typeof(OnHitEvent),
+                eventType = def.knockback.mode is SpellKnockbackMode.BeamSelfImpulse
+                    ? typeof(OnBeamTickEvent)
+                    : typeof(OnHitEvent),
                 actions = new ISpellAction[] { beamKnockback }
             });
         }
@@ -626,6 +628,7 @@ public class SpellSystem {
         return spell.knockback.mode switch {
             SpellKnockbackMode.Impulse => new ImpulseKnockbackOnHitAction(),
             SpellKnockbackMode.Continuous => new ContinuousPointKnockbackOnHitAction(),
+            SpellKnockbackMode.BeamSelfImpulse => new BeamSelfImpulseAction(),
             _ => null
         };
     }

@@ -46,6 +46,7 @@ public class SpellCasterPlayer : SpellCaster {
     public ManaModule Mana => mana;
 
     public bool CastWaiting => _spell != null || _echoSpell != null;
+    public bool CanSelectSpell => !CastWaiting && !Channeling && !Charging;
 
     public override Vector3 Origin => spawnPos.position;
     public override Vector3 Direction => spawnPos.forward;
@@ -132,7 +133,7 @@ public class SpellCasterPlayer : SpellCaster {
         }
 
         var index = input.GetSpellIndexPressedThisFrame();
-        if (index >= 0 && index < _availableSpells.Count) {
+        if (CanSelectSpell && index >= 0 && index < _availableSpells.Count) {
             var selected = _availableSpells[index];
             SelectSpell(selected);
         }

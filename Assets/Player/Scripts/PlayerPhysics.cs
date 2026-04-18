@@ -11,6 +11,11 @@ public class PlayerPhysics : MonoBehaviour {
         public float upBias;
     }
 
+    private class VelocitySourceState {
+        public Vector3 velocity;
+        public float remaining;
+    }
+
     private MovementSettings _settings;
     private GroundCheck _groundCheck;
 
@@ -21,6 +26,8 @@ public class PlayerPhysics : MonoBehaviour {
     private Vector3 _externalVelocity;
     private readonly Dictionary<int, PointForceState> _pointForces = new();
     private readonly List<int> _pointForcesToRemove = new();
+    private readonly Dictionary<int, VelocitySourceState> _velocitySources = new();
+    private readonly List<int> _velocitySourcesToRemove = new();
 
     [Tooltip("Generic decay (per second)")] [SerializeField]
     private float _impulseDamping = 5f;
@@ -47,15 +54,17 @@ public class PlayerPhysics : MonoBehaviour {
         if (_noSnapTimer > 0f) _noSnapTimer -= dt;
 
         var breaksGroundSnap = ApplyPointForces(dt);
+        var sourceVelocity = ApplyVelocitySources(dt, out var sourceBreaksGroundSnap);
+        breaksGroundSnap |= sourceBreaksGroundSnap;
         if (breaksGroundSnap && _velocityY < 0f) {
             _velocityY = 0f;
         }
 
-        _groundedForPhysics = _groundCheck.isGrounded && _noSnapTimer <= 0f && !breaksGroundSnap && _externalVelocity.y <= 0f;
+        _groundedForPhysics = _groundCheck.isGrounded && _noSnapTimer <= 0f && !breaksGroundSnap && _externalVelocity.y <= 0f && sourceVelocity.y <= 0f;
 
         ApplyGravity(dt);
 
-        Vector3 combinedVelocity = desiredWorldVelocity + _externalVelocity + Vector3.up * _velocityY;
+        Vector3 combinedVelocity = desiredWorldVelocity + _externalVelocity + sourceVelocity + Vector3.up * _velocityY;
         Vector3 motion = combinedVelocity * dt;
 
         if (!_controller.enabled) return;
@@ -101,6 +110,28 @@ public class PlayerPhysics : MonoBehaviour {
         });
     }
 
+    public void SetVelocitySource(int id, Vector3 velocity, float duration) {
+        if (duration <= 0f || velocity.sqrMagnitude < 0.0001f) {
+            _velocitySources.Remove(id);
+            return;
+        }
+
+        if (_velocitySources.TryGetValue(id, out var state)) {
+            state.velocity = velocity;
+            state.remaining = duration;
+            return;
+        }
+
+        _velocitySources.Add(id, new VelocitySourceState {
+            velocity = velocity,
+            remaining = duration,
+        });
+    }
+
+    public void ClearVelocitySource(int id) {
+        _velocitySources.Remove(id);
+    }
+
     public void ApplyImpulseWithoutSnap(Vector3 impulse) {
         var xz = new Vector3(impulse.x, 0, impulse.z);
         ApplyImpulse(xz);
@@ -140,6 +171,35 @@ public class PlayerPhysics : MonoBehaviour {
         }
 
         return breaksGroundSnap;
+    }
+
+    private Vector3 ApplyVelocitySources(float dt, out bool breaksGroundSnap) {
+        breaksGroundSnap = false;
+        if (_velocitySources.Count == 0)
+            return Vector3.zero;
+
+        _velocitySourcesToRemove.Clear();
+        var velocity = Vector3.zero;
+        foreach (var pair in _velocitySources) {
+            var state = pair.Value;
+            state.remaining -= dt;
+            if (state.remaining <= 0f) {
+                _velocitySourcesToRemove.Add(pair.Key);
+                continue;
+            }
+
+            velocity += state.velocity;
+            if (state.velocity.y > 0.0001f)
+                breaksGroundSnap = true;
+        }
+
+        for (var i = 0; i < _velocitySourcesToRemove.Count; i++)
+            _velocitySources.Remove(_velocitySourcesToRemove[i]);
+
+        if (breaksGroundSnap)
+            _noSnapTimer = Mathf.Max(_noSnapTimer, NoSnapDuration);
+
+        return velocity;
     }
 
     private Vector3 ComputePointForceDirection(Vector3 point, SpellKnockbackVectorMode vectorMode, float upBias) {

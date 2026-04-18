@@ -315,11 +315,11 @@ GameObject:
   - component: {fileID: 7646806779147952139}
   - component: {fileID: 1216505758438551160}
   - component: {fileID: 8163904846881621438}
+  - component: {fileID: 4537245233784347616}
   - component: {fileID: 450571583936688513}
   - component: {fileID: 1760773015534472312}
   - component: {fileID: 3544951281845238632}
   - component: {fileID: 8708466025697548998}
-  - component: {fileID: 4537245233784347616}
   - component: {fileID: 4815534646972923113}
   - component: {fileID: 1870895211298274875}
   - component: {fileID: 4168519252703680591}
@@ -435,6 +435,19 @@ CharacterController:
   m_SkinWidth: 0.0001
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4537245233784347616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056318315711601611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72716d9af3fd4b6097fcb847fd3e589c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalGameBootstrap
+  ownerId: 0
 --- !u!114 &450571583936688513
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -472,10 +485,11 @@ MonoBehaviour:
   input:
     castKey: 323
     cancelKey: 324
+    alternativeSpawnKey: 102
   mana:
     maxMana: 100
     regenPerSecond: 5
-  bridge: {fileID: 0}
+  bridge: {fileID: 3544951281845238632}
   animateCast: 0
   animateHand: 0
   primalManaStatus: {fileID: 0}
@@ -506,19 +520,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DebugTeleport
   key: 116
---- !u!114 &4537245233784347616
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5056318315711601611}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72716d9af3fd4b6097fcb847fd3e589c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LocalGameBootstrap
-  ownerId: 0
 --- !u!114 &4815534646972923113
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -542,7 +543,7 @@ MonoBehaviour:
   _immortal: 1
   _invulnerable: 0
   _isStructure: 0
-  _bridge: {fileID: 0}
+  _bridge: {fileID: 1870895211298274875}
 --- !u!114 &1870895211298274875
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -570,7 +571,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d72e0fa02c2444db966472241dace85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Statusable
-  _bridge: {fileID: 0}
+  _bridge: {fileID: 1174926313006942357}
 --- !u!114 &1174926313006942357
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -596,7 +597,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de56e174e26b44b0a58feea6433f9cb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Stats
-  _bridge: {fileID: 0}
+  _bridge: {fileID: 3467911108821741378}
 --- !u!114 &3467911108821741378
 MonoBehaviour:
   m_ObjectHideFlags: 0

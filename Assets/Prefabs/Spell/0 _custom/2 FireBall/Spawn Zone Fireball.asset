@@ -10,17 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1907b37ed1aa4ddd80c76a48f1db8862, type: 3}
-  m_Name: Zone Spawn Shockwave Totem
+  m_Name: Spawn Zone Fireball
   m_EditorClassIdentifier: Assembly-CSharp::SpawnDefinition
-  spawnMode: 1
+  spawnMode: 0
   preview: 0
   instanceCount: 1
   instanceLimit: 0
-  multiInstanceDelay: 0.2
-  delayOrigin: 1
+  disableInstanceMultiplier: 1
+  multiInstanceDelay: 0
+  delayOrigin: 0
   useAlternativeSpawnMode: 0
   alternativeSpawnMode: 0
-  forwardStep: 3
+  useVectorStep: 0
+  forwardStep: 5
+  forwardVectorStep: {x: 0, y: 0, z: 0}
+  forwardAngleStep: {x: 0, y: 0, z: 0}
   arcAngleStep: 15
   coneRadius: 2
   coneHeight: 5

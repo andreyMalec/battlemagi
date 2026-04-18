@@ -65,5 +65,35 @@ public abstract class PointPhysicsActionBase : ISpellAction {
 
         physics.SetPointForce(id, point, def.forcePerSecond, def.duration, def.vectorMode, def.upBias);
     }
+
+    protected void SetVelocitySource(
+        PlayerPhysics physics,
+        FirstPersonMovement movement,
+        int id,
+        Vector3 velocity,
+        float duration
+    ) {
+        if (movement != null && movement.IsSpawned) {
+            var sendParams = new ClientRpcParams {
+                Send = new ClientRpcSendParams { TargetClientIds = new[] { movement.OwnerClientId } }
+            };
+            movement.SetVelocitySourceClientRpc(id, velocity, duration, sendParams);
+            return;
+        }
+
+        physics.SetVelocitySource(id, velocity, duration);
+    }
+
+    protected void ClearVelocitySource(PlayerPhysics physics, FirstPersonMovement movement, int id) {
+        if (movement != null && movement.IsSpawned) {
+            var sendParams = new ClientRpcParams {
+                Send = new ClientRpcSendParams { TargetClientIds = new[] { movement.OwnerClientId } }
+            };
+            movement.ClearVelocitySourceClientRpc(id, sendParams);
+            return;
+        }
+
+        physics.ClearVelocitySource(id);
+    }
 }
 

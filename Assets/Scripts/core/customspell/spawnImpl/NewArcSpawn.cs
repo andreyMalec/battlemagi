@@ -25,7 +25,9 @@ public class NewArcSpawn : ISpellSpawn, IDelayOriginRespect {
             Quaternion rotation = ctx.rotation * Quaternion.Euler(0f, angle, 0f);
             spawn(ctx with {
                 rotation = rotation,
-                forward = rotation * Vector3.forward
+                forward = rotation * Vector3.forward,
+                index = i,
+                count = count,
             });
 
             if (delay > 0f && i > 0)

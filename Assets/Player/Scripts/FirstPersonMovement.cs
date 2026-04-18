@@ -214,4 +214,15 @@ public class FirstPersonMovement : NetworkBehaviour {
     ) {
         _physics.SetPointForce(id, point, forcePerSecond, duration, vectorMode, upBias);
     }
+
+    [ClientRpc]
+    public void SetVelocitySourceClientRpc(int id, Vector3 velocity, float duration,
+        ClientRpcParams clientRpcParams = default) {
+        _physics.SetVelocitySource(id, velocity, duration);
+    }
+
+    [ClientRpc]
+    public void ClearVelocitySourceClientRpc(int id, ClientRpcParams clientRpcParams = default) {
+        _physics.ClearVelocitySource(id);
+    }
 }

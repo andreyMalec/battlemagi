@@ -5,12 +5,6 @@ using UnityEngine;
 public class SpellCasterNet : NetworkBehaviour {
     public Coroutine CastCoroutine;
 
-    public void RequestCast(SpawnContext context) {
-        RequestCastServerRpc(NetworkObjectId, context.spell.name, context.alternativeSpawn,
-            context.target?.ObjectId ?? ulong.MaxValue,
-            context.spellDamageMultiplier);
-    }
-
     public void RequestSpawn(SpawnContext context) {
         RequestSpawnServerRpc(NetworkObjectId, context.spell.name, context.position, context.forward, context.rotation,
             context.spellDamageMultiplier);
@@ -44,6 +38,12 @@ public class SpellCasterNet : NetworkBehaviour {
         };
         var spellSpawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
         StartCoroutine(spellSpawn!.Request(context, ServerSpawnMain));
+    }
+
+    public void RequestCast(SpawnContext context) {
+        RequestCastServerRpc(NetworkObjectId, context.spell.name, context.alternativeSpawn,
+            context.target?.ObjectId ?? ulong.MaxValue,
+            context.spellDamageMultiplier);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -87,6 +87,9 @@ public class SpellCasterNet : NetworkBehaviour {
         networkObject.SpawnWithOwnership(context.caster.OwnerId);
         var id = networkObject.NetworkObjectId;
         context.caster.HandleSpellLimit(context.spell, main);
+        var index = main.AddComponent<ArcIndex>();
+        index.Index = context.index;
+        index.Count = context.count;
 
         var prefabId = context.spell.coreType switch {
             CoreType.Projectile => (int)context.spell.projectile.prefabId,

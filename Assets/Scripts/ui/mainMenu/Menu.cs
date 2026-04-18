@@ -68,7 +68,7 @@ public class Menu : MonoBehaviour {
     }
 
     private void OnStateChanged(LobbyManager.PlayerState state) {
-        var newValue = state == LobbyManager.PlayerState.InLobby;
+        var newValue = state == LobbyManager.PlayerState.InLobby || state == LobbyManager.PlayerState.InGame;
         if (newValue && _state != State.Lobby) {
             StartCoroutine(UpdateAvatar(true));
             _state = State.Lobby;

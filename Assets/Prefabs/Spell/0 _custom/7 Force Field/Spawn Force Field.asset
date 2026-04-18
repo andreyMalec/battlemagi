@@ -16,11 +16,15 @@ MonoBehaviour:
   preview: 1
   instanceCount: 1
   instanceLimit: 1
+  disableInstanceMultiplier: 1
   multiInstanceDelay: 0.2
   delayOrigin: 1
   useAlternativeSpawnMode: 0
   alternativeSpawnMode: 0
+  useVectorStep: 0
   forwardStep: 3
+  forwardVectorStep: {x: 0, y: 0, z: 0}
+  forwardAngleStep: {x: 0, y: 0, z: 0}
   arcAngleStep: 15
   coneRadius: 2
   coneHeight: 5

@@ -15,12 +15,13 @@ MonoBehaviour:
   spawnMode: 11
   preview: 8
   instanceCount: 1
-  instanceLimit: 1
-  disableInstanceMultiplier: 0
-  multiInstanceDelay: 0.2
+  instanceLimit: 0
+  disableInstanceMultiplier: 1
+  multiInstanceDelay: 0
   delayOrigin: 1
   useAlternativeSpawnMode: 0
   alternativeSpawnMode: 0
+  useVectorStep: 0
   forwardStep: 3
   forwardVectorStep: {x: 0, y: 0, z: 0}
   forwardAngleStep: {x: 0, y: 0, z: 0}

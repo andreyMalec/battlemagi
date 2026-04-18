@@ -11,9 +11,11 @@ public interface ISpellSpawn {
     IEnumerable<SpawnContext> ShapeCenter(SpawnContext context);
 
     public static int InstanceCount(SpawnContext context) {
-        var instanceMulti = context.caster.GetComponent<Stats>()?.GetFinal(StatType.ProjectileCount) ?? 1f;
-        if (context.spell.spawn.disableInstanceMultiplier)
-            instanceMulti = 1f;
+        var instanceMulti = 1f;
+        if (!context.spell.spawn.disableInstanceMultiplier) {
+            instanceMulti = context.caster.GetComponent<Stats>()?.GetFinal(StatType.ProjectileCount) ?? 1f;
+        }
+
         var instanceCount = (int)Math.Floor(context.spawn.instanceCount * instanceMulti);
         if (context.spawn.instanceLimit > 0 && instanceCount > context.spawn.instanceLimit)
             instanceCount = context.spawn.instanceLimit;

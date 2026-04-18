@@ -14,6 +14,8 @@ public record SpawnContext {
 
     public float spellDamageMultiplier = 1f;
     public bool alternativeSpawn;
+    public int index;
+    public int count;
 
     public DelayOrigin DelayOrigin => forceFirstOrigin
         ? DelayOrigin.First
