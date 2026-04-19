@@ -19,4 +19,6 @@ public enum SpellZonePrefabId {
     ZoneExplosionArcane,
     ZoneArcane,
     ZoneEmberLash,
+    ZoneExplosionSun,
+    ZoneSun,
 }

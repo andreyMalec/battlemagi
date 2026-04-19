@@ -329,6 +329,7 @@ GameObject:
   - component: {fileID: 2484748818470685067}
   - component: {fileID: -2114292743755080758}
   - component: {fileID: 5476031713649994788}
+  - component: {fileID: 445873658711594162}
   m_Layer: 0
   m_Name: Tester
   m_TagString: Untagged
@@ -650,6 +651,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerPhysics
   _impulseDamping: 5
   _groundFriction: 8
+--- !u!114 &445873658711594162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056318315711601611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4fa57a6ca704ce7a9a31f5e7383ad52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraZoom
+  zoomKey: 306
+  zoomFov: 20
+  mainCamera: {fileID: 8854033999867419295}
 --- !u!1 &7750010650653659641
 GameObject:
   m_ObjectHideFlags: 0

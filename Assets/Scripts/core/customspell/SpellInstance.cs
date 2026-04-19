@@ -63,6 +63,18 @@ public class SpellInstance : MonoBehaviour, ITarget {
     public void Kill() {
         foreach (var ps in GetComponentsInChildren<ParticleSystem>()) {
             ps.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+
+            if (Mathf.Approximately(ps.main.startLifetime.constant, ps.main.duration)) {
+                ParticleSystem.Particle[] particles = new ParticleSystem.Particle[ps.particleCount];
+                int count = ps.GetParticles(particles);
+
+                for (int i = 0; i < count; i++) {
+                    if (particles[i].remainingLifetime > 1)
+                        particles[i].remainingLifetime = 1f; // уменьшаем оставшуюся жизнь
+                }
+
+                ps.SetParticles(particles, count);
+            }
         }
 
         if (_authorityService != null && _authorityService.IsServer) {
@@ -97,7 +109,7 @@ public class SpellInstance : MonoBehaviour, ITarget {
     }
 
     public void Scale(float k, float lifetime) {
-        var scaleShape = GetComponent<SpellView>().scaleShape;// _view инициализируется только на сервере
+        var scaleShape = GetComponent<SpellView>().scaleShape; // _view инициализируется только на сервере
         foreach (var ps in GetComponentsInChildren<ParticleSystem>(true)) {
             if (exclude.Contains(ps))
                 continue;
@@ -126,7 +138,6 @@ public class SpellInstance : MonoBehaviour, ITarget {
             rz.minDistance *= k;
         }
     }
-
 
     private void OnDrawGizmos() {
         if (Bind == null) return;

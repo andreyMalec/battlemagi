@@ -1,6 +1,8 @@
 using UnityEngine;
 
 public class LookAtPointTransform : ISpellTransform {
+    private const float MinTargetDistanceSqr = 0.0001f;
+
     public Transform Transform { get; private set; }
 
     public SpellMotion Motion { get; set; }
@@ -11,8 +13,8 @@ public class LookAtPointTransform : ISpellTransform {
 
     private ISpellContext _ctx;
 
-    private Vector3 _lastValidTarget;
-    private bool _hasLastValid;
+    private Vector3 _lastMoveDirection;
+    private bool _arrived;
 
     public LookAtPointTransform(float speed, float maxDistance, LayerMask mask) {
         _speed = speed;
@@ -24,40 +26,71 @@ public class LookAtPointTransform : ISpellTransform {
     public void Init(Transform transform, ISpellContext ctx) {
         Transform = transform;
         _ctx = ctx;
-        _hasLastValid = false;
-        _lastValidTarget = transform.position;
+        _lastMoveDirection = transform.forward;
+        _arrived = false;
+        GetTarget();
     }
 
     public void Tick(float dt) {
+        if (_arrived) {
+            Motion = default;
+            return;
+        }
+
         var target = GetTarget();
         var to = target - Transform.position;
-        var dir = to.sqrMagnitude > 0f ? to.normalized : Vector3.zero;
+        var distance = to.magnitude;
+        if (distance * distance <= MinTargetDistanceSqr) {
+            Transform.position = target;
+            Motion = default;
+            _arrived = true;
+            _ctx.SendEvent(new OnLifetimeEndingEvent { remaining = 0 });
+            _ctx.View.Kill(_ctx);
+            return;
+        }
+
+        var dir = to / distance;
+        var step = _speed * (dt * _ctx.Stats.GetFinal(StatType.ProjectileSpeed));
+        var moveDistance = Mathf.Min(step, distance);
 
         Motion = new SpellMotion { Velocity = dir * _speed };
-        Transform.position += Motion.Velocity * (dt * _ctx.Stats.GetFinal(StatType.ProjectileSpeed));
+        Transform.position += dir * moveDistance;
+        _lastMoveDirection = dir;
 
-        if (dir.sqrMagnitude > 0f)
-            Transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
+        if (moveDistance >= distance - 0.0001f) {
+            Transform.position = target;
+            Motion = default;
+            _arrived = true;
+            _ctx.SendEvent(new OnLifetimeEndingEvent { remaining = 0 });
+            _ctx.View.Kill(_ctx);
+        }
+
+        if (_lastMoveDirection.sqrMagnitude > 0f)
+            Transform.rotation = Quaternion.LookRotation(_lastMoveDirection, Vector3.up);
     }
 
     public Vector3 Sample(float dt) {
+        if (_arrived)
+            return Transform.position;
+
         var target = GetTarget();
         var to = target - Transform.position;
-        var dir = to.sqrMagnitude > 0f ? to.normalized : Vector3.zero;
-        return Transform.position + dir * (_speed * dt * _ctx.Stats.GetFinal(StatType.ProjectileSpeed));
+        var distance = to.magnitude;
+        if (distance * distance <= MinTargetDistanceSqr)
+            return target;
+
+        var dir = to / distance;
+        var step = _speed * (dt * _ctx.Stats.GetFinal(StatType.ProjectileSpeed));
+        return Transform.position + dir * Mathf.Min(step, distance);
     }
 
     private Vector3 GetTarget() {
         var ray = new Ray(_ctx.Caster.Origin, _ctx.Caster.Direction);
         if (Physics.Raycast(ray, out var hit, _maxDistance, _mask, QueryTriggerInteraction.Ignore)) {
-            _lastValidTarget = hit.point;
-            _hasLastValid = true;
             return hit.point;
         }
 
-        return _hasLastValid
-            ? _lastValidTarget
-            : (_ctx.Caster.Origin + _ctx.Caster.Direction * _maxDistance);
+        return _ctx.Caster.Origin + _ctx.Caster.Direction * _maxDistance;
     }
 
     public void SetForward(Vector3 forward) {
