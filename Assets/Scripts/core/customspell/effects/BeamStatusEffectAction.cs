@@ -8,6 +8,8 @@ public class BeamStatusEffectAction : ISpellAction {
         var effects = context.Spell.effects;
         if (effects == null || effects.Count == 0) return;
 
+        var applyContext = SpellStatusEffectContext.Create(context);
+
         if (evt is not OnHitEvent hit) return;
 
         if (!SpellEffectResolver.TryGetStatusable(hit.Target, out var statusable, out var ownerId))
@@ -32,7 +34,7 @@ public class BeamStatusEffectAction : ISpellAction {
 
             if (def.effect.duration <= 0f) {
                 base.Apply(context, evt);
-                statusable.AddEffect(context.OwnerId, def.effect);
+                statusable.AddEffect(applyContext, def.effect);
                 continue;
             }
 
@@ -43,7 +45,7 @@ public class BeamStatusEffectAction : ISpellAction {
             _accumulator = 0f;
 
             SpellLog.Log($"SpellAction {GetType().Name} applied to {statusable.name}. Event: {evt.GetType().Name}");
-            statusable.AddEffect(context.OwnerId, def.effect);
+            statusable.AddEffect(applyContext, def.effect);
         }
     }
 }

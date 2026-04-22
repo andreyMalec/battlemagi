@@ -7,4 +7,5 @@ public interface SpellSystemEvent {
     void OnRemoveVisible(SpellView view);
     void OnAttack(SpellCasterSummon caster);
     void OnLifetimePercent(SpellView view, float percent);
+    void OnReturnToCaster(ISpellContext context);
 }

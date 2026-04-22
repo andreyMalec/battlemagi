@@ -9,6 +9,8 @@ public class ProjectileStatusEffectAction : ISpellAction {
         var effects = context.Spell.effects;
         if (effects == null || effects.Count == 0) return;
 
+        var applyContext = SpellStatusEffectContext.Create(context);
+
         if (!SpellEffectResolver.TryGetStatusable(hit.Target, out var statusable, out var ownerId))
             return;
 
@@ -30,7 +32,7 @@ public class ProjectileStatusEffectAction : ISpellAction {
             }
 
             SpellLog.Log($"SpellAction {GetType().Name} applied to {statusable.name}. Event: {evt.GetType().Name}");
-            statusable.AddEffect(context.OwnerId, def.effect);
+            statusable.AddEffect(applyContext, def.effect);
         }
     }
 }

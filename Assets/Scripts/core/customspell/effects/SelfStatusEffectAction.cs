@@ -8,6 +8,7 @@ public class SelfStatusEffectAction : ISpellAction {
         if (effects == null || effects.Count == 0) return;
 
         var statusable = context.Caster.GetComponent<Statusable>();
+        var applyContext = SpellStatusEffectContext.Create(context);
 
         for (var i = 0; i < effects.Count; i++) {
             var def = effects[i];
@@ -27,7 +28,7 @@ public class SelfStatusEffectAction : ISpellAction {
             }
 
             SpellLog.Log($"SpellAction {GetType().Name} applied to {statusable.name}. Event: {evt.GetType().Name}");
-            statusable.AddEffect(context.OwnerId, def.effect);
+            statusable.AddEffect(applyContext, def.effect);
         }
     }
 }

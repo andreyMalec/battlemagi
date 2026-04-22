@@ -29,6 +29,9 @@ public class LinearMoveTransform : ISpellTransform {
     public void Tick(float dt) {
         Transform.position = EvaluatePosition(dt, Motion.Velocity, out var velocity);
         Motion = new SpellMotion { Velocity = velocity };
+        var dir = Motion.Velocity;
+        if (dir.sqrMagnitude > 0f)
+            Transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
     }
 
     public Vector3 Sample(float dt) {

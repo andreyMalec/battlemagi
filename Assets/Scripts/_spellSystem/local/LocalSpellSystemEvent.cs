@@ -33,4 +33,8 @@ public class LocalSpellSystemEvent : MonoBehaviour, SpellSystemEvent {
         var lifetime = view.GetComponent<SpellLifetime>();
         lifetime.OnLifetimePercent(percent);
     }
+
+    public void OnReturnToCaster(ISpellContext context) {
+        context.View.BroadcastMessage("OnReturnToCaster", null, SendMessageOptions.DontRequireReceiver);
+    }
 }

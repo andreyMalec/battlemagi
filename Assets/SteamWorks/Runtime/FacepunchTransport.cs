@@ -97,9 +97,9 @@ namespace Netcode.Transports.Facepunch
                 Debug.LogWarning($"[{nameof(FacepunchTransport)}] - Failed to disconnect remote client with ID {clientId}, client not connected.");
         }
 
-        public override unsafe ulong GetCurrentRtt(ulong clientId)
+        public override ulong GetCurrentRtt(ulong clientId)
         {
-            return 0;
+            return TryGetNetworkMetrics(clientId, out var pingMs, out _) ? (ulong)pingMs : 0;
         }
 
         public override void Initialize(NetworkManager networkManager = null)
@@ -192,6 +192,39 @@ namespace Netcode.Transports.Facepunch
                 return;
 
             payloadCache = new byte[Math.Max(payloadCache.Length * 2, size)];
+        }
+
+        public bool TryGetNetworkMetrics(ulong clientId, out int pingMs, out float packetLossPercent)
+        {
+            pingMs = 0;
+            packetLossPercent = 0f;
+
+            if (clientId == ServerClientId)
+            {
+                if (connectionManager == null || connectionManager.Connection.Id == 0)
+                    return false;
+
+                var status = connectionManager.Connection.QuickStatus();
+                pingMs = Mathf.Max(0, status.Ping);
+                packetLossPercent = CalculatePacketLossPercent(status.ConnectionQualityLocal, status.ConnectionQualityRemote);
+                return true;
+            }
+
+            if (connectedClients != null && connectedClients.TryGetValue(clientId, out Client user))
+            {
+                var status = user.connection.QuickStatus();
+                pingMs = Mathf.Max(0, status.Ping);
+                packetLossPercent = CalculatePacketLossPercent(status.ConnectionQualityLocal, status.ConnectionQualityRemote);
+                return true;
+            }
+
+            return false;
+        }
+
+        private static float CalculatePacketLossPercent(float connectionQualityLocal, float connectionQualityRemote)
+        {
+            float deliveredPackets = Mathf.Min(connectionQualityLocal, connectionQualityRemote);
+            return Mathf.Clamp((1f - deliveredPackets) * 100f, 0f, 100f);
         }
 
         void IConnectionManager.OnConnecting(ConnectionInfo info)

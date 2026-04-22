@@ -31,12 +31,16 @@ public class Statusable : MonoBehaviour {
     }
 
     public void AddEffect(ulong ownerClientId, StatusEffectData data) {
+        AddEffect(new StatusEffectApplyContext(ownerClientId), data);
+    }
+
+    public void AddEffect(StatusEffectApplyContext applyContext, StatusEffectData data) {
         if (data == null) return;
 
         if (!_bridgeTyped.IsServer) return;
         if (!_bridgeTyped.IsSpawned) return;
 
-        SpellLog.Log($"Adding effect {data.effectName} to {gameObject.name} from client {ownerClientId}");
+        SpellLog.Log($"Adding effect {data.effectName} to {gameObject.name} from client {applyContext.ownerClientId}");
         if (_active.TryGetValue(data.effectName, out var previous)) {
             switch (data.CompareTo(previous.data)) {
                 case StatusEffectData.RESET_TIME:
@@ -44,22 +48,22 @@ public class Statusable : MonoBehaviour {
                     break;
                 case StatusEffectData.REPLACE:
                     RemoveEffect(data.effectName);
-                    Apply(ownerClientId, data);
+                    Apply(applyContext, data);
                     break;
                 case StatusEffectData.ADD:
-                    Apply(ownerClientId, data);
+                    Apply(applyContext, data);
                     break;
             }
         } else {
-            Apply(ownerClientId, data);
+            Apply(applyContext, data);
         }
 
         _bridgeTyped?.SyncFromCore(this);
     }
 
-    private void Apply(ulong ownerClientId, StatusEffectData data) {
+    private void Apply(StatusEffectApplyContext applyContext, StatusEffectData data) {
         var runtime = data.CreateRuntime();
-        runtime.OnApply(ownerClientId, gameObject);
+        runtime.OnApply(applyContext, gameObject);
         _active[data.effectName] = runtime;
         OnAdded?.Invoke(runtime);
     }

@@ -7,5 +7,7 @@ public enum SpellProjectilePrefabId {
     ProjectileLightning,
     ProjectileEmpty,
     ProjectileCharged,
+    ProjectileSpark,
+    ProjectileHand,
 }
 

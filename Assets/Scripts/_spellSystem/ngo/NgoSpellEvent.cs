@@ -90,6 +90,21 @@ public class NgoSpellSystemEvent : NetworkBehaviour, SpellSystemEvent {
         var lifetime = obj.GetComponentInChildren<SpellLifetime>();
         lifetime.OnLifetimePercent(percent);
     }
+
+    public void OnReturnToCaster(ISpellContext context) {
+        var instance = context.View.Id();
+        OnReturnToCasterClientRpc(instance);
+    }
+
+    [ClientRpc]
+    private void OnReturnToCasterClientRpc(ulong netObjectId) {
+        var obj = netObjectId.Get();
+        if (obj == null) return;
+        SpellLog.Log($"[NetworkSpellSystemEvent] OnReturnToCasterClientRpc: {netObjectId}");
+
+        var instance = obj.GetComponentInChildren<SpellInstance>();
+        instance.BroadcastMessage("OnReturnToCaster", null, SendMessageOptions.DontRequireReceiver);
+    }
 }
 
 internal static class NetworkSpellSystemEventExt {

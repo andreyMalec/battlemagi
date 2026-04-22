@@ -12,13 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 828b0ca3cf304def8ffca524fefb016c, type: 3}
   m_Name: Proj Furious Sun
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileDefinition
-  prefabId: 0
+  prefabId: 8
   moveType: 2
   moveSpeed: 7
   moveAlongGround: 0
   groundOffset: 0.1
   enableMaxDistance: 0
   maxDistance: 20
+  returnToCaster: 0
   enableGravity: 0
   gravity: {x: 0, y: -9.81, z: 0}
   lookAtMaxDistance: 50
@@ -49,6 +50,7 @@ MonoBehaviour:
   forkCount: 3
   forkSpreadAngle: 35
   echoOnHit: 0
+  spawnInHit: 0
   onHitSpawn: {fileID: 0}
   atMaxDistanceSpawn: {fileID: 0}
   atStepDistanceSpawn: {fileID: 0}

@@ -12,6 +12,7 @@ public class ProjectileDefinition : ScriptableObject, IValidate {
     [ShowIf(EConditionOperator.And, "_transformLinear", "moveAlongGround")] public float groundOffset = 0.1f;
     [ShowIf("_canMove")] public bool enableMaxDistance;
     [ShowIf("enableMaxDistance")] public float maxDistance = 20f;
+    [ShowIf(EConditionOperator.And, "enableMaxDistance", "_canReturnToCaster")] public bool returnToCaster;
     public bool enableGravity;
     [ShowIf("enableGravity")] public Vector3 gravity = new(0, -9.81f, 0);
 
@@ -63,6 +64,7 @@ public class ProjectileDefinition : ScriptableObject, IValidate {
 
     [Header("On Hit effects")]
     public bool echoOnHit;
+    public bool spawnInHit;
 
     [Header("Spawned Spells")]
     public SpellDefinition onHitSpawn;
@@ -80,6 +82,7 @@ public class ProjectileDefinition : ScriptableObject, IValidate {
     private bool _transformLookAtPoint = false;
     private bool _transformFollowCaster = false;
     private bool _canHoming = false;
+    private bool _canReturnToCaster = false;
     [ShowIf("false")] [HideInInspector] public bool spawnAtStep = false;
 
     public void Validate() {
@@ -90,7 +93,11 @@ public class ProjectileDefinition : ScriptableObject, IValidate {
         _transformLookAtPoint = moveType is SpellMovement.LookAtPoint;
         _transformFollowCaster = moveType is SpellMovement.FollowCaster;
         _canHoming = moveType is SpellMovement.Linear or SpellMovement.Spiral or SpellMovement.Accelerated;
+        _canReturnToCaster = moveType is SpellMovement.Linear or SpellMovement.Spiral or SpellMovement.Accelerated;
         spawnAtStep = atStepDistanceSpawn != null;
+
+        if (!_canReturnToCaster)
+            returnToCaster = false;
     }
 
 #if UNITY_EDITOR

@@ -15,7 +15,9 @@ MonoBehaviour:
   mode: 0
   canHitAllies: 0
   vectorMode: 0
-  impulse: 8
+  impulse: 12
   forcePerSecond: 10
   duration: 0.5
+  beamSelfImpulse: 0.75
+  beamSelfImpulseAngle: 60
   upBias: 1

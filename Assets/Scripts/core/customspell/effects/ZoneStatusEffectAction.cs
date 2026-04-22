@@ -9,15 +9,17 @@ public class ZoneStatusEffectAction : ISpellAction {
         var effects = context.Spell.effects;
         if (effects == null || effects.Count == 0) return;
 
+        var applyContext = SpellStatusEffectContext.Create(context);
+
         for (var i = 0; i < effects.Count; i++) {
             var def = effects[i];
             if (def == null || def.effect == null) continue;
 
-            Apply(context, def, stay, evt);
+            Apply(context, applyContext, def, stay, evt);
         }
     }
 
-    private void Apply(ISpellContext context, EffectDefinition def, OnZoneStayEvent stay, SpellEvent evt) {
+    private void Apply(ISpellContext context, StatusEffectApplyContext applyContext, EffectDefinition def, OnZoneStayEvent stay, SpellEvent evt) {
         foreach (var target in stay.Targets) {
             if (!SpellEffectResolver.TryGetStatusable(target, out var statusable, out var ownerId))
                 continue;
@@ -38,7 +40,7 @@ public class ZoneStatusEffectAction : ISpellAction {
             }
 
             SpellLog.Log($"SpellAction {GetType().Name} applied to {statusable.name}. Event: {evt.GetType().Name}");
-            statusable.AddEffect(context.OwnerId, def.effect);
+            statusable.AddEffect(applyContext, def.effect);
         }
     }
 }

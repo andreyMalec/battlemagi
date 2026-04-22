@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 828b0ca3cf304def8ffca524fefb016c, type: 3}
+  m_Name: New Projectile Spell
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectileDefinition
+  prefabId: 9
+  moveType: 1
+  moveSpeed: 100
+  moveAlongGround: 0
+  groundOffset: 0.1
+  enableMaxDistance: 1
+  maxDistance: 50
+  returnToCaster: 0
+  enableGravity: 1
+  gravity: {x: 0, y: -15, z: 0}
+  lookAtMaxDistance: 50
+  lookAtRayMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  angularSpeed: 5
+  spiralRadius: 0.5
+  spiralAxis: 0
+  acceleration: 0
+  enableHoming: 0
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  homingRadius: 10
+  homingMaxTurnDegrees: 25
+  homingSlerp: 0.35
+  enableSquashStretch: 0
+  stretchAmplitude: 0.2
+  stretchFrequency: 8
+  stretchDamping: 0
+  enableBounce: 0
+  maxBounces: 1
+  bounceSpeedMultiplier: 0.1
+  enablePierce: 0
+  maxPierces: 1
+  enableFork: 0
+  forkCount: 3
+  forkSpreadAngle: 35
+  echoOnHit: 0
+  spawnInHit: 1
+  onHitSpawn: {fileID: 11400000, guid: 32f1b645b42676b42b96e8554a53a6ab, type: 2}
+  atMaxDistanceSpawn: {fileID: 0}
+  atStepDistanceSpawn: {fileID: 0}
+  spawnStep: 10
+  onLifetimeEndSpawn: {fileID: 0}
+  onLifetimeHalfSpawn: {fileID: 0}
+  spawnAtStep: 0

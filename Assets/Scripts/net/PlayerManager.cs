@@ -17,6 +17,8 @@ public class PlayerManager : NetworkBehaviour {
         public int Archetype;
         public float Hue;
         public float Saturation;
+        public int PingMs;
+        public float PacketLossPercent;
 
         public PlayerData(ulong clientId, ulong steamId) {
             ClientId = clientId;
@@ -28,6 +30,8 @@ public class PlayerManager : NetworkBehaviour {
             Archetype = 0;
             Hue = 78f;
             Saturation = 0.5f;
+            PingMs = 0;
+            PacketLossPercent = 0f;
         }
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter {
@@ -40,15 +44,18 @@ public class PlayerManager : NetworkBehaviour {
             serializer.SerializeValue(ref Archetype);
             serializer.SerializeValue(ref Hue);
             serializer.SerializeValue(ref Saturation);
+            serializer.SerializeValue(ref PingMs);
+            serializer.SerializeValue(ref PacketLossPercent);
         }
 
         public bool Equals(PlayerData other) =>
             ClientId == other.ClientId && SteamId == other.SteamId && Kills == other.Kills && Deaths == other.Deaths &&
             Assists == other.Assists && Flags == other.Flags && Archetype == other.Archetype &&
-            Mathf.Approximately(Hue, other.Hue) && Mathf.Approximately(Saturation, other.Saturation);
+            Mathf.Approximately(Hue, other.Hue) && Mathf.Approximately(Saturation, other.Saturation) &&
+            PingMs == other.PingMs && Mathf.Approximately(PacketLossPercent, other.PacketLossPercent);
 
         public override string ToString() {
-            return $"PlayerData({ClientId}, {SteamId}, {Archetype}, {Flags}, {Kills}, {Deaths}, {Assists}, {Hue}, {Saturation})";
+            return $"PlayerData({ClientId}, {SteamId}, {Archetype}, {Flags}, {Kills}, {Deaths}, {Assists}, {Hue}, {Saturation}, {PingMs}, {PacketLossPercent})";
         }
 
         public GameObject PlayerObject() {
@@ -65,8 +72,11 @@ public class PlayerManager : NetworkBehaviour {
     private NetworkList<PlayerData> players;
 
     [SerializeField] private List<PlayerData> debugPlayers = new(); // видимый в инспекторе
+    [SerializeField] private float networkStatsRefreshInterval = 1f;
 
     public static PlayerManager Instance { get; private set; }
+
+    private float _networkStatsRefreshTimer;
 
     private void Awake() {
         if (Instance == null) Instance = this;
@@ -77,6 +87,16 @@ public class PlayerManager : NetworkBehaviour {
 
     private void Start() {
         NetworkManager.Singleton.OnConnectionEvent += OnConnectionEvent;
+    }
+
+    private void Update() {
+        if (!IsServer || !IsSpawned) return;
+
+        _networkStatsRefreshTimer -= Time.unscaledDeltaTime;
+        if (_networkStatsRefreshTimer > 0f) return;
+
+        _networkStatsRefreshTimer = networkStatsRefreshInterval;
+        SyncNetworkStats();
     }
 
     public override void OnDestroy() {
@@ -105,8 +125,34 @@ public class PlayerManager : NetworkBehaviour {
     }
 
     public override void OnNetworkSpawn() {
-        if (IsServer)
+        if (IsServer) {
             players.Clear();
+            _networkStatsRefreshTimer = 0f;
+        }
+    }
+
+    private Netcode.Transports.Facepunch.FacepunchTransport GetFacepunchTransport() {
+        return NetworkManager.Singleton.NetworkConfig.NetworkTransport as Netcode.Transports.Facepunch.FacepunchTransport;
+    }
+
+    private void SyncNetworkStats() {
+        var transport = GetFacepunchTransport();
+        if (transport == null) return;
+
+        for (int i = 0; i < players.Count; i++) {
+            var player = players[i];
+            int pingMs = 0;
+            float packetLossPercent = 0f;
+
+            if (player.ClientId != NetworkManager.ServerClientId)
+                transport.TryGetNetworkMetrics(player.ClientId, out pingMs, out packetLossPercent);
+
+            if (player.PingMs == pingMs && Mathf.Approximately(player.PacketLossPercent, packetLossPercent)) continue;
+
+            player.PingMs = pingMs;
+            player.PacketLossPercent = packetLossPercent;
+            players[i] = player;
+        }
     }
 
     private void OnPlayersChanged(NetworkListEvent<PlayerData> changeEvent) {

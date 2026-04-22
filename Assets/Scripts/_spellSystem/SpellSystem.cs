@@ -398,6 +398,8 @@ public class SpellSystem {
         var sensors = new List<ISensor>();
         if ((def.summon.sensors & SummonSensor.Radius) != 0)
             sensors.Add(new RadiusSensor(def.summon.sensorRadius));
+        if ((def.summon.sensors & SummonSensor.LineOfSight) != 0)
+            sensors.Add(new LineOfSightSensor());
         var core = new SummonCore(
             context,
             triggers.ToArray()
@@ -487,7 +489,8 @@ public class SpellSystem {
         if (def.enableMaxDistance) {
             move = new MaxDistanceTransform(
                 move,
-                def.maxDistance
+                def.maxDistance,
+                def.returnToCaster
             );
         }
 
@@ -541,7 +544,8 @@ public class SpellSystem {
         if (def.enableMaxDistance) {
             move = new MaxDistanceTransform(
                 move,
-                def.maxDistance
+                def.maxDistance,
+                def.returnToCaster
             );
         }
 
@@ -577,7 +581,8 @@ public class SpellSystem {
         if (def.enableMaxDistance) {
             move = new MaxDistanceTransform(
                 move,
-                def.maxDistance
+                def.maxDistance,
+                def.returnToCaster
             );
         }
 

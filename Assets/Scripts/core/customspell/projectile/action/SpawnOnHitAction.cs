@@ -14,13 +14,21 @@ public class SpawnOnHitAction : SpawnOnEventAction {
 
     protected override SpawnContext SpawnContext(ISpellContext context, SpellDefinition spell, SpellEvent evt) {
         var hit = (OnHitEvent)evt;
-        var rotation = ComputeRotation(hit.Normal, context.Movement.Transform.forward);
+        var rotation = context.Spell.projectile.spawnInHit
+            ? Quaternion.identity
+            : ComputeRotation(hit.Normal, context.Movement.Transform.forward);
+        var forward = context.Spell.projectile.spawnInHit
+            ? context.Movement.Transform.forward
+            : rotation * Vector3.forward;
+        var position = context.Spell.projectile.spawnInHit
+            ? hit.Point - forward * 0.1f
+            : hit.Point;
         var spawnContext = new SpawnContext {
             spell = spell,
             spawn = spell.spawn,
-            position = hit.Point,
+            position = position,
             rotation = rotation,
-            forward = rotation * Vector3.forward,
+            forward = forward,
             caster = context.Caster,
             forceFirstOrigin = true,
             spellDamageMultiplier = context.Stats.GetFinal(StatType.SpellDamage)

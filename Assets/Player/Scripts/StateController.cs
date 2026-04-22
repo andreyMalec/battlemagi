@@ -18,6 +18,10 @@ public class StateController : NetworkBehaviour {
         AttachClientRpc(originClientId, NetworkObjectId, active);
     }
 
+    public void AttachToObject(ulong originNetObjId, bool active) {
+        AttachToObjectClientRpc(originNetObjId, NetworkObjectId, active);
+    }
+
     [ClientRpc]
     private void AttachClientRpc(ulong originClientId, ulong targetNetObj, bool active) {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetNetObj, out var netObj)) return;
@@ -32,6 +36,20 @@ public class StateController : NetworkBehaviour {
             } else {
                 netObj.TryRemoveParent();
             }
+        } else {
+            netObj.TryRemoveParent();
+        }
+    }
+
+    [ClientRpc]
+    private void AttachToObjectClientRpc(ulong originNetObjId, ulong targetNetObj, bool active) {
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetNetObj, out var netObj)) return;
+        Debug.Log($"AttachToObjectClientRpc originNetObjId={originNetObjId}, targetNetObj={netObj}, active={active}");
+        var movement = netObj.GetComponent<FirstPersonMovement>();
+        if (movement != null)
+            movement.enabled = !active;
+        if (active && NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(originNetObjId, out var originObj)) {
+            netObj.TrySetParent(originObj);
         } else {
             netObj.TryRemoveParent();
         }

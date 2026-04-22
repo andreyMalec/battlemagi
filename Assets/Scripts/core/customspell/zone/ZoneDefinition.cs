@@ -13,6 +13,7 @@ public class ZoneDefinition : ScriptableObject, IValidate {
 
     [ShowIf("_canMove")] public bool enableMaxDistance;
     [ShowIf("enableMaxDistance")] public float maxDistance = 20f;
+    [ShowIf(EConditionOperator.And, "enableMaxDistance", "_canReturnToCaster")] public bool returnToCaster;
 
     [Header("LookAtPoint")]
     [ShowIf("_transformLookAtPoint")] public float lookAtMaxDistance = 50f;
@@ -69,6 +70,7 @@ public class ZoneDefinition : ScriptableObject, IValidate {
     private bool _transformLookAtPoint = false;
     private bool _transformFollowCaster = false;
     private bool _canHoming = false;
+    private bool _canReturnToCaster = false;
     [ShowIf("false")] [HideInInspector] public bool spawnAtStep = false;
 
     public void Validate() {
@@ -79,7 +81,11 @@ public class ZoneDefinition : ScriptableObject, IValidate {
         _transformLookAtPoint = moveType is SpellMovement.LookAtPoint;
         _transformFollowCaster = moveType is SpellMovement.FollowCaster;
         _canHoming = moveType is SpellMovement.Linear or SpellMovement.Spiral or SpellMovement.Accelerated;
+        _canReturnToCaster = moveType is SpellMovement.Linear or SpellMovement.Spiral or SpellMovement.Accelerated;
         spawnAtStep = atStepDistanceSpawn != null;
+
+        if (!_canReturnToCaster)
+            returnToCaster = false;
     }
 
 #if UNITY_EDITOR
