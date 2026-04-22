@@ -14,11 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ZoneDefinition
   prefabId: 21
   moveType: 4
-  moveSpeed: 5
+  moveSpeed: 7
   moveAlongGround: 0
   groundOffset: 0.1
   enableMaxDistance: 0
   maxDistance: 20
+  returnToCaster: 0
   lookAtMaxDistance: 50
   lookAtRayMask:
     serializedVersion: 2

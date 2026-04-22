@@ -77,6 +77,8 @@ public class PlayerManager : NetworkBehaviour {
     public static PlayerManager Instance { get; private set; }
 
     private float _networkStatsRefreshTimer;
+    private int _lastReportedPingMs = -1;
+    private float _lastReportedPacketLossPercent = -1f;
 
     private void Awake() {
         if (Instance == null) Instance = this;
@@ -90,13 +92,18 @@ public class PlayerManager : NetworkBehaviour {
     }
 
     private void Update() {
-        if (!IsServer || !IsSpawned) return;
+        if (!IsSpawned) return;
 
         _networkStatsRefreshTimer -= Time.unscaledDeltaTime;
         if (_networkStatsRefreshTimer > 0f) return;
 
         _networkStatsRefreshTimer = networkStatsRefreshInterval;
-        SyncNetworkStats();
+
+        if (IsClient)
+            ReportLocalNetworkStats();
+
+        if (IsServer && !IsClient)
+            SyncNetworkStats();
     }
 
     public override void OnDestroy() {
@@ -152,6 +159,33 @@ public class PlayerManager : NetworkBehaviour {
             player.PingMs = pingMs;
             player.PacketLossPercent = packetLossPercent;
             players[i] = player;
+        }
+    }
+
+    private void ReportLocalNetworkStats() {
+        var transport = GetFacepunchTransport();
+        if (transport == null) return;
+        if (!transport.TryGetNetworkMetrics(NetworkManager.ServerClientId, out var pingMs, out var packetLossPercent)) return;
+
+        if (_lastReportedPingMs == pingMs && Mathf.Approximately(_lastReportedPacketLossPercent, packetLossPercent)) return;
+
+        _lastReportedPingMs = pingMs;
+        _lastReportedPacketLossPercent = packetLossPercent;
+        UpdateNetworkStatsServerRpc(pingMs, packetLossPercent);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void UpdateNetworkStatsServerRpc(int pingMs, float packetLossPercent, ServerRpcParams rpcParams = default) {
+        var clientId = rpcParams.Receive.SenderClientId;
+        for (int i = 0; i < players.Count; i++) {
+            var player = players[i];
+            if (player.ClientId != clientId) continue;
+            if (player.PingMs == pingMs && Mathf.Approximately(player.PacketLossPercent, packetLossPercent)) return;
+
+            player.PingMs = pingMs;
+            player.PacketLossPercent = packetLossPercent;
+            players[i] = player;
+            return;
         }
     }
 

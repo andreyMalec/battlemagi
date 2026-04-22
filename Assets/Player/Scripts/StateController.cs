@@ -46,8 +46,11 @@ public class StateController : NetworkBehaviour {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetNetObj, out var netObj)) return;
         Debug.Log($"AttachToObjectClientRpc originNetObjId={originNetObjId}, targetNetObj={netObj}, active={active}");
         var movement = netObj.GetComponent<FirstPersonMovement>();
-        if (movement != null)
+        if (movement != null) {
             movement.enabled = !active;
+            var cc = netObj.GetComponent<CharacterController>();
+            cc.enabled = !active;
+        }
         if (active && NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(originNetObjId, out var originObj)) {
             netObj.TrySetParent(originObj);
         } else {
