@@ -9,6 +9,10 @@ public class ArmorEffect : StatusEffectData {
         return new ArmorRuntime(this);
     }
 
+    public override string StringValue() {
+        return amount.ToString("0");
+    }
+
     private class ArmorRuntime : StatusEffectRuntime {
         private readonly ArmorEffect _data;
 

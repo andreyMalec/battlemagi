@@ -29,6 +29,7 @@ public class SpellDefinition : ScriptableObject, IValidate {
 
     public bool charging = false;
     [ShowIf("charging")] public float chargeDuration = 0f;
+    [ShowIf("_usesManaPerSecond")] public float manaPerSecond = 0f;
 
     [Header("Projectile")]
     [ShowIf("_typeProjectile")] public ProjectileDefinition projectile;
@@ -50,6 +51,7 @@ public class SpellDefinition : ScriptableObject, IValidate {
     private bool _typeBeam = false;
     private bool _typeSummon = false;
     private bool _typeSelf = false;
+    private bool _usesManaPerSecond = false;
 
     public void Validate() {
         _typeProjectile = coreType is CoreType.Projectile;
@@ -57,6 +59,7 @@ public class SpellDefinition : ScriptableObject, IValidate {
         _typeBeam = coreType is CoreType.Beam;
         _typeSummon = coreType is CoreType.Summon;
         _typeSelf = coreType is CoreType.Self;
+        _usesManaPerSecond = channeling || charging;
 
         if (_typeProjectile) {
             zone = null;

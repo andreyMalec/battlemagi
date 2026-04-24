@@ -22,4 +22,8 @@ public abstract class StatusEffectData : ScriptableObject {
     public virtual int CompareTo(StatusEffectData other) {
         return RESET_TIME;
     }
+
+    public virtual string StringValue() {
+        return "";
+    }
 }

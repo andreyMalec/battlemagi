@@ -30,13 +30,14 @@ MonoBehaviour:
     m_Bits: 576
   castWaitingIndex: 0
   invocationIndex: 10
-  manaCost: 25
+  manaCost: 0
   bloodMagic: 0
   echoCount: 0
   channeling: 0
   channelDuration: 0
   charging: 1
   chargeDuration: 3
+  manaPerSecond: 25
   projectile: {fileID: 11400000, guid: 61c224b2e9e8b234cb362a2e2c915474, type: 2}
   zone: {fileID: 0}
   beam: {fileID: 0}

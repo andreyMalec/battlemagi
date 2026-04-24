@@ -30,7 +30,7 @@ public class PickUp : NetworkBehaviour {
                 OnPickupClientRpc(
                     other.GetComponent<NetworkObject>().OwnerClientId,
                     R.String(toUI.title),
-                    R.String(toUI.description),
+                    R.String(toUI.description, toUI.StringValue()),
                     toUI.color);
 
             // server-authoritative despawn

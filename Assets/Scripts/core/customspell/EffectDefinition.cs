@@ -22,7 +22,7 @@ public enum StatusEffectType {
     ManaStone,
 
     StatMultiplier,
-    AttachToSpell,
+    ForcedMovement,
 }
 
 [CreateAssetMenu(fileName = "New Spell Effect", menuName = "Spells/Effect Definition")]
@@ -43,7 +43,7 @@ public class EffectDefinition : ScriptableObject, IValidate {
             StatusEffectType.None => null,
             StatusEffectType.Armor => Ensure<ArmorEffect>(effect),
             StatusEffectType.Attach => Ensure<AttachEffect>(effect),
-            StatusEffectType.AttachToSpell => Ensure<AttachToProjectileEffect>(effect),
+            StatusEffectType.ForcedMovement => Ensure<ForcedMovementEffect>(effect),
             StatusEffectType.DamageOverTime => Ensure<DamageOverTimeEffect>(effect),
             StatusEffectType.Freeze => Ensure<FreezeEffect>(effect),
             StatusEffectType.RuneOfStasis => Ensure<RuneOfStasisEffect>(effect),

@@ -9,6 +9,10 @@ public class ManaStoneEffect : StatusEffectData {
         return new ManaStoneRuntime(this);
     }
 
+    public override string StringValue() {
+        return amount.ToString("0");
+    }
+
     private class ManaStoneRuntime : StatusEffectRuntime {
         private readonly ManaStoneEffect _data;
 

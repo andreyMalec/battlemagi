@@ -37,6 +37,7 @@ public class SpellCasterPlayer : SpellCaster {
     private Coroutine _chargingRoutine;
     private SpellDefinition _chargingSpell;
     private float _chargingDamageMultiplier = 1f;
+    private bool _chargingUsedEcho;
 
     private int _echoRemaining;
     private SpellDefinition _echoSpell;
@@ -174,12 +175,9 @@ public class SpellCasterPlayer : SpellCaster {
     }
 
     public override void Cast(SpellDefinition spell) {
-        var usedEcho = _echoSpell == spell && _echoRemaining > 0;
+        var usedEcho = spell.charging ? _chargingUsedEcho : ConsumeCostOrEcho(spell);
+        _chargingUsedEcho = false;
         base.Cast(spell);
-
-        if (!spell.charging && !spell.channeling) {
-            ConsumeCostOrEcho(spell);
-        }
 
         if (spell.channeling) {
             _channelingRoutine = StartCoroutine(Channel(spell));
@@ -189,13 +187,14 @@ public class SpellCasterPlayer : SpellCaster {
         StartCoroutine(BeginEcho(spell, usedEcho));
     }
 
-    private void ConsumeCostOrEcho(SpellDefinition spell) {
+    private bool ConsumeCostOrEcho(SpellDefinition spell) {
         if (_echoSpell == spell && _echoRemaining > 0) {
             _echoRemaining--;
-            return;
+            return true;
         }
 
         SpendResourceServer(spell, mana.CostForCast(spell));
+        return false;
     }
 
     private bool CanStartCast(SpellDefinition spell) {
@@ -203,9 +202,6 @@ public class SpellCasterPlayer : SpellCaster {
         if (spell.bloodMagic) {
             if (_echoSpell == spell && _echoRemaining > 0)
                 return true;
-
-            if (spell.channeling || spell.charging)
-                return _damageable.CanSpendHealthCost(0f);
 
             return _damageable.CanSpendHealthCost(mana.CostForCast(spell));
         }
@@ -299,6 +295,7 @@ public class SpellCasterPlayer : SpellCaster {
         }
 
         Charging = false;
+        _chargingUsedEcho = false;
         _chargingDamageMultiplier = 1f;
 
         if (_channelingRoutine != null) {
@@ -325,6 +322,7 @@ public class SpellCasterPlayer : SpellCaster {
 
     private void StartCharging(SpellDefinition spell) {
         if (_chargingRoutine != null) StopCoroutine(_chargingRoutine);
+        _chargingUsedEcho = ConsumeCostOrEcho(spell);
         Charging = true;
         _chargingSpell = spell;
         _chargingDamageMultiplier = 1f;

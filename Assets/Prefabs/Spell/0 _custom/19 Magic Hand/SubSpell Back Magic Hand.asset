@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 70d6ac2600d5440ab45bcb7d2aabe7d3, type: 3}
-  m_Name: SubSpell Back
+  m_Name: SubSpell Back Magic Hand
   m_EditorClassIdentifier: Assembly-CSharp::SpellDefinition
   spellName: Hook Back
   words: []
@@ -19,8 +19,7 @@ MonoBehaviour:
   spawn: {fileID: 11400000, guid: d8b82e5a9cab8d74b88dd78cd4f8dbe1, type: 2}
   damage: {fileID: 0}
   knockback: {fileID: 0}
-  effects:
-  - {fileID: 11400000, guid: 87ba88549902d5c4f8b8bd8afc44c381, type: 2}
+  effects: []
   scale: 1
   lifetime: 1
   blinkAtLifetime: 0
@@ -36,6 +35,7 @@ MonoBehaviour:
   channelDuration: 0
   charging: 0
   chargeDuration: 0
+  manaPerSecond: 0
   projectile: {fileID: 11400000, guid: 767361b2667ef0648ae58faa5466bdca, type: 2}
   zone: {fileID: 0}
   beam: {fileID: 0}

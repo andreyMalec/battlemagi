@@ -1,7 +1,35 @@
 using Unity.Netcode;
 using UnityEngine;
 
+[RequireComponent(typeof(FirstPersonMovement))]
+[RequireComponent(typeof(PlayerPhysics))]
 public class StateController : NetworkBehaviour {
+    private const int ForcedMovementVelocitySourceId = 134771489;
+    private const float ForcedMovementReachDistance = 0.05f;
+
+    private FirstPersonMovement _movement;
+    private PlayerPhysics _physics;
+    private bool _forcedMovementActive;
+    private Vector3 _forcedMovementTargetPoint;
+    private float _forcedMovementRemaining;
+
+    private void Awake() {
+        _movement = GetComponent<FirstPersonMovement>();
+        _physics = GetComponent<PlayerPhysics>();
+    }
+
+    public override void OnNetworkDespawn() {
+        base.OnNetworkDespawn();
+        ClearForcedMovement();
+    }
+
+    private void FixedUpdate() {
+        if (!IsOwner || !_forcedMovementActive)
+            return;
+
+        UpdateForcedMovement();
+    }
+
     public void SetFreeze(bool active) {
         FreezeClientRpc(NetworkObjectId, active);
     }
@@ -18,8 +46,22 @@ public class StateController : NetworkBehaviour {
         AttachClientRpc(originClientId, NetworkObjectId, active);
     }
 
-    public void AttachToObject(ulong originNetObjId, bool active) {
-        AttachToObjectClientRpc(originNetObjId, NetworkObjectId, active);
+    public void StartForcedMovement(Vector3 targetPoint, float duration) {
+        if (!IsServer)
+            return;
+
+        StartForcedMovementClientRpc(targetPoint, Mathf.Max(duration, Time.fixedDeltaTime), new ClientRpcParams {
+            Send = new ClientRpcSendParams { TargetClientIds = new[] { OwnerClientId } }
+        });
+    }
+
+    public void StopForcedMovement() {
+        if (!IsServer)
+            return;
+
+        StopForcedMovementClientRpc(new ClientRpcParams {
+            Send = new ClientRpcSendParams { TargetClientIds = new[] { OwnerClientId } }
+        });
     }
 
     [ClientRpc]
@@ -42,19 +84,42 @@ public class StateController : NetworkBehaviour {
     }
 
     [ClientRpc]
-    private void AttachToObjectClientRpc(ulong originNetObjId, ulong targetNetObj, bool active) {
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetNetObj, out var netObj)) return;
-        Debug.Log($"AttachToObjectClientRpc originNetObjId={originNetObjId}, targetNetObj={netObj}, active={active}");
-        var movement = netObj.GetComponent<FirstPersonMovement>();
-        if (movement != null) {
-            movement.enabled = !active;
-            var cc = netObj.GetComponent<CharacterController>();
-            cc.enabled = !active;
+    private void StartForcedMovementClientRpc(Vector3 targetPoint, float duration, ClientRpcParams clientRpcParams = default) {
+        _forcedMovementTargetPoint = targetPoint;
+        _forcedMovementRemaining = Mathf.Max(duration, Time.fixedDeltaTime);
+        _forcedMovementActive = true;
+        _physics.ClearVelocitySource(ForcedMovementVelocitySourceId);
+        _movement.enabled = false;
+    }
+
+    [ClientRpc]
+    private void StopForcedMovementClientRpc(ClientRpcParams clientRpcParams = default) {
+        ClearForcedMovement();
+    }
+
+    private void UpdateForcedMovement() {
+        var dt = Time.fixedDeltaTime;
+        if (dt <= 0f)
+            return;
+
+        var toTarget = _forcedMovementTargetPoint - transform.position;
+        if (toTarget.sqrMagnitude <= ForcedMovementReachDistance * ForcedMovementReachDistance) {
+            ClearForcedMovement();
+            return;
         }
-        if (active && NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(originNetObjId, out var originObj)) {
-            netObj.TrySetParent(originObj);
-        } else {
-            netObj.TryRemoveParent();
-        }
+
+        _forcedMovementRemaining = Mathf.Max(0f, _forcedMovementRemaining - dt);
+        var remainingTime = Mathf.Max(_forcedMovementRemaining, dt);
+        var velocity = toTarget / remainingTime;
+        _physics.SetVelocitySource(ForcedMovementVelocitySourceId, velocity, dt * 1.5f);
+        _physics.MoveWithGravity(Vector3.zero);
+    }
+
+    private void ClearForcedMovement() {
+        _forcedMovementActive = false;
+        _forcedMovementRemaining = 0f;
+        _physics.ClearVelocitySource(ForcedMovementVelocitySourceId);
+        if (IsOwner)
+            _movement.enabled = true;
     }
 }

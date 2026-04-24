@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 40cff9fc7b634c7abf0e453ff5559cb4, type: 3}
-  m_Name: Damage Ball Lightning
+  m_Name: Damage Magic Hand
   m_EditorClassIdentifier: Assembly-CSharp::DamageDefinition
   mode: 0
   canHitAllies: 0
   baseType: 0
   scaleWithRange: 0
-  structureMultiplier: 1.5
-  amount: 0.75
+  structureMultiplier: 1
+  amount: 10
   percentOf: 0
   percent: 0.1
-  tickInterval: 0.03
+  tickInterval: 1
   ignoreSoundCooldown: 0

@@ -15,13 +15,16 @@ MonoBehaviour:
   prefabId: 0
   shapeType: 1
   beamMaxLength: 15
-  coneRadius: 0.1
-  coneAngle: 3
-  coneLength: 12
+  coneRadius: 0.6
+  coneAngle: 0
+  coneLength: 14
   moveType: 3
   moveSpeed: 0
+  moveAlongGround: 0
+  groundOffset: 0.1
   enableMaxDistance: 0
   maxDistance: 20
+  returnToCaster: 0
   lookAtMaxDistance: 50
   lookAtRayMask:
     serializedVersion: 2

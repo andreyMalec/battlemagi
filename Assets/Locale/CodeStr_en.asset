@@ -420,7 +420,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 6222194511192064
-    m_Localized: 10 armor
+    m_Localized: '%s1 armor'
     m_Metadata:
       m_Items: []
   - m_Id: 6222656144678912
@@ -428,7 +428,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 6222857370607616
-    m_Localized: 25 health
+    m_Localized: '%s1 health'
     m_Metadata:
       m_Items: []
   - m_Id: 6247820446146560
@@ -436,7 +436,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 6247828897669120
-    m_Localized: 15 mana
+    m_Localized: '%s1 mana'
     m_Metadata:
       m_Items: []
   - m_Id: 44340988079140864
@@ -444,7 +444,12 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 44341039425810432
-    m_Localized: Tempest Vortex
+    m_Localized: 'A raging spiral of wind that sweeps all aside and drags victims
+      into its core.
+
+
+      Creates a moving vortex that deals damage over time
+      in an area and pulls players along its path.'
     m_Metadata:
       m_Items: []
   - m_Id: 44341290379407360
@@ -452,7 +457,12 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 44341494335827968
-    m_Localized: Furious Sun
+    m_Localized: 'A blazing sun that unleashes furious sparks and ends in a blinding
+      detonation.
+
+
+      Creates a moving sphere that deals damage over time; periodically
+      releases homing sparks; explodes on expiration.'
     m_Metadata:
       m_Items: []
   - m_Id: 44342074877833216
@@ -460,7 +470,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 44342150039760896
-    m_Localized: Magic Hand
+    m_Localized: 'A spectral hand slips from the void, grasps the target, and drags
+      it toward its master.
+
+
+      On hit, pulls the target toward the caster.'
     m_Metadata:
       m_Items: []
   references:

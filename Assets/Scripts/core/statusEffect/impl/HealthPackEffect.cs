@@ -9,6 +9,10 @@ public class HealthPackEffect : StatusEffectData {
         return new HealthPackRuntime(this);
     }
 
+    public override string StringValue() {
+        return amount.ToString("0");
+    }
+
     private class HealthPackRuntime : StatusEffectRuntime {
         private readonly HealthPackEffect _data;
 

@@ -55,14 +55,13 @@ public class ManaModule {
 
     public float CostForCast(SpellDefinition spell) {
         if (spell == null) return 0f;
-        if (spell.channeling && spell.channelDuration > 0f)
-            return CostPerSecond(spell) * 0.5f;
-        return CostPerSecond(spell);
+        var multi = _stats?.GetFinal(StatType.ManaCost) ?? 1f;
+        return spell.manaCost * multi;
     }
 
     public float CostPerSecond(SpellDefinition spell) {
         var multi = _stats?.GetFinal(StatType.ManaCost) ?? 1f;
-        return spell.manaCost * multi;
+        return spell.manaPerSecond * multi;
     }
 
     public float PrimalManaMissing(float cost) {

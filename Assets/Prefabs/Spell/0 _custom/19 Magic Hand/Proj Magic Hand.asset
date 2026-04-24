@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 828b0ca3cf304def8ffca524fefb016c, type: 3}
-  m_Name: New Projectile Spell
+  m_Name: Proj Magic Hand
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileDefinition
   prefabId: 9
   moveType: 1
-  moveSpeed: 100
+  moveSpeed: 150
   moveAlongGround: 0
   groundOffset: 0.1
   enableMaxDistance: 1
   maxDistance: 50
   returnToCaster: 0
-  enableGravity: 1
+  enableGravity: 0
   gravity: {x: 0, y: -15, z: 0}
   lookAtMaxDistance: 50
   lookAtRayMask:

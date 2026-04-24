@@ -298,8 +298,15 @@ public class SpellBook : MonoBehaviour {
     #region Helpers: visuals/audio/UI
 
     private string ManaCost(SpellDefinition spell) {
-        var perSecond = spell.channeling || spell.charging;
-        return perSecond ? $"{spell.manaCost:0}/{R.String("perSecond")}" : $"{spell.manaCost:0}";
+        if (!spell.channeling && !spell.charging)
+            return $"{spell.manaCost:0}";
+
+        var perSecond = $"{spell.manaPerSecond:0}/{R.String("perSecond")}";
+        if (spell.manaCost > 0f && spell.manaPerSecond > 0f)
+            return $"{spell.manaCost:0} + {perSecond}";
+        if (spell.manaPerSecond > 0f)
+            return perSecond;
+        return $"{spell.manaCost:0}";
     }
 
     private void SetUIVisibility(bool show) {

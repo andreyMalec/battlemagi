@@ -9,14 +9,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 780999efb515482babe5447d5bceb021, type: 3}
-  m_Name: New Attach To Projectile Effect
-  m_EditorClassIdentifier: Assembly-CSharp::AttachToProjectileEffect
-  effectName: Hook
+  m_Script: {fileID: 11500000, guid: 0b298147d4414e67bd1d9c7a8f47ca72, type: 3}
+  m_Name: Forced Movement Magic Hand
+  m_EditorClassIdentifier: Assembly-CSharp::ForcedMovementEffect
+  effectName: Hook Move
   title: 
   description: 
-  duration: 0.7
+  duration: 0.5
   icon: {fileID: 0}
   color: {r: 1, g: 0, b: 0, a: 1}
   removeOnHit: 0
   onExpire: {fileID: 0}
+  targetPointMode: 0
+  maxDistance: 99
+  wallBackOffset: 0.3
+  wallMask:
+    serializedVersion: 2
+    m_Bits: 64
