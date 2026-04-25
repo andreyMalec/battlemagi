@@ -18,7 +18,7 @@ public class BeamStatusEffectAction : ISpellAction {
         for (var i = 0; i < effects.Count; i++) {
             var def = effects[i];
             if (def == null || def.effect == null) continue;
-            if (!SpellEffectResolver.CanAffect(def, context, ownerId)) continue;
+            if (!SpellEffectResolver.CanAffect(def, context, statusable.gameObject, ownerId)) continue;
 
             if (def.oneShot) {
                 if (!_onceApplied.TryGetValue(def, out var set)) {

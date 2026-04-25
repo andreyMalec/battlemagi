@@ -7,6 +7,7 @@ public enum EffectTarget {
     Self = 0,
     Allies = 1 << 0,
     Enemies = 1 << 1,
+    Draggable = 1 << 2,
 }
 
 public enum StatusEffectType {

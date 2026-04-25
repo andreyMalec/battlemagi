@@ -21,6 +21,8 @@ MonoBehaviour:
   removeOnHit: 0
   onExpire: {fileID: 0}
   targetPointMode: 0
+  movementSpeed: -1
+  inheritInitialProjectileSpeed: 1
   maxDistance: 99
   wallBackOffset: 0.3
   wallMask:

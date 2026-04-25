@@ -24,7 +24,7 @@ public class ZoneStatusEffectAction : ISpellAction {
             if (!SpellEffectResolver.TryGetStatusable(target, out var statusable, out var ownerId))
                 continue;
 
-            if (!SpellEffectResolver.CanAffect(def, context, ownerId))
+            if (!SpellEffectResolver.CanAffect(def, context, statusable.gameObject, ownerId))
                 continue;
 
             if (def.oneShot) {

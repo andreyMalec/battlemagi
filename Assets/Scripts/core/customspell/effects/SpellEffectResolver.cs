@@ -1,9 +1,15 @@
 using UnityEngine;
 
 public static class SpellEffectResolver {
-    public static bool CanAffect(EffectDefinition def, ISpellContext context, ulong targetOwner) {
+    public static bool CanAffect(EffectDefinition def, ISpellContext context, GameObject targetGo, ulong targetOwner) {
         if (def == null) return false;
         if (context == null) return false;
+
+        if (IsDraggableTarget(targetGo))
+            return def.target.HasFlag(EffectTarget.Draggable);
+
+        if (targetOwner == ulong.MaxValue)
+            return false;
 
         if (targetOwner == context.OwnerId)
             return def.target.HasFlag(EffectTarget.Self);
@@ -34,5 +40,15 @@ public static class SpellEffectResolver {
             ownerId = damageable.OwnerId;
 
         return true;
+    }
+
+    public static bool IsDraggableTarget(GameObject targetGo) {
+        if (targetGo == null)
+            return false;
+
+        if (targetGo.TryGetComponent<Draggable>(out _))
+            return true;
+
+        return targetGo.GetComponentInParent<Draggable>() != null;
     }
 }

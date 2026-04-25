@@ -19,7 +19,8 @@ MonoBehaviour:
   spawn: {fileID: 11400000, guid: d8b82e5a9cab8d74b88dd78cd4f8dbe1, type: 2}
   damage: {fileID: 0}
   knockback: {fileID: 0}
-  effects: []
+  effects:
+  - {fileID: 11400000, guid: 87ba88549902d5c4f8b8bd8afc44c381, type: 2}
   scale: 1
   lifetime: 1
   blinkAtLifetime: 0
