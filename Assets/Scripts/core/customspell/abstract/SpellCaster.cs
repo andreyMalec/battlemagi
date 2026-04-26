@@ -84,6 +84,7 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
      */
     public void Spawn(SpawnContext context) {
         if (_useNetwork && _casterNet.IsSpawned) {
+            context.alternativeSpawn = alternativeSpawn;
             _casterNet.RequestSpawn(context);
             return;
         }

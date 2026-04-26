@@ -330,6 +330,7 @@ GameObject:
   - component: {fileID: -2114292743755080758}
   - component: {fileID: 5476031713649994788}
   - component: {fileID: 445873658711594162}
+  - component: {fileID: 8885780101712779771}
   m_Layer: 0
   m_Name: Tester
   m_TagString: Untagged
@@ -350,6 +351,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8373723766930944707}
   - {fileID: 1008279433977117322}
   - {fileID: 8179667660853659167}
   - {fileID: 54169606174400162}
@@ -666,6 +668,18 @@ MonoBehaviour:
   zoomKey: 306
   zoomFov: 20
   mainCamera: {fileID: 8854033999867419295}
+--- !u!114 &8885780101712779771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056318315711601611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 233976980f7741f9ba4e68301fd7d0ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IceSlideMovementModule
 --- !u!1 &7750010650653659641
 GameObject:
   m_ObjectHideFlags: 0
@@ -1005,4 +1019,70 @@ PrefabInstance:
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3331633866762461487, guid: 40caa3ea09cd881448586bc784db54e2, type: 3}
   m_PrefabInstance: {fileID: 3385622396981247885}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &8793533864737153126
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 664867506331837658}
+    m_Modifications:
+    - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.073
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3064280272593765402, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_Name
+      value: Freeze
+      objectReference: {fileID: 0}
+    - target: {fileID: 3064280272593765402, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+--- !u!4 &8373723766930944707 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1026144600603792037, guid: 746d8f76c9230ba419ba6610bbec8a49, type: 3}
+  m_PrefabInstance: {fileID: 8793533864737153126}
   m_PrefabAsset: {fileID: 0}

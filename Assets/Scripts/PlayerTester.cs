@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerPhysics))]
+[RequireComponent(typeof(IceSlideMovementModule))]
 public class PlayerTester : MonoBehaviour {
     [SerializeField] private MovementSettings movementSettings;
     [SerializeField] private LookSettings lookSettings;
@@ -15,12 +16,14 @@ public class PlayerTester : MonoBehaviour {
     public float runSpeed = 5;
 
     private PlayerPhysics _physics;
+    private IceSlideMovementModule _iceSlide;
     private Stats _stats;
     private Vector2 _currentRotation;
     private Vector2 _frameVelocity;
 
     private void Awake() {
         _physics = GetComponent<PlayerPhysics>();
+        _iceSlide = GetComponent<IceSlideMovementModule>();
         _physics.Configure(movementSettings, groundCheck);
         _stats = GetComponent<Stats>();
         var preview = GetComponent<SpellCasterPlayerPreview>();
@@ -66,11 +69,14 @@ public class PlayerTester : MonoBehaviour {
             input.y * targetSpeed * speedMultiplier
         ));
 
+        if (_iceSlide.IsActive)
+            moveDirection = _iceSlide.ResolveVelocity(moveDirection, input.sqrMagnitude > 0.0001f, Time.deltaTime);
+
         _physics.MoveWithGravity(moveDirection);
     }
 
     private void TryJump() {
-        if (Input.GetKeyDown(movementSettings.jumpKey) && groundCheck.isGrounded)
+        if (Input.GetKeyDown(movementSettings.jumpKey) && groundCheck.isGrounded && !_iceSlide.IsActive)
             PerformJump();
     }
 

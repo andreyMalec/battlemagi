@@ -19,9 +19,11 @@ MonoBehaviour:
   spawn: {fileID: 11400000, guid: 48fad9b7555e7754eb79787fb90b6124, type: 2}
   damage: {fileID: 0}
   knockback: {fileID: 0}
-  effects: []
+  effects:
+  - {fileID: 11400000, guid: 37743bd96434179418556ae7dddbbdaa, type: 2}
+  - {fileID: 11400000, guid: 779df41920625764ba50cbe9424d12a7, type: 2}
   scale: 1
-  lifetime: 5
+  lifetime: 15
   blinkAtLifetime: 0
   defaultRaycast:
     serializedVersion: 2

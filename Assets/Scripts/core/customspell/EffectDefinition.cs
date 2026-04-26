@@ -24,6 +24,7 @@ public enum StatusEffectType {
 
     StatMultiplier,
     ForcedMovement,
+    IceSlide,
 }
 
 [CreateAssetMenu(fileName = "New Spell Effect", menuName = "Spells/Effect Definition")]
@@ -47,6 +48,7 @@ public class EffectDefinition : ScriptableObject, IValidate {
             StatusEffectType.ForcedMovement => Ensure<ForcedMovementEffect>(effect),
             StatusEffectType.DamageOverTime => Ensure<DamageOverTimeEffect>(effect),
             StatusEffectType.Freeze => Ensure<FreezeEffect>(effect),
+            StatusEffectType.IceSlide => Ensure<IceSlideEffect>(effect),
             StatusEffectType.RuneOfStasis => Ensure<RuneOfStasisEffect>(effect),
             StatusEffectType.RuneOfStasisPost => Ensure<RuneOfStasisPostEffect>(effect),
             StatusEffectType.HealthPack => Ensure<HealthPackEffect>(effect),

@@ -8,6 +8,7 @@ using Unity.Netcode.Components;
 [RequireComponent(typeof(NetworkObject))]
 [RequireComponent(typeof(NetworkTransform))]
 [RequireComponent(typeof(PlayerPhysics))]
+[RequireComponent(typeof(IceSlideMovementModule))]
 public class FirstPersonMovement : NetworkBehaviour {
     public MovementSettings movementSettings;
     public GroundCheck groundCheck;
@@ -29,6 +30,7 @@ public class FirstPersonMovement : NetworkBehaviour {
 
     private Stats _stats;
     private PlayerPhysics _physics;
+    private IceSlideMovementModule _iceSlide;
     private float _jumpCooldownTimer;
 
     // Ключи/локи для бега
@@ -45,6 +47,7 @@ public class FirstPersonMovement : NetworkBehaviour {
     private void Awake() {
         _stats = GetComponent<Stats>();
         _physics = GetComponent<PlayerPhysics>();
+        _iceSlide = GetComponent<IceSlideMovementModule>();
         _physics.Configure(movementSettings, groundCheck);
     }
 
@@ -161,17 +164,22 @@ public class FirstPersonMovement : NetworkBehaviour {
     }
 
     private void ApplyMovement(Vector2 input, bool running) {
+        var moveDirection = ResolveMoveDirection(input, running);
+        if (_iceSlide.IsActive)
+            moveDirection = _iceSlide.ResolveVelocity(moveDirection, input.sqrMagnitude > 0.0001f, Time.deltaTime);
+        _physics.MoveWithGravity(moveDirection);
+    }
+
+    private Vector3 ResolveMoveDirection(Vector2 input, bool running) {
         float targetSpeed = running ? runSpeed : movementSpeed;
         float speedMultiplier = groundCheck.isGrounded ? 1f : movementSettings.flySpeedMultiplier;
 
         speedMultiplier *= _stats?.GetFinal(StatType.MoveSpeed) ?? 1f;
-        Vector3 moveDirection = transform.TransformDirection(new Vector3(
+        return transform.TransformDirection(new Vector3(
             input.x * targetSpeed * speedMultiplier,
             0f,
             input.y * targetSpeed * speedMultiplier
         ));
-
-        _physics.MoveWithGravity(moveDirection);
     }
 
     private void TryJump() {
@@ -179,7 +187,7 @@ public class FirstPersonMovement : NetworkBehaviour {
             PerformJump();
     }
 
-    private bool CanJump() => _jumpCooldownTimer <= 0 && groundCheck.isGrounded;
+    private bool CanJump() => _jumpCooldownTimer <= 0 && groundCheck.isGrounded && !_iceSlide.IsActive;
 
     private void PerformJump() {
         _jumpCooldownTimer = movementSettings.jumpCooldown;

@@ -22,13 +22,24 @@ public class FreezeEffect : StatusEffectData {
                 if (!_data.canSelfFreeze && TeamManager.Instance.AreAllies(ownerClientId, player.OwnerClientId))
                     return;
                 player.SetFreeze(true);
+                return;
+            }
+
+            if (target.TryGetComponent<PlayerTester>(out var tester)) {
+                tester.GetComponentInChildren<Freeze>(true);
             }
         }
 
         public override void OnExpire(GameObject target) {
             base.OnExpire(target);
-            if (target.TryGetComponent<StateController>(out var player))
+            if (target.TryGetComponent<StateController>(out var player)) {
                 player.SetFreeze(false);
+                return;
+            }
+
+            if (target.TryGetComponent<PlayerTester>(out var tester)) {
+                tester.GetComponentInChildren<Freeze>(false);
+            }
         }
     }
 }

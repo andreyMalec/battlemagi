@@ -17,8 +17,8 @@ MonoBehaviour:
   moveSpeed: 50
   moveAlongGround: 0
   groundOffset: 0.1
-  enableMaxDistance: 0
-  maxDistance: 20
+  enableMaxDistance: 1
+  maxDistance: 70
   returnToCaster: 0
   enableGravity: 1
   gravity: {x: 0, y: -9.81, z: 0}
@@ -55,7 +55,7 @@ MonoBehaviour:
   onHitSpawn: {fileID: 0}
   atMaxDistanceSpawn: {fileID: 0}
   atStepDistanceSpawn: {fileID: 11400000, guid: 9cfd91048632ef1458f4f37c2487ac28, type: 2}
-  spawnStep: 1.5
+  spawnStep: 1.25
   onLifetimeEndSpawn: {fileID: 0}
   onLifetimeHalfSpawn: {fileID: 0}
   spawnAtStep: 1

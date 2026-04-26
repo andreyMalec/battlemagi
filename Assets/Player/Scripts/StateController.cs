@@ -9,6 +9,7 @@ public class StateController : NetworkBehaviour {
 
     private FirstPersonMovement _movement;
     private PlayerPhysics _physics;
+    private IceSlideMovementModule _iceSlide;
     private bool _forcedMovementActive;
     private Vector3 _forcedMovementTargetPoint;
     private float _forcedMovementRemaining;
@@ -16,11 +17,13 @@ public class StateController : NetworkBehaviour {
     private void Awake() {
         _movement = GetComponent<FirstPersonMovement>();
         _physics = GetComponent<PlayerPhysics>();
+        _iceSlide = GetComponent<IceSlideMovementModule>();
     }
 
     public override void OnNetworkDespawn() {
         base.OnNetworkDespawn();
         ClearForcedMovement();
+        ClearIceSliding();
     }
 
     private void FixedUpdate() {
@@ -64,6 +67,15 @@ public class StateController : NetworkBehaviour {
         });
     }
 
+    public void SetIceSliding(bool active, float acceleration, float deceleration) {
+        if (!IsServer)
+            return;
+
+        SetIceSlidingClientRpc(active, acceleration, deceleration, new ClientRpcParams {
+            Send = new ClientRpcSendParams { TargetClientIds = new[] { OwnerClientId } }
+        });
+    }
+
     [ClientRpc]
     private void AttachClientRpc(ulong originClientId, ulong targetNetObj, bool active) {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetNetObj, out var netObj)) return;
@@ -97,6 +109,17 @@ public class StateController : NetworkBehaviour {
         ClearForcedMovement();
     }
 
+    [ClientRpc]
+    private void SetIceSlidingClientRpc(bool active, float acceleration, float deceleration,
+        ClientRpcParams clientRpcParams = default) {
+        if (active) {
+            _iceSlide.SetSliding(acceleration, deceleration);
+            return;
+        }
+
+        ClearIceSliding();
+    }
+
     private void UpdateForcedMovement() {
         var dt = Time.fixedDeltaTime;
         if (dt <= 0f)
@@ -121,5 +144,9 @@ public class StateController : NetworkBehaviour {
         _physics.ClearVelocitySource(ForcedMovementVelocitySourceId);
         if (IsOwner)
             _movement.enabled = true;
+    }
+
+    private void ClearIceSliding() {
+        _iceSlide.ClearSliding();
     }
 }

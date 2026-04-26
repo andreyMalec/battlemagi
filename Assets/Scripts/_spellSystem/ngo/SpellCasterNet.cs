@@ -6,8 +6,12 @@ public class SpellCasterNet : NetworkBehaviour {
     public Coroutine CastCoroutine;
 
     public void RequestSpawn(SpawnContext context) {
-        RequestSpawnServerRpc(NetworkObjectId, context.spell.name, context.position, context.forward, context.rotation,
-            context.spellDamageMultiplier);
+        RequestSpawnServerRpc(NetworkObjectId,
+            context.spell.name,
+            context.position, context.forward, context.rotation,
+            context.alternativeSpawn,
+            context.spellDamageMultiplier
+        );
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -15,6 +19,7 @@ public class SpellCasterNet : NetworkBehaviour {
         ulong casterNetObjectId,
         string spellName,
         Vector3 position, Vector3 forward, Quaternion rotation,
+        bool alternativeSpawn,
         float damageMultiplier
     ) {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(casterNetObjectId, out var casterNetObj))
@@ -36,7 +41,9 @@ public class SpellCasterNet : NetworkBehaviour {
             spellDamageMultiplier = damageMultiplier,
             branch = true
         };
-        var spellSpawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
+        var spellSpawn = ISpellSpawn.GetMode(alternativeSpawn && spell.spawn.useAlternativeSpawnMode
+            ? spell.spawn.alternativeSpawnMode
+            : spell.spawn.spawnMode);
         StartCoroutine(spellSpawn!.Request(context, ServerSpawnMain));
     }
 

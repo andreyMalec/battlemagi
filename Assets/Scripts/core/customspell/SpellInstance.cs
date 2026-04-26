@@ -154,8 +154,22 @@ public class SpellInstance : MonoBehaviour, ITarget {
         }
 
         if (zone != null) {
-            Gizmos.DrawSphere(transform.position, Bind.Context.Spell.scale);
+            DrawZoneGizmos(zone);
         }
+    }
+
+    private void DrawZoneGizmos(ZoneDefinition zone) {
+        if (zone.shapeType is ZoneShapeType.Plate) {
+            var side = Bind.Context.Spell.scale * 2f;
+            var height = side * 0.1f;
+            var previousMatrix = Gizmos.matrix;
+            Gizmos.matrix = Matrix4x4.TRS(transform.position, transform.rotation, Vector3.one);
+            Gizmos.DrawCube(Vector3.zero, new Vector3(side, height, side));
+            Gizmos.matrix = previousMatrix;
+            return;
+        }
+
+        Gizmos.DrawSphere(transform.position, Bind.Context.Spell.scale);
     }
 
     private void DrawConeGizmos(BeamDefinition beam) {

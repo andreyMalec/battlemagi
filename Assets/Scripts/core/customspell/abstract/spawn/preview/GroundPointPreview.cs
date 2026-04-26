@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 public class GroundPointPreview : ISpellSpawnPreview {
@@ -10,6 +9,7 @@ public class GroundPointPreview : ISpellSpawnPreview {
     private bool _active;
 
     private Mesh _cylinder;
+    private Mesh _cube;
     private Material _mat;
 
     public GroundPointPreview() {
@@ -18,6 +18,7 @@ public class GroundPointPreview : ISpellSpawnPreview {
         _mat.hideFlags = HideFlags.HideAndDontSave;
         _mat.color = _fillColor;
         _cylinder = BuildCylinderMesh();
+        _cube = BuildPrimitiveMesh(PrimitiveType.Cube);
     }
 
     public void Show(SpawnContext context, ISpellSpawn spawnMode) {
@@ -40,16 +41,33 @@ public class GroundPointPreview : ISpellSpawnPreview {
             return;
 
         foreach (var ctx in _spawnMode.ShapeCenter(context)) {
-            Draw(ctx, 0);
+            Draw(ctx);
             break;
         }
     }
 
-    private void Draw(SpawnContext context, int index) {
+    private void Draw(SpawnContext context) {
         var pos = context.position;
-        var up = context.rotation * Vector3.up;
-        DrawDisk(pos, up, context.spell.scale);
+        var zone = context.spell.zone;
+        if (zone != null && zone.shapeType is ZoneShapeType.Plate) {
+            DrawPlate(pos, context.rotation, context.spell.scale);
+        }
+        else {
+            var up = context.rotation * Vector3.up;
+            DrawDisk(pos, up, context.spell.scale);
+        }
+
         DrawCross(pos, context.rotation);
+    }
+
+    private void DrawPlate(Vector3 pos, Quaternion rotation, float scale) {
+        var side = scale * 2f;
+        var height = side * 0.1f;
+
+        RuntimeDrawFeature.Enqueue((UnityEngine.Rendering.RasterCommandBuffer cmd) => {
+            var matrix = Matrix4x4.TRS(pos, rotation, new Vector3(side, height, side));
+            cmd.DrawMesh(_cube, matrix, _mat, 0, 0);
+        });
     }
 
     private void DrawDisk(Vector3 pos, Vector3 normal, float radius) {
@@ -87,7 +105,11 @@ public class GroundPointPreview : ISpellSpawnPreview {
     }
 
     private static Mesh BuildCylinderMesh() {
-        var go = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        return BuildPrimitiveMesh(PrimitiveType.Cylinder);
+    }
+
+    private static Mesh BuildPrimitiveMesh(PrimitiveType primitiveType) {
+        var go = GameObject.CreatePrimitive(primitiveType);
         var mesh = go.GetComponent<MeshFilter>().sharedMesh;
         Object.DestroyImmediate(go);
         return mesh;

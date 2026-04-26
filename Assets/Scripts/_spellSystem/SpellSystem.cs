@@ -230,7 +230,7 @@ public class SpellSystem {
             spawned
         );
 
-        var shape = new TriggerSphereShape();
+        var shape = ZoneShape(def.zone);
         shape.Init(context);
         var core = new ZoneCore(
             context,
@@ -241,7 +241,7 @@ public class SpellSystem {
         var bind = new SpellBind<ZoneContext>(core, view, context, move);
         instance.Init(bind, _authority);
         if (def.zone.impassableForEnemies)
-            ZoneEnemyColliderBlocker.Attach(spawnContext.main, context.OwnerId, def.scale, view);
+            ZoneEnemyColliderBlocker.Attach(spawnContext.main, context.OwnerId, def.scale, def.zone.shapeType, view);
         if (!Mathf.Approximately(spawnContext.spellDamageMultiplier, 1f))
             view.Stats.AddModifier(StatType.SpellDamage, spawnContext.spellDamageMultiplier);
     }
@@ -602,6 +602,13 @@ public class SpellSystem {
         return def.shapeType switch {
             BeamShapeType.Cone => new ConeBeamShape(),
             _ => new StraightBeamShape()
+        };
+    }
+
+    private static IShape ZoneShape(ZoneDefinition def) {
+        return def.shapeType switch {
+            ZoneShapeType.Plate => new TriggerPlateShape(),
+            _ => new TriggerSphereShape()
         };
     }
 

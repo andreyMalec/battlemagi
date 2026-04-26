@@ -4,6 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Zone Spell", menuName = "Spells/Zone Definition")]
 public class ZoneDefinition : ScriptableObject, IValidate {
     public SpellZonePrefabId prefabId;
+    public ZoneShapeType shapeType;
 
     public SpellMovement moveType;
 

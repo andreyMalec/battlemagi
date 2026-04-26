@@ -12,11 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6aed9f25a87b4df799fdec2a0637e94d, type: 3}
   m_Name: Zone Frost Nova
   m_EditorClassIdentifier: Assembly-CSharp::ZoneDefinition
-  prefabId: 3
+  prefabId: 22
+  shapeType: 0
   moveType: 0
   moveSpeed: 0
+  moveAlongGround: 0
+  groundOffset: 0.1
   enableMaxDistance: 0
   maxDistance: 20
+  returnToCaster: 0
   lookAtMaxDistance: 50
   lookAtRayMask:
     serializedVersion: 2
@@ -25,6 +29,7 @@ MonoBehaviour:
   angularSpeed: 0
   spiralRadius: 0.5
   spiralAxis: 0
+  acceleration: 0
   enableHoming: 0
   obstacleMask:
     serializedVersion: 2

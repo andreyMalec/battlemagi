@@ -9,15 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e22a7a1f7d224de09a9018a9b54dc1fc, type: 3}
-  m_Name: New Freeze Effect
-  m_EditorClassIdentifier: Assembly-CSharp::FreezeEffect
-  effectName: free
+  m_Script: {fileID: 11500000, guid: 2e58535ccb574675aa8edca0ba4a712d, type: 3}
+  m_Name: Slide Ice Spear
+  m_EditorClassIdentifier: Assembly-CSharp::IceSlideEffect
+  effectName: Slide Ice Spear
   title: 
   description: 
-  duration: 1
+  duration: 0.1
   icon: {fileID: 0}
-  color: {r: 0.6839622, g: 1, b: 0.9840472, a: 1}
+  color: {r: 1, g: 1, b: 1, a: 1}
   removeOnHit: 0
   onExpire: {fileID: 0}
-  canSelfFreeze: 1
+  acceleration: 2
+  deceleration: 1

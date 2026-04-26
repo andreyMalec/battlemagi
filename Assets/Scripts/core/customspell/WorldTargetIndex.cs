@@ -58,12 +58,16 @@ public static class WorldTargetIndex {
     }
 
     public static void GetSpells(Vector3 center, float radius, List<SpellInstance> results) {
+        GetSpellsInBounds(center - Vector3.one * radius, center + Vector3.one * radius, results);
+    }
+
+    public static void GetSpellsInBounds(Vector3 minPoint, Vector3 maxPoint, List<SpellInstance> results) {
         using var _ = SpellMetrics.Measure(SpellMetricSection.WorldTargetIndexQuerySpells);
         EnsureBuilt();
         results.Clear();
         SeenSpells.Clear();
-        var min = WorldToCell(center - Vector3.one * radius);
-        var max = WorldToCell(center + Vector3.one * radius);
+        var min = WorldToCell(minPoint);
+        var max = WorldToCell(maxPoint);
         for (var x = min.X; x <= max.X; x++) {
             for (var y = min.Y; y <= max.Y; y++) {
                 for (var z = min.Z; z <= max.Z; z++) {
@@ -82,12 +86,16 @@ public static class WorldTargetIndex {
     }
 
     public static void GetDamageables(Vector3 center, float radius, List<Damageable> results) {
+        GetDamageablesInBounds(center - Vector3.one * radius, center + Vector3.one * radius, results);
+    }
+
+    public static void GetDamageablesInBounds(Vector3 minPoint, Vector3 maxPoint, List<Damageable> results) {
         using var _ = SpellMetrics.Measure(SpellMetricSection.WorldTargetIndexQueryDamageables);
         EnsureBuilt();
         results.Clear();
         SeenDamageables.Clear();
-        var min = WorldToCell(center - Vector3.one * radius);
-        var max = WorldToCell(center + Vector3.one * radius);
+        var min = WorldToCell(minPoint);
+        var max = WorldToCell(maxPoint);
         for (var x = min.X; x <= max.X; x++) {
             for (var y = min.Y; y <= max.Y; y++) {
                 for (var z = min.Z; z <= max.Z; z++) {
