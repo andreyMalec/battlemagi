@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(Damageable))]
@@ -31,7 +30,6 @@ public class SpellCasterPlayer : SpellCaster {
     private float _channelingElapsed;
     private Coroutine _channelingRoutine;
     private SpellDefinition _channelingSpell;
-    private SpellInstance _channelingSpellInstance;
 
     public bool Charging { get; private set; }
     private Coroutine _chargingRoutine;
@@ -218,6 +216,19 @@ public class SpellCasterPlayer : SpellCaster {
         return _bridgeTyped.TrySpendMana(amount);
     }
 
+    internal void BindChannelingSpell(ulong spellObjectId, string spellName) {
+        _bridgeTyped.BindChannelingSpell(spellObjectId, spellName);
+    }
+
+    internal void StopChannelingSpell(ulong spellObjectId) {
+        _bridgeTyped.StopChannelingSpell(spellObjectId);
+    }
+
+    internal void StopChannelingFromBridge() {
+        if (!Channeling) return;
+        StopChanneling(false);
+    }
+
     private bool TryCastEcho(SpellDefinition spell) {
         if (_echoSpell != spell) return false;
         if (_echoRemaining <= 0) return false;
@@ -298,25 +309,31 @@ public class SpellCasterPlayer : SpellCaster {
         _chargingUsedEcho = false;
         _chargingDamageMultiplier = 1f;
 
+        StopChanneling(true);
+
+        _spell = null;
+    }
+
+    private void StopChanneling(bool requestBridgeStop) {
         if (_channelingRoutine != null) {
             StopCoroutine(_channelingRoutine);
+            _channelingRoutine = null;
         }
 
-        if (_channelingSpell?.channeling == true) {
-            Channeling = false;
-            foreach (var active in SpellInstance.Active) {
-                if (active.OwnerId != OwnerId) continue;
-                if (!active.IsAlive) continue;
-                var spell = active.Bind.Context.Spell;
-                if (_channelingSpell.name != spell.name) continue;
-                active.Bind.Context.View.Kill(active.Bind.Context);
-                break;
-            }
+        if (_channelingSpell?.channeling != true) return;
 
-            _channelingSpell = null;
-            _channelingSpellInstance = null;
+        ResetEcho();
+
+        if (animateCast || animateHand) {
+            _animator.CancelAnimate();
         }
 
+        if (requestBridgeStop)
+            _bridgeTyped.RequestStopChanneling();
+
+        Channeling = false;
+        _channelingSpell = null;
+        _bridgeTyped.EndChanneling();
         _spell = null;
     }
 
@@ -383,17 +400,15 @@ public class SpellCasterPlayer : SpellCaster {
         _channelingSpell = spell;
         _channelingElapsed = 0;
         Channeling = true;
+        _bridgeTyped.BeginChanneling(spell);
+        var stoppedByBridge = false;
         var costPerSecond = mana.CostPerSecond(spell);
         while (_channelingElapsed < spell.channelDuration) {
             if (!Channeling)
                 break;
 
-            if (_channelingSpellInstance == null) {
-                _channelingSpellInstance = SpellInstance.Active.Find(it =>
-                    it.OwnerId == OwnerId && it.IsAlive && it.Bind.Context.Spell.spellName == spell.spellName);
-            }
-
-            if (_channelingSpellInstance?.IsAlive == false) {
+            if (_bridgeTyped.ShouldStopChanneling()) {
+                stoppedByBridge = true;
                 break;
             }
 
@@ -407,7 +422,7 @@ public class SpellCasterPlayer : SpellCaster {
             _channelingElapsed += dt;
         }
 
-        CancelCast();
+        StopChanneling(!stoppedByBridge);
     }
 
     public override SpawnContext CastContext(SpellDefinition spell) {

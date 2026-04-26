@@ -11,6 +11,7 @@ public class BeamContext : IBeamContext {
     public SpellSystemEvent Event { get; }
 
     public bool Spawned { get; }
+    public bool AlternativeSpawn { get; }
 
     public float Lifetime { get; set; }
 
@@ -29,7 +30,8 @@ public class BeamContext : IBeamContext {
         ISpellTransform movement,
         SpellDefinition data,
         SpellSystemEvent spellEvent,
-        bool spawned
+        bool spawned,
+        bool alternativeSpawn
     ) {
         Caster = caster;
         OwnerId = Caster.OwnerId;
@@ -38,6 +40,7 @@ public class BeamContext : IBeamContext {
         Event = spellEvent;
         Movement = movement;
         Spawned = spawned;
+        AlternativeSpawn = alternativeSpawn;
         Lifetime = data.lifetime;
     }
 

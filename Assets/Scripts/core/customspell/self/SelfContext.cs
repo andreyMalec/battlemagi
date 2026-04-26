@@ -12,6 +12,7 @@ public class SelfContext : ISpellContext {
     public SpellSystemEvent Event { get; }
 
     public bool Spawned { get; }
+    public bool AlternativeSpawn { get; }
 
     public float Lifetime { get; set; }
 
@@ -25,7 +26,8 @@ public class SelfContext : ISpellContext {
         SpellView view,
         SpellDefinition data,
         SpellSystemEvent spellEvent,
-        bool spawned
+        bool spawned,
+        bool alternativeSpawn
     ) {
         Caster = caster;
         OwnerId = Caster.OwnerId;
@@ -33,6 +35,7 @@ public class SelfContext : ISpellContext {
         Spell = data;
         Event = spellEvent;
         Spawned = spawned;
+        AlternativeSpawn = alternativeSpawn;
         Lifetime = data.lifetime;
     }
 

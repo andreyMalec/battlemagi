@@ -37,6 +37,7 @@ public class SpellCasterNet : NetworkBehaviour {
             rotation = rotation,
             forward = forward,
             caster = caster,
+            alternativeSpawn = alternativeSpawn,
             forceFirstOrigin = true,
             spellDamageMultiplier = damageMultiplier,
             branch = true
@@ -77,6 +78,7 @@ public class SpellCasterNet : NetworkBehaviour {
 
         var context = caster.CastContext(spell);
         context.target = target;
+        context.alternativeSpawn = alternativeSpawn;
         context.spellDamageMultiplier = damageMultiplier;
         var spellSpawn = ISpellSpawn.GetMode(alternativeSpawn && spell.spawn.useAlternativeSpawnMode
             ? spell.spawn.alternativeSpawnMode
@@ -113,7 +115,7 @@ public class SpellCasterNet : NetworkBehaviour {
                 { TargetClientIds = NetworkManager.ConnectedClients.Keys.Filter(it => it > 0).ToArray() }
         };
         if (prefabId > -1)
-            OnCastClientRpc(id, casterNetObj.NetworkObjectId, (int)context.spell.coreType, prefabId,
+            OnCastClientRpc(id, casterNetObj.NetworkObjectId, context.spell.name, (int)context.spell.coreType, prefabId,
                 context.spell.scale, context.spell.lifetime, impassableForEnemies, excludeHost);
     }
 
@@ -121,6 +123,7 @@ public class SpellCasterNet : NetworkBehaviour {
     private void OnCastClientRpc(
         ulong spellNetObjectId,
         ulong casterNetObjectId,
+        string spellName,
         int coreType,
         int prefabId,
         float scale,
@@ -137,6 +140,8 @@ public class SpellCasterNet : NetworkBehaviour {
             $"[NetworkSpellSystemEvent] OnCastClientRpc: netObjectId={spellNetObjectId}, caster={casterNetObj.gameObject.name}");
         var caster = casterNetObj.GetComponentInChildren<SpellCaster>();
         EnsureCasterInitialized(casterNetObj.gameObject, caster);
+        var bridge = caster.GetComponentInParent<ISpellCasterBridge>();
+        bridge?.BindChannelingSpell(spellNetObjectId, spellName);
 
         caster.SpellSystem.ShowSpell(main.gameObject, (CoreType)coreType, prefabId);
         var instance = main.GetComponentInChildren<SpellInstance>();

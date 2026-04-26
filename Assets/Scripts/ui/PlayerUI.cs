@@ -68,6 +68,8 @@ public class PlayerUI : NetworkBehaviour {
         _renderer.stamina.transform.localScale = new Vector3(stamina, 1, 1);
 
         Show(_statusable.DurationEffects);
+
+        _renderer.alternativeSpawn.gameObject.SetActive(_caster.alternativeSpawn);
     }
 
     private void Show(List<Statusable.DurationEffect> effects) {

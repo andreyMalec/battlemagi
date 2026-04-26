@@ -84,14 +84,15 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
      */
     public void Spawn(SpawnContext context) {
         if (_useNetwork && _casterNet.IsSpawned) {
-            context.alternativeSpawn = alternativeSpawn;
             _casterNet.RequestSpawn(context);
             return;
         }
 
         SpellLog.Log($"{gameObject.name} Spawn = {context.spell.coreType}");
         context.branch = true;
-        var spellSpawn = ISpellSpawn.GetMode(context.spawn.spawnMode);
+        var spellSpawn = ISpellSpawn.GetMode(context.alternativeSpawn && context.spawn.useAlternativeSpawnMode
+            ? context.spawn.alternativeSpawnMode
+            : context.spawn.spawnMode);
         StartCoroutine(spellSpawn!.Request(context, SpawnMain));
     }
 

@@ -10,6 +10,7 @@ public class ZoneContext : IZoneContext {
     public SpellSystemEvent Event { get; }
 
     public bool Spawned { get; }
+    public bool AlternativeSpawn { get; }
 
     public float Lifetime { get; set; }
 
@@ -24,7 +25,8 @@ public class ZoneContext : IZoneContext {
         ISpellTransform movement,
         SpellDefinition data,
         SpellSystemEvent spellEvent,
-        bool spawned
+        bool spawned,
+        bool alternativeSpawn
     ) {
         Caster = caster;
         OwnerId = Caster.OwnerId;
@@ -33,6 +35,7 @@ public class ZoneContext : IZoneContext {
         Event = spellEvent;
         Movement = movement;
         Spawned = spawned;
+        AlternativeSpawn = alternativeSpawn;
         Lifetime = data.lifetime;
     }
 

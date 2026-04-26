@@ -30,6 +30,7 @@ public class SpawnOnHitAction : SpawnOnEventAction {
             rotation = rotation,
             forward = forward,
             caster = context.Caster,
+            alternativeSpawn = context.AlternativeSpawn,
             forceFirstOrigin = true,
             spellDamageMultiplier = context.Stats.GetFinal(StatType.SpellDamage)
         };

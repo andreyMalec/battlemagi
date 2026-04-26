@@ -111,7 +111,8 @@ public class SpellSystem {
             move,
             def,
             spellEvent,
-            spawned
+            spawned,
+            spawnContext.alternativeSpawn
         );
 
         var shape = new LineProjectileShape();
@@ -227,7 +228,8 @@ public class SpellSystem {
             move,
             def,
             spellEvent,
-            spawned
+            spawned,
+            spawnContext.alternativeSpawn
         );
 
         var shape = ZoneShape(def.zone);
@@ -318,7 +320,8 @@ public class SpellSystem {
             move,
             def,
             spellEvent,
-            spawned
+            spawned,
+            spawnContext.alternativeSpawn
         );
 
         var shape = BeamShape(def.beam);
@@ -380,7 +383,8 @@ public class SpellSystem {
             view,
             def,
             spellEvent,
-            spawned
+            spawned,
+            spawnContext.alternativeSpawn
         );
 
         ILocomotion move = def.summon.motion switch {
@@ -436,7 +440,8 @@ public class SpellSystem {
             view,
             def,
             spellEvent,
-            spawned
+            spawned,
+            spawnContext.alternativeSpawn
         );
 
         var core = new SelfCore(

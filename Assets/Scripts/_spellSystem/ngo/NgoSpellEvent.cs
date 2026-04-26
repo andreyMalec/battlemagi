@@ -1,5 +1,3 @@
-using System;
-using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -33,6 +31,14 @@ public class NgoSpellSystemEvent : NetworkBehaviour, SpellSystemEvent {
 
         var instance = obj.GetComponentInChildren<SpellInstance>();
         instance?.Kill();
+
+        foreach (var caster in SpellCaster.Active) {
+            if (caster.Authority == null || !caster.Authority.IsOwner) continue;
+            if (caster.OwnerId != obj.OwnerClientId) continue;
+            var bridge = caster.GetComponentInParent<ISpellCasterBridge>();
+            bridge?.StopChannelingSpell(netObjectId);
+            break;
+        }
     }
 
     public void OnFadeOutAudio(SpellView view) {

@@ -12,6 +12,12 @@ public class SpellCasterNetworkBridge : NetworkBehaviour, ISpellCasterBridge {
 
     private SpellCasterPlayer _core;
     private bool _hasCore;
+    private SpellDefinition _channelingSpell;
+    private SpellInstance _channelingSpellInstance;
+    private bool _hadChannelingSpellInstance;
+    private string _channelingSpellName;
+    private ulong _channelingSpellObjectId = ulong.MaxValue;
+    private bool _stopChannelingRequested;
 
     public bool TrySpendMana(float amount) {
         if (!_hasCore) return false;
@@ -55,6 +61,70 @@ public class SpellCasterNetworkBridge : NetworkBehaviour, ISpellCasterBridge {
         RestoreEchoClientRpc(spell.name, amount, sendParams);
     }
 
+    public void BeginChanneling(SpellDefinition spell) {
+        _channelingSpell = spell;
+        _channelingSpellInstance = null;
+        _hadChannelingSpellInstance = false;
+        _channelingSpellName = spell?.name;
+        _channelingSpellObjectId = ulong.MaxValue;
+        _stopChannelingRequested = false;
+    }
+
+    public void EndChanneling() {
+        _channelingSpell = null;
+        _channelingSpellInstance = null;
+        _hadChannelingSpellInstance = false;
+        _channelingSpellName = null;
+        _channelingSpellObjectId = ulong.MaxValue;
+        _stopChannelingRequested = false;
+    }
+
+    public void RequestStopChanneling() {
+        _stopChannelingRequested = true;
+
+        if (IsServer) {
+            KillChannelingSpell(_channelingSpell);
+            return;
+        }
+
+        RequestStopChannelingServerRpc(_channelingSpellName);
+    }
+
+    public bool ShouldStopChanneling() {
+        if (_stopChannelingRequested) return true;
+
+        if (IsServer) {
+            var active = FindChannelingSpellInstance();
+            if (active != null) {
+                _hadChannelingSpellInstance = true;
+                return !active.IsAlive;
+            }
+
+            return _hadChannelingSpellInstance;
+        }
+
+        if (_channelingSpellObjectId == ulong.MaxValue) return false;
+        return NetworkManager.Singleton == null ||
+               !NetworkManager.Singleton.SpawnManager.SpawnedObjects.ContainsKey(_channelingSpellObjectId);
+    }
+
+    public void BindChannelingSpell(ulong spellObjectId, string spellName) {
+        if (!_hasCore) return;
+        if (!IsOwner) return;
+        if (_channelingSpellName != spellName) return;
+
+        _channelingSpellObjectId = spellObjectId;
+    }
+
+    public void StopChannelingSpell(ulong spellObjectId) {
+        if (!_hasCore) return;
+        if (!IsOwner) return;
+        if (_channelingSpellObjectId != spellObjectId) return;
+
+        _stopChannelingRequested = true;
+        _core.StopChannelingFromBridge();
+    }
+
     public void Bind(SpellCasterPlayer core) {
         _core = core;
         _hasCore = true;
@@ -84,6 +154,7 @@ public class SpellCasterNetworkBridge : NetworkBehaviour, ISpellCasterBridge {
         if (!_hasCore) return;
         mana.OnValueChanged -= OnManaChanged;
         primalMana.OnValueChanged -= OnPrimalManaChanged;
+        EndChanneling();
         base.OnNetworkDespawn();
     }
 
@@ -105,6 +176,27 @@ public class SpellCasterNetworkBridge : NetworkBehaviour, ISpellCasterBridge {
 
     private void OnPrimalManaChanged(float prev, float next) {
         _core.Mana.SetNetworkState(_core.Mana.Mana, next);
+    }
+
+    private SpellInstance FindChannelingSpellInstance() {
+        if (_channelingSpellInstance != null && SpellInstance.Active.Contains(_channelingSpellInstance))
+            return _channelingSpellInstance;
+
+        _channelingSpellInstance = SpellInstance.Active.Find(it =>
+            it.OwnerId == _core.OwnerId && it.IsAlive && it.Bind.Context.Spell == _channelingSpell);
+        return _channelingSpellInstance;
+    }
+
+    private void KillChannelingSpell(SpellDefinition spell) {
+        var active = FindChannelingSpellInstance();
+        if (active == null && spell != null) {
+            active = SpellInstance.Active.Find(it =>
+                it.OwnerId == _core.OwnerId && it.IsAlive && it.Bind.Context.Spell == spell);
+        }
+
+        if (active == null) return;
+
+        active.Bind.Context.View.Kill(active.Bind.Context);
     }
 
     public void SyncFromCore() {
@@ -135,8 +227,15 @@ public class SpellCasterNetworkBridge : NetworkBehaviour, ISpellCasterBridge {
         damageable.SpendHealthCostServer(amount);
     }
 
+    [ServerRpc]
+    private void RequestStopChannelingServerRpc(string spellName) {
+        var spell = DefaultSpells.Get(spellName)?.spell ?? DefaultSpells.GetSubSpell(spellName);
+        KillChannelingSpell(spell);
+    }
+
     [ClientRpc]
     private void RestoreEchoClientRpc(string spellWords, int amount, ClientRpcParams clientRpcParams = default) {
+        _ = clientRpcParams;
         if (!_hasCore) return;
         _core.ApplyRestoreEcho(spellWords, amount);
     }

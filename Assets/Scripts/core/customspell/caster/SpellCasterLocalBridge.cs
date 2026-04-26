@@ -12,6 +12,10 @@ public class SpellCasterLocalBridge : MonoBehaviour, ISpellCasterBridge {
 
     private SpellCasterPlayer _core;
     private bool _hasCore;
+    private SpellDefinition _channelingSpell;
+    private SpellInstance _channelingSpellInstance;
+    private bool _hadChannelingSpellInstance;
+    private bool _stopChannelingRequested;
 
     public void Bind(SpellCasterPlayer core) {
         _core = core;
@@ -52,5 +56,55 @@ public class SpellCasterLocalBridge : MonoBehaviour, ISpellCasterBridge {
     public void RestoreEcho(SpellDefinition spell, int amount) {
         if (!_hasCore) return;
         _core.ApplyRestoreEcho(spell, amount);
+    }
+
+    public void BeginChanneling(SpellDefinition spell) {
+        _channelingSpell = spell;
+        _channelingSpellInstance = null;
+        _hadChannelingSpellInstance = false;
+        _stopChannelingRequested = false;
+    }
+
+    public void EndChanneling() {
+        _channelingSpell = null;
+        _channelingSpellInstance = null;
+        _hadChannelingSpellInstance = false;
+        _stopChannelingRequested = false;
+    }
+
+    public void RequestStopChanneling() {
+        _stopChannelingRequested = true;
+
+        var active = FindChannelingSpellInstance();
+        if (active == null) return;
+
+        active.Bind.Context.View.Kill(active.Bind.Context);
+    }
+
+    public bool ShouldStopChanneling() {
+        if (_stopChannelingRequested) return true;
+
+        var active = FindChannelingSpellInstance();
+        if (active != null) {
+            _hadChannelingSpellInstance = true;
+            return !active.IsAlive;
+        }
+
+        return _hadChannelingSpellInstance;
+    }
+
+    public void BindChannelingSpell(ulong spellObjectId, string spellName) {
+    }
+
+    public void StopChannelingSpell(ulong spellObjectId) {
+    }
+
+    private SpellInstance FindChannelingSpellInstance() {
+        if (_channelingSpellInstance != null && SpellInstance.Active.Contains(_channelingSpellInstance))
+            return _channelingSpellInstance;
+
+        _channelingSpellInstance = SpellInstance.Active.Find(it =>
+            it.OwnerId == _core.OwnerId && it.IsAlive && it.Bind.Context.Spell == _channelingSpell);
+        return _channelingSpellInstance;
     }
 }

@@ -9,6 +9,7 @@ public interface ISpellContext {
     DamageDefinition SpellDamage => Spell.damage;
 
     bool Spawned { get; }
+    bool AlternativeSpawn { get; }
 
     float Lifetime { get; }
 

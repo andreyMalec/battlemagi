@@ -53,6 +53,7 @@ public class ForkOnHitAction : ISpellAction {
             rotation = Quaternion.LookRotation(dir, Vector3.up),
             forward = dir,
             caster = context.Caster,
+            alternativeSpawn = context.AlternativeSpawn,
             forceFirstOrigin = true,
             spellDamageMultiplier = context.Stats.GetFinal(StatType.SpellDamage)
         };

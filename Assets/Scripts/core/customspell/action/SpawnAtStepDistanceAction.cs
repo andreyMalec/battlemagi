@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class SpawnAtStepDistanceAction : SpawnOnEventAction {
     protected override SpellDefinition SpellDefinition(ISpellContext context) {
         if (context.Spell.projectile != null)
@@ -20,6 +18,7 @@ public class SpawnAtStepDistanceAction : SpawnOnEventAction {
             rotation = context.Movement.Transform.rotation,
             forward = step.forward,
             caster = context.Caster,
+            alternativeSpawn = context.AlternativeSpawn,
             forceFirstOrigin = true
         };
     }

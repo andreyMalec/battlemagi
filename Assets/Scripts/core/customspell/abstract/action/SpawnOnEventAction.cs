@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public abstract class SpawnOnEventAction : ISpellAction {
     protected abstract SpellDefinition SpellDefinition(ISpellContext context);
 
@@ -22,6 +20,7 @@ public abstract class SpawnOnEventAction : ISpellAction {
             rotation = context.Movement.Transform.rotation,
             forward = context.Movement.Transform.forward,
             caster = context.Caster,
+            alternativeSpawn = context.AlternativeSpawn,
             forceFirstOrigin = true,
             spellDamageMultiplier = context.Stats.GetFinal(StatType.SpellDamage)
         };
