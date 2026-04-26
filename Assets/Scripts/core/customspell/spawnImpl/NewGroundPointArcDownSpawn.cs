@@ -18,6 +18,7 @@ public class NewGroundPointArcDownSpawn : ISpellSpawn {
 
             Quaternion rotation = baseCtx.rotation * Quaternion.Euler(0f, angle, 0f);
             var ctx = ISpellSpawn.GroundPos(baseCtx, rotation * Vector3.forward, out _, Vector3.down);
+            if (ctx == null) continue;
             spawn(ctx);
 
             if (delay > 0f && i > 0)

@@ -55,6 +55,7 @@ public class ProjectileDefinition : ScriptableObject, IValidate {
     public bool enablePierce;
 
     [ShowIf("enablePierce")] public int maxPierces = 1;
+    [ShowIf("enablePierce")] public PierceTargetMode pierceTargetMode;
 
     [Header("Fork")]
     public bool enableFork;

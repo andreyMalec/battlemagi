@@ -9,5 +9,6 @@ public enum SpellProjectilePrefabId {
     ProjectileCharged,
     ProjectileSpark,
     ProjectileHand,
+    ProjectileSpear,
 }
 

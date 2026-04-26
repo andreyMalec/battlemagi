@@ -19,7 +19,10 @@ public class GroundPointCircleUpSpawn : ISpellSpawn, IDelayOriginRespect {
         for (int i = 0; i < count; i++) {
             var baseCtx = origin == DelayOrigin.First
                 ? onFirst
-                : ISpellSpawn.GroundPos(BaseContext(context, origin, isFirst: false), context.forward, out _, Vector3.down);
+                : ISpellSpawn.GroundPos(BaseContext(context, origin, isFirst: false), context.forward, out _,
+                    Vector3.down);
+
+            if (baseCtx == null) continue;
 
             var angle = UnityEngine.Random.value * Mathf.PI * 2f;
             var localOffset = new Vector3(Mathf.Cos(angle) * radius, height, Mathf.Sin(angle) * radius);

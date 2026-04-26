@@ -17,6 +17,7 @@ public class ForcedMovementEffect : StatusEffectData {
 
     [SerializeField] private TargetPointMode targetPointMode = TargetPointMode.CasterPosition;
     [SerializeField] private float movementSpeed = 10f;
+    [SerializeField] private Vector3 offset;
     [SerializeField] private bool inheritInitialProjectileSpeed;
     [SerializeField] private float maxDistance = 25f;
     [SerializeField] private float wallBackOffset = 0.3f;
@@ -39,7 +40,7 @@ public class ForcedMovementEffect : StatusEffectData {
         }
 
         if (target.TryGetComponent<Draggable>(out var draggable)) {
-            draggable.StartForcedMovement(targetPoint, resolvedDuration);
+            draggable.StartForcedMovement(targetPoint, resolvedDuration, offset);
             return true;
         }
 

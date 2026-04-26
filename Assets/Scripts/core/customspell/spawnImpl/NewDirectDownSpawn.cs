@@ -11,37 +11,22 @@ public class NewDirectDownSpawn : ISpellSpawn, IDelayOriginRespect {
 
         var downWithDirection = Vector3.down + context.forward * 0.01f;
         var first = ISpellSpawn.GroundPos(context, downWithDirection, out _);
-        // first = ApplyDirectionToTarget(first);
 
         for (int i = 0; i < count; i++) {
             if (origin == DelayOrigin.First) {
-                spawn(first);
+                if (first != null)
+                    spawn(first);
             } else {
                 context.position = context.caster.transform.position;
                 var current = ISpellSpawn.GroundPos(context, downWithDirection, out _);
-                // current = ApplyDirectionToTarget(current);
-                spawn(current);
+                if (current != null)
+                    spawn(current);
             }
 
             if (delay > 0f && i < count - 1) {
                 yield return new WaitForSeconds(delay);
             }
         }
-    }
-
-    private static SpawnContext ApplyDirectionToTarget(SpawnContext context) {
-        if (context.target == null)
-            return context;
-
-        var dir = context.target.Position - context.position;
-        if (dir.sqrMagnitude <= 0f)
-            return context;
-
-        var forward = dir.normalized;
-        return context with {
-            rotation = Quaternion.LookRotation(forward, Vector3.up),
-            forward = forward,
-        };
     }
 
     public IEnumerable<SpawnContext> ShapeCenter(SpawnContext context) {

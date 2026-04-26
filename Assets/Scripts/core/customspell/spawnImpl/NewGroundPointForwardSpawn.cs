@@ -11,12 +11,13 @@ public class NewGroundPointForwardSpawn : ISpellSpawn {
         var baseCtx = ApplyDirectionToTarget(context);
 
         var ground = ISpellSpawn.GroundPos(baseCtx, baseCtx.forward, out var hit);
+        if (ground == null) yield break;
 
         if (context.spawn.useVectorStep) {
             Vector3 groundUp = ground.rotation * Vector3.up;
             Vector3 groundForward = ground.rotation * Vector3.forward;
             Vector3 groundRight = ground.rotation * Vector3.right;
-        
+
             Vector3 localStep = baseCtx.spawn.forwardVectorStep;
             Vector3 step = groundRight * localStep.x + groundUp * localStep.y + groundForward * localStep.z;
 

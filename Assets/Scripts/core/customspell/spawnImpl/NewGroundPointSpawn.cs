@@ -16,12 +16,14 @@ public class NewGroundPointSpawn : ISpellSpawn, IDelayOriginRespect {
         for (int i = count - 1; i >= 0; i--) {
             switch (origin) {
                 case DelayOrigin.First:
-                    spawn(onFirst);
+                    if (onFirst != null)
+                        spawn(onFirst);
                     break;
                 case DelayOrigin.Continuous:
                     var currentBase = BaseContext(context, origin, isFirst: false);
                     var ctx = ISpellSpawn.GroundPos(currentBase, currentBase.forward, out _);
-                    spawn(ctx);
+                    if (ctx != null)
+                        spawn(ctx);
                     break;
             }
 

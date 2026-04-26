@@ -10,21 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0b298147d4414e67bd1d9c7a8f47ca72, type: 3}
-  m_Name: Forced Movement Magic Hand
+  m_Name: Forced Movement Ice Spear
   m_EditorClassIdentifier: Assembly-CSharp::ForcedMovementEffect
-  effectName: Hook Move
+  effectName: Forced Movement Ice Spear
   title: 
   description: 
-  duration: 0.5
+  duration: 0
   icon: {fileID: 0}
-  color: {r: 1, g: 0, b: 0, a: 1}
+  color: {r: 0, g: 0.96044064, b: 1, a: 1}
   removeOnHit: 0
   onExpire: {fileID: 0}
-  targetPointMode: 0
-  movementSpeed: -1
-  offset: {x: 0, y: 1, z: 0}
+  targetPointMode: 1
+  movementSpeed: 10
   inheritInitialProjectileSpeed: 1
-  maxDistance: 99
+  maxDistance: 25
   wallBackOffset: 0.3
   wallMask:
     serializedVersion: 2

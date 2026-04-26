@@ -608,7 +608,7 @@ public class SpellSystem {
     private static List<ISpellAction> HitActions(SpellDefinition spell, ProjectileDefinition def) {
         var actions = new List<ISpellAction>();
         if (def.enablePierce)
-            actions.Add(new PierceOnHitAction(def.maxPierces));
+            actions.Add(new PierceOnHitAction(def.maxPierces, def.pierceTargetMode));
         if (def.enableBounce)
             actions.Add(new BounceOnHitAction(def.maxBounces, def.bounceSpeedMultiplier));
         if (def.enableFork)

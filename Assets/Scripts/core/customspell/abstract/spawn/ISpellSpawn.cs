@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 
 public interface ISpellSpawn {
@@ -43,6 +44,7 @@ public interface ISpellSpawn {
         };
     }
 
+    [CanBeNull]
     public static SpawnContext GroundPos(
         SpawnContext context,
         Vector3 direction,
@@ -85,11 +87,7 @@ public interface ISpellSpawn {
         }
 
         hitInfo = new RaycastHit();
-        return context with {
-            position = new Vector3(1000, 0, 0),
-            rotation = Quaternion.identity,
-            forward = Vector3.zero
-        };
+        return null;
     }
 
     public static ISpellSpawn GetMode(SpawnMode mode) {

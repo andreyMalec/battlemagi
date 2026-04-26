@@ -43,12 +43,12 @@ public class Draggable : NetworkBehaviour {
         UpdateForcedMovement();
     }
 
-    public void StartForcedMovement(Vector3 targetPoint, float duration) {
+    public void StartForcedMovement(Vector3 targetPoint, float duration, Vector3 offset) {
         if (!IsServer)
             return;
 
         _forcedMovementStart.Value = transform.position;
-        _forcedMovementTarget.Value = targetPoint + Vector3.up;
+        _forcedMovementTarget.Value = targetPoint + offset;
         _forcedMovementDuration.Value = Mathf.Max(duration, Time.fixedDeltaTime);
         _forcedMovementStartTime.Value = GetSynchronizedTime();
         _forcedMovementActive.Value = true;
