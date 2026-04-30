@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public class ZoneKnockbackAction : PointPhysicsActionBase {
-    private readonly HashSet<Damageable> _impulsed = new();
+    private readonly HashSet<Object> _impulsed = new();
 
     public override void Apply(ISpellContext context, SpellEvent evt) {
         if (evt is not OnZoneStayEvent stay) return;
@@ -10,37 +11,35 @@ public class ZoneKnockbackAction : PointPhysicsActionBase {
         if (def.mode is SpellKnockbackMode.Impulse && !stay.IsInitial) return;
 
         var point = context.Movement.Transform.position;
-        foreach (var target in stay.Targets) {
-            if (!TryResolveTarget(context, target, out var damageable, out var physics, out var movement))
+        foreach (var hit in stay.Targets) {
+            if (!TryResolveTarget(context, hit.Target, out var target))
                 continue;
 
             switch (def.mode) {
                 case SpellKnockbackMode.Impulse:
-                    ApplyImpulse(damageable, physics, movement, point, def);
+                    ApplyImpulse(target, point, def);
                     break;
                 case SpellKnockbackMode.Continuous:
-                    ApplyPointForce(context, physics, movement, point, def);
+                    ApplyPointForce(context, target, point, def);
                     break;
             }
         }
     }
 
     private void ApplyImpulse(
-        Damageable damageable,
-        PlayerPhysics physics,
-        FirstPersonMovement movement,
-        UnityEngine.Vector3 point,
+        ResolvedPhysicsTarget target,
+        Vector3 point,
         KnockbackDefinition def
     ) {
-        if (_impulsed.Contains(damageable)) return;
+        if (_impulsed.Contains(target.Key)) return;
         if (def.impulse <= 0f) return;
 
-        var direction = ComputeDirection(physics, point, def);
+        var direction = ComputeDirection(target.Transform, point, def);
         var impulse = direction * def.impulse;
         if (impulse.sqrMagnitude < 0.0001f) return;
 
-        _impulsed.Add(damageable);
-        ApplyImpulse(physics, movement, impulse);
+        _impulsed.Add(target.Key);
+        ApplyImpulse(target, impulse);
     }
 }
 

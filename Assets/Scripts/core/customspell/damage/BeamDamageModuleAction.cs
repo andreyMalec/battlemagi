@@ -25,13 +25,13 @@ public class BeamDamageModuleAction : ISpellAction {
         if (_accumulator < context.SpellDamage.tickInterval) return;
         _accumulator = 0f;
 
-        Deal(context, hit.Target, evt);
+        Deal(context, hit.ShapeHit, evt);
     }
 
     private void ApplyOncePerTarget(ISpellContext context, SpellEvent evt) {
         if (evt is not OnHitEvent hit) return;
 
-        if (!DamageUtils.TryGetOwnerFromCollider(hit.Target, out var damageable, out var owner))
+        if (!DamageUtils.TryGetOwnerFromCollider(hit.ShapeHit.Target, out var damageable, out var owner))
             return;
 
         if (_onceDamaged.Contains(damageable))
@@ -42,7 +42,7 @@ public class BeamDamageModuleAction : ISpellAction {
 
         _onceDamaged.Add(damageable);
 
-        var amount = DamageResolver.Resolve(context.SpellDamage, context, damageable);
+        var amount = DamageResolver.Resolve(context.SpellDamage, context, damageable, hit.ShapeHit.Point);
         if (amount <= 0f) return;
 
         base.Apply(context, evt);
@@ -50,13 +50,13 @@ public class BeamDamageModuleAction : ISpellAction {
             SpellPrefabDatabase.Instance.Sound(context.Spell), context.SpellDamage.ignoreSoundCooldown);
     }
 
-    private void Deal(ISpellContext context, GameObject targetGo, SpellEvent evt) {
-        if (targetGo == null) return;
-        if (!DamageUtils.TryGetOwnerFromCollider(targetGo, out var damageable, out var owner)) return;
+    private void Deal(ISpellContext context, ShapeHit hit, SpellEvent evt) {
+        if (hit.Target == null) return;
+        if (!DamageUtils.TryGetOwnerFromCollider(hit.Target, out var damageable, out var owner)) return;
         if (damageable.IsDead) return;
         if (!DamageRelationship.CanDamage(context, damageable, owner)) return;
 
-        var amount = DamageResolver.Resolve(context.SpellDamage, context, damageable);
+        var amount = DamageResolver.Resolve(context.SpellDamage, context, damageable, hit.Point);
         if (amount <= 0f) return;
 
         base.Apply(context, evt);

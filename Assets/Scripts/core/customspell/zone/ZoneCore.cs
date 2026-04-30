@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ZoneCore : ISpellCore<ZoneContext> {
     private readonly IShape _shape;
-    private readonly List<GameObject> _targets = new();
+    private readonly List<ShapeHit> _targets = new();
     private bool _isInitialTick = true;
 
     public ZoneCore(
@@ -22,7 +22,7 @@ public class ZoneCore : ISpellCore<ZoneContext> {
             if (hit.Target == null)
                 continue;
 
-            _targets.Add(hit.Target.gameObject);
+            _targets.Add(hit);
         }
 
         HandleEvent(new OnZoneStayEvent(_targets, delta, _isInitialTick));

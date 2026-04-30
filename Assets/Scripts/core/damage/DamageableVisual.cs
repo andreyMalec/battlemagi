@@ -4,23 +4,33 @@ using UnityEngine;
 public class DamageableVisual : MonoBehaviour {
     [SerializeField] private AudioClip onDestroyAudio;
     [SerializeField] private GameObject onDestroyPrefab;
+    [SerializeField] private bool applyDamageColor = true;
+    [SerializeField] private bool onDeathToggleKinematic;
+    [SerializeField] [Range(0, 1)] private float deathThreshold = 0.1f;
 
     private bool _dead;
     private Damageable _damageable;
-    private SpellInstance _spellInstance;
     private Material _material;
+
+    private float _activateTimer = 1f;
 
     private void Awake() {
         _damageable = GetComponent<Damageable>();
-        _spellInstance = GetComponent<SpellInstance>();
         _material = GetComponentInChildren<Renderer>().material;
     }
 
     private void Update() {
-        var percent = _damageable.CurrentHealth / _damageable.Health.maxHealth;
-        _material.color = Color.Lerp(Color.black, Color.white, percent);
+        if (_activateTimer > 0) {
+            _activateTimer -= Time.deltaTime;
+            return;
+        }
 
-        if (!_dead && _damageable.CurrentHealth <= 0) {
+        var percent = _damageable.CurrentHealth / _damageable.Health.maxHealth;
+        if (applyDamageColor) {
+            _material.color = Color.Lerp(Color.black, Color.white, percent);
+        }
+
+        if (!_dead && percent <= deathThreshold) {
             _dead = true;
             OnDeath();
         }
@@ -31,5 +41,9 @@ public class DamageableVisual : MonoBehaviour {
             DestroyAfterPlay.Play(onDestroyAudio, transform.position);
         if (onDestroyPrefab != null)
             Instantiate(onDestroyPrefab, transform.position, Quaternion.identity);
+        if (onDeathToggleKinematic) {
+            var rb = gameObject.GetComponent<Rigidbody>();
+            rb.isKinematic = !rb.isKinematic;
+        }
     }
 }

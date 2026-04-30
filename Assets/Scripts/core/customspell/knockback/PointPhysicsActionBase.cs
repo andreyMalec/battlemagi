@@ -2,24 +2,64 @@ using Unity.Netcode;
 using UnityEngine;
 
 public abstract class PointPhysicsActionBase : ISpellAction {
+    protected readonly struct ResolvedPhysicsTarget {
+        public readonly Damageable Damageable;
+        public readonly PlayerPhysics Physics;
+        public readonly FirstPersonMovement Movement;
+        public readonly Rigidbody Rigidbody;
+
+        public ResolvedPhysicsTarget(
+            Damageable damageable, PlayerPhysics physics, FirstPersonMovement movement, Rigidbody rigidbody
+        ) {
+            Damageable = damageable;
+            Physics = physics;
+            Movement = movement;
+            Rigidbody = rigidbody;
+        }
+
+        public Transform Transform => Physics != null ? Physics.transform : Rigidbody.transform;
+
+        public Object Key => Damageable != null ? Damageable : Rigidbody;
+    }
+
     protected bool TryResolveTarget(
         ISpellContext context,
         GameObject target,
-        out Damageable damageable,
-        out PlayerPhysics physics,
-        out FirstPersonMovement movement
+        out ResolvedPhysicsTarget resolvedTarget
     ) {
-        damageable = null;
-        physics = null;
-        movement = null;
+        resolvedTarget = default;
 
         if (target == null) return false;
-        if (!DamageUtils.TryGetOwnerFromCollider(target, out damageable, out var ownerId)) return false;
-        if (damageable.IsDead) return false;
-        if (!CanAffect(context, ownerId)) return false;
-        if (!damageable.TryGetComponent(out physics)) return false;
 
-        damageable.TryGetComponent(out movement);
+        if (DamageUtils.TryGetOwnerFromCollider(target, out var damageable, out var ownerId)) {
+            if (damageable.IsDead) return false;
+            if (damageable.TryGetComponent<PlayerPhysics>(out var physics)) {
+                if (!CanAffect(context, ownerId)) return false;
+                damageable.TryGetComponent<FirstPersonMovement>(out var movement);
+                resolvedTarget = new ResolvedPhysicsTarget(damageable, physics, movement, null);
+                return true;
+            }
+
+            if (!TryResolveRigidbody(target, out var damageableRigidbody)) return false;
+            resolvedTarget = new ResolvedPhysicsTarget(damageable, null, null, damageableRigidbody);
+            return true;
+        }
+
+        if (!TryResolveRigidbody(target, out var rigidbody)) return false;
+        resolvedTarget = new ResolvedPhysicsTarget(null, null, null, rigidbody);
+        return true;
+    }
+
+    private bool TryResolveRigidbody(GameObject target, out Rigidbody rigidbody) {
+        rigidbody = null;
+
+        if (target.TryGetComponent(out Collider collider) && collider.attachedRigidbody != null) {
+            rigidbody = collider.attachedRigidbody;
+        } else if (!target.TryGetComponent(out rigidbody)) {
+            rigidbody = target.GetComponentInParent<Rigidbody>();
+        }
+
+        if (rigidbody == null) return false;
         return true;
     }
 
@@ -30,40 +70,51 @@ public abstract class PointPhysicsActionBase : ISpellAction {
         return TeamManager.Instance.AreEnemies(context.OwnerId, ownerId);
     }
 
-    protected Vector3 ComputeDirection(PlayerPhysics physics, Vector3 point, KnockbackDefinition def) {
-        return SpellKnockbackDirectionUtility.ComputeDirection(physics.transform, point, def.vectorMode, def.upBias);
+    protected Vector3 ComputeDirection(Transform targetTransform, Vector3 point, KnockbackDefinition def) {
+        return SpellKnockbackDirectionUtility.ComputeDirection(targetTransform, point, def.vectorMode, def.upBias);
     }
 
-    protected void ApplyImpulse(PlayerPhysics physics, FirstPersonMovement movement, Vector3 impulse) {
-        if (movement != null && movement.IsSpawned) {
+    protected void ApplyImpulse(ResolvedPhysicsTarget target, Vector3 impulse) {
+        if (target.Movement != null && target.Movement.IsSpawned) {
             var sendParams = new ClientRpcParams {
-                Send = new ClientRpcSendParams { TargetClientIds = new[] { movement.OwnerClientId } }
+                Send = new ClientRpcSendParams { TargetClientIds = new[] { target.Movement.OwnerClientId } }
             };
-            movement.ApplyImpulseClientRpc(impulse, sendParams);
+            target.Movement.ApplyImpulseClientRpc(impulse, sendParams);
             return;
         }
 
-        physics.ApplyImpulse(impulse);
+        if (target.Physics != null) {
+            target.Physics.ApplyImpulse(impulse);
+            return;
+        }
+
+        target.Rigidbody.AddForce(impulse, ForceMode.VelocityChange);
     }
 
     protected void ApplyPointForce(
         ISpellContext context,
-        PlayerPhysics physics,
-        FirstPersonMovement movement,
+        ResolvedPhysicsTarget target,
         Vector3 point,
         KnockbackDefinition def
     ) {
         var id = context.View.GetInstanceID() ^ GetType().GetHashCode();
-        if (movement != null && movement.IsSpawned) {
+        if (target.Movement != null && target.Movement.IsSpawned) {
             var sendParams = new ClientRpcParams {
-                Send = new ClientRpcSendParams { TargetClientIds = new[] { movement.OwnerClientId } }
+                Send = new ClientRpcSendParams { TargetClientIds = new[] { target.Movement.OwnerClientId } }
             };
-            movement.SetPointForceClientRpc(id, point, def.forcePerSecond, def.duration, def.vectorMode, def.upBias,
+            target.Movement.SetPointForceClientRpc(id, point, def.forcePerSecond, def.duration, def.vectorMode,
+                def.upBias,
                 sendParams);
             return;
         }
 
-        physics.SetPointForce(id, point, def.forcePerSecond, def.duration, def.vectorMode, def.upBias);
+        if (target.Physics != null) {
+            target.Physics.SetPointForce(id, point, def.forcePerSecond, def.duration, def.vectorMode, def.upBias);
+            return;
+        }
+
+        RigidbodyPointForceController.GetOrAdd(target.Rigidbody)
+            .SetPointForce(id, point, def.forcePerSecond, def.duration, def.vectorMode, def.upBias);
     }
 
     protected void SetVelocitySource(
@@ -96,4 +147,3 @@ public abstract class PointPhysicsActionBase : ISpellAction {
         physics.ClearVelocitySource(id);
     }
 }
-

@@ -5311,13 +5311,14 @@ MonoBehaviour:
   damageSoundCooldown: 0.2
   _health:
     maxHealth: 75
-    regenPerSecond: 1
+    regenPerSecond: 0
   _armor:
     maxArmor: 0
     armorEffect: 0.75
   _immortal: 0
   _invulnerable: 0
   _isStructure: 1
+  despawnOnDeath: 1
   _bridge: {fileID: 0}
 --- !u!114 &3489208548825276543
 MonoBehaviour:
@@ -5333,6 +5334,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DamageableVisual
   onDestroyAudio: {fileID: 8300000, guid: b1539921015dbe749968460b566fb52a, type: 3}
   onDestroyPrefab: {fileID: 0}
+  applyDamageColor: 1
+  onDeathToggleKinematic: 0
+  deathThreshold: 0.05
 --- !u!114 &8513036930816197730
 MonoBehaviour:
   m_ObjectHideFlags: 0

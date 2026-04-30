@@ -19,6 +19,8 @@ GameObject:
   - component: {fileID: 8444559531793830367}
   - component: {fileID: 322212215915134154}
   - component: {fileID: 9072405579072558778}
+  - component: {fileID: -4509650354569687940}
+  - component: {fileID: 3617000606444517228}
   m_Layer: 6
   m_Name: Crate
   m_TagString: Untagged
@@ -157,7 +159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1593172013
+  GlobalObjectIdHash: 3107078658
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -272,3 +274,47 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Draggable
   ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &-4509650354569687940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9051282386436866403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c102da4810804e98a519729bf047f72b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Damageable
+  damageAudio: {fileID: 0}
+  damageSoundCooldown: 0.2
+  _health:
+    maxHealth: 100
+    regenPerSecond: 1
+  _armor:
+    maxArmor: 50
+    armorEffect: 0.75
+  _immortal: 1
+  _invulnerable: 0
+  _isStructure: 1
+  despawnOnDeath: 0
+  _bridge: {fileID: 3617000606444517228}
+--- !u!114 &3617000606444517228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9051282386436866403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7601162350c46279d11c95a8ec56de4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageableNetworkBridge
+  ShowTopMostFoldoutHeaderGroup: 1
+  _hpText: {fileID: 0}
+  _stats: {fileID: 0}
+  health:
+    m_InternalValue: 0
+  armor:
+    m_InternalValue: 0

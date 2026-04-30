@@ -2768,6 +2768,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LavaRiver (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 1875422301159810437, guid: 4c84835cacc985b4db6fdbabe3fa68e1, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2802045581819031706, guid: 4c84835cacc985b4db6fdbabe3fa68e1, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -3577,7 +3581,7 @@ GameObject:
   - component: {fileID: 927029669}
   - component: {fileID: 927029668}
   - component: {fileID: 927029667}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: lava Damage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3824,6 +3828,10 @@ PrefabInstance:
     - target: {fileID: 447065075813881366, guid: 2ef75b4e11b3ac34291fcb9eda291e4d, type: 3}
       propertyPath: m_Name
       value: Rock_04
+      objectReference: {fileID: 0}
+    - target: {fileID: 447065075813881366, guid: 2ef75b4e11b3ac34291fcb9eda291e4d, type: 3}
+      propertyPath: m_Layer
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 972667558718000300, guid: 2ef75b4e11b3ac34291fcb9eda291e4d, type: 3}
       propertyPath: m_LocalScale.x
@@ -4110,7 +4118,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1048277370}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Lavafall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4566,6 +4574,10 @@ PrefabInstance:
     - target: {fileID: 1875422301159810437, guid: 4c84835cacc985b4db6fdbabe3fa68e1, type: 3}
       propertyPath: m_Name
       value: LavaRiver
+      objectReference: {fileID: 0}
+    - target: {fileID: 1875422301159810437, guid: 4c84835cacc985b4db6fdbabe3fa68e1, type: 3}
+      propertyPath: m_Layer
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2802045581819031706, guid: 4c84835cacc985b4db6fdbabe3fa68e1, type: 3}
       propertyPath: m_Mesh
@@ -6521,6 +6533,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LavaRiver (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1875422301159810437, guid: 4c84835cacc985b4db6fdbabe3fa68e1, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2802045581819031706, guid: 4c84835cacc985b4db6fdbabe3fa68e1, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -7372,6 +7388,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LavaRiver (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 1875422301159810437, guid: 4c84835cacc985b4db6fdbabe3fa68e1, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2802045581819031706, guid: 4c84835cacc985b4db6fdbabe3fa68e1, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -7881,6 +7901,26 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8918032548697254470, guid: 735488dc8f38f2b4483df4c642215453, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8953482272161964942, guid: 735488dc8f38f2b4483df4c642215453, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8953482272161964942, guid: 735488dc8f38f2b4483df4c642215453, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8953482272161964942, guid: 735488dc8f38f2b4483df4c642215453, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8953482272161964942, guid: 735488dc8f38f2b4483df4c642215453, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8953482272161964942, guid: 735488dc8f38f2b4483df4c642215453, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}

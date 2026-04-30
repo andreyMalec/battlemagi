@@ -15,16 +15,22 @@ public class NewDirectDownSpawn : ISpellSpawn, IDelayOriginRespect {
         for (int i = 0; i < count; i++) {
             if (origin == DelayOrigin.First) {
                 if (first != null) {
-                    var forwardOnPlane = Vector3.ProjectOnPlane(context.forward, hitFirst.normal);
-                    first.rotation = Quaternion.LookRotation(forwardOnPlane, Vector3.up);
+                    if (context.spawn.rotateForward) {
+                        var forwardOnPlane = Vector3.ProjectOnPlane(context.forward, hitFirst.normal);
+                        first.rotation = Quaternion.LookRotation(forwardOnPlane, hitFirst.normal);
+                    }
+
                     spawn(first);
                 }
             } else {
                 context.position = context.caster.transform.position;
                 var current = ISpellSpawn.GroundPos(context, downWithDirection, out var hitCurrent);
                 if (current != null) {
-                    var forwardOnPlane = Vector3.ProjectOnPlane(context.forward, hitCurrent.normal);
-                    current.rotation = Quaternion.LookRotation(forwardOnPlane, Vector3.up);
+                    if (context.spawn.rotateForward) {
+                        var forwardOnPlane = Vector3.ProjectOnPlane(context.forward, hitCurrent.normal);
+                        current.rotation = Quaternion.LookRotation(forwardOnPlane, hitFirst.normal);
+                    }
+
                     spawn(current);
                 }
             }
@@ -33,6 +39,21 @@ public class NewDirectDownSpawn : ISpellSpawn, IDelayOriginRespect {
                 yield return new WaitForSeconds(delay);
             }
         }
+    }
+    
+    private static SpawnContext ApplyDirectionToTarget(SpawnContext context) {
+        if (context.target == null)
+            return context;
+
+        var dir = context.target.Position - context.position;
+        if (dir.sqrMagnitude <= 0f)
+            return context;
+
+        var forward = dir.normalized;
+        return context with {
+            rotation = Quaternion.LookRotation(forward, Vector3.up),
+            forward = forward,
+        };
     }
 
     public IEnumerable<SpawnContext> ShapeCenter(SpawnContext context) {

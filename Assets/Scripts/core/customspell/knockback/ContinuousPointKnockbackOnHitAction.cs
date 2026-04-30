@@ -3,14 +3,12 @@ public class ContinuousPointKnockbackOnHitAction : PointPhysicsOnHitActionBase {
         ISpellContext context,
         OnHitEvent hit,
         KnockbackDefinition def,
-        Damageable damageable,
-        PlayerPhysics physics,
-        FirstPersonMovement movement
+        ResolvedPhysicsTarget target
     ) {
         if (def.forcePerSecond <= 0f) return;
         if (def.duration <= 0f) return;
 
-        ApplyPointForce(context, physics, movement, hit.Point, def);
+        ApplyPointForce(context, target, hit.ShapeHit.Point, def);
     }
 }
 

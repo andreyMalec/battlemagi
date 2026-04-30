@@ -1,25 +1,24 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public class ImpulseKnockbackOnHitAction : PointPhysicsOnHitActionBase {
-    private readonly HashSet<Damageable> _applied = new();
+    private readonly HashSet<Object> _applied = new();
 
     protected override void ApplyResolved(
         ISpellContext context,
         OnHitEvent hit,
         KnockbackDefinition def,
-        Damageable damageable,
-        PlayerPhysics physics,
-        FirstPersonMovement movement
+        ResolvedPhysicsTarget target
     ) {
-        if (_applied.Contains(damageable)) return;
+        if (_applied.Contains(target.Key)) return;
         if (def.impulse <= 0f) return;
 
-        var direction = ComputeDirection(physics, hit.Point, def);
+        var direction = ComputeDirection(target.Transform, hit.ShapeHit.Point, def);
         var impulse = direction * def.impulse;
         if (impulse.sqrMagnitude < 0.0001f) return;
 
-        _applied.Add(damageable);
-        ApplyImpulse(physics, movement, impulse);
+        _applied.Add(target.Key);
+        ApplyImpulse(target, impulse);
     }
 }
 

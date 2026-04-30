@@ -18,8 +18,13 @@ public class SpawnDefinition : ScriptableObject, IValidate {
 
     [ShowIf("_isForward")] public bool useVectorStep;
     [ShowIf("_isForward")] public float forwardStep = 3;
-    [ShowIf(EConditionOperator.And, "_isForward", "useVectorStep")] public Vector3 forwardVectorStep;
-    [ShowIf(EConditionOperator.And, "_isForward", "useVectorStep")] public Vector3 forwardAngleStep;
+
+    [ShowIf(EConditionOperator.And, "_isForward", "useVectorStep")]
+    public Vector3 forwardVectorStep;
+
+    [ShowIf(EConditionOperator.And, "_isForward", "useVectorStep")]
+    public Vector3 forwardAngleStep;
+
     [ShowIf("_isArc")] public float arcAngleStep = 15f;
 
     [ShowIf("_isCone")] public float coneRadius = 2f;
@@ -29,12 +34,14 @@ public class SpawnDefinition : ScriptableObject, IValidate {
     [ShowIf("_isCircleUp")] public float circleHeight = 2f;
 
     [ShowIf("_isRaycast")] public float raycastMaxDistance = 50f;
+    [ShowIf("_isDirectDown")] public bool rotateForward;
 
     private bool _isArc = false;
     private bool _isRaycast = false;
     private bool _isForward = false;
     private bool _isCone = false;
     private bool _isCircleUp = false;
+    private bool _isDirectDown = false;
 
     private bool _isDelayed = false;
     private bool _respectDelayOrigin = false;
@@ -47,6 +54,7 @@ public class SpawnDefinition : ScriptableObject, IValidate {
         _isForward = IsForward(spawnMode) || IsForward(alternativeSpawnMode);
         _isCone = IsCone(spawnMode) || IsCone(alternativeSpawnMode);
         _isCircleUp = IsCircleUp(spawnMode) || IsCircleUp(alternativeSpawnMode);
+        _isDirectDown = IsDirectDown(spawnMode) || IsDirectDown(alternativeSpawnMode);
     }
 
 #if UNITY_EDITOR
@@ -79,5 +87,9 @@ public class SpawnDefinition : ScriptableObject, IValidate {
 
     private static bool IsCircleUp(SpawnMode spawnMode) {
         return spawnMode is SpawnMode.GroundPointCircleUp or SpawnMode.GroundPointDiskUp;
+    }
+
+    private static bool IsDirectDown(SpawnMode spawnMode) {
+        return spawnMode is SpawnMode.DirectDown;
     }
 }

@@ -21,17 +21,15 @@ public class BounceOnHitAction : ISpellAction {
         hit.Outcome |= HitOutcome.Bounce;
         hit.Outcome &= ~HitOutcome.Destroy;
 
-        var reflected = Vector3.Reflect(v, hit.Normal.normalized) * _speedMultiplier;
+        var reflected = Vector3.Reflect(v, hit.ShapeHit.Normal.normalized) * _speedMultiplier;
         context.Movement.Motion = new SpellMotion { Velocity = reflected };
-        context.Movement.Transform.position = hit.Point + hit.Normal.normalized * 0.2f;
+        context.Movement.Transform.position = hit.ShapeHit.Point + hit.ShapeHit.Normal.normalized * 0.2f;
         if (reflected.sqrMagnitude > 0f)
             context.Movement.Transform.rotation = Quaternion.LookRotation(reflected.normalized, Vector3.up);
         _bounces++;
 
         context.SendEvent(new OnBounceEvent {
-            target = hit.Target,
-            point = hit.Point,
-            normal = hit.Normal
+            ShapeHit = hit.ShapeHit,
         });
     }
 }

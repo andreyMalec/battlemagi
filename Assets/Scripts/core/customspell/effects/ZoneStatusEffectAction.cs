@@ -20,8 +20,8 @@ public class ZoneStatusEffectAction : ISpellAction {
     }
 
     private void Apply(ISpellContext context, StatusEffectApplyContext applyContext, EffectDefinition def, OnZoneStayEvent stay, SpellEvent evt) {
-        foreach (var target in stay.Targets) {
-            if (!SpellEffectResolver.TryGetStatusable(target, out var statusable, out var ownerId))
+        foreach (var hit in stay.Targets) {
+            if (!SpellEffectResolver.TryGetStatusable(hit.Target, out var statusable, out var ownerId))
                 continue;
 
             if (!SpellEffectResolver.CanAffect(def, context, statusable.gameObject, ownerId))

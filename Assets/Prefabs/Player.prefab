@@ -326,7 +326,7 @@ Transform:
   m_GameObject: {fileID: 3014462947862952609}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.33}
+  m_LocalPosition: {x: 0, y: 0, z: 0.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -842,7 +842,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2196398029
+  GlobalObjectIdHash: 1910923140
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -1236,6 +1236,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerUI
   ShowTopMostFoldoutHeaderGroup: 1
+  echoItemPrefab: {fileID: 3740721941871390414, guid: 66a0e08d4e4d2ef4fafb6f891702d045, type: 3}
   effectItemPrefab: {fileID: 4735756117888980395, guid: d6778ef7c29d49f47a90fa31074d697b, type: 3}
 --- !u!114 &2716919782836391855
 MonoBehaviour:
@@ -1343,6 +1344,7 @@ MonoBehaviour:
   _immortal: 0
   _invulnerable: 0
   _isStructure: 0
+  despawnOnDeath: 0
   _bridge: {fileID: 3174336610539449282}
 --- !u!114 &3174336610539449282
 MonoBehaviour:

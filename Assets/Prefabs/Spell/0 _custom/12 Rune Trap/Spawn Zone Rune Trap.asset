@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1907b37ed1aa4ddd80c76a48f1db8862, type: 3}
   m_Name: Spawn Zone Rune Trap
   m_EditorClassIdentifier: Assembly-CSharp::SpawnDefinition
-  spawnMode: 0
+  spawnMode: 1
   preview: 0
   instanceCount: 1
   instanceLimit: 0
@@ -31,3 +31,4 @@ MonoBehaviour:
   circleRadius: 2
   circleHeight: 2
   raycastMaxDistance: 50
+  rotateOnYPlane: 1

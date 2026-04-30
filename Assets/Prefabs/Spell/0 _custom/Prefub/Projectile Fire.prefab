@@ -330,7 +330,7 @@ AudioSource:
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
-  DopplerLevel: 1
+  DopplerLevel: 0
   MinDistance: 1
   MaxDistance: 50
   Pan2D: 0
@@ -420,6 +420,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellView
   beforeEndThreshold: 0.3
+  scaleShape: 0
 --- !u!114 &2172728158943953073
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -432,6 +433,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fd067c9361d43908ab7c673b844449b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellInstance
+  scale: []
+  exclude: []
 --- !u!1001 &3080669112843474258
 PrefabInstance:
   m_ObjectHideFlags: 0

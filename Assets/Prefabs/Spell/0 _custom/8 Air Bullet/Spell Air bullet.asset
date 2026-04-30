@@ -23,7 +23,7 @@ MonoBehaviour:
   knockback: {fileID: 11400000, guid: 43545bc6e876fe64e8790ce8f8346c49, type: 2}
   effects: []
   scale: 1
-  lifetime: 5
+  lifetime: 3
   blinkAtLifetime: 0
   defaultRaycast:
     serializedVersion: 2
@@ -37,6 +37,7 @@ MonoBehaviour:
   channelDuration: 0
   charging: 0
   chargeDuration: 0
+  manaPerSecond: 0
   projectile: {fileID: 11400000, guid: 5627d6024b8d5f749a92a5a425771a0c, type: 2}
   zone: {fileID: 0}
   beam: {fileID: 0}

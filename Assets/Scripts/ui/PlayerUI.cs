@@ -12,6 +12,7 @@ public class PlayerUI : NetworkBehaviour {
 
     private float _armorBarWidth;
 
+    [SerializeField] private RectTransform echoItemPrefab;
     [SerializeField] private PlayerEffectUIItem effectItemPrefab;
     private readonly List<PlayerEffectUIItem> _items = new();
 
@@ -31,6 +32,11 @@ public class PlayerUI : NetworkBehaviour {
         _armorBarWidth = _renderer.armor.rect.width;
         for (int i = _renderer.effectsContainer.childCount - 1; i >= 0; i--) {
             var child = _renderer.effectsContainer.GetChild(i);
+            DestroyImmediate(child.gameObject);
+        }
+
+        for (int i = _renderer.echoContainer.childCount - 1; i >= 0; i--) {
+            var child = _renderer.echoContainer.GetChild(i);
             DestroyImmediate(child.gameObject);
         }
     }
@@ -70,6 +76,19 @@ public class PlayerUI : NetworkBehaviour {
         Show(_statusable.DurationEffects);
 
         _renderer.alternativeSpawn.gameObject.SetActive(_caster.alternativeSpawn);
+
+        if (_renderer.echoContainer.childCount != _caster.EchoCount) {
+            if (_renderer.echoContainer.childCount < _caster.EchoCount) {
+                for (int i = _renderer.echoContainer.childCount; i < _caster.EchoCount; i++) {
+                    Instantiate(echoItemPrefab, _renderer.echoContainer);
+                }
+            } else {
+                for (int i = _renderer.echoContainer.childCount - 1; i >= _caster.EchoCount; i--) {
+                    var child = _renderer.echoContainer.GetChild(i);
+                    Destroy(child.gameObject);
+                }
+            }
+        }
     }
 
     private void Show(List<Statusable.DurationEffect> effects) {

@@ -32,8 +32,7 @@ public class ManaModule {
     public void TickServer(float dt) {
         var regen = regenPerSecond * _stats?.GetFinal(StatType.ManaRegen) ?? 1f;
 
-        Mana = Mathf.Clamp(Mana + regen * dt, 0f, maxMana);
-        PrimalMana = Mathf.Clamp(PrimalMana - regen * dt, 0f, maxMana);
+        RestoreManaServer(regen * dt);
     }
 
     public bool IsPrimalManaLocked(SpellDefinition spell, int echoCount) {
@@ -79,6 +78,13 @@ public class ManaModule {
             PrimalMana += missing;
 
         return missing <= 0f;
+    }
+
+    public void RestoreManaServer(float amount) {
+        if (amount <= 0f) return;
+
+        Mana = Mathf.Clamp(Mana + amount, 0f, maxMana);
+        PrimalMana = Mathf.Clamp(PrimalMana - amount, 0f, maxMana);
     }
 
     public void SpendManaServer(float amount) {

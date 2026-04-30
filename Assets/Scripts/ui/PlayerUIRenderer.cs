@@ -12,5 +12,6 @@ public class PlayerUIRenderer : MonoBehaviour {
     public Image stamina;
     public RectTransform[] uiContainers;
     public RectTransform effectsContainer;
+    public RectTransform echoContainer;
     public RectTransform alternativeSpawn;
 }

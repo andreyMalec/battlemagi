@@ -16,13 +16,13 @@ public class SpawnOnHitAction : SpawnOnEventAction {
         var hit = (OnHitEvent)evt;
         var rotation = context.Spell.projectile.spawnInHit
             ? Quaternion.identity
-            : ComputeRotation(hit.Normal, context.Movement.Transform.forward);
+            : ComputeRotation(hit.ShapeHit.Normal, context.Movement.Transform.forward);
         var forward = context.Spell.projectile.spawnInHit
             ? context.Movement.Transform.forward
             : rotation * Vector3.forward;
         var position = context.Spell.projectile.spawnInHit
-            ? hit.Point - forward * 0.1f
-            : hit.Point;
+            ? hit.ShapeHit.Point - forward * 0.1f
+            : hit.ShapeHit.Point;
         var spawnContext = new SpawnContext {
             spell = spell,
             spawn = spell.spawn,

@@ -1,12 +1,12 @@
 using UnityEngine;
 
 public static class DamageResolver {
-    public static float Resolve(DamageDefinition def, ISpellContext context, Damageable target) {
+    public static float Resolve(DamageDefinition def, ISpellContext context, Damageable target, Vector3 point) {
         if (def == null) return 0f;
 
         var damageMulti = 1f;
         if (def.scaleWithRange) {
-            var distance = Vector3.Distance(context.View.transform.position, target.transform.position);
+            var distance = Vector3.Distance(context.View.transform.position, point);
             var areaDamageMulti = 1f - distance / context.Spell.scale;
             damageMulti *= areaDamageMulti;
         }

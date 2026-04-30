@@ -28,7 +28,7 @@ MonoBehaviour:
   blinkAtLifetime: 1
   defaultRaycast:
     serializedVersion: 2
-    m_Bits: 576
+    m_Bits: 64
   castWaitingIndex: 0
   invocationIndex: 7
   manaCost: 75
@@ -38,6 +38,7 @@ MonoBehaviour:
   channelDuration: 0
   charging: 0
   chargeDuration: 0
+  manaPerSecond: 0
   projectile: {fileID: 0}
   zone: {fileID: 11400000, guid: 016e88a928fea0d48946a3cc7ffb5787, type: 2}
   beam: {fileID: 0}

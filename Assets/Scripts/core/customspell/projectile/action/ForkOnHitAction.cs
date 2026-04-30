@@ -49,7 +49,7 @@ public class ForkOnHitAction : ISpellAction {
         var spawnContext = new SpawnContext {
             spell = context.Spell,
             spawn = context.Spell.spawn,
-            position = hit.Point,
+            position = hit.ShapeHit.Point,
             rotation = Quaternion.LookRotation(dir, Vector3.up),
             forward = dir,
             caster = context.Caster,
@@ -62,9 +62,7 @@ public class ForkOnHitAction : ISpellAction {
 
     private void Send(ISpellContext context, OnHitEvent hit) {
         context.SendEvent(new OnForkEvent {
-            target = hit.Target,
-            point = hit.Point,
-            normal = hit.Normal
+            ShapeHit = hit.ShapeHit,
         });
     }
 }

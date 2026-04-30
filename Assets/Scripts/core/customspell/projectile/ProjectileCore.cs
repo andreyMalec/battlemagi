@@ -16,9 +16,7 @@ public class ProjectileCore : ISpellCore<ProjectileContext> {
 
         foreach (var hit in hits) {
             var hitEvent = new OnHitEvent {
-                Target = hit.Target.gameObject,
-                Point = hit.Point,
-                Normal = hit.Normal,
+                ShapeHit = hit,
                 Outcome = HitOutcome.Destroy
             };
 

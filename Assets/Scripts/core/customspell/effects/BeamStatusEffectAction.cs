@@ -12,7 +12,7 @@ public class BeamStatusEffectAction : ISpellAction {
 
         if (evt is not OnHitEvent hit) return;
 
-        if (!SpellEffectResolver.TryGetStatusable(hit.Target, out var statusable, out var ownerId))
+        if (!SpellEffectResolver.TryGetStatusable(hit.ShapeHit.Target, out var statusable, out var ownerId))
             return;
 
         for (var i = 0; i < effects.Count; i++) {

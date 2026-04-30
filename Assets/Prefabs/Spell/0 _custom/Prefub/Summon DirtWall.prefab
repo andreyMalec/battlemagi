@@ -390,7 +390,7 @@ AudioSource:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6049366011902456422}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 5062687673072769487, guid: 0dee41fcfd7ec4c429ddbec189e528ae, type: 2}
   m_audioClip: {fileID: 0}
@@ -5311,6 +5311,7 @@ MonoBehaviour:
   _immortal: 0
   _invulnerable: 0
   _isStructure: 1
+  despawnOnDeath: 1
   _bridge: {fileID: 0}
 --- !u!114 &8296131274992698551
 MonoBehaviour:
@@ -5339,6 +5340,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DamageableVisual
   onDestroyAudio: {fileID: 8300000, guid: a59c504acd646124eaab84aa8fb39ad1, type: 3}
   onDestroyPrefab: {fileID: 0}
+  applyDamageColor: 1
+  onDeathToggleKinematic: 0
+  deathThreshold: 0.03
 --- !u!114 &5868877035629305093
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -7,7 +7,6 @@ using UnityEngine;
 public class SpellCasterPlayer : SpellCaster {
     public Transform spawnPos;
 
-    [SerializeField] private int EchoCount => _echoRemaining;
     [SerializeField] private SpellDefinition spellE;
     [SerializeField] public PlayerSpellInput input = new();
     [SerializeField] private ManaModule mana = new();
@@ -38,6 +37,14 @@ public class SpellCasterPlayer : SpellCaster {
     private bool _chargingUsedEcho;
 
     private int _echoRemaining;
+
+    public int EchoCount {
+        get {
+            if (_spell != null && _spell.echoCount > 0 && _echoSpell == null) return _spell.echoCount + 1;
+            return _echoRemaining;
+        }
+    }
+
     private SpellDefinition _echoSpell;
 
     private List<SpellDefinition> _availableSpells;

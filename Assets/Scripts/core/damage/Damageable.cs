@@ -35,6 +35,7 @@ public class Damageable : MonoBehaviour {
 
     [SerializeField] private bool _invulnerable;
     [SerializeField] private bool _isStructure;
+    [SerializeField] private bool despawnOnDeath = false;
 
     [SerializeField] private MonoBehaviour _bridge;
 
@@ -317,7 +318,7 @@ public class Damageable : MonoBehaviour {
         Active.Remove(this);
         OnDeath?.Invoke(info);
 
-        if (IsStructure)
+        if (despawnOnDeath)
             _bridgeTyped.DespawnOnDeath();
     }
 }

@@ -1,4 +1,3 @@
-using Unity.Netcode;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "StatusEffects/Mana stone")]
@@ -20,10 +19,10 @@ public class ManaStoneEffect : StatusEffectData {
             _data = data;
         }
 
-        public override void OnApply(ulong ownerClientId, GameObject target) {
-            base.OnApply(ownerClientId, target);
+        public override void OnApply(ulong applierClientId, GameObject target) {
+            base.OnApply(applierClientId, target);
             if (target.TryGetComponent<SpellCasterPlayer>(out var caster)) {
-                caster.Mana.SpendManaServer(-_data.amount);
+                caster.Mana.RestoreManaServer(_data.amount);
             }
         }
     }

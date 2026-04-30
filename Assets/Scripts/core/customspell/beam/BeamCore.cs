@@ -43,9 +43,7 @@ public class BeamCore : ISpellCore<BeamContext> {
             }
 
             var hitEvent = new OnHitEvent {
-                Target = hit.Target,
-                Point = hit.Point,
-                Normal = hit.Normal,
+                ShapeHit = hit,
                 Outcome = HitOutcome.None
             };
             HandleEvent(hitEvent);

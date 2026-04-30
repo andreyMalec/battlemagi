@@ -20,7 +20,7 @@ public class PierceOnHitAction : ISpellAction {
         if (evt is not OnHitEvent hit) return;
         if (!HitOutcomeRules.CanApply(hit.Outcome, HitOutcome.Pierce)) return;
         if (_maxPierces >= 0 && _pierces >= _maxPierces) return;
-        if (!CanPierce(hit.Target)) return;
+        if (!CanPierce(hit.ShapeHit.Target)) return;
         base.Apply(context, evt);
 
         hit.Outcome |= HitOutcome.Pierce;
@@ -29,9 +29,7 @@ public class PierceOnHitAction : ISpellAction {
         _pierces++;
 
         context.SendEvent(new OnPierceEvent {
-            target = hit.Target,
-            point = hit.Point,
-            normal = hit.Normal
+            ShapeHit = hit.ShapeHit,
         });
     }
 

@@ -4,19 +4,17 @@ public abstract class PointPhysicsOnHitActionBase : PointPhysicsActionBase {
         var def = context.Spell.knockback;
         if (def == null) return;
 
-        if (!TryResolveTarget(context, hit.Target, out var damageable, out var physics, out var movement))
+        if (!TryResolveTarget(context, hit.ShapeHit.Target, out var target))
             return;
 
-        ApplyResolved(context, hit, def, damageable, physics, movement);
+        ApplyResolved(context, hit, def, target);
     }
 
     protected abstract void ApplyResolved(
         ISpellContext context,
         OnHitEvent hit,
         KnockbackDefinition def,
-        Damageable damageable,
-        PlayerPhysics physics,
-        FirstPersonMovement movement
+        ResolvedPhysicsTarget target
     );
 }
 
