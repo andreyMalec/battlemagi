@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
@@ -70,6 +71,10 @@ public class SpellCasterNet : NetworkBehaviour {
         if (targetNetObj != null && targetNetObj.IsSpawned) {
             target = targetNetObj.GetComponentInChildren<ITarget>();
         }
+
+        FirebaseAnalytic.Instance.SendEvent("SpellCasted", new Dictionary<string, object> {
+            { "name", spellName }
+        });
 
         SpellLog.Log(
             $"[NetworkSpellSystemEvent] RequestCastServerRpc: {casterNetObj.name}, target={target}, damageMultiplier={damageMultiplier}");

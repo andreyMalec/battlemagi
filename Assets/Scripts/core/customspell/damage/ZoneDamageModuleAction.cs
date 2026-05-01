@@ -75,7 +75,7 @@ public class ZoneDamageModuleAction : ISpellAction {
         var amount = DamageResolver.Resolve(context.SpellDamage, context, damageable, point);
         if (amount <= 0f) return;
         SpellLog.Log($"SpellAction {GetType().Name} applied to {damageable.name}. Event: {evt.GetType().Name}");
-        damageable.TakeDamage(context.Spell.name, context.OwnerId, amount,
+        damageable.TakeDamage(context.Spell.spellName, context.OwnerId, amount,
             SpellPrefabDatabase.Instance.Sound(context.Spell), context.SpellDamage.ignoreSoundCooldown);
     }
 }

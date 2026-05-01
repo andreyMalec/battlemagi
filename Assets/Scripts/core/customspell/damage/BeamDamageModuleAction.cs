@@ -46,7 +46,7 @@ public class BeamDamageModuleAction : ISpellAction {
         if (amount <= 0f) return;
 
         base.Apply(context, evt);
-        damageable.TakeDamage(context.Spell.name, context.OwnerId, amount,
+        damageable.TakeDamage(context.Spell.spellName, context.OwnerId, amount,
             SpellPrefabDatabase.Instance.Sound(context.Spell), context.SpellDamage.ignoreSoundCooldown);
     }
 
@@ -60,7 +60,7 @@ public class BeamDamageModuleAction : ISpellAction {
         if (amount <= 0f) return;
 
         base.Apply(context, evt);
-        damageable.TakeDamage(context.Spell.name, context.OwnerId, amount,
+        damageable.TakeDamage(context.Spell.spellName, context.OwnerId, amount,
             SpellPrefabDatabase.Instance.Sound(context.Spell), context.SpellDamage.ignoreSoundCooldown);
     }
 }
