@@ -39,6 +39,7 @@ public class TeamManager : NetworkBehaviour {
     public NetworkVariable<int> BlueScore = new(0);
     public NetworkVariable<int> EndChoice = new(0);
     private NetworkList<TeamEntry> _teams;
+    private readonly Dictionary<ulong, Team> _botTeams = new();
 
     public static TeamManager Instance { get; private set; }
 
@@ -65,6 +66,7 @@ public class TeamManager : NetworkBehaviour {
         RedScore.Value = 0;
         BlueScore.Value = 0;
         EndChoice.Value = 0;
+        _botTeams.Clear();
         RedistributePlayers();
     }
 
@@ -124,8 +126,12 @@ public class TeamManager : NetworkBehaviour {
     }
 
     private Team AssignTeam(ulong clientId) {
+        return AssignTeamInternal(clientId);
+    }
+
+    private Team AssignTeamInternal(ulong uniqueId) {
         if (!isTeamMode)
-            return (Team)clientId; // уникальный ID — каждый сам за себя
+            return (Team)uniqueId; // уникальный ID — каждый сам за себя
 
         // TwoTeams — добавляем в менее заполненную
         int red = 0;
@@ -134,6 +140,13 @@ public class TeamManager : NetworkBehaviour {
             if (entry.team == Team.Red)
                 red++;
             if (entry.team == Team.Blue)
+                blue++;
+        }
+
+        foreach (var team in _botTeams.Values) {
+            if (team == Team.Red)
+                red++;
+            if (team == Team.Blue)
                 blue++;
         }
 
@@ -170,7 +183,30 @@ public class TeamManager : NetworkBehaviour {
                 _teams[idx] = new TeamEntry { clientId = entry.clientId, team = newTeam };
         }
 
+        if (isTeamMode) {
+            var botIds = new List<ulong>(_botTeams.Keys);
+            foreach (var botId in botIds) {
+                _botTeams[botId] = AssignTeamInternal(botId);
+            }
+        }
+
         Debug.Log($"[TeamManager] Rebalanced into {CurrentMode.Value}");
+    }
+
+    public void RegisterBot(ulong botId, Team requestedTeam = Team.None) {
+        if (!IsServer) return;
+
+        var assignedTeam = requestedTeam;
+        if (assignedTeam == Team.None || !isTeamMode)
+            assignedTeam = AssignTeamInternal(botId);
+
+        _botTeams[botId] = assignedTeam;
+        Debug.Log($"[TeamManager] Bot {botId} joined team {assignedTeam}");
+    }
+
+    public void RemoveBot(ulong botId) {
+        if (!IsServer) return;
+        _botTeams.Remove(botId);
     }
 
     // ===============================
@@ -241,6 +277,10 @@ public class TeamManager : NetworkBehaviour {
         return TryGetTeam(clientId, out _);
     }
 
+    public bool HasTeam(ParticipantId participantId) {
+        return TryGetTeam(participantId, out _);
+    }
+
     public bool TryGetLocalTeam(out Team team) {
         if (NetworkManager.Singleton == null) {
             team = Team.None;
@@ -252,6 +292,17 @@ public class TeamManager : NetworkBehaviour {
 
     public Team GetTeam(ulong? clientId) {
         return TryGetTeam(clientId, out var team) ? team : Team.None;
+    }
+
+    public bool TryGetTeam(ParticipantId participantId, out Team team) {
+        if (participantId.IsHuman)
+            return TryGetTeam(participantId.Value, out team);
+
+        return _botTeams.TryGetValue(participantId.Value, out team);
+    }
+
+    public Team GetTeam(ParticipantId participantId) {
+        return TryGetTeam(participantId, out var team) ? team : Team.None;
     }
 
     public List<ulong> FindAllies(ulong clientId) {
@@ -267,12 +318,20 @@ public class TeamManager : NetworkBehaviour {
     }
 
     public bool AreEnemies(ulong a, ulong b) {
+        return AreEnemies(ParticipantOwnerCodec.Decode(a), ParticipantOwnerCodec.Decode(b));
+    }
+
+    public bool AreEnemies(ParticipantId a, ParticipantId b) {
         if (!isTeamMode)
             return a != b;
         return GetTeam(a) != GetTeam(b);
     }
 
     public bool AreAllies(ulong a, ulong b) {
+        return !AreEnemies(a, b);
+    }
+
+    public bool AreAllies(ParticipantId a, ParticipantId b) {
         return !AreEnemies(a, b);
     }
 }

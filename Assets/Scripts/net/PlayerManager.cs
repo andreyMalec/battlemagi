@@ -5,7 +5,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PlayerManager : NetworkBehaviour {
+public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
     [Serializable]
     public struct PlayerData : INetworkSerializable, IEquatable<PlayerData> {
         public ulong ClientId;
@@ -70,8 +70,11 @@ public class PlayerManager : NetworkBehaviour {
     public event Action<List<PlayerData>> OnListChanged;
 
     private NetworkList<PlayerData> players;
+    private readonly Dictionary<ulong, MatchParticipantData> _botParticipants = new();
+    private readonly List<MatchParticipantData> _participantsBuffer = new();
 
     [SerializeField] private List<PlayerData> debugPlayers = new(); // видимый в инспекторе
+    [SerializeField] private List<MatchParticipantData> debugBots = new();
     [SerializeField] private float networkStatsRefreshInterval = 1f;
 
     public static PlayerManager Instance { get; private set; }
@@ -79,6 +82,21 @@ public class PlayerManager : NetworkBehaviour {
     private float _networkStatsRefreshTimer;
     private int _lastReportedPingMs = -1;
     private float _lastReportedPacketLossPercent = -1f;
+
+    public IReadOnlyList<MatchParticipantData> Participants {
+        get {
+            _participantsBuffer.Clear();
+            foreach (var player in players) {
+                _participantsBuffer.Add(ToMatchParticipantData(player));
+            }
+
+            foreach (var bot in _botParticipants.Values) {
+                _participantsBuffer.Add(bot);
+            }
+
+            return _participantsBuffer;
+        }
+    }
 
     private void Awake() {
         if (Instance == null) Instance = this;
@@ -88,7 +106,8 @@ public class PlayerManager : NetworkBehaviour {
     }
 
     private void Start() {
-        NetworkManager.Singleton.OnConnectionEvent += OnConnectionEvent;
+        if (NetworkManager.Singleton != null)
+            NetworkManager.Singleton.OnConnectionEvent += OnConnectionEvent;
     }
 
     private void Update() {
@@ -307,6 +326,64 @@ public class PlayerManager : NetworkBehaviour {
         return false;
     }
 
+    public bool TryGetParticipant(ParticipantId participantId, out MatchParticipantData data) {
+        if (participantId.IsHuman) {
+            if (TryGetPlayerData(participantId.Value, out var playerData)) {
+                data = ToMatchParticipantData(playerData);
+                return true;
+            }
+
+            data = default;
+            return false;
+        }
+
+        return _botParticipants.TryGetValue(participantId.Value, out data);
+    }
+
+    public bool TryGetParticipantBySteamId(ulong steamId, out MatchParticipantData data) {
+        if (TryGetPlayerDataBySteamId(steamId, out var playerData)) {
+            data = ToMatchParticipantData(playerData);
+            return true;
+        }
+
+        foreach (var participant in _botParticipants.Values) {
+            if (participant.SteamId != steamId) continue;
+            data = participant;
+            return true;
+        }
+
+        data = default;
+        return false;
+    }
+
+    public void RegisterParticipant(MatchParticipantData data) {
+        if (data.Id.IsHuman) {
+            Debug.LogWarning($"[PlayerManager] RegisterParticipant ignored for human {data.Id}. Humans are synced by netcode.");
+            return;
+        }
+
+        _botParticipants[data.Id.Value] = data;
+        RefreshDebugBots();
+    }
+
+    public bool RemoveParticipant(ParticipantId participantId) {
+        if (!participantId.IsBot) return false;
+        var removed = _botParticipants.Remove(participantId.Value);
+        if (removed)
+            RefreshDebugBots();
+        return removed;
+    }
+
+    public void RegisterBot(ulong botId, ulong steamId = 0) {
+        var id = ParticipantId.Bot(botId);
+        var data = new MatchParticipantData(id, steamId);
+        RegisterParticipant(data);
+    }
+
+    public bool TryGetBotData(ulong botId, out MatchParticipantData data) {
+        return _botParticipants.TryGetValue(botId, out data);
+    }
+
     public bool TryGetPlayerDataBySteamId(ulong steamId, out PlayerData data) {
         var player = FindBySteamId(steamId);
         if (player.HasValue) {
@@ -348,6 +425,20 @@ public class PlayerManager : NetworkBehaviour {
     }
 
     public void ResetScore(ulong clientId) {
+        var participantId = ParticipantOwnerCodec.Decode(clientId);
+        if (participantId.IsBot) {
+            if (_botParticipants.TryGetValue(participantId.Value, out var botData)) {
+                botData.Kills = 0;
+                botData.Deaths = 0;
+                botData.Assists = 0;
+                _botParticipants[participantId.Value] = botData;
+                RefreshDebugBots();
+            }
+
+            return;
+        }
+
+        clientId = participantId.Value;
         for (int i = players.Count - 1; i >= 0; i--) {
             var player = players[i];
             if (player.ClientId == clientId) {
@@ -361,6 +452,13 @@ public class PlayerManager : NetworkBehaviour {
     }
 
     public void AddKill(ulong clientId) {
+        var participantId = ParticipantOwnerCodec.Decode(clientId);
+        if (participantId.IsBot) {
+            AddKill(participantId);
+            return;
+        }
+
+        clientId = participantId.Value;
         for (int i = players.Count - 1; i >= 0; i--) {
             var player = players[i];
             if (player.ClientId == clientId) {
@@ -371,7 +469,26 @@ public class PlayerManager : NetworkBehaviour {
         }
     }
 
+    public void AddKill(ParticipantId participantId) {
+        if (participantId.IsHuman) {
+            AddKill(participantId.Value);
+            return;
+        }
+
+        if (!_botParticipants.TryGetValue(participantId.Value, out var data)) return;
+        data.Kills++;
+        _botParticipants[participantId.Value] = data;
+        RefreshDebugBots();
+    }
+
     public void AddDeath(ulong clientId) {
+        var participantId = ParticipantOwnerCodec.Decode(clientId);
+        if (participantId.IsBot) {
+            AddDeath(participantId);
+            return;
+        }
+
+        clientId = participantId.Value;
         for (int i = players.Count - 1; i >= 0; i--) {
             var player = players[i];
             if (player.ClientId == clientId) {
@@ -382,7 +499,26 @@ public class PlayerManager : NetworkBehaviour {
         }
     }
 
+    public void AddDeath(ParticipantId participantId) {
+        if (participantId.IsHuman) {
+            AddDeath(participantId.Value);
+            return;
+        }
+
+        if (!_botParticipants.TryGetValue(participantId.Value, out var data)) return;
+        data.Deaths++;
+        _botParticipants[participantId.Value] = data;
+        RefreshDebugBots();
+    }
+
     public void AddAssist(ulong clientId) {
+        var participantId = ParticipantOwnerCodec.Decode(clientId);
+        if (participantId.IsBot) {
+            AddAssist(participantId);
+            return;
+        }
+
+        clientId = participantId.Value;
         for (int i = players.Count - 1; i >= 0; i--) {
             var player = players[i];
             if (player.ClientId == clientId) {
@@ -393,7 +529,26 @@ public class PlayerManager : NetworkBehaviour {
         }
     }
 
+    public void AddAssist(ParticipantId participantId) {
+        if (participantId.IsHuman) {
+            AddAssist(participantId.Value);
+            return;
+        }
+
+        if (!_botParticipants.TryGetValue(participantId.Value, out var data)) return;
+        data.Assists++;
+        _botParticipants[participantId.Value] = data;
+        RefreshDebugBots();
+    }
+
     public void AddFlag(ulong clientId) {
+        var participantId = ParticipantOwnerCodec.Decode(clientId);
+        if (participantId.IsBot) {
+            AddFlag(participantId);
+            return;
+        }
+
+        clientId = participantId.Value;
         for (int i = players.Count - 1; i >= 0; i--) {
             var player = players[i];
             if (player.ClientId == clientId) {
@@ -401,6 +556,37 @@ public class PlayerManager : NetworkBehaviour {
                 player.Flags++;
                 players[i] = player;
             }
+        }
+    }
+
+    public void AddFlag(ParticipantId participantId) {
+        if (participantId.IsHuman) {
+            AddFlag(participantId.Value);
+            return;
+        }
+
+        if (!_botParticipants.TryGetValue(participantId.Value, out var data)) return;
+        data.Flags++;
+        _botParticipants[participantId.Value] = data;
+        RefreshDebugBots();
+    }
+
+    private static MatchParticipantData ToMatchParticipantData(PlayerData playerData) {
+        return new MatchParticipantData(ParticipantId.Human(playerData.ClientId), playerData.SteamId) {
+            Kills = playerData.Kills,
+            Deaths = playerData.Deaths,
+            Assists = playerData.Assists,
+            Flags = playerData.Flags,
+            Archetype = playerData.Archetype,
+            Hue = playerData.Hue,
+            Saturation = playerData.Saturation
+        };
+    }
+
+    private void RefreshDebugBots() {
+        debugBots.Clear();
+        foreach (var bot in _botParticipants.Values) {
+            debugBots.Add(bot);
         }
     }
 

@@ -8,35 +8,51 @@ using UnityEngine;
 [RequireComponent(typeof(Damageable))]
 public class PlayerDamageable : NetworkBehaviour {
     private Damageable _damageable;
+    private ParticipantIdentity _participantIdentity;
     private readonly List<ulong> _damagedBy = new();
     private readonly List<DamageInfo> _damagedBySource = new();
 
     private void Awake() {
         _damageable = GetComponent<Damageable>();
+        _participantIdentity = GetComponent<ParticipantIdentity>();
         _damageable.OnDeath += OnDeath;
         _damageable.OnDamageApplied += OnDamageApplied;
     }
 
     private void OnDamageApplied(DamageApplied damageApplied) {
-        if (!_damagedBy.Contains(damageApplied.request.fromId) && OwnerClientId != damageApplied.request.fromId)
+        var victim = GetVictimParticipantId();
+        var attacker = ParticipantOwnerCodec.Decode(damageApplied.request.fromId);
+        if (!_damagedBy.Contains(damageApplied.request.fromId) && victim != attacker)
             _damagedBy.Add(damageApplied.request.fromId);
         _damagedBySource.Add(new DamageInfo { damage = damageApplied.final, source = damageApplied.request.source });
     }
 
     private void OnDeath(DeathInfo deathInfo) {
+        var victim = GetVictimParticipantId();
+        var killer = ParticipantOwnerCodec.Decode(deathInfo.fromId);
         NetworkObject.TryRemoveParent();
-        var enemies = _damagedBy.Where(damager => TeamManager.Instance.AreEnemies(OwnerClientId, damager));
+        var enemies = _damagedBy.Where(damager => TeamManager.Instance.AreEnemies(victim, ParticipantOwnerCodec.Decode(damager)));
         foreach (var enemy in enemies) {
             if (enemy == deathInfo.fromId)
-                PlayerManager.Instance.AddKill(deathInfo.fromId);
+                PlayerManager.Instance.AddKill(killer);
             else
-                PlayerManager.Instance.AddAssist(enemy);
+                PlayerManager.Instance.AddAssist(ParticipantOwnerCodec.Decode(enemy));
         }
 
-        PlayerManager.Instance.AddDeath(OwnerClientId);
-        PlayerSpawner.instance.HandleDeathServer(OwnerClientId);
-        Killfeed.Instance?.HandleClientRpc(deathInfo.fromId, OwnerClientId);
-        SendAnalytics(OwnerClientId, deathInfo.source);
+        PlayerManager.Instance.AddDeath(victim);
+        if (victim.IsHuman)
+            PlayerSpawner.instance.HandleDeathServer(victim.Value);
+        else
+            Destroy(gameObject);
+        Killfeed.Instance?.HandleClientRpc(deathInfo.fromId, ParticipantOwnerCodec.Encode(victim));
+        if (victim.IsHuman)
+            SendAnalytics(victim.Value, deathInfo.source);
+    }
+
+    private ParticipantId GetVictimParticipantId() {
+        if (_participantIdentity != null)
+            return _participantIdentity.Id;
+        return ParticipantId.Human(OwnerClientId);
     }
 
     private void SendAnalytics(ulong ownerClientId, string source) {

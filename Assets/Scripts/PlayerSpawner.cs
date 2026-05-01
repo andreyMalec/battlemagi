@@ -14,11 +14,21 @@ public class PlayerSpawner : NetworkBehaviour {
 
     private List<ulong> toKill = new();
 
+    public struct ParticipantSpawnDescriptor {
+        public ParticipantId ParticipantId;
+        public ulong SteamId;
+        public int Archetype;
+        public float Hue;
+        public float Saturation;
+        public TeamManager.Team Team;
+    }
+
     private void Start() {
         instance = this;
         DontDestroyOnLoad(gameObject);
 
-        NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+        if (NetworkManager.Singleton != null)
+            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
     }
 
     private void Update() {
@@ -137,7 +147,8 @@ public class PlayerSpawner : NetworkBehaviour {
     }
 
     public override void OnNetworkSpawn() {
-        NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneLoaded;
+        if (NetworkManager.Singleton != null)
+            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneLoaded;
     }
 
     private void SceneLoaded(
@@ -166,27 +177,72 @@ public class PlayerSpawner : NetworkBehaviour {
             return;
         }
 
-        var team = TeamManager.Instance.GetTeam(clientId);
-        var spawn = FindFirstObjectByType<Spawn>();
-        if (spawn == null) {
-            Debug.LogError(
-                $"[PlayerSpawner] Сервер: Ошибка! Не найден объект Spawn для спавна игрока {clientId} (Возможно сцена сменилась на не игровую)");
+        var descriptor = new ParticipantSpawnDescriptor {
+            ParticipantId = ParticipantId.Human(clientId),
+            SteamId = playerData.SteamId,
+            Archetype = playerData.Archetype,
+            Hue = playerData.Hue,
+            Saturation = playerData.Saturation,
+            Team = TeamManager.Instance.GetTeam(clientId)
+        };
+
+        SpawnParticipant(descriptor, clientId, true);
+    }
+
+    public void SpawnBot(ulong botId) {
+        if (!PlayerManager.Instance.TryGetBotData(botId, out var botData)) {
+            Debug.LogError($"[PlayerSpawner] Bot {botId} is not registered in PlayerManager");
             return;
         }
 
-        Debug.Log($"[PlayerSpawner] Сервер: Спавним игрока {clientId} в команде {team}");
-        var spawnPoint = spawn.Get(team);
+        var descriptor = new ParticipantSpawnDescriptor {
+            ParticipantId = botData.Id,
+            SteamId = botData.SteamId,
+            Archetype = botData.Archetype,
+            Hue = botData.Hue,
+            Saturation = botData.Saturation,
+            Team = TeamManager.Instance.GetTeam(botData.Id)
+        };
+
+        var canUseNetcode = NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && IsServer;
+        SpawnParticipant(descriptor, 0, canUseNetcode);
+    }
+
+    private void SpawnParticipant(ParticipantSpawnDescriptor descriptor, ulong ownerClientId, bool useNetcodeSpawn) {
+        var spawn = FindFirstObjectByType<Spawn>();
+        if (spawn == null) {
+            Debug.LogError(
+                $"[PlayerSpawner] Сервер: Ошибка! Не найден объект Spawn для спавна участника {descriptor.ParticipantId} (Возможно сцена сменилась на не игровую)");
+            return;
+        }
+
+        Debug.Log($"[PlayerSpawner] Сервер: Спавним участника {descriptor.ParticipantId} в команде {descriptor.Team}");
+        var spawnPoint = spawn.Get(descriptor.Team);
         var position = spawnPoint.position;
         var rotation = spawnPoint.rotation;
 
         GameObject newPlayer = Instantiate(playerPrefab, position, rotation);
         newPlayer.transform.SetPositionAndRotation(position, rotation);
-        var player = newPlayer.GetComponent<Player>();
-        player.ApplyPlayerState(playerData.SteamId, playerData.Archetype, playerData.Hue, playerData.Saturation);
-        var netObj = newPlayer.GetComponent<NetworkObject>();
-        netObj.SpawnAsPlayerObject(clientId, true);
+        var participantIdentity = newPlayer.GetComponent<ParticipantIdentity>();
+        if (participantIdentity == null)
+            participantIdentity = newPlayer.AddComponent<ParticipantIdentity>();
+        participantIdentity.SetParticipantId(descriptor.ParticipantId);
 
-        player.Init(clientId, position, rotation);
+        var player = newPlayer.GetComponent<Player>();
+        player.ApplyPlayerState(descriptor.SteamId, descriptor.Archetype, descriptor.Hue, descriptor.Saturation);
+
+        if (useNetcodeSpawn) {
+            var netObj = newPlayer.GetComponent<NetworkObject>();
+            if (descriptor.ParticipantId.IsHuman)
+                netObj.SpawnAsPlayerObject(ownerClientId, true);
+            else
+                netObj.Spawn(true);
+            player.Init(ownerClientId, position, rotation);
+        }
+
+        newPlayer.name = descriptor.ParticipantId.IsBot
+            ? $"Bot_{descriptor.ParticipantId.Value}"
+            : $"Player_{ownerClientId}";
     }
 
     private void SpawnLobbyEnjoyer(ulong clientId) {
