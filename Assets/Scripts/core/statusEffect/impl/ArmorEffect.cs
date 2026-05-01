@@ -9,6 +9,10 @@ public class ArmorEffect : StatusEffectData {
         return new ArmorRuntime(this);
     }
 
+    public override string StringValue() {
+        return amount.ToString("0");
+    }
+
     private class ArmorRuntime : StatusEffectRuntime {
         private readonly ArmorEffect _data;
 
@@ -19,7 +23,7 @@ public class ArmorEffect : StatusEffectData {
         public override void OnApply(ulong ownerClientId, GameObject target) {
             base.OnApply(ownerClientId, target);
             if (target.TryGetComponent<Damageable>(out var damageable)) {
-                damageable.armor.Value += _data.amount;
+                damageable.TakeArmor(_data.amount);
             }
         }
     }

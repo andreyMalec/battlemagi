@@ -7,7 +7,7 @@ using Unity.Netcode;
 public class SpellManager : NetworkBehaviour {
     [SerializeField] public Transform spellCastPoint;
     [SerializeField] private ActiveSpell activeSpell;
-    [HideInInspector] public NetworkStatSystem statSystem;
+    [HideInInspector] public Stats statSystem;
     private MeshController _meshController;
     private ISpawnStrategy spawnStrategy;
     private ISpawnStrategy defaultSpawnStrategy;
@@ -20,7 +20,7 @@ public class SpellManager : NetworkBehaviour {
 
     public override void OnNetworkSpawn() {
         activeSpell = GetComponent<ActiveSpell>();
-        statSystem = GetComponent<NetworkStatSystem>();
+        statSystem = GetComponent<Stats>();
     }
 
     public override void OnNetworkDespawn() {
@@ -60,7 +60,6 @@ public class SpellManager : NetworkBehaviour {
         return spawnMode switch {
             SpawnMode.Arc => new ArcSpawn(multiProjDelay),
             SpawnMode.GroundPoint => new GroundPointSpawn(multiProjDelay),
-            SpawnMode.HitScan => new HitScanSpawn(multiProjDelay),
             SpawnMode.DirectDown => new DirectDownSpawn(multiProjDelay),
             SpawnMode.GroundPointArc => new GroundPointArcSpawn(multiProjDelay),
             SpawnMode.GroundPointForward => new GroundPointForwardSpawn(multiProjDelay),
@@ -90,7 +89,7 @@ public class SpellManager : NetworkBehaviour {
             } else {
                 foreach (var no in NetworkManager.SpawnManager.GetClientOwnedObjects(OwnerClientId)) {
                     if (no.TryGetComponent<BaseSpell>(out var spell) && spell.spellData.id == spellData?.id) {
-                        if (spell.TryGetComponent<SpellLifetime>(out var lifetime)) {
+                        if (spell.TryGetComponent<OLDSpellLifetime>(out var lifetime)) {
                             lifetime.Destroy();
                             break;
                         }
@@ -162,10 +161,10 @@ public class SpellManager : NetworkBehaviour {
 
         // Enforce instance limit (server-side authoritative). Remove older beyond limit before spawning new.
         if (spell.instanceLimit > 0) {
-            var removed = SpellInstanceLimiter.Register(casterId, spell, netObj);
+            var removed = SpellInstanceLimiter.Register(casterId, spell, obj);
             foreach (var old in removed) {
                 if (old == null) continue;
-                if (old.TryGetComponent<SpellLifetime>(out var oldSpell)) {
+                if (old.TryGetComponent<OLDSpellLifetime>(out var oldSpell)) {
                     oldSpell.Destroy();
                 }
             }
@@ -173,9 +172,9 @@ public class SpellManager : NetworkBehaviour {
 
         netObj.SpawnWithOwnership(casterId);
         StartCoroutine(DespawnAndDestroyServer(netObj, spell.lifeTime));
-        var caster = NetworkManager.Singleton.ConnectedClients[casterId].PlayerObject.GetComponent<NetworkStatSystem>();
+        var caster = NetworkManager.Singleton.ConnectedClients[casterId].PlayerObject.GetComponent<Stats>();
         SpawnMainClientRpc(netObj.NetworkObjectId, spellId,
-            caster.Stats.GetFinal(StatType.SpellDamage) * damageMultiplier, index);
+            caster.GetFinal(StatType.SpellDamage) * damageMultiplier, index);
     }
 
     [ClientRpc]

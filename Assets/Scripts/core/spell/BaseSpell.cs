@@ -6,7 +6,7 @@ using Unity.Netcode.Components;
 using UnityEngine;
 
 [RequireComponent(typeof(NetworkObject))]
-[RequireComponent(typeof(SpellLifetime))]
+[RequireComponent(typeof(OLDSpellLifetime))]
 public class BaseSpell : NetworkBehaviour {
     private int terrainLayer;
 
@@ -15,7 +15,7 @@ public class BaseSpell : NetworkBehaviour {
 
     private ISpellMovement movement;
     private ISpellDamage damage;
-    private SpellLifetime lifetime;
+    private OLDSpellLifetime lifetime;
 
     public SpellData spellData;
     [HideInInspector] public float damageMultiplier = 1;
@@ -41,7 +41,7 @@ public class BaseSpell : NetworkBehaviour {
         var mode = GetComponent<NetworkTransform>().AuthorityMode;
         movementAuthority = (mode == NetworkTransform.AuthorityModes.Owner && IsOwner) ||
                             (mode == NetworkTransform.AuthorityModes.Server && IsServer);
-        lifetime = GetComponent<SpellLifetime>();
+        lifetime = GetComponent<OLDSpellLifetime>();
         terrainLayer = LayerMask.NameToLayer("Terrain");
 
         foreach (var ally in TeamManager.Instance.FindAllies(OwnerClientId)) {
@@ -87,7 +87,7 @@ public class BaseSpell : NetworkBehaviour {
 
         if (data.buffs != null && data.buffs.Length > 0) {
             var player = NetworkManager.ConnectedClients[OwnerClientId].PlayerObject;
-            if (player != null && player.TryGetComponent<StatusEffectManager>(out var manager)) {
+            if (player != null && player.TryGetComponent<Statusable>(out var manager)) {
                 foreach (var effect in data.buffs) {
                     manager.AddEffect(OwnerClientId, effect);
                 }
@@ -223,9 +223,9 @@ public class BaseSpell : NetworkBehaviour {
         ClearVisual();
         if (IsServer) {
             if (spellData != null)
-                SpellInstanceLimiter.Unregister(OwnerClientId, spellData, NetworkObject);
+                SpellInstanceLimiter.Unregister(OwnerClientId, spellData, gameObject);
             else
-                SpellInstanceLimiter.UnregisterByObject(NetworkObject);
+                SpellInstanceLimiter.UnregisterByObject(gameObject);
         }
     }
 

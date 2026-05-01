@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5290250459907953229
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1222276156118976086}
+  - component: {fileID: 4244353405721423492}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1222276156118976086
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5290250459907953229}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 36.29988, y: -16.30089, z: -10.71355}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4244353405721423492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5290250459907953229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eab462602d3b4e11b36bac3546f20ef0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AudioManager
+  damageSounds:
+  - type: 0
+    clip: {fileID: 8300000, guid: e734ef0317bdf6f47ac5d05e01d3e942, type: 3}
+  - type: 4
+    clip: {fileID: 8300000, guid: 99a9ec5ac38aa9849a3d692681d009ae, type: 3}
+  - type: 3
+    clip: {fileID: 8300000, guid: be58c45c53c1c894ea6af5ed96dd1bde, type: 3}
+  - type: 1
+    clip: {fileID: 8300000, guid: e734ef0317bdf6f47ac5d05e01d3e942, type: 3}
+  - type: 2
+    clip: {fileID: 8300000, guid: 569ebe849e44fb84485a2b950e33f95f, type: 3}
+  - type: 5
+    clip: {fileID: 8300000, guid: 000e2665558215d4dbe186480cee462a, type: 3}
+  - type: 6
+    clip: {fileID: 8300000, guid: c152ec77d0118ea43afd83c33cc9596f, type: 3}
+  - type: 7
+    clip: {fileID: 8300000, guid: 875cab1538168e54e87327bc0e872c14, type: 3}
+  - type: 8
+    clip: {fileID: 8300000, guid: fde0e89674b1c7747964f1c7c23598e7, type: 3}
+  - type: 9
+    clip: {fileID: 8300000, guid: 08e60f15eacf34c408258fb9b4de4f63, type: 3}
+  - type: 10
+    clip: {fileID: 8300000, guid: e734ef0317bdf6f47ac5d05e01d3e942, type: 3}

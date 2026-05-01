@@ -23,7 +23,6 @@ public class MenuStateMain : MonoBehaviour {
             } catch (FormatException e) {
                 lobbyId = 0;
                 fieldJoinLobbyId.text = "";
-                Console.WriteLine(e);
             }
         });
     }

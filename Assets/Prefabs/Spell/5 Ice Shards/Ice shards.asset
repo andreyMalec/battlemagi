@@ -14,12 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpellData
   id: 4
   name: Ice shards
-  description: 'Razor shards of frozen air that pierce the ground and bind foes in
-    frost.
-
-
-    Leaves icy spikes that freeze nearby enemies who step too close.'
-  nameRu: "\u041B\u0435\u0434\u044F\u043D\u044B\u0435 \u041E\u0441\u043A\u043E\u043B\u043A\u0438"
+  enabled: 1
   spellWords:
   - Ice Shards
   spellWordsRu:
@@ -57,7 +52,11 @@ MonoBehaviour:
   baseSpeed: 20
   projCount: 5
   multiProjDelay: 0.15
-  spawnMode: 0
+  spawnMode: 2
+  useAlternativeSpawnMode: 0
+  alternativeSpawnMode: 0
+  forwardStep: {x: 0, y: 0, z: 0}
+  forwardAngle: {x: 0, y: 0, z: 0}
   arcAngleStep: 15
   raycastMaxDistance: 50
   isBeam: 0

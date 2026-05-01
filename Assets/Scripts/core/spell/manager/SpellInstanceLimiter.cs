@@ -1,46 +1,64 @@
 using System.Collections.Generic;
 using Unity.Netcode;
+using UnityEngine;
 
 // Tracks active spell instances per caster to enforce SpellData.instanceLimit
 public static class SpellInstanceLimiter {
-    private static readonly Dictionary<string, List<NetworkObject>> _map = new Dictionary<string, List<NetworkObject>>();
+    private static readonly Dictionary<string, List<GameObject>> _map = new Dictionary<string, List<GameObject>>();
 
-    private static string Key(ulong ownerId, int spellId) => ownerId + "_" + spellId;
+    private static string Key(ulong ownerId, string spellId) => ownerId + "_" + spellId;
 
     // Register a newly spawned spell instance. Returns list of objects that should be despawned to respect limit.
-    public static List<NetworkObject> Register(ulong ownerId, SpellData data, NetworkObject obj) {
-        var removed = new List<NetworkObject>();
-        if (data == null || obj == null) return removed;
-        int limit = data.instanceLimit;
-        if (limit <= 0) return removed; // no limit
+    public static List<GameObject> Register(ulong ownerId, int instanceLimit, string id, GameObject obj) {
+        var removed = new List<GameObject>();
+        if (obj == null) return removed;
+        if (instanceLimit <= 0) return removed; // no limit
 
-        var key = Key(ownerId, data.id);
+        var key = Key(ownerId, id);
         if (!_map.TryGetValue(key, out var list)) {
-            list = new List<NetworkObject>();
+            list = new List<GameObject>();
             _map[key] = list;
         }
+
         list.Add(obj);
 
         // Remove oldest beyond limit
-        while (list.Count > limit) {
+        while (list.Count > instanceLimit) {
             var old = list[0];
             list.RemoveAt(0);
             if (old != null) removed.Add(old);
         }
+
         return removed;
     }
 
-    public static void Unregister(ulong ownerId, SpellData data, NetworkObject obj) {
-        if (data == null || obj == null) return;
-        if (data.instanceLimit <= 0) return;
-        var key = Key(ownerId, data.id);
+    public static void Unregister(ulong ownerId, int instanceLimit, string id, GameObject obj) {
+        if (obj == null) return;
+        if (instanceLimit <= 0) return;
+        var key = Key(ownerId, id);
         if (!_map.TryGetValue(key, out var list)) return;
         list.Remove(obj);
         if (list.Count == 0) _map.Remove(key);
     }
 
+    public static List<GameObject> Register(ulong ownerId, SpellData data, GameObject obj) {
+        return Register(ownerId, data.instanceLimit, data.id.ToString(), obj);
+    }
+
+    public static void Unregister(ulong ownerId, SpellData data, GameObject obj) {
+        Unregister(ownerId, data.instanceLimit, data.id.ToString(), obj);
+    }
+
+    public static List<GameObject> Register(ulong ownerId, SpellDefinition data, GameObject obj) {
+        return Register(ownerId, data.spawn.instanceLimit, data.spellName, obj);
+    }
+
+    public static void Unregister(ulong ownerId, SpellDefinition data, GameObject obj) {
+        Unregister(ownerId, data.spawn.instanceLimit, data.spellName, obj);
+    }
+
     // Fallback when spell data isn't available; scans all lists and removes the object.
-    public static void UnregisterByObject(NetworkObject obj) {
+    public static void UnregisterByObject(GameObject obj) {
         if (obj == null) return;
         string foundKey = null;
         foreach (var kv in _map) {
@@ -49,6 +67,7 @@ public static class SpellInstanceLimiter {
                 break;
             }
         }
+
         if (foundKey != null) _map.Remove(foundKey);
     }
 

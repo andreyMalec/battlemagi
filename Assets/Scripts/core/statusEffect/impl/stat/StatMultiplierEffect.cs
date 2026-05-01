@@ -26,18 +26,16 @@ public abstract class StatMultiplierEffect : StatusEffectData {
 
         public override void OnApply(ulong ownerClientId, GameObject target) {
             base.OnApply(ownerClientId, target);
-            var statSystem = target.GetComponent<NetworkStatSystem>();
-            if (statSystem != null) {
-                statSystem.AddModifierServer(_data.statType(), _data.multiplier);
-            }
+            var stats = target.GetComponent<Stats>();
+            if (stats != null)
+                stats.AddModifier(_data.statType(), _data.multiplier);
         }
 
         public override void OnExpire(GameObject target) {
             base.OnExpire(target);
-            var statSystem = target.GetComponent<NetworkStatSystem>();
-            if (statSystem != null) {
-                statSystem.RemoveModifierServer(_data.statType(), _data.multiplier);
-            }
+            var stats = target.GetComponent<Stats>();
+            if (stats != null)
+                stats.RemoveModifier(_data.statType(), _data.multiplier);
         }
     }
 }

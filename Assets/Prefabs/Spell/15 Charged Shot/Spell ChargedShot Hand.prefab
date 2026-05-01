@@ -4804,6 +4804,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c304752c58742efb7da623a6b0fee76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellInHand
+  chargingAudio: {fileID: 548447830241115075}
 --- !u!82 &548447830241115075
 AudioSource:
   m_ObjectHideFlags: 0
@@ -4816,7 +4817,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 5062687673072769487, guid: 0dee41fcfd7ec4c429ddbec189e528ae, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 18f2ca5b1cb9b1b489b1124b6c49e5b6, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0

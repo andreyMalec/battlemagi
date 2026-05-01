@@ -1,0 +1,109 @@
+using NaughtyAttributes;
+using UnityEngine;
+
+[CreateAssetMenu(fileName = "New Projectile Spell", menuName = "Spells/Projectile Definition")]
+public class ProjectileDefinition : ScriptableObject, IValidate {
+    public SpellProjectilePrefabId prefabId;
+
+    public SpellMovement moveType;
+
+    [ShowIf("_canMove")] public float moveSpeed;
+    [ShowIf("_transformLinear")] public bool moveAlongGround;
+    [ShowIf(EConditionOperator.And, "_transformLinear", "moveAlongGround")] public float groundOffset = 0.1f;
+    [ShowIf("_canMove")] public bool enableMaxDistance;
+    [ShowIf("enableMaxDistance")] public float maxDistance = 20f;
+    [ShowIf(EConditionOperator.And, "enableMaxDistance", "_canReturnToCaster")] public bool returnToCaster;
+    public bool enableGravity;
+    [ShowIf("enableGravity")] public Vector3 gravity = new(0, -9.81f, 0);
+
+    [Header("LookAtPoint")]
+    [ShowIf("_transformLookAtPoint")] public float lookAtMaxDistance = 50f;
+
+    [ShowIf("_transformLookAtPoint")] public LayerMask lookAtRayMask = ~0;
+
+    [Header("Spiral")]
+    [ShowIf("_transformSpiral")] public float angularSpeed = 5;
+
+    [ShowIf("_transformSpiral")] public float spiralRadius = 0.5f;
+    [ShowIf("_transformSpiral")] public SpiralAxis spiralAxis = SpiralAxis.Forward;
+
+    [Header("Accelerated")]
+    [ShowIf("_transformAccelerated")] public float acceleration;
+
+    [Header("Homing")]
+    [ShowIf("_canHoming")] public bool enableHoming;
+
+    [ShowIf("enableHoming")] public LayerMask obstacleMask = ~0;
+    [ShowIf("enableHoming")] public float homingRadius = 10f;
+    [ShowIf("enableHoming")] public float homingMaxTurnDegrees = 25f;
+    [ShowIf("enableHoming")] public float homingSlerp = 0.35f;
+
+    [Header("SquashStretch")]
+    public bool enableSquashStretch;
+
+    [ShowIf("enableSquashStretch")] public float stretchAmplitude = 0.2f;
+    [ShowIf("enableSquashStretch")] public float stretchFrequency = 8f;
+    [ShowIf("enableSquashStretch")] public float stretchDamping = 0f;
+
+    [Header("Bounce")]
+    public bool enableBounce;
+
+    [ShowIf("enableBounce")] public int maxBounces = 3;
+    [ShowIf("enableBounce")] public float bounceSpeedMultiplier = 0.9f;
+
+    [Header("Pierce")]
+    public bool enablePierce;
+
+    [ShowIf("enablePierce")] public int maxPierces = 1;
+    [ShowIf("enablePierce")] public PierceTargetMode pierceTargetMode;
+
+    [Header("Fork")]
+    public bool enableFork;
+
+    [ShowIf("enableFork")] public int forkCount = 3;
+    [ShowIf("enableFork")] public float forkSpreadAngle = 35f;
+
+    [Header("On Hit effects")]
+    public bool echoOnHit;
+    public bool spawnInHit;
+
+    [Header("Spawned Spells")]
+    public SpellDefinition onHitSpawn;
+
+    [ShowIf("enableMaxDistance")] public SpellDefinition atMaxDistanceSpawn;
+    public SpellDefinition atStepDistanceSpawn;
+    [ShowIf("spawnAtStep")] public float spawnStep = 10f;
+    public SpellDefinition onLifetimeEndSpawn;
+    public SpellDefinition onLifetimeHalfSpawn;
+
+    private bool _canMove = false;
+    private bool _transformLinear = false;
+    private bool _transformSpiral = false;
+    private bool _transformAccelerated = false;
+    private bool _transformLookAtPoint = false;
+    private bool _transformFollowCaster = false;
+    private bool _canHoming = false;
+    private bool _canReturnToCaster = false;
+    [ShowIf("false")] [HideInInspector] public bool spawnAtStep = false;
+
+    public void Validate() {
+        _canMove = moveType is not SpellMovement.Static;
+        _transformLinear = moveType is SpellMovement.Linear;
+        _transformSpiral = moveType is SpellMovement.Spiral;
+        _transformAccelerated = moveType is SpellMovement.Accelerated;
+        _transformLookAtPoint = moveType is SpellMovement.LookAtPoint;
+        _transformFollowCaster = moveType is SpellMovement.FollowCaster;
+        _canHoming = moveType is SpellMovement.Linear or SpellMovement.Spiral or SpellMovement.Accelerated;
+        _canReturnToCaster = moveType is SpellMovement.Linear or SpellMovement.Spiral or SpellMovement.Accelerated;
+        spawnAtStep = atStepDistanceSpawn != null;
+
+        if (!_canReturnToCaster)
+            returnToCaster = false;
+    }
+
+#if UNITY_EDITOR
+    private void OnValidate() {
+        Validate();
+    }
+#endif
+}

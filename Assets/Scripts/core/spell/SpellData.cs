@@ -16,7 +16,7 @@ public class SpellData : ScriptableObject {
     public GameObject impactPrefab;
     public ImpactEffect[] impactEffects;
     public StatusEffectData[] buffs;
-    public DamageSoundType damageSound;
+    public DamageKind damageSound;
 
     public int castWaitingIndex = 0;
     public int invocationIndex;
@@ -87,9 +87,9 @@ public class SpellData : ScriptableObject {
     private void OnValidate() {
         _isArc = spawnMode is SpawnMode.Arc or SpawnMode.GroundPointArc ||
                  alternativeSpawnMode is SpawnMode.Arc or SpawnMode.GroundPointArc;
-        _isRaycast = spawnMode is SpawnMode.GroundPoint or SpawnMode.GroundPointArc or SpawnMode.HitScan
+        _isRaycast = spawnMode is SpawnMode.GroundPoint or SpawnMode.GroundPointArc
                          or SpawnMode.DirectDown ||
-                     alternativeSpawnMode is SpawnMode.GroundPoint or SpawnMode.GroundPointArc or SpawnMode.HitScan
+                     alternativeSpawnMode is SpawnMode.GroundPoint or SpawnMode.GroundPointArc
                          or SpawnMode.DirectDown;
         _isForward = spawnMode is SpawnMode.GroundPointForward ||
                      alternativeSpawnMode is SpawnMode.GroundPointForward;

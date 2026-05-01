@@ -1,0 +1,78 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class NewGroundPointForwardSpawn : ISpellSpawn {
+    public IEnumerator Request(SpawnContext context, Action<SpawnContext> spawn) {
+        var count = ISpellSpawn.InstanceCount(context);
+
+        var delay = context.spawn.multiInstanceDelay;
+        var baseCtx = ApplyDirectionToTarget(context);
+
+        var ground = ISpellSpawn.GroundPos(baseCtx, baseCtx.forward, out var hit);
+        if (ground == null) yield break;
+
+        if (context.spawn.useVectorStep) {
+            Vector3 groundUp = ground.rotation * Vector3.up;
+            Vector3 groundForward = ground.rotation * Vector3.forward;
+            Vector3 groundRight = ground.rotation * Vector3.right;
+
+            Vector3 localStep = baseCtx.spawn.forwardVectorStep;
+            Vector3 step = groundRight * localStep.x + groundUp * localStep.y + groundForward * localStep.z;
+
+            for (int i = 0; i < count; i++) {
+                var forward = RotationFromNormal(baseCtx.forward, hit.normal);
+                spawn(ground with {
+                    position = ground.position + step * i,
+                    rotation = ground.rotation * Quaternion.Euler(baseCtx.spawn.forwardAngleStep),
+                    forward = forward
+                });
+
+                if (delay > 0f && i < count - 1)
+                    yield return new WaitForSeconds(delay);
+            }
+        } else {
+            var step = baseCtx.spawn.forwardStep;
+
+            for (int i = 0; i < count; i++) {
+                var forward = RotationFromNormal(baseCtx.forward, hit.normal);
+                spawn(ground with {
+                    position = ground.position + forward * (step * i),
+                    forward = forward
+                });
+
+                if (delay > 0f && i < count - 1)
+                    yield return new WaitForSeconds(delay);
+            }
+        }
+    }
+
+    private static SpawnContext ApplyDirectionToTarget(SpawnContext context) {
+        if (context.target == null)
+            return context;
+
+        var targetPos = ISpellSpawn.GroundPos(context with { position = context.target.Position }, Vector3.down, out _);
+        var dir = targetPos.position - context.position;
+        if (dir.sqrMagnitude <= 0f)
+            return context;
+
+        var forward = dir.normalized;
+        return context with {
+            rotation = Quaternion.LookRotation(forward, Vector3.up),
+            forward = forward,
+        };
+    }
+
+    public IEnumerable<SpawnContext> ShapeCenter(SpawnContext context) {
+        var baseCtx = context.target != null ? context with { position = context.target.Position } : context;
+        yield return ISpellSpawn.GroundPos(baseCtx, baseCtx.forward, out _);
+    }
+
+    private static Vector3 RotationFromNormal(Vector3 forwardHint, Vector3 normal) {
+        Vector3 forwardOnPlane = Vector3.ProjectOnPlane(forwardHint, normal);
+        if (forwardOnPlane.sqrMagnitude < 0.0001f)
+            forwardOnPlane = Vector3.ProjectOnPlane(Vector3.forward, normal);
+        return forwardOnPlane;
+    }
+}

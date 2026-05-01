@@ -1,22 +1,38 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
+[RequireComponent(typeof(PlayerPhysics))]
+[RequireComponent(typeof(IceSlideMovementModule))]
 public class PlayerTester : MonoBehaviour {
     [SerializeField] private MovementSettings movementSettings;
     [SerializeField] private LookSettings lookSettings;
     [SerializeField] private GroundCheck groundCheck;
     [SerializeField] private Camera mainCamera;
+    [SerializeField] private Transform hand;
+    [SerializeField] private float jumpStrength = 2f;
 
     public float movementSpeed = 2;
     public float runSpeed = 5;
 
-    private CharacterController _characterController;
-    private float _velocityY;
+    private PlayerPhysics _physics;
+    private IceSlideMovementModule _iceSlide;
+    private Stats _stats;
     private Vector2 _currentRotation;
     private Vector2 _frameVelocity;
 
     private void Awake() {
-        _characterController = GetComponent<CharacterController>();
+        _physics = GetComponent<PlayerPhysics>();
+        _iceSlide = GetComponent<IceSlideMovementModule>();
+        _physics.Configure(movementSettings, groundCheck);
+        _stats = GetComponent<Stats>();
+        var preview = GetComponent<SpellCasterPlayerPreview>();
+        preview.BindHand(hand);
+    }
+
+    private void Start() {
+        var caster = GetComponent<SpellCasterPlayer>();
+        caster.UpdateAvailableSpells(DefaultSpells.Instance.list.Map(s => s.spell).ToList());
     }
 
     private void Update() {
@@ -30,6 +46,7 @@ public class PlayerTester : MonoBehaviour {
     }
 
     private void ProcessMouseInput() {
+        if (Cursor.lockState != CursorLockMode.Locked) return;
         Vector2 mouseDelta = new(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"));
         Vector2 rawFrameVelocity = Vector2.Scale(mouseDelta, Vector2.one * lookSettings.sensitivity);
 
@@ -45,30 +62,25 @@ public class PlayerTester : MonoBehaviour {
         float targetSpeed = running ? runSpeed : movementSpeed;
         float speedMultiplier = groundCheck.isGrounded ? 1f : movementSettings.flySpeedMultiplier;
 
+        speedMultiplier *= _stats.GetFinal(StatType.MoveSpeed);
         Vector3 moveDirection = transform.TransformDirection(new Vector3(
             input.x * targetSpeed * speedMultiplier,
             0f,
             input.y * targetSpeed * speedMultiplier
         ));
 
-        ApplyGravity();
-        _characterController.Move((moveDirection + Vector3.up * _velocityY) * Time.deltaTime);
+        if (_iceSlide.IsActive)
+            moveDirection = _iceSlide.ResolveVelocity(moveDirection, input.sqrMagnitude > 0.0001f, Time.deltaTime);
+
+        _physics.MoveWithGravity(moveDirection);
     }
 
     private void TryJump() {
-        if (Input.GetKeyDown(movementSettings.jumpKey) && groundCheck.isGrounded)
+        if (Input.GetKeyDown(movementSettings.jumpKey) && groundCheck.isGrounded && !_iceSlide.IsActive)
             PerformJump();
     }
 
     private void PerformJump() {
-        _velocityY = Mathf.Sqrt(2 * -2f * movementSettings.gravity);
-    }
-
-    private void ApplyGravity() {
-        if (groundCheck.isGrounded && _velocityY < 0)
-            _velocityY = -2f;
-        else
-            _velocityY += movementSettings.gravity * (_velocityY < 0 ? movementSettings.fallGravityMultiplier : 1f) *
-                          Time.deltaTime;
+        _physics.Jump(jumpStrength);
     }
 }

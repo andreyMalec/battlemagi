@@ -6,7 +6,7 @@ using UnityEngine;
 
 public sealed class SpellRecognizer {
     public struct RecognizedSpell {
-        public SpellData spell;
+        public SpellDefinition spell;
         public double similarity;
     }
 
@@ -16,7 +16,7 @@ public sealed class SpellRecognizer {
     private readonly bool _useSliding;
     private readonly Language _language;
     private readonly Action<string> _debug;
-    public readonly List<SpellData> spells;
+    public readonly List<SpellDefinition> spells;
 
     // Cache for phrase tokenization
     private static readonly Dictionary<string, string[]> s_phraseTokensCache = new();
@@ -27,7 +27,7 @@ public sealed class SpellRecognizer {
     private static HashSet<string> s_knownPhrases;
 
     public SpellRecognizer(
-        List<SpellData> spells, Language language, int maxMergeSpan = 3, int minTokenLen = 1,
+        List<SpellDefinition> spells, Language language, int maxMergeSpan = 3, int minTokenLen = 1,
         bool useSlidingWindow = true, Action<string> debugLogger = null
     ) {
         _maxMergeSpan = Mathf.Max(1, maxMergeSpan);
@@ -39,14 +39,14 @@ public sealed class SpellRecognizer {
     }
 
     public List<string> SpellWords() {
-        return spells.Map(it => string.Join(", ", _language == Language.Ru ? it.spellWordsRu : it.spellWords)).ToList();
+        return spells.Map(it => string.Join(", ", _language == Language.Ru ? it.wordsRu : it.words)).ToList();
     }
 
     public RecognizedSpell Recognize(string words) {
         var result = spells
             .Select(spell => {
                 var r = new RecognizedSpell { spell = spell };
-                string[] spellWords = _language == Language.Ru ? spell.spellWordsRu : spell.spellWords;
+                string[] spellWords = _language == Language.Ru ? spell.wordsRu : spell.words;
 
                 r.similarity = spellWords
                     .Select(phrase => TokenSimilarity(words.ToLowerInvariant(), phrase.ToLowerInvariant()))
@@ -71,7 +71,7 @@ public sealed class SpellRecognizer {
         var result = spells
             .Select(spell => {
                 var r = new RecognizedSpell { spell = spell };
-                string[] spellWords = _language == Language.Ru ? spell.spellWordsRu : spell.spellWords;
+                string[] spellWords = _language == Language.Ru ? spell.wordsRu : spell.words;
 
                 r.similarity = spellWords
                     .Select(phrase => PhraseAgainstTokensScoreInternal(heardTokens, phrase))

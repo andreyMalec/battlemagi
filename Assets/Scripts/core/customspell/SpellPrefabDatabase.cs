@@ -1,0 +1,208 @@
+using System;
+using JetBrains.Annotations;
+using UnityEngine;
+
+[CreateAssetMenu(fileName = "SpellPrefabDatabase", menuName = "Spells/Spell Prefab Database")]
+public class SpellPrefabDatabase : ScriptableObject {
+    [Serializable]
+    public struct ProjectileEntry {
+        public SpellProjectilePrefabId id;
+        public GameObject prefab;
+        [CanBeNull] public GameObject inHandPrefab;
+        public DamageKind sound;
+    }
+
+    [Serializable]
+    public struct ZoneEntry {
+        public SpellZonePrefabId id;
+        public GameObject prefab;
+        [CanBeNull] public GameObject inHandPrefab;
+        public DamageKind sound;
+    }
+
+    [Serializable]
+    public struct BeamEntry {
+        public SpellBeamPrefabId id;
+        public GameObject prefab;
+        [CanBeNull] public GameObject inHandPrefab;
+        public DamageKind sound;
+    }
+
+    [Serializable]
+    public struct SummonEntry {
+        public SpellSummonPrefabId id;
+        public GameObject prefab;
+        [CanBeNull] public GameObject inHandPrefab;
+    }
+
+    [Serializable]
+    public struct SelfEntry {
+        public SpellSelfPrefabId id;
+        public GameObject prefab;
+        [CanBeNull] public GameObject inHandPrefab;
+    }
+
+    public ProjectileEntry[] projectiles;
+    public ZoneEntry[] zones;
+    public BeamEntry[] beams;
+    public SummonEntry[] summons;
+    public SelfEntry[] selfs;
+
+    public GameObject Get(SpellDefinition def) {
+        return def.coreType switch {
+            CoreType.Projectile => Get(def.projectile.prefabId),
+            CoreType.Zone => Get(def.zone.prefabId),
+            CoreType.Beam => Get(def.beam.prefabId),
+            CoreType.Summon => Get(def.summon.prefabId),
+            CoreType.Self => Get(def.self.prefabId),
+            _ => null
+        };
+    }
+
+    public GameObject Get(SpellProjectilePrefabId id) {
+        for (int i = 0; i < projectiles.Length; i++) {
+            if (projectiles[i].id == id)
+                return projectiles[i].prefab;
+        }
+
+        return null;
+    }
+
+    public GameObject Get(SpellZonePrefabId id) {
+        for (int i = 0; i < zones.Length; i++) {
+            if (zones[i].id == id)
+                return zones[i].prefab;
+        }
+
+        return null;
+    }
+
+    public GameObject Get(SpellBeamPrefabId id) {
+        for (int i = 0; i < beams.Length; i++) {
+            if (beams[i].id == id)
+                return beams[i].prefab;
+        }
+
+        return null;
+    }
+
+    public GameObject Get(SpellSummonPrefabId id) {
+        for (int i = 0; i < summons.Length; i++) {
+            if (summons[i].id == id)
+                return summons[i].prefab;
+        }
+
+        return null;
+    }
+
+    public GameObject Get(SpellSelfPrefabId id) {
+        for (int i = 0; i < selfs.Length; i++) {
+            if (selfs[i].id == id)
+                return selfs[i].prefab;
+        }
+
+        return null;
+    }
+
+    public DamageKind Sound(SpellDefinition def) {
+        return def.coreType switch {
+            CoreType.Projectile => Sound(def.projectile.prefabId),
+            CoreType.Zone => Sound(def.zone.prefabId),
+            CoreType.Beam => Sound(def.beam.prefabId),
+            _ => DamageKind.Default
+        };
+    }
+
+    public DamageKind Sound(SpellProjectilePrefabId id) {
+        for (int i = 0; i < projectiles.Length; i++) {
+            if (projectiles[i].id == id)
+                return projectiles[i].sound;
+        }
+
+        return DamageKind.Default;
+    }
+
+    public DamageKind Sound(SpellZonePrefabId id) {
+        for (int i = 0; i < zones.Length; i++) {
+            if (zones[i].id == id)
+                return zones[i].sound;
+        }
+
+        return DamageKind.Default;
+    }
+
+    public DamageKind Sound(SpellBeamPrefabId id) {
+        for (int i = 0; i < beams.Length; i++) {
+            if (beams[i].id == id)
+                return beams[i].sound;
+        }
+
+        return DamageKind.Default;
+    }
+
+    public GameObject Hand(SpellDefinition def) {
+        return def.coreType switch {
+            CoreType.Projectile => Hand(def.projectile.prefabId),
+            CoreType.Zone => Hand(def.zone.prefabId),
+            CoreType.Beam => Hand(def.beam.prefabId),
+            CoreType.Summon => Hand(def.summon.prefabId),
+            _ => null
+        };
+    }
+
+    public GameObject Hand(int core, int prefab) {
+        return (CoreType)core switch {
+            CoreType.Projectile => Hand((SpellProjectilePrefabId)prefab),
+            CoreType.Zone => Hand((SpellZonePrefabId)prefab),
+            CoreType.Beam => Hand((SpellBeamPrefabId)prefab),
+            CoreType.Summon => Hand((SpellSummonPrefabId)prefab),
+            _ => null
+        };
+    }
+
+    public GameObject Hand(SpellProjectilePrefabId id) {
+        for (int i = 0; i < projectiles.Length; i++) {
+            if (projectiles[i].id == id)
+                return projectiles[i].inHandPrefab;
+        }
+
+        return null;
+    }
+
+    public GameObject Hand(SpellZonePrefabId id) {
+        for (int i = 0; i < zones.Length; i++) {
+            if (zones[i].id == id)
+                return zones[i].inHandPrefab;
+        }
+
+        return null;
+    }
+
+    public GameObject Hand(SpellBeamPrefabId id) {
+        for (int i = 0; i < beams.Length; i++) {
+            if (beams[i].id == id)
+                return beams[i].inHandPrefab;
+        }
+
+        return null;
+    }
+
+    public GameObject Hand(SpellSummonPrefabId id) {
+        for (int i = 0; i < summons.Length; i++) {
+            if (summons[i].id == id)
+                return summons[i].inHandPrefab;
+        }
+
+        return null;
+    }
+
+    private static SpellPrefabDatabase _instance;
+
+    public static SpellPrefabDatabase Instance {
+        get {
+            if (_instance == null)
+                _instance = Resources.Load<SpellPrefabDatabase>("SpellPrefabDatabase");
+            return _instance;
+        }
+    }
+}

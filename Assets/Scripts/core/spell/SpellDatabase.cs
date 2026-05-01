@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -28,10 +29,39 @@ public class SpellDatabase : MonoBehaviour {
         SpellRecognizer.PrewarmFromDatabase();
     }
 
-
     public SpellData GetSpell(int id) {
         if (map != null && map.TryGetValue(id, out var s)) return s;
         Debug.LogWarning($"SpellDatabase: spell id {id} not found");
         return null;
+    }
+}
+
+public readonly struct SpellId : IEquatable<SpellId> {
+    public readonly int Value;
+
+    private SpellId(int value) {
+        Value = value;
+    }
+
+    public static implicit operator SpellId(int value) {
+        return new SpellId(value);
+    }
+
+    public static implicit operator int(SpellId value) {
+        return value.Value;
+    }
+
+    public override string ToString() => Value.ToString();
+
+    public bool Equals(SpellId other) {
+        return Value == other.Value;
+    }
+
+    public override bool Equals(object obj) {
+        return obj is SpellId other && Equals(other);
+    }
+
+    public override int GetHashCode() {
+        return Value;
     }
 }

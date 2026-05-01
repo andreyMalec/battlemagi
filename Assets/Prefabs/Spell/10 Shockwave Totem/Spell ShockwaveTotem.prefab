@@ -9795,10 +9795,7 @@ GameObject:
   - component: {fileID: 8707571656721696334}
   - component: {fileID: 6295535575896761818}
   - component: {fileID: 2641243179819180305}
-  - component: {fileID: 2503025298705849989}
-  - component: {fileID: 3258879510255564895}
   - component: {fileID: 5868877035629305093}
-  - component: {fileID: 1163428395993184920}
   - component: {fileID: 63883288458326577}
   - component: {fileID: 9222707079392840899}
   - component: {fileID: 8210015613394022047}
@@ -9938,46 +9935,6 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &2503025298705849989
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7354784787554302670}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a60bd481fc714fb8b20e472a6e5c1969, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NetworkStatSystem
-  ShowTopMostFoldoutHeaderGroup: 1
---- !u!114 &3258879510255564895
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7354784787554302670}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b241855eae74483ba11d6919a92dbfcd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Damageable
-  ShowTopMostFoldoutHeaderGroup: 1
-  maxHealth: 75
-  maxArmor: 50
-  armorEffect: 0.75
-  hpRestore: 3
-  immortal: 0
-  invulnerable: 0
-  hp: {fileID: 0}
-  damageAudio: {fileID: 8210015613394022047}
-  damageSoundCooldown: 0.2
-  health:
-    m_InternalValue: 0
-  armor:
-    m_InternalValue: 0
-  isDead: 0
 --- !u!114 &5868877035629305093
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9993,20 +9950,6 @@ MonoBehaviour:
   start: {x: 0, y: 0, z: 0}
   end: {x: 0, y: -10, z: 0}
   duration: 0.4
-  onDestroy: {fileID: 8300000, guid: b1539921015dbe749968460b566fb52a, type: 3}
---- !u!114 &1163428395993184920
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7354784787554302670}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 310377ea541c4261a7d3cdc28d8173b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::StatusEffectManager
-  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!54 &63883288458326577
 Rigidbody:
   m_ObjectHideFlags: 0

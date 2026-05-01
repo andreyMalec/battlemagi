@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Unity.Netcode;
 using System.Collections;
 using Unity.Netcode.Components;
@@ -6,8 +7,8 @@ using Unity.Netcode.Components;
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(NetworkObject))]
 [RequireComponent(typeof(NetworkTransform))]
-[RequireComponent(typeof(NetworkStatSystem))]
 [RequireComponent(typeof(PlayerPhysics))]
+[RequireComponent(typeof(IceSlideMovementModule))]
 public class FirstPersonMovement : NetworkBehaviour {
     public MovementSettings movementSettings;
     public GroundCheck groundCheck;
@@ -27,8 +28,9 @@ public class FirstPersonMovement : NetworkBehaviour {
     public readonly NetworkVariable<Vector3> spawnPoint = new();
     private int _spawnTick;
 
-    private NetworkStatSystem _statSystem;
+    private Stats _stats;
     private PlayerPhysics _physics;
+    private IceSlideMovementModule _iceSlide;
     private float _jumpCooldownTimer;
 
     // Ключи/локи для бега
@@ -38,9 +40,14 @@ public class FirstPersonMovement : NetworkBehaviour {
 
     private const float MinStaminaThreshold = 0.05f;
 
+    private Vector3 _teleportPosition;
+    private Quaternion _teleportRotation;
+    private bool _teleporting;
+
     private void Awake() {
-        _statSystem = GetComponent<NetworkStatSystem>();
+        _stats = GetComponent<Stats>();
         _physics = GetComponent<PlayerPhysics>();
+        _iceSlide = GetComponent<IceSlideMovementModule>();
         _physics.Configure(movementSettings, groundCheck);
     }
 
@@ -79,6 +86,27 @@ public class FirstPersonMovement : NetworkBehaviour {
     private void OnIsJumpingChanged(bool oldValue, bool newValue) {
         if (newValue && !oldValue && !IsOwner)
             Jumped?.Invoke();
+    }
+
+    public void Teleport(Transform target) {
+        TeleportClientRpc(target.position, target.rotation, new ClientRpcParams() {
+            Send = new ClientRpcSendParams { TargetClientIds = new[] { OwnerClientId } }
+        });
+    }
+
+    [ClientRpc]
+    private void TeleportClientRpc(Vector3 position, Quaternion rotation, ClientRpcParams clientRpcParams = default) {
+        _teleportPosition = position;
+        _teleportRotation = rotation;
+        _teleporting = true;
+    }
+
+    private void FixedUpdate() {
+        if (IsOwner && _teleporting) {
+            _teleporting = false;
+            transform.position = _teleportPosition;
+            transform.rotation = _teleportRotation;
+        }
     }
 
     private void Update() {
@@ -136,17 +164,22 @@ public class FirstPersonMovement : NetworkBehaviour {
     }
 
     private void ApplyMovement(Vector2 input, bool running) {
+        var moveDirection = ResolveMoveDirection(input, running);
+        if (_iceSlide.IsActive)
+            moveDirection = _iceSlide.ResolveVelocity(moveDirection, input.sqrMagnitude > 0.0001f, Time.deltaTime);
+        _physics.MoveWithGravity(moveDirection);
+    }
+
+    private Vector3 ResolveMoveDirection(Vector2 input, bool running) {
         float targetSpeed = running ? runSpeed : movementSpeed;
         float speedMultiplier = groundCheck.isGrounded ? 1f : movementSettings.flySpeedMultiplier;
 
-        speedMultiplier *= _statSystem.Stats.GetFinal(StatType.MoveSpeed);
-        Vector3 moveDirection = transform.TransformDirection(new Vector3(
+        speedMultiplier *= _stats?.GetFinal(StatType.MoveSpeed) ?? 1f;
+        return transform.TransformDirection(new Vector3(
             input.x * targetSpeed * speedMultiplier,
             0f,
             input.y * targetSpeed * speedMultiplier
         ));
-
-        _physics.MoveWithGravity(moveDirection);
     }
 
     private void TryJump() {
@@ -154,7 +187,7 @@ public class FirstPersonMovement : NetworkBehaviour {
             PerformJump();
     }
 
-    private bool CanJump() => _jumpCooldownTimer <= 0 && groundCheck.isGrounded;
+    private bool CanJump() => _jumpCooldownTimer <= 0 && groundCheck.isGrounded && !_iceSlide.IsActive;
 
     private void PerformJump() {
         _jumpCooldownTimer = movementSettings.jumpCooldown;
@@ -175,5 +208,29 @@ public class FirstPersonMovement : NetworkBehaviour {
     [ClientRpc]
     public void ApplyImpulseClientRpc(Vector3 impulse, ClientRpcParams clientRpcParams = default) {
         _physics.ApplyImpulse(impulse);
+    }
+
+    [ClientRpc]
+    public void SetPointForceClientRpc(
+        int id,
+        Vector3 point,
+        float forcePerSecond,
+        float duration,
+        SpellKnockbackVectorMode vectorMode,
+        float upBias,
+        ClientRpcParams clientRpcParams = default
+    ) {
+        _physics.SetPointForce(id, point, forcePerSecond, duration, vectorMode, upBias);
+    }
+
+    [ClientRpc]
+    public void SetVelocitySourceClientRpc(int id, Vector3 velocity, float duration,
+        ClientRpcParams clientRpcParams = default) {
+        _physics.SetVelocitySource(id, velocity, duration);
+    }
+
+    [ClientRpc]
+    public void ClearVelocitySourceClientRpc(int id, ClientRpcParams clientRpcParams = default) {
+        _physics.ClearVelocitySource(id);
     }
 }

@@ -194,8 +194,7 @@ public class LobbyManager : MonoBehaviour {
     }
 
     public void GameStarted() {
-        _state = PlayerState.InGame;
-        CurrentLobby?.SetJoinable(false);
+        State = PlayerState.InGame;
     }
 
     /**
@@ -268,6 +267,12 @@ public static class LobbyExt {
     }
 
     public static PlayerColor GetColor(this Friend member) {
+        if (PlayerManager.Instance != null) {
+            var networkColor = PlayerManager.Instance.GetColor(member.Id.Value);
+            if (networkColor.HasValue)
+                return networkColor.Value;
+        }
+
         if (LobbyManager.Instance.CurrentLobby != null) {
             var lobby = LobbyManager.Instance.CurrentLobby;
             if (lobby.HasValue) {
@@ -293,6 +298,10 @@ public static class LobbyExt {
                 var c = $"{h};{s}";
                 lobby.Value.SetMemberData(LobbyManager.KeyColor, c);
             }
+        }
+
+        if (PlayerManager.Instance != null && NetworkManager.Singleton != null && NetworkManager.Singleton.IsConnectedClient) {
+            PlayerManager.Instance.SetColorServerRpc(color.hue, color.saturation);
         }
     }
 

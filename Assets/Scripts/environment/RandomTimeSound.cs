@@ -10,6 +10,10 @@ public class RandomTimeSound : MonoBehaviour {
     private float _selected = 0;
     private float _timer = 0;
 
+    private void Awake() {
+        _selected = Random.Range(from, to);
+    }
+
     private void Update() {
         if (_timer > _selected || _selected == 0) {
             _timer = 0;

@@ -7,6 +7,8 @@ public class CTFScoreUI : MonoBehaviour {
     [SerializeField] private CanvasGroup canvasGroup;
 
     private void OnEnable() {
+        if (TeamManager.Instance == null) return;
+
         if (TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.CaptureTheFlag) {
             canvasGroup.alpha = 1;
             TeamManager.Instance.OnScoreChanged += OnScoreChanged;

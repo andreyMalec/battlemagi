@@ -6,18 +6,17 @@ using Unity.Netcode;
 using UnityEngine;
 using Voice;
 
+[Obsolete("Use new \"SpellCasterPlayer\" instead of this")]
 [RequireComponent(typeof(SpellManager))]
 public class PlayerSpellCaster : NetworkBehaviour {
     [SerializeField] private AudioSource disabledSound;
-    private NetworkStatSystem _statSystem;
-    private StatusEffectManager _effectManager;
+    private Stats _stats;
+    private Statusable _statusable;
     private MeshController _meshController;
     private Mouth _mouth;
     private PlayerAnimator _playerAnimator;
     private SpellManager _spellManager;
 
-    public KeyCode spellCastKey = KeyCode.Mouse0;
-    public KeyCode spellCancelKey = KeyCode.Mouse1;
     public KeyCode alternateSpawnKey = KeyCode.F;
 
     [HideInInspector] public bool channeling = false;
@@ -38,11 +37,11 @@ public class PlayerSpellCaster : NetworkBehaviour {
     private PlayerSpellRecognitionController _recognition;
 
     private void Awake() {
-        _statSystem = GetComponent<NetworkStatSystem>();
+        _stats = GetComponent<Stats>();
         _mouth = GetComponent<Mouth>();
         _playerAnimator = GetComponent<PlayerAnimator>();
-        _recognition = new PlayerSpellRecognitionController(_mouth);
-        _effectManager = GetComponent<StatusEffectManager>();
+        _recognition = new PlayerSpellRecognitionController(_mouth, GetComponent<Player>());
+        _statusable = GetComponent<Statusable>();
     }
 
     public override void OnNetworkSpawn() {
@@ -54,17 +53,14 @@ public class PlayerSpellCaster : NetworkBehaviour {
         }
 
         _manaController =
-            new PlayerSpellManaController(mana, primalMana, maxMana, manaRestoreTickInterval, manaRestore, _statSystem);
+            new PlayerSpellManaController(mana, primalMana, maxMana, manaRestoreTickInterval, manaRestore, _stats);
 
         if (!IsOwner) return;
-
-        _input.CastKey = spellCastKey;
-        _input.CancelKey = spellCancelKey;
 
         if (_mouth == null)
             Debug.Log($"[Mouth] is null on Player_{OwnerClientId}");
 
-        _recognition.Initialize(OwnerClientId, SpeechToTextHolder.Instance.Language);
+        _recognition.Initialize(SpeechToTextHolder.Instance.Language);
     }
 
     public void BindAvatar(MeshController mc) {
@@ -87,7 +83,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
         if (!IsServer) return;
         _manaController.ServerTick(Time.deltaTime);
         if (IsPrimalManaLocked())
-            _effectManager.AddEffect(OwnerClientId, primalManaStatus);
+            _statusable.AddEffect(OwnerClientId, primalManaStatus);
     }
 
     public void RestoreEcho(ulong targetClientId) {
@@ -224,7 +220,7 @@ public class PlayerSpellCaster : NetworkBehaviour {
             return;
 
         var spell = _recognition.Spells[index];
-        _recognition.EmulateRecognitionFromSpell(spell, SpeechToTextHolder.Instance.Language, OnMouthClose);
+        // _recognition.EmulateRecognitionFromSpell(spell, SpeechToTextHolder.Instance.Language, OnMouthClose);
     }
 
     private bool DisableWhileCarrying(SpellData spell) {
@@ -237,19 +233,19 @@ public class PlayerSpellCaster : NetworkBehaviour {
         if (_state.CastWaiting || _state.Channeling) return;
 
         var result = _recognition.Recognize(lastWords);
-        _state.RecognizedSpell = result.spell;
-
-        if (result.similarity < GameConfig.Instance.recognitionThreshold)
-            return;
-
-        if (DisableWhileCarrying(_state.RecognizedSpell)) {
-            if (!disabledSound.isPlaying)
-                disabledSound.Play();
-            _state.RecognizedSpell = null;
-            return;
-        }
-
-        StartSpellRecognition(result.spell);
+        // _state.RecognizedSpell = result.spell;
+        //
+        // if (result.similarity < GameConfig.Instance.recognitionThreshold)
+        //     return;
+        //
+        // if (DisableWhileCarrying(_state.RecognizedSpell)) {
+        //     if (!disabledSound.isPlaying)
+        //         disabledSound.Play();
+        //     _state.RecognizedSpell = null;
+        //     return;
+        // }
+        //
+        // StartSpellRecognition(result.spell);
     }
 
     private void StartSpellRecognition(SpellData spell) {

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
@@ -15,12 +14,12 @@ public class PickUp : NetworkBehaviour {
         if (_destroyed) return;
         if (!IsServer) return;
 
-        if (other.TryGetComponent<Player>(out _) && other.TryGetComponent<StatusEffectManager>(out var manager)) {
+        if (other.TryGetComponent<Player>(out _) && other.TryGetComponent<Statusable>(out var statusable)) {
             var ownerId = OwnerClientId;
             if (NetworkObject.IsSceneObject == true)
                 ownerId = PlayerId.EnvironmentId;
             foreach (var effect in effects) {
-                manager.AddEffect(ownerId, effect);
+                statusable.AddEffect(ownerId, effect);
             }
 
             var toUI = effects.First();
@@ -30,7 +29,7 @@ public class PickUp : NetworkBehaviour {
                 OnPickupClientRpc(
                     other.GetComponent<NetworkObject>().OwnerClientId,
                     R.String(toUI.title),
-                    R.String(toUI.description),
+                    R.String(toUI.description, toUI.StringValue()),
                     toUI.color);
 
             // server-authoritative despawn

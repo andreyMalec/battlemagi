@@ -14,6 +14,10 @@ public abstract class StatusEffectRuntime {
         _timeRemaining = data.duration;
     }
 
+    public virtual void OnApply(StatusEffectApplyContext applyContext, GameObject target) {
+        OnApply(applyContext.ownerClientId, target);
+    }
+
     public virtual void OnApply(ulong ownerClientId, GameObject target) {
         this.ownerClientId = ownerClientId;
         if (target.TryGetComponent<Player>(out var player))

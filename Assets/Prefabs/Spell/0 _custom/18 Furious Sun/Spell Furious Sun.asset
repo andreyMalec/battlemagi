@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70d6ac2600d5440ab45bcb7d2aabe7d3, type: 3}
+  m_Name: Spell Furious Sun
+  m_EditorClassIdentifier: Assembly-CSharp::SpellDefinition
+  spellName: Furious Sun
+  words:
+  - Furious Sun
+  wordsRu:
+  - "\u042F\u0440\u043E\u0441\u0442\u043D\u043E\u0435 \u0421\u043E\u043B\u043D\u0446\u0435"
+  coreType: 1
+  spawn: {fileID: 11400000, guid: fbefdc8944015d64c832f8806900b2a2, type: 2}
+  damage: {fileID: 11400000, guid: 9f6e6513ac1635449875b43e102d46ae, type: 2}
+  knockback: {fileID: 0}
+  effects: []
+  scale: 3
+  lifetime: 15
+  blinkAtLifetime: 0
+  defaultRaycast:
+    serializedVersion: 2
+    m_Bits: 576
+  castWaitingIndex: 0
+  invocationIndex: 12
+  manaCost: 50
+  bloodMagic: 0
+  echoCount: 0
+  channeling: 1
+  channelDuration: 15
+  charging: 0
+  chargeDuration: 0
+  manaPerSecond: 5
+  projectile: {fileID: 0}
+  zone: {fileID: 11400000, guid: b26fcd6fd2531174b8a5f3944ceae3a8, type: 2}
+  beam: {fileID: 0}
+  summon: {fileID: 0}
+  self: {fileID: 0}

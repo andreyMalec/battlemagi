@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Steamworks;
 
 public class PlayerSpawner : NetworkBehaviour {
     [SerializeField] private GameObject playerPrefab;
@@ -32,9 +31,17 @@ public class PlayerSpawner : NetworkBehaviour {
         }
     }
 
+    private bool IsMatchInProgress() {
+        return IsServer && LobbyManager.Instance != null &&
+               LobbyManager.Instance.State == LobbyManager.PlayerState.InGame;
+    }
+
     private void OnClientConnected(ulong clientId) {
         if (IsServer) {
-            SpawnLobbyEnjoyer(clientId);
+            if (IsMatchInProgress())
+                StartCoroutine(RespawnPlayer(clientId));
+            else
+                SpawnLobbyEnjoyer(clientId);
         }
     }
 
@@ -46,13 +53,39 @@ public class PlayerSpawner : NetworkBehaviour {
         }
     }
 
+    private IEnumerator RespawnPlayer(ulong clientId) {
+        const float timeout = 10f;
+        var elapsed = 0f;
+
+        while (!IsPlayerSpawnDataReady(clientId)) {
+            if (!NetworkManager.Singleton.ConnectedClients.ContainsKey(clientId))
+                yield break;
+
+            if (elapsed >= timeout) {
+                Debug.LogError($"[PlayerSpawner] Сервер: Не дождались синхронизации PlayerManager/TeamManager для игрока {clientId}");
+                yield break;
+            }
+
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        SpawnPlayer(clientId);
+    }
+
+    private bool IsPlayerSpawnDataReady(ulong clientId) {
+        return PlayerManager.Instance != null &&
+               TeamManager.Instance != null &&
+               PlayerManager.Instance.TryGetPlayerData(clientId, out _) &&
+               TeamManager.Instance.HasTeam(clientId);
+    }
+
     private IEnumerator HandleDeath(ulong clientId) {
         Debug.Log($"[PlayerSpawner] Сервер: Ждем перед тем как удалить игрока {clientId}");
         yield return new WaitForSeconds(5);
-        if (DestroyClient(clientId)) {
-            yield return new WaitForEndOfFrame();
-            SpawnPlayer(clientId);
-        }
+        DestroyClient(clientId);
+        yield return new WaitForEndOfFrame();
+        SpawnPlayer(clientId);
     }
 
     private bool DestroyClient(ulong clientId) {
@@ -92,7 +125,7 @@ public class PlayerSpawner : NetworkBehaviour {
             player.GetComponentInChildren<MeshController>(true).SetRagdoll(true);
             player.GetComponentInChildren<Freeze>(true).gameObject.SetActive(false);
             player.GetComponent<CharacterController>().enabled = false;
-            player.GetComponent<PlayerSpellCaster>().enabled = false;
+            player.GetComponent<SpellCasterPlayer>().enabled = false;
             player.GetComponent<FirstPersonMovement>().enabled = false;
             player.GetComponent<FirstPersonLook>().enabled = false;
             player.GetComponent<Mouth>().enabled = false;
@@ -116,7 +149,7 @@ public class PlayerSpawner : NetworkBehaviour {
         if (!IsServer) return;
         if (sceneName == GameProgress.Instance.SceneName) {
             foreach (var id in clientsCompleted) {
-                SpawnPlayer(id);
+                StartCoroutine(RespawnPlayer(id));
             }
         }
 
@@ -128,13 +161,19 @@ public class PlayerSpawner : NetworkBehaviour {
     }
 
     private void SpawnPlayer(ulong clientId) {
-        //TODO crash here NPE
+        if (!PlayerManager.Instance.TryGetPlayerData(clientId, out var playerData)) {
+            Debug.LogError($"[PlayerSpawner] Сервер: Не найдены данные PlayerManager для игрока {clientId}");
+            return;
+        }
+
         var team = TeamManager.Instance.GetTeam(clientId);
         var spawn = FindFirstObjectByType<Spawn>();
         if (spawn == null) {
-            Debug.LogError($"[PlayerSpawner] Сервер: Ошибка! Не найден объект Spawn для спавна игрока {clientId} (Возможно сцена сменилась на не игровую)");
+            Debug.LogError(
+                $"[PlayerSpawner] Сервер: Ошибка! Не найден объект Spawn для спавна игрока {clientId} (Возможно сцена сменилась на не игровую)");
             return;
         }
+
         Debug.Log($"[PlayerSpawner] Сервер: Спавним игрока {clientId} в команде {team}");
         var spawnPoint = spawn.Get(team);
         var position = spawnPoint.position;
@@ -142,10 +181,12 @@ public class PlayerSpawner : NetworkBehaviour {
 
         GameObject newPlayer = Instantiate(playerPrefab, position, rotation);
         newPlayer.transform.SetPositionAndRotation(position, rotation);
+        var player = newPlayer.GetComponent<Player>();
+        player.ApplyPlayerState(playerData.SteamId, playerData.Archetype, playerData.Hue, playerData.Saturation);
         var netObj = newPlayer.GetComponent<NetworkObject>();
         netObj.SpawnAsPlayerObject(clientId, true);
 
-        newPlayer.GetComponent<Player>().Init(clientId, position, rotation);
+        player.Init(clientId, position, rotation);
     }
 
     private void SpawnLobbyEnjoyer(ulong clientId) {

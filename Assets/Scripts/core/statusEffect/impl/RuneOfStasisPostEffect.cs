@@ -17,26 +17,26 @@ public class RuneOfStasisPostEffect : StatusEffectData {
 
         public override void OnApply(ulong ownerClientId, GameObject target) {
             base.OnApply(ownerClientId, target);
-            var statSystem = target.GetComponent<NetworkStatSystem>();
-            if (statSystem != null) {
-                statSystem.AddModifierServer(StatType.HealthRegen, _data.healthRegenMultiplier);
+            var stats = target.GetComponent<Stats>();
+            if (stats != null) {
+                stats.System.AddModifier(StatType.HealthRegen, _data.healthRegenMultiplier);
             }
 
             target.GetComponent<Player>().ApplyEffectColorClientRpc(_data.color);
             target.GetComponent<StateController>().SetFreeze(true);
-            target.GetComponent<Damageable>().invulnerable = true;
+            target.GetComponent<Damageable>().SetInvulnerable(true);
         }
 
         public override void OnExpire(GameObject target) {
             base.OnExpire(target);
-            var statSystem = target.GetComponent<NetworkStatSystem>();
-            if (statSystem != null) {
-                statSystem.RemoveModifierServer(StatType.HealthRegen, _data.healthRegenMultiplier);
+            var stats = target.GetComponent<Stats>();
+            if (stats != null) {
+                stats.RemoveModifier(StatType.HealthRegen, _data.healthRegenMultiplier);
             }
 
             target.GetComponent<Player>().RemoveEffectColorClientRpc(_data.color);
             target.GetComponent<StateController>().SetFreeze(false);
-            target.GetComponent<Damageable>().invulnerable = false;
+            target.GetComponent<Damageable>().SetInvulnerable(false);
         }
     }
 }

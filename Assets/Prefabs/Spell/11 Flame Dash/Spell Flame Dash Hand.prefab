@@ -50,7 +50,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: 128
     m_CustomResolution: -1
     m_Strength: 1
@@ -89,7 +89,7 @@ Light:
   m_BounceIntensity: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: -1.03911575e+12, z: 6.12e-43, w: -8.626195e+22}
+  m_BoundingSphereOverride: {x: -3.492465e-27, y: -1.1639495e+29, z: 5.873351e+13, w: NaN}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ForceVisible: 0
@@ -4900,6 +4900,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c304752c58742efb7da623a6b0fee76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellInHand
+  chargingAudio: {fileID: 0}
 --- !u!82 &548447830241115075
 AudioSource:
   m_ObjectHideFlags: 0

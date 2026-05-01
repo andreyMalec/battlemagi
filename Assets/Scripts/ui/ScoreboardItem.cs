@@ -4,11 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ScoreboardItem : MonoBehaviour {
+    private const float PacketLossWarningThreshold = 5f;
+
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private TMP_Text flagsText;
     [SerializeField] private TMP_Text killsText;
     [SerializeField] private TMP_Text deathsText;
     [SerializeField] private TMP_Text assistsText;
+    [SerializeField] private TMP_Text pingText;
     [SerializeField] private RawImage colorImage;
     [SerializeField] private Image archetypeImage;
     [SerializeField] private Sprite[] spriteArchetypes;
@@ -19,6 +22,9 @@ public class ScoreboardItem : MonoBehaviour {
         killsText.text = data.Kills.ToString();
         deathsText.text = data.Deaths.ToString();
         assistsText.text = data.Assists.ToString();
+        pingText.text = data.PacketLossPercent > PacketLossWarningThreshold
+            ? $"{data.PingMs} ms <color=#FFB54A><b>!</b></color>"
+            : $"{data.PingMs} ms";
         archetypeImage.overrideSprite = spriteArchetypes[data.Archetype];
     }
 

@@ -1,3 +1,6 @@
+using System;
+using JetBrains.Annotations;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public abstract class StatusEffectData : ScriptableObject {
@@ -5,7 +8,7 @@ public abstract class StatusEffectData : ScriptableObject {
     public string title;
     public string description;
     public float duration;
-    public Sprite icon;
+    [JsonIgnore] [SerializeField] [CanBeNull] public Sprite icon = null;
     public Color color = new(0, 0, 0, 0);
     public bool removeOnHit = false;
     public StatusEffectData onExpire;
@@ -18,5 +21,9 @@ public abstract class StatusEffectData : ScriptableObject {
 
     public virtual int CompareTo(StatusEffectData other) {
         return RESET_TIME;
+    }
+
+    public virtual string StringValue() {
+        return "";
     }
 }

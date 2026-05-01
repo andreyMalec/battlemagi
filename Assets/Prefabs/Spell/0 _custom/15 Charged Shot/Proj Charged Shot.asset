@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 828b0ca3cf304def8ffca524fefb016c, type: 3}
+  m_Name: Proj Charged Shot
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectileDefinition
+  prefabId: 7
+  moveType: 5
+  moveSpeed: 150
+  moveAlongGround: 0
+  groundOffset: 0.1
+  enableMaxDistance: 0
+  maxDistance: 20
+  returnToCaster: 0
+  enableGravity: 0
+  gravity: {x: 0, y: -9.81, z: 0}
+  lookAtMaxDistance: 50
+  lookAtRayMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  angularSpeed: 5
+  spiralRadius: 0.5
+  spiralAxis: 0
+  acceleration: 50
+  enableHoming: 1
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 64
+  homingRadius: 10
+  homingMaxTurnDegrees: 10
+  homingSlerp: 0.4
+  enableSquashStretch: 0
+  stretchAmplitude: 0.2
+  stretchFrequency: 8
+  stretchDamping: 0
+  enableBounce: 0
+  maxBounces: 99
+  bounceSpeedMultiplier: 0.9
+  enablePierce: 1
+  maxPierces: 99
+  pierceTargetMode: 0
+  enableFork: 0
+  forkCount: 2
+  forkSpreadAngle: 5
+  echoOnHit: 0
+  spawnInHit: 0
+  onHitSpawn: {fileID: 0}
+  atMaxDistanceSpawn: {fileID: 0}
+  atStepDistanceSpawn: {fileID: 0}
+  spawnStep: 10
+  onLifetimeEndSpawn: {fileID: 0}
+  onLifetimeHalfSpawn: {fileID: 0}
+  spawnAtStep: 0

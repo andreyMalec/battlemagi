@@ -18,16 +18,17 @@ MonoBehaviour:
   bodyShader: {fileID: -6465566751694194690, guid: db403b3419df4d34d90e98e25832bf28, type: 3}
   cloakShader: {fileID: 0}
   spells:
-  - {fileID: 11400000, guid: e1acc19637eac3f45a0dae012d996a57, type: 2}
-  - {fileID: 11400000, guid: c4bc4d0194a2ffb40a8e9c7f57378c27, type: 2}
-  - {fileID: 11400000, guid: e34e85d85b3261440b348417b17b0a5c, type: 2}
-  - {fileID: 11400000, guid: 4ba037c71c69a494e9868088676261c4, type: 2}
+  - {fileID: 11400000, guid: 4acd7c47414d2e3468a708ff2246c063, type: 2}
+  - {fileID: 11400000, guid: 01cb80203dda3e542a26c58add5c877e, type: 2}
+  - {fileID: 11400000, guid: 83206fb4c991e634db2ce69e23af98f6, type: 2}
+  - {fileID: 11400000, guid: 168fdab00aaae2240a7ea58cdabc7f9d, type: 2}
+  - {fileID: 11400000, guid: f086498726ec0464d98d8e367ff3594f, type: 2}
   maxHealth: 175
   maxMana: 125
   maxStamina: 2
   movementSpeed: 5.5
   runSpeed: 1.5
   healthRegen: 3
-  manaRegen: 0.5
+  manaRegen: 4
   jumpStrength: 3
   cameraOffset: {x: 0, y: -0.18, z: 0}

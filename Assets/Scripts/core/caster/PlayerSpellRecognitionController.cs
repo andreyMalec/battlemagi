@@ -1,25 +1,25 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Voice;
 
 public class PlayerSpellRecognitionController {
     private readonly Mouth _mouth;
+    private readonly Player _player;
     private SpellRecognizer _recognizer;
 
-    public PlayerSpellRecognitionController(Mouth mouth) {
+    public PlayerSpellRecognitionController(Mouth mouth, Player player) {
         _mouth = mouth;
+        _player = player;
     }
 
-    public void Initialize(ulong ownerClientId, Language language) {
-        var arch = PlayerManager.Instance.FindByClientId(ownerClientId)!.Value.Archetype;
-        var archetype = ArchetypeDatabase.Instance.GetArchetype(arch);
+    public void Initialize(Language language) {
+        var archetype = ArchetypeDatabase.Instance.GetArchetype(_player.ArchetypeId);
         var spells = archetype.spells.ToList();
         _recognizer = new SpellRecognizer(spells, language);
         _mouth.RestrictWords(_recognizer.SpellWords());
     }
 
-    public IReadOnlyList<SpellData> Spells {
+    public IReadOnlyList<SpellDefinition> Spells {
         get { return _recognizer.spells; }
     }
 

@@ -4,7 +4,7 @@ public class VisualLifetime : NetworkBehaviour {
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
 
-        GetComponent<SpellLifetime>().LifetimePercent += LifetimePercent;
+        GetComponent<OLDSpellLifetime>().LifetimePercent += LifetimePercent;
     }
 
     protected virtual void LifetimePercent(float percent) {

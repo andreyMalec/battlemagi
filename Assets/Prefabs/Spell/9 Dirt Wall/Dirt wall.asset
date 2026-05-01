@@ -14,13 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpellData
   id: 9
   name: Dirt wall
-  description: 'A surge of geomantic force erupts from the ground, raising a solid
-    barrier of soil and stone.
-
-
-    Blocks incoming attacks and reshapes the battlefield
-    to gain an advantage.'
-  nameRu: "\u0421\u0442\u0435\u043D\u0430 \u0417\u0435\u043C\u043B\u0438"
+  enabled: 1
   spellWords:
   - Dirt Wall
   spellWordsRu:
@@ -62,7 +56,7 @@ MonoBehaviour:
   multiProjDelay: 0
   spawnMode: 5
   useAlternativeSpawnMode: 1
-  alternativeSpawnMode: 6
+  alternativeSpawnMode: 7
   forwardStep: {x: 0, y: 1.9283628, z: 2.2981334}
   forwardAngle: {x: 50, y: 0, z: 0}
   arcAngleStep: 30

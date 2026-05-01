@@ -39,13 +39,12 @@ public class DotDamage : ISpellDamage {
 
             var damagedThisTick = new List<ulong>();
             foreach (var damageable in toIterate) {
-                if (!damageable.IsSpawned || damageable.isDead) continue;
-                var owner = damageable.OwnerClientId;
+                if (!damageable.IsAlive || damageable.IsDead) continue;
+                var owner = damageable.OwnerId;
                 if (damagedThisTick.Contains(owner))
                     continue;
                 damagedThisTick.Add(owner);
 
-                DamageUtils.TryApplyDamage(spell, data, damageable, damageable.GetComponent<Collider>());
             }
 
             return true;

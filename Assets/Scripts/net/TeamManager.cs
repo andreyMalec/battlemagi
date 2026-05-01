@@ -69,7 +69,9 @@ public class TeamManager : NetworkBehaviour {
     }
 
     private void Start() {
-        NetworkManager.Singleton.OnConnectionEvent += OnConnectionEvent;
+        if (NetworkManager.Singleton != null) {
+            NetworkManager.Singleton.OnConnectionEvent += OnConnectionEvent;
+        }
     }
 
     public override void OnDestroy() {
@@ -92,11 +94,20 @@ public class TeamManager : NetworkBehaviour {
         }
     }
 
+    private bool IsMatchInProgress() {
+        return IsServer && LobbyManager.Instance != null && LobbyManager.Instance.State == LobbyManager.PlayerState.InGame;
+    }
+
+    private int FindIndexByClientId(ulong clientId) {
+        return _teams.ToList().FindIndex(e => e.clientId == clientId);
+    }
+
     // ===============================
     // SERVER: Подключение/Отключение
     // ===============================
     private void OnClientConnected(ulong clientId) {
         if (!IsServer) return;
+        if (IsMatchInProgress()) return;
 
         Team team = AssignTeam(clientId);
         _teams.Add(new TeamEntry { clientId = clientId, team = team });
@@ -106,8 +117,9 @@ public class TeamManager : NetworkBehaviour {
 
     private void OnClientDisconnected(ulong clientId) {
         if (!IsServer) return;
+        if (IsMatchInProgress()) return;
 
-        int index = _teams.ToList().FindIndex(e => e.clientId == clientId);
+        int index = FindIndexByClientId(clientId);
         if (index >= 0) _teams.RemoveAt(index);
     }
 
@@ -136,11 +148,24 @@ public class TeamManager : NetworkBehaviour {
         RedistributePlayers();
     }
 
+    public void ReplaceClientId(ulong previousClientId, ulong newClientId) {
+        if (!IsServer) return;
+
+        int index = FindIndexByClientId(previousClientId);
+        if (index < 0) return;
+
+        var entry = _teams[index];
+        entry.clientId = newClientId;
+        _teams[index] = entry;
+
+        Debug.Log($"[TeamManager] Restored player team {entry.team} for {previousClientId} -> {newClientId}");
+    }
+
     private void RedistributePlayers() {
         foreach (var entry in _teams) {
             Team newTeam = AssignTeam(entry.clientId);
 
-            int idx = _teams.ToList().FindIndex(e => e.clientId == entry.clientId);
+            int idx = FindIndexByClientId(entry.clientId);
             if (idx >= 0)
                 _teams[idx] = new TeamEntry { clientId = entry.clientId, team = newTeam };
         }
@@ -163,7 +188,7 @@ public class TeamManager : NetworkBehaviour {
     [ServerRpc(RequireOwnership = false)]
     public void RequestChangeTeamServerRpc(ulong clientId, int newTeamId) {
         if (!IsServer) return;
-        int index = _teams.ToList().FindIndex(e => e.clientId == clientId);
+        int index = FindIndexByClientId(clientId);
         if (index < 0) return;
 
         var entry = _teams[index];
@@ -195,15 +220,38 @@ public class TeamManager : NetworkBehaviour {
     // ===============================
     // Utility
     // ===============================
-    public Team GetTeam(ulong? clientId) {
-        if (clientId == null) return Team.None;
-
-        foreach (var entry in _teams) {
-            if (entry.clientId == clientId)
-                return entry.team;
+    public bool TryGetTeam(ulong? clientId, out Team team) {
+        if (clientId == null) {
+            team = Team.None;
+            return false;
         }
 
-        return Team.None;
+        foreach (var entry in _teams) {
+            if (entry.clientId == clientId) {
+                team = entry.team;
+                return true;
+            }
+        }
+
+        team = Team.None;
+        return false;
+    }
+
+    public bool HasTeam(ulong clientId) {
+        return TryGetTeam(clientId, out _);
+    }
+
+    public bool TryGetLocalTeam(out Team team) {
+        if (NetworkManager.Singleton == null) {
+            team = Team.None;
+            return false;
+        }
+
+        return TryGetTeam(NetworkManager.Singleton.LocalClientId, out team);
+    }
+
+    public Team GetTeam(ulong? clientId) {
+        return TryGetTeam(clientId, out var team) ? team : Team.None;
     }
 
     public List<ulong> FindAllies(ulong clientId) {
