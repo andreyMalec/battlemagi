@@ -21,6 +21,7 @@ public class StatusableNetworkBridge : NetworkBehaviour, IStatusableBridge {
 
     private Statusable _core;
     private bool _hasCore;
+    private Stats _stats;
 
     private NetworkList<NetDurationEffect> _synced;
     private NetworkList<NetDurationEffect>.OnListChangedDelegate _onSyncedChanged;
@@ -31,6 +32,7 @@ public class StatusableNetworkBridge : NetworkBehaviour, IStatusableBridge {
     private void Awake() {
         _synced = new NetworkList<NetDurationEffect>();
         _onSyncedChanged = _ => RebuildActiveEffectsFromSynced();
+        _stats = GetComponent<Stats>();
     }
 
     public override void OnNetworkSpawn() {
@@ -97,9 +99,8 @@ public class StatusableNetworkBridge : NetworkBehaviour, IStatusableBridge {
                     var player = client.PlayerObject;
                     if (player != null) {
                         var reflectDamage = hit.amount;
-                        // TODO
-                        // if (_statSystem != null)
-                        //     reflectDamage *= _statSystem.Stats.GetFinal(StatType.DamageReflection);
+                        if (_stats != null)
+                            reflectDamage *= _stats.GetFinal(StatType.DamageReflection);
 
                         player.GetComponent<Damageable>()
                             .TakeDamage("Pain Mirror", OwnerClientId, reflectDamage, DamageKind.Reflect,
