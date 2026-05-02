@@ -5,9 +5,11 @@ using UnityEngine.UI;
 
 public class MenuStateMain : MonoBehaviour {
     [SerializeField] private Button buttonMakeLobby;
+    [SerializeField] private Button buttonFindLobby;
     [SerializeField] private Button buttonExit;
     [SerializeField] private Button buttonJoinLobby;
     [SerializeField] private TMP_InputField fieldJoinLobbyId;
+    [SerializeField] private Menu menu;
 
     private UInt64 lobbyId = 0;
     private const int lobbySize = 8;
@@ -16,6 +18,7 @@ public class MenuStateMain : MonoBehaviour {
         buttonExit.onClick.AddListener(Application.Quit);
         buttonJoinLobby.onClick.AddListener(JoinLobby);
         buttonMakeLobby.onClick.AddListener(CreateLobby);
+        buttonFindLobby.onClick.AddListener(OpenFindLobby);
 
         fieldJoinLobbyId.onEndEdit.AddListener(id => {
             try {
@@ -38,5 +41,9 @@ public class MenuStateMain : MonoBehaviour {
         }
 
         LobbyManager.Instance.JoinLobby(lobbyId);
+    }
+
+    private void OpenFindLobby() {
+        menu.OpenFindLobby();
     }
 }

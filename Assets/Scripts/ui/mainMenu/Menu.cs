@@ -11,6 +11,7 @@ public class Menu : MonoBehaviour {
     [SerializeField] private GameObject mainState;
 
     [SerializeField] private GameObject lobbyState;
+    [SerializeField] private GameObject findLobbyState;
     [SerializeField] private GameObject settingsState;
     [SerializeField] private GameObject creditsState;
 
@@ -28,12 +29,17 @@ public class Menu : MonoBehaviour {
     private enum State {
         Main,
         Lobby,
+        FindLobby,
         Settings,
         Credits
     }
 
     public void BackToMain() {
         _state = State.Main;
+    }
+
+    public void OpenFindLobby() {
+        _state = State.FindLobby;
     }
 
     private void Awake() {
@@ -44,7 +50,7 @@ public class Menu : MonoBehaviour {
     }
 
     private void Update() {
-        if (Input.GetKeyDown(KeyCode.Escape) && (_state == State.Settings || _state == State.Credits)) {
+        if (Input.GetKeyDown(KeyCode.Escape) && (_state == State.Settings || _state == State.Credits || _state == State.FindLobby)) {
             BackToMain();
         }
     }
@@ -52,6 +58,7 @@ public class Menu : MonoBehaviour {
     private void FixedUpdate() {
         mainState.SetActive(_state == State.Main);
         lobbyState.SetActive(_state == State.Lobby);
+        findLobbyState.SetActive(_state == State.FindLobby);
         settingsState.SetActive(_state == State.Settings);
         creditsState.SetActive(_state == State.Credits);
     }

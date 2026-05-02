@@ -23,6 +23,7 @@ public class GameProgress : NetworkBehaviour {
 
     public string SceneName;
     public NetworkVariable<int> SelectedMap = new();
+    public NetworkVariable<int> LobbyVisibility = new();
 
     private void Awake() {
         if (Instance == null) Instance = this;
