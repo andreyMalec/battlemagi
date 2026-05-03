@@ -8,6 +8,7 @@ public class DamageOverTimeEffect : StatusEffectData {
     public bool ignoreDamageSoundCooldown = false;
     public bool canSelfDamage = true;
     public bool percentDamage = false;
+    public bool canKill = true;
 
     public override StatusEffectRuntime CreateRuntime() {
         return new DamageOverTimeRuntime(this);
@@ -38,10 +39,24 @@ public class DamageOverTimeEffect : StatusEffectData {
                 if (damageable != null) {
                     if (!_data.canSelfDamage && TeamManager.Instance.AreAllies(ownerClientId, damageable.OwnerId))
                         return;
+                    var damage = _data.dps;
+                    if (_data.percentDamage) {
+                        damage *= damageable.Health.maxHealth;
+                    }
+
+                    if (!_data.canKill) {
+                        if (damage > damageable.Health.Health - 1) {
+                            damage = damageable.Health.Health - 1 - damage;
+                        }
+                    }
+
+                    if (damage <= 0)
+                        return;
+
                     damageable.TakeDamage(
                         _data.effectName,
                         ownerClientId,
-                        _data.percentDamage ? damageable.Health.maxHealth * _data.dps : _data.dps,
+                        damage,
                         _data.damageSound,
                         _data.ignoreDamageSoundCooldown
                     );
