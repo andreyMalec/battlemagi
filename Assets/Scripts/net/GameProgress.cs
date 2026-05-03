@@ -49,6 +49,7 @@ public class GameProgress : NetworkBehaviour {
 
     public void StartMatch() {
         if (!IsServer || started) return;
+        PlayerAchievementsManager.Instance?.ReportMatchStartedServer();
         NetworkManager.Singleton.SceneManager.LoadScene(SceneName, LoadSceneMode.Single);
         LobbyManager.Instance.GameStarted();
         started = true;
@@ -84,11 +85,13 @@ public class GameProgress : NetworkBehaviour {
 
         if (red >= target) {
             GameAnnouncer.Instance.TeamWin(TeamManager.Team.Red);
+            PlayerAchievementsManager.Instance?.ReportTeamWinnerServer(TeamManager.Team.Red);
             StartCoroutine(EndMatch());
         }
 
         if (blue >= target) {
             GameAnnouncer.Instance.TeamWin(TeamManager.Team.Blue);
+            PlayerAchievementsManager.Instance?.ReportTeamWinnerServer(TeamManager.Team.Blue);
             StartCoroutine(EndMatch());
         }
     }
@@ -116,18 +119,21 @@ public class GameProgress : NetworkBehaviour {
 
             if (redKills >= target) {
                 GameAnnouncer.Instance.TeamWin(TeamManager.Team.Red);
+                PlayerAchievementsManager.Instance?.ReportTeamWinnerServer(TeamManager.Team.Red);
                 StartCoroutine(EndMatch());
                 return;
             }
 
             if (blueKills >= target) {
                 GameAnnouncer.Instance.TeamWin(TeamManager.Team.Blue);
+                PlayerAchievementsManager.Instance?.ReportTeamWinnerServer(TeamManager.Team.Blue);
                 StartCoroutine(EndMatch());
             }
         } else {
             foreach (var p in players) {
                 if (p.Kills >= target) {
                     GameAnnouncer.Instance.PlayerWin(p.ClientId);
+                    PlayerAchievementsManager.Instance?.ReportMatchWinnerServer(p.ClientId);
                     StartCoroutine(EndMatch());
                     return;
                 }

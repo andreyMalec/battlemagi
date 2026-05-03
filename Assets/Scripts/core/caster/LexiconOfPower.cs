@@ -54,7 +54,14 @@ public class LexiconOfPower : NetworkBehaviour {
         if (result.similarity < GameConfig.Instance.recognitionThreshold)
             return;
 
+        NotifyVoiceRecognizedServerRpc();
+
         _mouth.ShutUp();
         _caster.SelectSpell(result.spell);
+    }
+
+    [ServerRpc]
+    private void NotifyVoiceRecognizedServerRpc(ServerRpcParams rpcParams = default) {
+        PlayerAchievementsManager.Instance?.ReportVoiceRecognizedServer(rpcParams.Receive.SenderClientId);
     }
 }

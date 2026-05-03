@@ -19,6 +19,7 @@ public class ImpulseKnockbackOnHitAction : PointPhysicsOnHitActionBase {
 
         _applied.Add(target.Key);
         ApplyImpulse(target, impulse);
+        ReportLaunchIfNeeded(context, target);
     }
 }
 

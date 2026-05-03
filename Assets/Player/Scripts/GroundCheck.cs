@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 
 public class GroundCheck : MonoBehaviour {
+    [SerializeField] private LayerMask raycastMask;
+
     [Tooltip("Maximum distance from the ground.")]
     public float distanceThreshold = .15f;
 
@@ -34,10 +36,11 @@ public class GroundCheck : MonoBehaviour {
         float radius = Mathf.Max(0.01f, _cc.radius * 0.9f);
 
         // Primary: short ray from foot center
-        isGroundedNow = Physics.Raycast(footOrigin + up * OriginOffset, Vector3.down, RaycastDistance);
+        isGroundedNow = Physics.Raycast(footOrigin + up * OriginOffset, Vector3.down, RaycastDistance, raycastMask);
         // Fallback: spherecast around the foot ring, ignores slope angle limitations
         if (!isGroundedNow) {
-            isGroundedNow = Physics.SphereCast(footOrigin + up * OriginOffset, radius, Vector3.down, out _, RaycastDistance);
+            isGroundedNow = Physics.SphereCast(footOrigin + up * OriginOffset, radius, Vector3.down, out _,
+                RaycastDistance, raycastMask);
         }
 
         if (isGroundedNow && !isGrounded) {

@@ -1706,30 +1706,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1639143551227860678, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1496373547792844791}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
---- !u!1 &1496373547792844790 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1639143551227860678, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
-  m_PrefabInstance: {fileID: 1496373547792844789}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1496373547792844791
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1496373547792844790}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a9307eccf5a44f48ef5dd91294e666f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SpellPrefab
-  spellPrefabLocal: {fileID: 4494555669983194706, guid: b2460b24122abfe4986d30e44c523d76, type: 3}
-  spellPrefabNetwork: {fileID: 4494555669983194706, guid: 03571efb2f2b72b4b9c0acd1238e4dbb, type: 3}
 --- !u!1001 &2041527074817933183
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -36,6 +36,7 @@ public class ForcedMovementEffect : StatusEffectData {
                 return false;
 
             player.StartForcedMovement(targetPoint, resolvedDuration);
+            PlayerAchievementsManager.Instance.ReportEnemyLaunchedServer(applyContext.ownerClientId, player.OwnerClientId);
             return true;
         }
 
