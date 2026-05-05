@@ -80,7 +80,6 @@ public class Bot : NetworkBehaviour {
 
         var movement = GetComponent<BotMovement>();
         movement.movementSpeed = archetype.movementSpeed;
-        movement.runSpeed = archetype.runSpeed;
         movement.maxStamina = archetype.maxStamina;
         movement.jumpStrength = archetype.jumpStrength;
 

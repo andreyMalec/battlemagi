@@ -33,10 +33,7 @@ public class BotAnimator : NetworkBehaviour {
     private float velocityZ = 0f;
     private float velocityX = 0f;
 
-    private bool isRunning => true;
-
-    // private float maxVelocity => (2f) * statSystem.Stats.GetFinal(StatType.MoveSpeed);
-    private float maxVelocity => (isRunning ? 0.5f : 2f) * _stats?.GetFinal(StatType.MoveSpeed) ?? 1f;
+    private float maxVelocity => 2f * _stats?.GetFinal(StatType.MoveSpeed) ?? 1f;
 
     private bool jumpStart = false;
     private bool fallStart = false;
@@ -44,6 +41,12 @@ public class BotAnimator : NetworkBehaviour {
 
     private Vector3 ikPos;
     private Quaternion ikRot;
+    private bool CanAnimate => !IsSpawned || IsOwner;
+
+    private void Awake() {
+        movement = GetComponent<BotMovement>();
+        _stats = GetComponent<Stats>();
+    }
 
     public override void OnNetworkSpawn() {
         movement = GetComponent<BotMovement>();
@@ -51,11 +54,15 @@ public class BotAnimator : NetworkBehaviour {
     }
 
     private void Start() {
-        if (!IsOwner) return;
+        if (!CanAnimate) return;
 
-        // movement.Jumped += Jumped;
+        movement.Jumped += Jumped;
         ikPos = ikHand.localPosition;
         ikRot = ikHand.localRotation;
+    }
+
+    private void OnDestroy() {
+        movement.Jumped -= Jumped;
     }
 
     public void CastWaitingAnim(bool waiting, int index = 0) {
@@ -106,7 +113,7 @@ public class BotAnimator : NetworkBehaviour {
     }
 
     private void Update() {
-        if (!IsOwner) return;
+        if (!CanAnimate) return;
 
         AnimateBool(JumpStart, jumpStart);
         AnimateBool(FallStart, fallStart);
@@ -124,10 +131,11 @@ public class BotAnimator : NetworkBehaviour {
         if (jumpStart && movement.groundCheck.isGrounded)
             jumpStart = false;
 
-        var forward = Input.GetKey(KeyCode.W);
-        var backward = Input.GetKey(KeyCode.S);
-        var left = Input.GetKey(KeyCode.A);
-        var right = Input.GetKey(KeyCode.D);
+        var localVelocity = movement.LocalVelocityNormalized;
+        var forward = localVelocity.z > 0.05f;
+        var backward = localVelocity.z < -0.05f;
+        var left = localVelocity.x < -0.05f;
+        var right = localVelocity.x > 0.05f;
 
         if (!forward && !backward && velocityZ != 0f && velocityZ > -0.05f && velocityZ < 0.05f) {
             velocityZ = 0;
@@ -165,7 +173,7 @@ public class BotAnimator : NetworkBehaviour {
             velocity -= decelerate(velocity) * Time.deltaTime;
         }
 
-        if (keyPressed && isRunning && velocity > maxVelocity) {
+        if (keyPressed && velocity > maxVelocity) {
             velocity = maxVelocity;
         } else if (keyPressed && velocity > maxVelocity) {
             velocity -= decelerate(velocity) * Time.deltaTime;
@@ -188,7 +196,7 @@ public class BotAnimator : NetworkBehaviour {
             velocity += decelerate(velocity) * Time.deltaTime;
         }
 
-        if (keyPressed && isRunning && velocity < -maxVelocity) {
+        if (keyPressed && velocity < -maxVelocity) {
             velocity = -maxVelocity;
         } else if (keyPressed && velocity < -maxVelocity) {
             velocity += decelerate(velocity) * Time.deltaTime;
@@ -203,18 +211,26 @@ public class BotAnimator : NetworkBehaviour {
     }
 
     public void AnimateBool(int key, bool value) {
-        if (IsOwner) {
+        if (CanAnimate) {
             animator.SetBool(key, value);
         }
     }
 
     public void AnimateFloat(int key, float value) {
-        if (IsOwner) {
+        if (CanAnimate) {
             animator.SetFloat(key, value);
         }
     }
 
     public void AnimateTrigger(int key) {
+        if (!CanAnimate)
+            return;
+
+        if (!IsSpawned) {
+            animator.SetTrigger(key);
+            return;
+        }
+
         if (IsOwner) {
             networkAnimator.SetTrigger(key);
         }

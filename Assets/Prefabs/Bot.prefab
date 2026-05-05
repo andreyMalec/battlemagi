@@ -510,6 +510,8 @@ GameObject:
   - component: {fileID: 3390494672658608002}
   - component: {fileID: 894724963278705181}
   - component: {fileID: 3789222423628184658}
+  - component: {fileID: 6418121087156159892}
+  - component: {fileID: 5901987278341953262}
   m_Layer: 9
   m_Name: Bot
   m_TagString: Untagged
@@ -548,7 +550,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 21252545
+  GlobalObjectIdHash: 1995451379
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -670,7 +672,7 @@ CharacterController:
   serializedVersion: 3
   m_Height: 1.54
   m_Radius: 0.44
-  m_SlopeLimit: 45
+  m_SlopeLimit: 60
   m_StepOffset: 0.5
   m_SkinWidth: 0.0001
   m_MinMoveDistance: 0.001
@@ -1022,10 +1024,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ad2936835784568bf02328ffcaaa973, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BotMovement
+  movementSettings: {fileID: 11400000, guid: 99067fe211a078d4bbfdb64adec90669, type: 2}
+  rotationSpeed: 10
+  defaultStoppingDistance: 1.5
+  jumpCooldown: 0.75
   groundCheck: {fileID: 6466238404988819252}
   jumpStrength: 0
   movementSpeed: 0
-  runSpeed: 0
   maxStamina: 0
 --- !u!114 &3390494672658608002
 MonoBehaviour:
@@ -1105,6 +1110,60 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BotDamageable
   ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &6418121087156159892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 477d33693cba46e790ee8584bda684d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BotMovementController
+  patrolPoints: []
+  waypointReachDistance: 1.5
+  repathInterval: 1.25
+  stuckCheckInterval: 0.5
+  stuckMinProgress: 0.4
+  randomPointRadius: 12
+  microEscapeRadius: 3.5
+  jumpProbeMask:
+    serializedVersion: 2
+    m_Bits: 449
+  obstacleCheckDistance: 0.6
+  obstacleProbeHeight: 0.1
+  maxJumpableHeight: 2
+  maxDropHeight: 9
+  dropCheckDistance: 1
+  downRayDistance: 10
+  jumpForwardBoost: 2
+  minMoveIntent: 0
+  minJumpUpHeight: 0
+  minDropHeight: 0.6
+--- !u!195 &5901987278341953262
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &6409226882149161985
 GameObject:
   m_ObjectHideFlags: 0
@@ -1324,7 +1383,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   raycastMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 193
   distanceThreshold: 0.15
   isGrounded: 0
 --- !u!1 &7837667844889081322
