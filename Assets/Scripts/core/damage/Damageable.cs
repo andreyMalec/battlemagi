@@ -265,7 +265,7 @@ public class Damageable : MonoBehaviour {
 
     private DamageApplied ApplyDamageServer(in DamageRequest request) {
         if (!CanTakeDamage(in request))
-            return new DamageApplied(request, request.amount, 0f, 0f, 0f);
+            return new DamageApplied(request, request.amount, 0f, 0f, 0f, Health.Health);
 
         var incoming = request.amount;
         var modded = incoming;
@@ -278,8 +278,9 @@ public class Damageable : MonoBehaviour {
         var healthDamage = Mathf.Max(0f, modded - armorApplied);
         var healthApplied = _health.ApplyDamage(healthDamage);
         var final = armorApplied + healthApplied;
+        var overkill = healthDamage - healthApplied;
 
-        var applied = new DamageApplied(request, incoming, final, armorApplied, healthApplied);
+        var applied = new DamageApplied(request, incoming, final, armorApplied, healthApplied, overkill);
         OnDamageApplied?.Invoke(applied);
 
         if (_health.Health <= 0f)

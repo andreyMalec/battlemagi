@@ -173,7 +173,7 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
         var hpApplied = Mathf.Min(pHealth, hpDamage);
 
         return new DamageApplied(request, request.amount, armorDamageApplied + hpApplied, armorDamageApplied,
-            hpApplied);
+            hpApplied, pHealth);
     }
 
     [ClientRpc]

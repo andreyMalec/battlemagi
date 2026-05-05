@@ -17,9 +17,10 @@ public class ZoneKnockbackAction : PointPhysicsActionBase {
 
             switch (def.mode) {
                 case SpellKnockbackMode.Impulse:
-                    ApplyImpulse(target, point, def);
+                    ApplyImpulse(context, target, point, def);
                     break;
                 case SpellKnockbackMode.Continuous:
+                    ReportLaunchIfNeeded(context, target);
                     ApplyPointForce(context, target, point, def);
                     break;
             }
@@ -27,6 +28,7 @@ public class ZoneKnockbackAction : PointPhysicsActionBase {
     }
 
     private void ApplyImpulse(
+        ISpellContext context,
         ResolvedPhysicsTarget target,
         Vector3 point,
         KnockbackDefinition def
@@ -40,6 +42,6 @@ public class ZoneKnockbackAction : PointPhysicsActionBase {
 
         _impulsed.Add(target.Key);
         ApplyImpulse(target, impulse);
+        ReportLaunchIfNeeded(context, target);
     }
 }
-

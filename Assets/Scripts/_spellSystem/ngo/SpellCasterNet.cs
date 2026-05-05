@@ -29,6 +29,8 @@ public class SpellCasterNet : NetworkBehaviour {
         SpellLog.Log(
             $"[NetworkSpellSystemEvent] RequestSpawnServerRpc: {casterNetObj.name}, position={position}, forward={forward}, damageMultiplier={damageMultiplier}");
         var spell = DefaultSpells.Get(spellName)?.spell ?? DefaultSpells.GetSubSpell(spellName);
+        if (spell == null)
+            return;
         var caster = casterNetObj.GetComponentInChildren<SpellCaster>();
 
         var context = new SpawnContext {
@@ -61,7 +63,8 @@ public class SpellCasterNet : NetworkBehaviour {
         string spellName,
         bool alternativeSpawn,
         ulong targetNetObjectId = ulong.MaxValue,
-        float damageMultiplier = 1f
+        float damageMultiplier = 1f,
+        ServerRpcParams rpcParams = default
     ) {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(casterNetObjectId, out var casterNetObj))
             return;
@@ -79,7 +82,13 @@ public class SpellCasterNet : NetworkBehaviour {
         SpellLog.Log(
             $"[NetworkSpellSystemEvent] RequestCastServerRpc: {casterNetObj.name}, target={target}, damageMultiplier={damageMultiplier}");
         var spell = DefaultSpells.Get(spellName)?.spell ?? DefaultSpells.GetSubSpell(spellName);
+        if (spell == null)
+            return;
         var caster = casterNetObj.GetComponentInChildren<SpellCaster>();
+
+        var damageKind = SpellPrefabDatabase.Instance.Sound(spell);
+        if (PlayerAchievementsManager.Instance != null)
+            PlayerAchievementsManager.Instance.ReportSpellCastServer(rpcParams.Receive.SenderClientId, damageKind);
 
         var context = caster.CastContext(spell);
         context.target = target;

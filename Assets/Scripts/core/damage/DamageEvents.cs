@@ -20,13 +20,15 @@ public readonly struct DamageApplied {
     public readonly float final;
     public readonly float armorApplied;
     public readonly float healthApplied;
+    public readonly float overkill;
 
-    public DamageApplied(DamageRequest request, float incoming, float final, float armorApplied, float healthApplied) {
+    public DamageApplied(DamageRequest request, float incoming, float final, float armorApplied, float healthApplied, float overkill) {
         this.request = request;
         this.incoming = incoming;
         this.final = final;
         this.armorApplied = armorApplied;
         this.healthApplied = healthApplied;
+        this.overkill = overkill;
     }
 }
 

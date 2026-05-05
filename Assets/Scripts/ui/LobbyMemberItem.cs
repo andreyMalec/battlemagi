@@ -1,5 +1,6 @@
 using Steamworks;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -14,6 +15,7 @@ public class LobbyMemberItem : MonoBehaviour, IPointerEnterHandler, IPointerExit
     [SerializeField] private Slider volumeSlider;
     [SerializeField] private GameObject sliderContainer;
     [SerializeField] private Image backgroundRaycast;
+    [SerializeField] private Button kickButton;
     public Transform root;
 
     [Header("Visuals")]
@@ -44,14 +46,17 @@ public class LobbyMemberItem : MonoBehaviour, IPointerEnterHandler, IPointerExit
     void SetHover(bool isHover) {
         nameText.gameObject.SetActive(!isHover);
         sliderContainer.SetActive(isHover);
+        kickButton.gameObject.SetActive(isHover && NetworkManager.Singleton.IsServer);
     }
 
     private void OnEnable() {
         volumeSlider.onValueChanged.AddListener(VolumeChanged);
+        kickButton.onClick.AddListener(() => LobbyManager.Instance.KickPlayer(_steamId));
     }
 
     private void OnDisable() {
         volumeSlider.onValueChanged.RemoveAllListeners();
+        kickButton.onClick.RemoveAllListeners();
     }
 
     private void VolumeChanged(float value) {

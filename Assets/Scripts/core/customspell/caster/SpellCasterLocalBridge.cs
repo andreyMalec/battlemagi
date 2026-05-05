@@ -43,7 +43,11 @@ public class SpellCasterLocalBridge : MonoBehaviour, ISpellCasterBridge {
 
     public bool TrySpendMana(float amount) {
         if (!_hasCore) return false;
-        return _core.Mana.SpendWithPrimalServer(amount);
+        var before = _core.Mana.Mana;
+        var spent = _core.Mana.SpendWithPrimalServer(amount);
+        if (PlayerAchievementsManager.Instance != null)
+            PlayerAchievementsManager.Instance.ReportManaSpentServer(OwnerId, before, _core.Mana.Mana, _core.Mana.MaxMana);
+        return spent;
     }
 
     public bool TrySpendHealth(float amount) {

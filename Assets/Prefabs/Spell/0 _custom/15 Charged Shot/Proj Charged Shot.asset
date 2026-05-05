@@ -34,9 +34,9 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 64
-  homingRadius: 10
-  homingMaxTurnDegrees: 10
-  homingSlerp: 0.4
+  homingRadius: 3
+  homingMaxTurnDegrees: 5
+  homingSlerp: 0.5
   enableSquashStretch: 0
   stretchAmplitude: 0.2
   stretchFrequency: 8

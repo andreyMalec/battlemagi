@@ -8,6 +8,7 @@ public class ContinuousPointKnockbackOnHitAction : PointPhysicsOnHitActionBase {
         if (def.forcePerSecond <= 0f) return;
         if (def.duration <= 0f) return;
 
+        ReportLaunchIfNeeded(context, target);
         ApplyPointForce(context, target, hit.ShapeHit.Point, def);
     }
 }

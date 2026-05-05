@@ -195,8 +195,10 @@ public class SpellCasterPlayer : SpellCaster {
     private bool ConsumeCostOrEcho(SpellDefinition spell) {
         if (_echoSpell == spell && _echoRemaining > 0) {
             _echoRemaining--;
+            PlayerAchievementsManager.Instance?.ReportEchoConsumedServer(Authority.OwnerId);
             return true;
         }
+        PlayerAchievementsManager.Instance?.ReportEchoStartedServer(Authority.OwnerId);
 
         SpendResourceServer(spell, mana.CostForCast(spell));
         return false;

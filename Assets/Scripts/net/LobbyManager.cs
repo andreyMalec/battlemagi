@@ -11,6 +11,9 @@ using System.Globalization;
 public class LobbyManager : MonoBehaviour {
     public static readonly string KeyReady = "Ready";
     public static readonly string KeyColor = "Color";
+    public static readonly string KeyMap = "Map";
+    public static readonly string KeyMode = "Mode";
+    public static readonly string KeyHost = "Host";
     public static LobbyManager Instance { get; private set; }
 
     public enum PlayerState {
@@ -38,6 +41,7 @@ public class LobbyManager : MonoBehaviour {
 
     // Все найденные лобби (обновляются при поиске)
     public List<Lobby> AvailableLobbies { get; private set; } = new();
+    public event Action<IReadOnlyList<Lobby>> OnLobbyListUpdated;
 
     private SteamId? lobbyOwner = null;
     private bool isHost;
@@ -84,8 +88,10 @@ public class LobbyManager : MonoBehaviour {
             CurrentLobby = lobby;
             lobbyOwner = lobby.Owner.Id;
             State = PlayerState.InLobby;
-            lobby.SetPublic();
+            SetVisibility(GetVisibility());
             lobby.SetJoinable(true);
+            lobby.SetData(KeyMap, "0");
+            lobby.SetData(KeyMode, "0");
             NetworkManager.Singleton.StartHost();
         }
     }
@@ -133,6 +139,24 @@ public class LobbyManager : MonoBehaviour {
 
     #region Public API
 
+    public void SetVisibility(LobbyVisibility visibility) {
+        if (!CurrentLobby.HasValue) return;
+        var lobby = CurrentLobby.Value;
+        if (visibility == LobbyVisibility.Public) {
+            lobby.SetPublic();
+        } else if (visibility == LobbyVisibility.Friends) {
+            lobby.SetFriendsOnly();
+        } else if (visibility == LobbyVisibility.Private) {
+            lobby.SetPrivate();
+        }
+
+        GameProgress.Instance.LobbyVisibility.Value = (int)visibility;
+    }
+
+    public LobbyVisibility GetVisibility() {
+        return (LobbyVisibility)GameProgress.Instance.LobbyVisibility.Value;
+    }
+
     public bool IsHost() {
         return CurrentLobby.HasValue && CurrentLobby.Value.Owner.Id == SteamClient.SteamId;
     }
@@ -170,6 +194,18 @@ public class LobbyManager : MonoBehaviour {
             AvailableLobbies.AddRange(list);
             Debug.Log($"[LobbyManager] Found {AvailableLobbies.Count} lobbies");
         }
+
+        OnLobbyListUpdated?.Invoke(AvailableLobbies);
+    }
+
+    public void UpdateLobbyMeta(int mapIndex, TeamManager.TeamMode mode) {
+        if (!CurrentLobby.HasValue || !IsHost())
+            return;
+
+        var lobby = CurrentLobby.Value;
+        lobby.SetData(KeyMap, mapIndex.ToString());
+        lobby.SetData(KeyMode, ((int)mode).ToString());
+        lobby.SetData(KeyHost, lobby.Owner.Name);
     }
 
     /**
@@ -225,6 +261,13 @@ public class LobbyManager : MonoBehaviour {
     }
 
     #endregion
+
+    public void KickPlayer(ulong steamId) {
+        if (!NetworkManager.Singleton.IsServer) return;
+        var playerData = PlayerManager.Instance.FindBySteamId(steamId);
+        if (playerData == null) return;
+        NetworkManager.Singleton.DisconnectClient(playerData.Value.ClientId, "Kicked");
+    }
 }
 
 public static class LobbyExt {
@@ -300,7 +343,8 @@ public static class LobbyExt {
             }
         }
 
-        if (PlayerManager.Instance != null && NetworkManager.Singleton != null && NetworkManager.Singleton.IsConnectedClient) {
+        if (PlayerManager.Instance != null && NetworkManager.Singleton != null &&
+            NetworkManager.Singleton.IsConnectedClient) {
             PlayerManager.Instance.SetColorServerRpc(color.hue, color.saturation);
         }
     }

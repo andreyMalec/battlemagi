@@ -19,6 +19,8 @@ GameObject:
   - component: {fileID: 833260370552209836}
   - component: {fileID: 6644331099396241827}
   - component: {fileID: 910188372047049241}
+  - component: {fileID: 8997428989719605423}
+  - component: {fileID: 1040392221563682183}
   m_Layer: 0
   m_Name: PlayerManager
   m_TagString: Untagged
@@ -101,6 +103,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerManager2
   ShowTopMostFoldoutHeaderGroup: 1
   debugPlayers: []
+  networkStatsRefreshInterval: 1
 --- !u!114 &1935008753744762931
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -131,14 +134,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6589eb01f60f8934397f205d110f4e5c, type: 2}
   - {fileID: 11400000, guid: ba652b4307dde4d47976d6ef405ae9a3, type: 2}
   - {fileID: 11400000, guid: f1ea5e92331903844851b7ded79baed3, type: 2}
-  data:
-  - {fileID: 11400000, guid: 121f47b6c76c9f540854d677f2f3ede9, type: 2}
-  - {fileID: 11400000, guid: 3b18caceee5e79f47b0f3be1f3a89f2a, type: 2}
-  - {fileID: 11400000, guid: c8ba8d225ad32144195361c0cc390e0d, type: 2}
-  - {fileID: 11400000, guid: 81699b3208973504db6cc3b54189fd34, type: 2}
-  - {fileID: 11400000, guid: 88ae3a7b24de22243a3f8eeb5e7797ca, type: 2}
-  - {fileID: 11400000, guid: b86df27e043dcf140a7e00735b82fe0f, type: 2}
-  - {fileID: 11400000, guid: 168fdab00aaae2240a7ea58cdabc7f9d, type: 2}
 --- !u!114 &2948923506679104460
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -303,6 +298,8 @@ MonoBehaviour:
   SceneName: 
   SelectedMap:
     m_InternalValue: 0
+  LobbyVisibility:
+    m_InternalValue: 0
 --- !u!114 &910188372047049241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -322,3 +319,30 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 82529b97000466e4381a111391436040, type: 2}
   - {fileID: 11400000, guid: 46562114083608b449e69d5b0a913bf0, type: 2}
   - {fileID: 11400000, guid: 4f1f429942a4c144a905c8fbd82635a5, type: 2}
+--- !u!114 &8997428989719605423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1639143551227860678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a9307eccf5a44f48ef5dd91294e666f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellPrefab
+  spellPrefabLocal: {fileID: 4494555669983194706, guid: b2460b24122abfe4986d30e44c523d76, type: 3}
+  spellPrefabNetwork: {fileID: 4494555669983194706, guid: 03571efb2f2b72b4b9c0acd1238e4dbb, type: 3}
+--- !u!114 &1040392221563682183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1639143551227860678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce4a481ddefa41409630b0acc6459cc7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAchievementsManager
+  ShowTopMostFoldoutHeaderGroup: 1

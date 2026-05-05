@@ -7,14 +7,23 @@ public abstract class PointPhysicsActionBase : ISpellAction {
         public readonly PlayerPhysics Physics;
         public readonly FirstPersonMovement Movement;
         public readonly Rigidbody Rigidbody;
+        public readonly ulong OwnerId;
+        public readonly bool HasOwner;
 
         public ResolvedPhysicsTarget(
-            Damageable damageable, PlayerPhysics physics, FirstPersonMovement movement, Rigidbody rigidbody
+            Damageable damageable,
+            PlayerPhysics physics,
+            FirstPersonMovement movement,
+            Rigidbody rigidbody,
+            ulong ownerId,
+            bool hasOwner
         ) {
             Damageable = damageable;
             Physics = physics;
             Movement = movement;
             Rigidbody = rigidbody;
+            OwnerId = ownerId;
+            HasOwner = hasOwner;
         }
 
         public Transform Transform => Physics != null ? Physics.transform : Rigidbody.transform;
@@ -36,17 +45,17 @@ public abstract class PointPhysicsActionBase : ISpellAction {
             if (damageable.TryGetComponent<PlayerPhysics>(out var physics)) {
                 if (!CanAffect(context, ownerId)) return false;
                 damageable.TryGetComponent<FirstPersonMovement>(out var movement);
-                resolvedTarget = new ResolvedPhysicsTarget(damageable, physics, movement, null);
+                resolvedTarget = new ResolvedPhysicsTarget(damageable, physics, movement, null, ownerId, true);
                 return true;
             }
 
             if (!TryResolveRigidbody(target, out var damageableRigidbody)) return false;
-            resolvedTarget = new ResolvedPhysicsTarget(damageable, null, null, damageableRigidbody);
+            resolvedTarget = new ResolvedPhysicsTarget(damageable, null, null, damageableRigidbody, ownerId, true);
             return true;
         }
 
         if (!TryResolveRigidbody(target, out var rigidbody)) return false;
-        resolvedTarget = new ResolvedPhysicsTarget(null, null, null, rigidbody);
+        resolvedTarget = new ResolvedPhysicsTarget(null, null, null, rigidbody, 0, false);
         return true;
     }
 
@@ -115,6 +124,12 @@ public abstract class PointPhysicsActionBase : ISpellAction {
 
         RigidbodyPointForceController.GetOrAdd(target.Rigidbody)
             .SetPointForce(id, point, def.forcePerSecond, def.duration, def.vectorMode, def.upBias);
+    }
+
+    protected void ReportLaunchIfNeeded(ISpellContext context, ResolvedPhysicsTarget target) {
+        if (!target.HasOwner) return;
+        if (PlayerAchievementsManager.Instance == null) return;
+        PlayerAchievementsManager.Instance.ReportEnemyLaunchedServer(context.OwnerId, target.OwnerId);
     }
 
     protected void SetVelocitySource(

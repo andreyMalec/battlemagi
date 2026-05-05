@@ -2068,6 +2068,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 084c01ab381b9da4082c1f84cf70751b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  raycastMask:
+    serializedVersion: 2
+    m_Bits: 193
   distanceThreshold: 0.15
   isGrounded: 0
 --- !u!1 &7477955511304325520

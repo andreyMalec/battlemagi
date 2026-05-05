@@ -92,10 +92,10 @@ public class MeshController : MonoBehaviour {
     }
 
     private void Update() {
-        if (Input.GetKeyDown(KeyCode.C))
-            SetRagdoll(true);
-        else if (Input.GetKeyUp(KeyCode.C))
-            SetRagdoll(false);
+        // if (Input.GetKeyDown(KeyCode.C))
+        //     SetRagdoll(true);
+        // else if (Input.GetKeyUp(KeyCode.C))
+        //     SetRagdoll(false);
     }
 
     public void SetRagdoll(bool enable) {
