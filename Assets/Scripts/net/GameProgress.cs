@@ -50,6 +50,7 @@ public class GameProgress : NetworkBehaviour {
     public void StartMatch() {
         if (!IsServer || started) return;
         PlayerAchievementsManager.Instance?.ReportMatchStartedServer();
+        BotLifecycleManager.Instance?.BeginMatch();
         NetworkManager.Singleton.SceneManager.LoadScene(SceneName, LoadSceneMode.Single);
         LobbyManager.Instance.GameStarted();
         started = true;
@@ -148,6 +149,7 @@ public class GameProgress : NetworkBehaviour {
         Debug.Log("[GameProgressTracker] Match ended by reaching target");
 
         yield return new WaitForSeconds(7f);
+        BotLifecycleManager.Instance?.EndMatch();
         LobbyManager.Instance.CurrentLobby?.SetJoinable(true);
         LobbyManager.Instance.RestartLobby();
         var spawned = NetworkManager.Singleton.SpawnManager.SpawnedObjectsList.ToList();

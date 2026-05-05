@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class PlayerSpawner : NetworkBehaviour {
     [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private GameObject botPrefab;
     [SerializeField] private GameObject lobbyEnjoyer;
 
     public static PlayerSpawner instance;
@@ -72,7 +73,8 @@ public class PlayerSpawner : NetworkBehaviour {
                 yield break;
 
             if (elapsed >= timeout) {
-                Debug.LogError($"[PlayerSpawner] Сервер: Не дождались синхронизации PlayerManager/TeamManager для игрока {clientId}");
+                Debug.LogError(
+                    $"[PlayerSpawner] Сервер: Не дождались синхронизации PlayerManager/TeamManager для игрока {clientId}");
                 yield break;
             }
 
@@ -190,9 +192,13 @@ public class PlayerSpawner : NetworkBehaviour {
     }
 
     public void SpawnBot(ulong botId) {
+        SpawnBotObject(botId);
+    }
+
+    public GameObject SpawnBotObject(ulong botId) {
         if (!PlayerManager.Instance.TryGetBotData(botId, out var botData)) {
             Debug.LogError($"[PlayerSpawner] Bot {botId} is not registered in PlayerManager");
-            return;
+            return null;
         }
 
         var descriptor = new ParticipantSpawnDescriptor {
@@ -205,21 +211,46 @@ public class PlayerSpawner : NetworkBehaviour {
         };
 
         var canUseNetcode = NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && IsServer;
-        SpawnParticipant(descriptor, 0, canUseNetcode);
+        return SpawnParticipant(descriptor, 0, canUseNetcode);
     }
 
-    private void SpawnParticipant(ParticipantSpawnDescriptor descriptor, ulong ownerClientId, bool useNetcodeSpawn) {
+    private GameObject SpawnParticipant(
+        ParticipantSpawnDescriptor descriptor,
+        ulong ownerClientId,
+        bool useNetcodeSpawn
+    ) {
         var spawn = FindFirstObjectByType<Spawn>();
         if (spawn == null) {
             Debug.LogError(
                 $"[PlayerSpawner] Сервер: Ошибка! Не найден объект Spawn для спавна участника {descriptor.ParticipantId} (Возможно сцена сменилась на не игровую)");
-            return;
+            return null;
         }
 
         Debug.Log($"[PlayerSpawner] Сервер: Спавним участника {descriptor.ParticipantId} в команде {descriptor.Team}");
         var spawnPoint = spawn.Get(descriptor.Team);
         var position = spawnPoint.position;
         var rotation = spawnPoint.rotation;
+
+        if (descriptor.ParticipantId.IsBot) {
+            GameObject newBot = Instantiate(botPrefab, position, rotation);
+            newBot.transform.SetPositionAndRotation(position, rotation);
+            var botIdentity = newBot.GetComponent<ParticipantIdentity>();
+            if (botIdentity == null)
+                botIdentity = newBot.AddComponent<ParticipantIdentity>();
+            botIdentity.SetParticipantId(descriptor.ParticipantId);
+
+            var bot = newBot.GetComponent<Bot>();
+            bot.ApplyPlayerState(descriptor.SteamId, descriptor.Archetype, descriptor.Hue, descriptor.Saturation);
+
+            if (useNetcodeSpawn) {
+                var netObj = newBot.GetComponent<NetworkObject>();
+                netObj.Spawn(true);
+            }
+
+            newBot.name = $"Bot_{descriptor.ParticipantId.Value}";
+
+            return newBot;
+        }
 
         GameObject newPlayer = Instantiate(playerPrefab, position, rotation);
         newPlayer.transform.SetPositionAndRotation(position, rotation);
@@ -240,9 +271,9 @@ public class PlayerSpawner : NetworkBehaviour {
             player.Init(ownerClientId, position, rotation);
         }
 
-        newPlayer.name = descriptor.ParticipantId.IsBot
-            ? $"Bot_{descriptor.ParticipantId.Value}"
-            : $"Player_{ownerClientId}";
+        newPlayer.name = $"Player_{ownerClientId}";
+
+        return newPlayer;
     }
 
     private void SpawnLobbyEnjoyer(ulong clientId) {

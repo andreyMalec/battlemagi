@@ -49,7 +49,7 @@ public class PlayerDamageable : NetworkBehaviour {
         if (victim.IsHuman)
             PlayerSpawner.instance.HandleDeathServer(victim.Value);
         else
-            Destroy(gameObject);
+            BotLifecycleManager.Instance?.HandleBotDeath(victim, gameObject);
         Killfeed.Instance?.HandleClientRpc(deathInfo.fromId, ParticipantOwnerCodec.Encode(victim));
         if (victim.IsHuman) {
             SendAnalytics(victim.Value, deathInfo.source);

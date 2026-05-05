@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 910188372047049241}
   - component: {fileID: 8997428989719605423}
   - component: {fileID: 1040392221563682183}
+  - component: {fileID: 4209512637272849082}
   m_Layer: 0
   m_Name: PlayerManager
   m_TagString: Untagged
@@ -103,6 +104,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerManager2
   ShowTopMostFoldoutHeaderGroup: 1
   debugPlayers: []
+  debugBots: []
   networkStatsRefreshInterval: 1
 --- !u!114 &1935008753744762931
 MonoBehaviour:
@@ -346,3 +348,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAchievementsManager
   ShowTopMostFoldoutHeaderGroup: 1
+  parkourAirtimeThreshold: 3
+  gravityAirtimeThreshold: 12
+  launchFallKillWindow: 3
+--- !u!114 &4209512637272849082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1639143551227860678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d74cb8e1f2e4a68a75b6a19e438682a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BotLifecycleManager
+  initialBotCount: 3
+  respawnDelay: 5
+  autoSpawnOffline: 1

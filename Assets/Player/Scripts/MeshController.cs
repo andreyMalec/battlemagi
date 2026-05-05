@@ -52,24 +52,33 @@ public class MeshController : MonoBehaviour {
     public event Action<bool> OnBurst;
 
     private void Awake() {
-        if (ikTargetHand == null) {
-            var player = GetComponentInParent<Player>();
-            if (player != null) {
+        var player = GetComponentInParent<Player>();
+        if (player != null) {
+            if (ikTargetHand == null) {
                 ikTargetHand = player.GetComponentInChildren<HandIKTarget>().transform;
             }
-        }
 
-        if (ikTargetHandRight == null) {
-            var player = GetComponentInParent<Player>();
-            if (player != null) {
+            if (ikTargetHandRight == null) {
                 ikTargetHandRight = player.GetComponentInChildren<HandIKTargetRight>().transform;
             }
-        }
 
-        if (ikTargetSpine == null) {
-            var player = GetComponentInParent<Player>();
-            if (player != null) {
+            if (ikTargetSpine == null) {
                 ikTargetSpine = player.GetComponentInChildren<HandIKTargetSpine>().transform;
+            }
+        } else {
+            var bot = GetComponentInParent<Bot>();
+            if (bot != null) {
+                if (ikTargetHand == null) {
+                    ikTargetHand = bot.GetComponentInChildren<HandIKTarget>().transform;
+                }
+
+                if (ikTargetHandRight == null) {
+                    ikTargetHandRight = bot.GetComponentInChildren<HandIKTargetRight>().transform;
+                }
+
+                if (ikTargetSpine == null) {
+                    ikTargetSpine = bot.GetComponentInChildren<HandIKTargetSpine>().transform;
+                }
             }
         }
 

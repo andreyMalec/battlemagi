@@ -1,13 +1,12 @@
 using Unity.Netcode;
 using UnityEngine;
 
-[RequireComponent(typeof(FirstPersonMovement))]
 [RequireComponent(typeof(PlayerPhysics))]
 public class StateController : NetworkBehaviour {
     private const int ForcedMovementVelocitySourceId = 134771489;
     private const float ForcedMovementReachDistance = 0.05f;
 
-    private FirstPersonMovement _movement;
+    [SerializeField] private MonoBehaviour movement;
     private PlayerPhysics _physics;
     private IceSlideMovementModule _iceSlide;
     private bool _forcedMovementActive;
@@ -15,7 +14,6 @@ public class StateController : NetworkBehaviour {
     private float _forcedMovementRemaining;
 
     private void Awake() {
-        _movement = GetComponent<FirstPersonMovement>();
         _physics = GetComponent<PlayerPhysics>();
         _iceSlide = GetComponent<IceSlideMovementModule>();
     }
@@ -96,12 +94,14 @@ public class StateController : NetworkBehaviour {
     }
 
     [ClientRpc]
-    private void StartForcedMovementClientRpc(Vector3 targetPoint, float duration, ClientRpcParams clientRpcParams = default) {
+    private void StartForcedMovementClientRpc(
+        Vector3 targetPoint, float duration, ClientRpcParams clientRpcParams = default
+    ) {
         _forcedMovementTargetPoint = targetPoint;
         _forcedMovementRemaining = Mathf.Max(duration, Time.fixedDeltaTime);
         _forcedMovementActive = true;
         _physics.ClearVelocitySource(ForcedMovementVelocitySourceId);
-        _movement.enabled = false;
+        movement.enabled = false;
     }
 
     [ClientRpc]
@@ -110,8 +110,10 @@ public class StateController : NetworkBehaviour {
     }
 
     [ClientRpc]
-    private void SetIceSlidingClientRpc(bool active, float acceleration, float deceleration,
-        ClientRpcParams clientRpcParams = default) {
+    private void SetIceSlidingClientRpc(
+        bool active, float acceleration, float deceleration,
+        ClientRpcParams clientRpcParams = default
+    ) {
         if (active) {
             _iceSlide.SetSliding(acceleration, deceleration);
             return;
@@ -143,7 +145,7 @@ public class StateController : NetworkBehaviour {
         _forcedMovementRemaining = 0f;
         _physics.ClearVelocitySource(ForcedMovementVelocitySourceId);
         if (IsOwner)
-            _movement.enabled = true;
+            movement.enabled = true;
     }
 
     private void ClearIceSliding() {

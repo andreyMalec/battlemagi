@@ -14,6 +14,8 @@ public class SpellCasterPlayer : SpellCaster {
     [SerializeField] private bool animateCast = true;
     [SerializeField] private bool animateHand = true;
     [SerializeField] private StatusEffectData primalManaStatus;
+    
+    [SerializeField] private bool isHuman = true;
 
     private ISpellCasterBridge _bridgeTyped;
     private Stats _stats;
@@ -134,25 +136,25 @@ public class SpellCasterPlayer : SpellCaster {
     void Update() {
         if (!CanCast) return;
 
-        if (input.AlternativeSpawnPressedThisFrame()) {
+        if (input.AlternativeSpawnPressedThisFrame() && isHuman) {
             alternativeSpawn = !alternativeSpawn;
         }
 
         var index = input.GetSpellIndexPressedThisFrame();
-        if (CanSelectSpell && index >= 0 && index < _availableSpells.Count) {
+        if (isHuman && CanSelectSpell && index >= 0 && index < _availableSpells.Count) {
             var selected = _availableSpells[index];
             SelectSpell(selected);
         }
 
-        if (input.CancelPressedThisFrame()) {
+        if (isHuman && input.CancelPressedThisFrame()) {
             CancelCast();
         }
 
-        if (Charging && input.CastPressedThisFrame()) {
+        if (isHuman && Charging && input.CastPressedThisFrame()) {
             ReleaseCharged(_chargingSpell);
         }
 
-        if (!Channeling && !Charging && _spell != null && input.CastPressedThisFrame()) {
+        if (isHuman && !Channeling && !Charging && _spell != null && input.CastPressedThisFrame()) {
             if (TryCastEcho(_spell)) {
             } else if (CanStartCast(_spell)) {
                 if (_spell.charging) {
