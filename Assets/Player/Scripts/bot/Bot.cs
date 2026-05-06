@@ -3,6 +3,7 @@ using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
 using System.Reflection; // reflection for Awake
+using System.Collections.Generic;
 
 [DefaultExecutionOrder(-100)]
 public class Bot : NetworkBehaviour {
@@ -85,6 +86,10 @@ public class Bot : NetworkBehaviour {
 
         var caster = GetComponent<SpellCasterPlayer>();
         caster.Mana.SetDefaults(archetype.maxMana, archetype.manaRegen);
+        caster.UpdateAvailableSpells(new List<SpellDefinition>(archetype.spells));
+        var combat = GetComponent<BotCombatController>();
+        if (combat != null)
+            combat.SetAvailableSpells(archetype.spells);
         var damageable = GetComponent<Damageable>();
         damageable.Health.SetDefaults(archetype.maxHealth, archetype.healthRegen);
         var fpss = GetComponentInChildren<FirstPersonSounds>();

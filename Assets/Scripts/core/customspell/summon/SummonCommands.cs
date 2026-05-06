@@ -33,8 +33,10 @@ public class SummonCommands : IAICommands {
         if (_caster != null && _caster.CanCast && _attack) {
             if (ctx.ActiveTarget == null)
                 _caster.Cast(ctx.Spell);
-            else
-                _caster.Cast(ctx.Spell, ctx.ActiveTarget);
+            else {
+                var castTarget = BallisticCastTargetBuilder.Build(_caster, ctx.ActiveTarget, ctx.Spell);
+                _caster.Cast(ctx.Spell, castTarget);
+            }
             _attack = false;
         }
 

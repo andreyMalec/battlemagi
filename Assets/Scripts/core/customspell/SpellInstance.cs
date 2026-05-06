@@ -25,6 +25,7 @@ public class SpellInstance : MonoBehaviour, ITarget {
     public bool IsAlive => _view != null && _view.IsAlive;
     public OwnerId OwnerId => _authorityService.OwnerId;
     public ulong ObjectId => _authorityService.ObjectId;
+    public bool CanGet => gameObject != null;
     public GameObject Get => gameObject;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]

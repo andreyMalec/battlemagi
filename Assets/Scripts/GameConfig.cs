@@ -2,7 +2,7 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Config", menuName = "Config")]
 public class GameConfig : ScriptableObject {
-    public bool useNetwork = false;
+    public bool useAnalytic = false;
     public bool spellDebugLogs = false;
     public bool spellMetricsEnabled = false;
     public bool spellMetricsSummaryLogs = false;

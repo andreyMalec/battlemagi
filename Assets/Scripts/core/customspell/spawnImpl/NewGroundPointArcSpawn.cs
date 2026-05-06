@@ -26,10 +26,14 @@ public class NewGroundPointArcSpawn : ISpellSpawn {
     }
 
     private static SpawnContext ApplyDirectionToTarget(SpawnContext context) {
+        if (context.target is BallisticCastTarget)
+            return context;
         if (context.target == null)
             return context;
 
         var targetPos = ISpellSpawn.GroundPos(context with { position = context.target.Position }, Vector3.down, out _);
+        if (targetPos == null)
+            return context;
         var dir = targetPos.position - context.position;
         if (dir.sqrMagnitude <= 0f)
             return context;

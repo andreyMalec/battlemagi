@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 
 public abstract class SpellCaster : MonoBehaviour, ITarget {
@@ -20,6 +22,17 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
     public Vector3 Position => transform.position;
     public abstract bool IsPlayer { get; }
     public abstract bool IsSpell { get; }
+
+    public bool CanGet {
+        get {
+            try {
+                return enabled && gameObject != null;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+    }
+
     public GameObject Get => gameObject;
 
     protected Coroutine CastCoroutine => _useNetwork ? _casterNet.CastCoroutine : _castCoroutine;

@@ -54,6 +54,7 @@ public class SpellCasterNet : NetworkBehaviour {
     public void RequestCast(SpawnContext context) {
         RequestCastServerRpc(NetworkObjectId, context.spell.name, context.alternativeSpawn,
             context.target?.ObjectId ?? ulong.MaxValue,
+            context.target?.Position ?? Vector3.zero,
             context.spellDamageMultiplier);
     }
 
@@ -63,6 +64,7 @@ public class SpellCasterNet : NetworkBehaviour {
         string spellName,
         bool alternativeSpawn,
         ulong targetNetObjectId = ulong.MaxValue,
+        Vector3 targetPosition = default,
         float damageMultiplier = 1f,
         ServerRpcParams rpcParams = default
     ) {
@@ -72,7 +74,9 @@ public class SpellCasterNet : NetworkBehaviour {
         NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetNetObjectId, out var targetNetObj);
         ITarget target = null;
         if (targetNetObj != null && targetNetObj.IsSpawned) {
-            target = targetNetObj.GetComponentInChildren<ITarget>();
+            var baseTarget = targetNetObj.GetComponentInChildren<ITarget>();
+            if (baseTarget != null)
+                target = new BallisticCastTarget(baseTarget, targetPosition);
         }
 
         FirebaseAnalytic.Instance.SendEvent("SpellCasted", new Dictionary<string, object> {
@@ -107,7 +111,7 @@ public class SpellCasterNet : NetworkBehaviour {
         var prefab = SpellPrefab.Instance.GetPrefab(true);
         var main = Instantiate(prefab, context.position, context.rotation);
         var networkObject = main.GetComponent<NetworkObject>();
-        networkObject.SpawnWithOwnership(context.caster.OwnerId);
+        networkObject.SpawnWithOwnership(casterNetObj.OwnerClientId);
         var id = networkObject.NetworkObjectId;
         context.caster.HandleSpellLimit(context.spell, main);
         var index = main.AddComponent<ArcIndex>();

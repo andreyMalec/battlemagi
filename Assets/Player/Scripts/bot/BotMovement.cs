@@ -9,6 +9,7 @@ public class BotMovement : MonoBehaviour {
     [SerializeField] private float rotationSpeed = 10f;
     [SerializeField] private float defaultStoppingDistance = 1.5f;
     [SerializeField] private float jumpCooldown = 0.75f;
+    [SerializeField] private new Transform camera;
 
     public GroundCheck groundCheck;
 
@@ -29,6 +30,8 @@ public class BotMovement : MonoBehaviour {
     private Vector3 _destination;
     private Vector3 _desiredVelocity;
     private float _jumpCooldownTimer;
+    private bool _hasLookDirectionOverride;
+    private Vector3 _lookDirectionOverride;
 
     private void Awake() {
         _physics = GetComponent<PlayerPhysics>();
@@ -49,32 +52,41 @@ public class BotMovement : MonoBehaviour {
 
         _agent.nextPosition = transform.position;
 
+        if (_hasDestination) {
+            if (!_agent.pathPending && _agent.remainingDistance <= _agent.stoppingDistance)
+                Stop();
+
+            if (_hasDestination) {
+                var desired = _agent.desiredVelocity;
+                desired.y = 0f;
+
+                var speed = movementSpeed * (_stats?.GetFinal(StatType.MoveSpeed) ?? 1f);
+                _desiredVelocity = desired.sqrMagnitude > 0.0001f ? desired.normalized * speed : Vector3.zero;
+                var localVelocity = transform.InverseTransformDirection(_desiredVelocity);
+                localVelocity.y = 0f;
+                var localMagnitude = Mathf.Max(Mathf.Abs(localVelocity.x), Mathf.Abs(localVelocity.z));
+                if (localMagnitude > 1f)
+                    localVelocity /= localMagnitude;
+                LocalVelocityNormalized = localVelocity;
+            }
+        }
+
         if (!_hasDestination) {
             _desiredVelocity = Vector3.zero;
             LocalVelocityNormalized = Vector3.zero;
-            return;
         }
 
-        if (!_agent.pathPending && _agent.remainingDistance <= _agent.stoppingDistance) {
-            Stop();
-            return;
-        }
-
-        var desired = _agent.desiredVelocity;
-        desired.y = 0f;
-
-        var speed = movementSpeed * (_stats?.GetFinal(StatType.MoveSpeed) ?? 1f);
-        _desiredVelocity = desired.sqrMagnitude > 0.0001f ? desired.normalized * speed : Vector3.zero;
-        var localVelocity = transform.InverseTransformDirection(_desiredVelocity);
-        localVelocity.y = 0f;
-        var localMagnitude = Mathf.Max(Mathf.Abs(localVelocity.x), Mathf.Abs(localVelocity.z));
-        if (localMagnitude > 1f)
-            localVelocity /= localMagnitude;
-        LocalVelocityNormalized = localVelocity;
-
-        if (_desiredVelocity.sqrMagnitude > 0.0001f) {
-            var targetRotation = Quaternion.LookRotation(_desiredVelocity, Vector3.up);
+        var lookDirection = _hasLookDirectionOverride ? _lookDirectionOverride : _desiredVelocity;
+        var bodyLookDirection = lookDirection;
+        bodyLookDirection.y = 0f;
+        if (bodyLookDirection.sqrMagnitude > 0.0001f) {
+            var targetRotation = Quaternion.LookRotation(bodyLookDirection, Vector3.up);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+
+        if (camera != null && lookDirection.sqrMagnitude > 0.0001f) {
+            var targetRotation = Quaternion.LookRotation(lookDirection, Vector3.up);
+            camera.rotation = Quaternion.Slerp(camera.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
     }
 
@@ -94,6 +106,19 @@ public class BotMovement : MonoBehaviour {
             return;
         _agent.ResetPath();
         _agent.SetDestination(_destination);
+    }
+
+    public void SetLookDirection(Vector3 worldDirection) {
+        if (worldDirection.sqrMagnitude < 0.0001f)
+            return;
+
+        _hasLookDirectionOverride = true;
+        _lookDirectionOverride = worldDirection;
+    }
+
+    public void ClearLookDirection() {
+        _hasLookDirectionOverride = false;
+        _lookDirectionOverride = Vector3.zero;
     }
 
     public void Stop() {

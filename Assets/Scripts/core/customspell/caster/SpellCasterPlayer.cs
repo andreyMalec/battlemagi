@@ -181,6 +181,28 @@ public class SpellCasterPlayer : SpellCaster {
             _animator.CastWaitingAnim(true, _spell.castWaitingIndex);
     }
 
+    public bool TryCastBot(SpellDefinition spell, ITarget target) {
+        if (spell == null) return false;
+        if (!CanCast || Channeling || Charging) return false;
+        if (!CanStartCast(spell)) return false;
+
+        _spell = spell;
+        if (animateHand)
+            _animator.CastWaitingAnim(false);
+
+        if (spell.charging) {
+            StartCharging(spell);
+            return true;
+        }
+
+        if (target == null)
+            Cast(spell);
+        else
+            Cast(spell, target);
+
+        return true;
+    }
+
     public override void Cast(SpellDefinition spell) {
         var usedEcho = spell.charging ? _chargingUsedEcho : ConsumeCostOrEcho(spell);
         _chargingUsedEcho = false;

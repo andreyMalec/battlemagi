@@ -31,10 +31,11 @@ public class NgoSpellSystemEvent : NetworkBehaviour, SpellSystemEvent {
 
         var instance = obj.GetComponentInChildren<SpellInstance>();
         instance?.Kill();
+        var spellOwnerId = instance?.OwnerId ?? default;
 
         foreach (var caster in SpellCaster.Active) {
             if (caster.Authority == null || !caster.Authority.IsOwner) continue;
-            if (caster.OwnerId != obj.OwnerClientId) continue;
+            if (caster.OwnerId != spellOwnerId) continue;
             var bridge = caster.GetComponentInParent<ISpellCasterBridge>();
             bridge?.StopChannelingSpell(netObjectId);
             break;
