@@ -45,9 +45,9 @@ public class PierceOnHitAction : ISpellAction {
         if (target == null)
             return false;
 
-        if (target.TryGetComponent<Player>(out _))
+        if (target.TryGetComponent<SpellCasterPlayer>(out _))
             return true;
 
-        return target.GetComponentInParent<Player>() != null;
+        return target.GetComponentInParent<SpellCasterPlayer>() != null;
     }
 }

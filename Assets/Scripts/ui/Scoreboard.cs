@@ -9,9 +9,10 @@ public class Scoreboard : MonoBehaviour {
     [SerializeField] private GameObject flagText;
     [SerializeField] private RectTransform nameText;
 
-    private readonly Dictionary<ulong, ScoreboardItem> _items = new();
+    private readonly Dictionary<ParticipantId, ScoreboardItem> _items = new();
 
     private CanvasGroup _canvas;
+    private int _refreshFrame;
 
     private void OnEnable() {
         if (TeamManager.Instance == null) return;
@@ -25,41 +26,57 @@ public class Scoreboard : MonoBehaviour {
         }
 
         ClearItems();
-        RefreshItems(PlayerManager.Instance.Players());
+        RefreshItems(PlayerManager.Instance.Participants);
 
         PlayerManager.Instance.OnListChanged += OnPlayersChanged;
     }
 
     private void OnDisable() {
-        if (PlayerManager.Instance != null)
+        if (PlayerManager.Instance != null) {
             PlayerManager.Instance.OnListChanged -= OnPlayersChanged;
+        }
         ClearItems();
     }
 
     private void OnPlayersChanged(List<PlayerManager.PlayerData> players) {
-        RefreshItems(players);
+        RefreshItems(PlayerManager.Instance.Participants);
     }
 
-    private void RefreshItems(List<PlayerManager.PlayerData> players) {
-        var alive = new HashSet<ulong>();
-        var sorted = players.OrderBy(it => TeamManager.Instance.GetTeam(it.ClientId));
-        foreach (var player in sorted) {
-            alive.Add(player.SteamId);
-            if (!_items.TryGetValue(player.SteamId, out var scoreboardItem)) {
+    private void RefreshItems(IReadOnlyList<MatchParticipantData> participants) {
+        var alive = new HashSet<ParticipantId>();
+        var sorted = participants.OrderBy(it => TeamManager.Instance.GetTeam(it.Id));
+        foreach (var participant in sorted) {
+            alive.Add(participant.Id);
+            if (!_items.TryGetValue(participant.Id, out var scoreboardItem)) {
                 var item = Instantiate(itemPrefab, container.transform);
                 scoreboardItem = item.GetComponent<ScoreboardItem>();
-                _items[player.SteamId] = scoreboardItem;
+                _items[participant.Id] = scoreboardItem;
             }
 
-            scoreboardItem.UpdateName(player.Name(), player.SteamId);
-            scoreboardItem.UpdateScore(player);
+            scoreboardItem.UpdateName(ResolveParticipantName(participant), participant.Hue, participant.Saturation);
+            scoreboardItem.UpdateScore(participant);
         }
 
-        var removed = _items.Keys.Where(steamId => !alive.Contains(steamId)).ToList();
-        foreach (var steamId in removed) {
-            Destroy(_items[steamId].gameObject);
-            _items.Remove(steamId);
+        var removed = _items.Keys.Where(id => !alive.Contains(id)).ToList();
+        foreach (var id in removed) {
+            Destroy(_items[id].gameObject);
+            _items.Remove(id);
         }
+    }
+
+    private static string ResolveParticipantName(MatchParticipantData participant) {
+        if (participant.Id.IsBot)
+            return $"Bot #{participant.Id.Value}";
+
+        var lobby = LobbyManager.Instance.CurrentLobby;
+        if (lobby.HasValue) {
+            foreach (var member in lobby.Value.Members) {
+                if (member.Id.Value == participant.SteamId)
+                    return member.Name;
+            }
+        }
+
+        return $"Player_{participant.Id.Value}";
     }
 
     private void ClearItems() {
@@ -76,5 +93,8 @@ public class Scoreboard : MonoBehaviour {
 
     private void Update() {
         _canvas.alpha = Input.GetKey(key) ? 1 : 0;
+        _refreshFrame++;
+        if (_refreshFrame % 5 == 0 && PlayerManager.Instance != null)
+            RefreshItems(PlayerManager.Instance.Participants);
     }
 }

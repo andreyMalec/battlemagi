@@ -98,6 +98,7 @@ public class GameProgress : NetworkBehaviour {
     }
 
     private void HandlePlayersListChanged(List<PlayerManager.PlayerData> players) {
+        _ = players;
         if (!IsServer) return;
         if (ended) return;
         if (TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.CaptureTheFlag) {
@@ -107,14 +108,15 @@ public class GameProgress : NetworkBehaviour {
 
         int endChoice = TeamManager.Instance.EndChoice.Value;
         int target = endChoice >= 0 && endChoice < killsTargets.Length ? killsTargets[endChoice] : killsTargets[0];
+        var participants = PlayerManager.Instance.Participants;
 
         if (TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.TwoTeams) {
             var redKills = 0;
             var blueKills = 0;
-            foreach (var p in players) {
-                if (TeamManager.Instance.GetTeam(p.ClientId) == TeamManager.Team.Red)
+            foreach (var p in participants) {
+                if (TeamManager.Instance.GetTeam(p.Id) == TeamManager.Team.Red)
                     redKills += p.Kills;
-                else if (TeamManager.Instance.GetTeam(p.ClientId) == TeamManager.Team.Blue)
+                else if (TeamManager.Instance.GetTeam(p.Id) == TeamManager.Team.Blue)
                     blueKills += p.Kills;
             }
 
@@ -131,10 +133,14 @@ public class GameProgress : NetworkBehaviour {
                 StartCoroutine(EndMatch());
             }
         } else {
-            foreach (var p in players) {
+            foreach (var p in participants) {
                 if (p.Kills >= target) {
-                    GameAnnouncer.Instance.PlayerWin(p.ClientId);
-                    PlayerAchievementsManager.Instance?.ReportMatchWinnerServer(p.ClientId);
+                    if (p.Id.IsHuman) {
+                        PlayerAchievementsManager.Instance?.ReportMatchWinnerServer(p.Id.Value);
+                    }
+
+                    GameAnnouncer.Instance.PlayerWin(ParticipantOwnerCodec.Encode(p.Id));
+
                     StartCoroutine(EndMatch());
                     return;
                 }

@@ -1,4 +1,3 @@
-using Steamworks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,24 +16,35 @@ public class ScoreboardItem : MonoBehaviour {
     [SerializeField] private Sprite[] spriteArchetypes;
     [SerializeField] private Shader colorShader;
 
-    public void UpdateScore(PlayerManager.PlayerData data) {
+    public void UpdateScore(MatchParticipantData data) {
         flagsText.text = data.Flags.ToString();
         killsText.text = data.Kills.ToString();
         deathsText.text = data.Deaths.ToString();
         assistsText.text = data.Assists.ToString();
-        pingText.text = data.PacketLossPercent > PacketLossWarningThreshold
-            ? $"{data.PingMs} ms <color=#FFB54A><b>!</b></color>"
-            : $"{data.PingMs} ms";
-        archetypeImage.overrideSprite = spriteArchetypes[data.Archetype];
+        if (data.Id.IsBot) {
+            pingText.text = "-";
+        } else {
+            if (PlayerManager.Instance.TryGetPlayerData(data.Id.Value, out var playerData)) {
+                pingText.text = playerData.PacketLossPercent > PacketLossWarningThreshold
+                    ? $"{playerData.PingMs} ms <color=#FFB54A><b>!</b></color>"
+                    : $"{playerData.PingMs} ms";
+            } else {
+                pingText.text = "-";
+            }
+        }
+
+        if (data.Archetype >= 0 && data.Archetype < spriteArchetypes.Length)
+            archetypeImage.overrideSprite = spriteArchetypes[data.Archetype];
+        else
+            archetypeImage.overrideSprite = null;
     }
 
-    public void UpdateName(string playerName, ulong steamId) {
+    public void UpdateName(string playerName, float hue, float saturation) {
         nameText.text = playerName;
 
         colorImage.material = new Material(colorShader);
-        var color = new Friend(steamId).GetColor();
-        colorImage.material.SetFloat(ColorizeMesh.Hue, color.hue);
-        colorImage.material.SetFloat(ColorizeMesh.Saturation, color.saturation);
+        colorImage.material.SetFloat(ColorizeMesh.Hue, hue);
+        colorImage.material.SetFloat(ColorizeMesh.Saturation, saturation);
 
         if (TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.CaptureTheFlag) {
             flagsText.gameObject.SetActive(true);

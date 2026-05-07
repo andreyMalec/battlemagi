@@ -1,8 +1,7 @@
-using System;
 using UnityEngine;
 
 public class Freeze : MonoBehaviour {
-    private FirstPersonMovement _movement;
+    private StateController _stateController;
     private PlayerTester _tester;
     private SpellCasterPlayer _caster;
     private FirstPersonLook _look;
@@ -14,7 +13,7 @@ public class Freeze : MonoBehaviour {
 
     private void Awake() {
         var parent = transform.parent.gameObject;
-        _movement = parent.GetComponent<FirstPersonMovement>();
+        _stateController = parent.GetComponent<StateController>();
         _tester = parent.GetComponent<PlayerTester>();
         _caster = parent.GetComponent<SpellCasterPlayer>();
         _look = parent.GetComponent<FirstPersonLook>();
@@ -30,7 +29,7 @@ public class Freeze : MonoBehaviour {
 
     private void OnEnable() {
         Debug.Log($"Игрок {_caster.gameObject.name} замерз");
-        if (_movement != null) _movement.enabled = false;
+        if (_stateController != null) _stateController.RefreshMovementState();
         if (_caster != null) _caster.enabled = false;
         if (_look != null) _look.enabled = false;
         if (_playerAnimator != null) _playerAnimator.enabled = false;
@@ -43,7 +42,7 @@ public class Freeze : MonoBehaviour {
 
     private void OnDisable() {
         Debug.Log($"Игрок {_caster.gameObject.name} оттаял");
-        if (_movement != null) _movement.enabled = true;
+        if (_stateController != null) _stateController.RefreshMovementState();
         if (_caster != null) _caster.enabled = true;
         if (_look != null) _look.enabled = true;
         if (_playerAnimator != null) _playerAnimator.enabled = true;

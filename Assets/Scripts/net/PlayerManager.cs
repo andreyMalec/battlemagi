@@ -68,6 +68,7 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
     public event Action<PlayerData> OnPlayerAdded;
     public event Action<PlayerData> OnPlayerRemoved;
     public event Action<List<PlayerData>> OnListChanged;
+    public event Action<IReadOnlyList<MatchParticipantData>> OnParticipantsChanged;
 
     private NetworkList<PlayerData> players;
     private readonly Dictionary<ulong, MatchParticipantData> _botParticipants = new();
@@ -215,6 +216,11 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
         }
 
         OnListChanged?.Invoke(debugPlayers);
+        NotifyParticipantsChanged();
+    }
+
+    private void NotifyParticipantsChanged() {
+        OnParticipantsChanged?.Invoke(Participants);
     }
 
     private bool IsMatchInProgress() {
@@ -588,6 +594,9 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
         foreach (var bot in _botParticipants.Values) {
             debugBots.Add(bot);
         }
+
+        OnListChanged?.Invoke(debugPlayers);
+        NotifyParticipantsChanged();
     }
 
     [ServerRpc(RequireOwnership = false)]

@@ -30,6 +30,8 @@ public class Killfeed : NetworkBehaviour {
     }
 
     private static string ResolveName(ulong rawId) {
+        if (rawId == ulong.MaxValue) return "";
+
         var participantId = ParticipantOwnerCodec.Decode(rawId);
         if (participantId.IsHuman) {
             var player = PlayerManager.Instance.FindByClientId(participantId.Value);

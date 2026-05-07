@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -67,14 +68,26 @@ public class BotLifecycleManager : MonoBehaviour {
     }
 
     public void SpawnInitialBotsNow() {
-        if (initialBotCount <= 0) return;
         if (PlayerSpawner.instance == null || PlayerManager.Instance == null || TeamManager.Instance == null) {
             QueueSpawnWhenReady();
             return;
         }
 
+        var hasNetcodeSession = NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening;
+        if (hasNetcodeSession && LobbyManager.Instance != null && LobbyManager.Instance.CurrentLobby.HasValue) {
+            var lobbyBots = LobbyBotRosterData.LoadFromLobby(LobbyManager.Instance.CurrentLobby.Value);
+            for (int i = 0; i < lobbyBots.Count; i++) {
+                var bot = lobbyBots[i];
+                SpawnNewBot(bot.archetype, bot.hue, bot.saturation);
+            }
+
+            return;
+        }
+
+        if (initialBotCount <= 0) return;
+
         for (int i = 0; i < initialBotCount; i++) {
-            SpawnNewBot(Random.Range(1, 1), Random.Range(0f, 360f), Random.Range(0f, 1f));
+            SpawnNewBot(Random.Range(1, 4), Random.Range(0f, 360f), Random.Range(0f, 1f));
         }
     }
 
@@ -106,6 +119,8 @@ public class BotLifecycleManager : MonoBehaviour {
             botObject.GetComponentInChildren<MeshController>().SetRagdoll(true);
             botObject.GetComponent<BotMovement>().enabled = false;
             botObject.GetComponent<BotMovementController>().enabled = false;
+            botObject.GetComponent<SpellCasterPlayer>().enabled = false;
+            botObject.GetComponent<BotCombatController>().enabled = false;
         }
 
         _activeBots.Remove(botId);
@@ -158,7 +173,7 @@ public class BotLifecycleManager : MonoBehaviour {
 
         _activeBots.Clear();
 
-        foreach (var participant in PlayerManager.Instance.Participants) {
+        foreach (var participant in PlayerManager.Instance.Participants.ToList()) {
             if (!participant.Id.IsBot) continue;
             PlayerManager.Instance.RemoveParticipant(participant.Id);
             TeamManager.Instance.RemoveBot(participant.Id.Value);

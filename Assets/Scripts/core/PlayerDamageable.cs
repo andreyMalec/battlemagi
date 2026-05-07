@@ -8,21 +8,17 @@ using UnityEngine;
 [RequireComponent(typeof(Damageable))]
 public class PlayerDamageable : NetworkBehaviour {
     private Damageable _damageable;
-    private ParticipantIdentity _participantIdentity;
     private readonly List<ulong> _damagedBy = new();
     private readonly List<DamageInfo> _damagedBySource = new();
 
     private void Awake() {
         _damageable = GetComponent<Damageable>();
-        _participantIdentity = GetComponent<ParticipantIdentity>();
         _damageable.OnDeath += OnDeath;
         _damageable.OnDamageApplied += OnDamageApplied;
     }
 
     private void OnDamageApplied(DamageApplied damageApplied) {
-        var victim = GetVictimParticipantId();
-        var attacker = ParticipantOwnerCodec.Decode(damageApplied.request.fromId);
-        if (!_damagedBy.Contains(damageApplied.request.fromId) && victim != attacker)
+        if (!_damagedBy.Contains(damageApplied.request.fromId) && OwnerClientId != damageApplied.request.fromId)
             _damagedBy.Add(damageApplied.request.fromId);
         _damagedBySource.Add(new DamageInfo {
             damage = damageApplied.final,
@@ -34,10 +30,10 @@ public class PlayerDamageable : NetworkBehaviour {
     }
 
     private void OnDeath(DeathInfo deathInfo) {
-        var victim = GetVictimParticipantId();
         var killer = ParticipantOwnerCodec.Decode(deathInfo.fromId);
         NetworkObject.TryRemoveParent();
-        var enemies = _damagedBy.Where(damager => TeamManager.Instance.AreEnemies(victim, ParticipantOwnerCodec.Decode(damager)));
+        var enemies = _damagedBy.Where(damager =>
+            TeamManager.Instance.AreEnemies(OwnerClientId, damager));
         foreach (var enemy in enemies) {
             if (enemy == deathInfo.fromId)
                 PlayerManager.Instance.AddKill(killer);
@@ -45,28 +41,18 @@ public class PlayerDamageable : NetworkBehaviour {
                 PlayerManager.Instance.AddAssist(ParticipantOwnerCodec.Decode(enemy));
         }
 
-        PlayerManager.Instance.AddDeath(victim);
-        if (victim.IsHuman)
-            PlayerSpawner.instance.HandleDeathServer(victim.Value);
-        else
-            BotLifecycleManager.Instance?.HandleBotDeath(victim, gameObject);
-        Killfeed.Instance?.HandleClientRpc(deathInfo.fromId, ParticipantOwnerCodec.Encode(victim));
-        if (victim.IsHuman) {
-            SendAnalytics(victim.Value, deathInfo.source);
-            
-            var lifeDamageByAttacker = _damagedBySource
-                .Where(x => x.fromId != OwnerClientId)
-                .GroupBy(x => x.fromId)
-                .ToDictionary(g => g.Key, g => g.Sum(x => x.damage));
-            PlayerAchievementsManager.Instance?.ReportLifeDamageServer(lifeDamageByAttacker);
-            PlayerAchievementsManager.Instance?.ReportDeathServer(OwnerClientId, deathInfo);
-        }
-    }
+        PlayerManager.Instance.AddDeath(OwnerClientId);
+        PlayerSpawner.instance.HandleDeathServer(OwnerClientId);
 
-    private ParticipantId GetVictimParticipantId() {
-        if (_participantIdentity != null)
-            return _participantIdentity.Id;
-        return ParticipantId.Human(OwnerClientId);
+        Killfeed.Instance?.HandleClientRpc(deathInfo.fromId, OwnerClientId);
+        SendAnalytics(OwnerClientId, deathInfo.source);
+
+        var lifeDamageByAttacker = _damagedBySource
+            .Where(x => x.fromId != OwnerClientId)
+            .GroupBy(x => x.fromId)
+            .ToDictionary(g => g.Key, g => g.Sum(x => x.damage));
+        PlayerAchievementsManager.Instance?.ReportLifeDamageServer(lifeDamageByAttacker);
+        PlayerAchievementsManager.Instance?.ReportDeathServer(OwnerClientId, deathInfo);
     }
 
     private void SendAnalytics(ulong ownerClientId, string source) {

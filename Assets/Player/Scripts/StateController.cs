@@ -9,6 +9,7 @@ public class StateController : NetworkBehaviour {
     [SerializeField] private MonoBehaviour movement;
     private PlayerPhysics _physics;
     private IceSlideMovementModule _iceSlide;
+    private Freeze _freeze;
     private bool _forcedMovementActive;
     private Vector3 _forcedMovementTargetPoint;
     private float _forcedMovementRemaining;
@@ -16,6 +17,7 @@ public class StateController : NetworkBehaviour {
     private void Awake() {
         _physics = GetComponent<PlayerPhysics>();
         _iceSlide = GetComponent<IceSlideMovementModule>();
+        _freeze = GetComponentInChildren<Freeze>(true);
     }
 
     public override void OnNetworkDespawn() {
@@ -39,8 +41,10 @@ public class StateController : NetworkBehaviour {
     private void FreezeClientRpc(ulong targetNetObj, bool active) {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetNetObj, out var netObj)) return;
         Debug.Log($"FreezeClientRpc targetNetObj={netObj}, active={active}");
-        var freeze = GetComponentInChildren<Freeze>(true);
+        var freeze = netObj.GetComponentInChildren<Freeze>(true);
         if (freeze != null) freeze.gameObject.SetActive(active);
+        if (netObj.TryGetComponent<StateController>(out var stateController))
+            stateController.RefreshMovementState();
     }
 
     public void Attach(ulong originClientId, bool active) {
@@ -78,9 +82,9 @@ public class StateController : NetworkBehaviour {
     private void AttachClientRpc(ulong originClientId, ulong targetNetObj, bool active) {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetNetObj, out var netObj)) return;
         Debug.Log($"AttachClientRpc originClientId={originClientId}, targetNetObj={netObj}, active={active}");
-        var movement = netObj.GetComponent<FirstPersonMovement>();
-        if (movement != null)
-            movement.enabled = !active;
+        var fpMovement = netObj.GetComponent<FirstPersonMovement>();
+        if (fpMovement != null)
+            fpMovement.enabled = !active;
         var botMovement = netObj.GetComponent<BotMovement>();
         if (botMovement != null)
             botMovement.enabled = !active;
@@ -122,7 +126,7 @@ public class StateController : NetworkBehaviour {
         _forcedMovementRemaining = Mathf.Max(duration, Time.fixedDeltaTime);
         _forcedMovementActive = true;
         _physics.ClearVelocitySource(ForcedMovementVelocitySourceId);
-        movement.enabled = false;
+        RefreshMovementState();
     }
 
     [ClientRpc]
@@ -165,8 +169,15 @@ public class StateController : NetworkBehaviour {
         _forcedMovementActive = false;
         _forcedMovementRemaining = 0f;
         _physics.ClearVelocitySource(ForcedMovementVelocitySourceId);
-        if (IsOwner)
-            movement.enabled = true;
+        RefreshMovementState();
+    }
+
+    public void RefreshMovementState() {
+        if (movement == null)
+            return;
+
+        var frozen = _freeze != null && _freeze.gameObject.activeSelf;
+        movement.enabled = IsOwner && !_forcedMovementActive && !frozen;
     }
 
     private void ClearIceSliding() {
