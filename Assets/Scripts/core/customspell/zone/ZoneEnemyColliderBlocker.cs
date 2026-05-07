@@ -133,7 +133,7 @@ public class ZoneEnemyColliderBlocker : MonoBehaviour {
             if (other == _collider) continue;
             if (!DamageUtils.TryGetOwnerFromCollider(other, out var damageable, out var owner)) continue;
             if (damageable.IsDead) continue;
-            if (TeamManager.Instance.AreAllies(_ownerId, owner)) continue;
+            if (TeamManager.Instance.AreAllies(_ownerId, gameObject, owner, damageable.gameObject)) continue;
             var outward = GetOutwardDirection(damageable, other, center);
             if (!Physics.ComputePenetration(
                     _collider,

@@ -72,8 +72,8 @@ public class InGameMenu : MonoBehaviour {
     private void OnExitClick() {
         var lobby = LobbyManager.Instance.CurrentLobby;
         if (lobby.HasValue) {
-            LobbyManager.Instance.LeaveLobby();
             TeamManager.Instance.Reset();
+            LobbyManager.Instance.LeaveLobby();
             SceneManager.LoadScene("MainMenu");
         }
     }

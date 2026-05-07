@@ -11,10 +11,10 @@ public static class SpellEffectResolver {
         if (targetOwner == ulong.MaxValue)
             return false;
 
-        if (targetOwner == context.OwnerId)
+        if (DamageRelationship.IsSelf(context, targetOwner, targetGo))
             return def.target.HasFlag(EffectTarget.Self);
 
-        if (TeamManager.Instance.AreEnemies(context.OwnerId, targetOwner))
+        if (DamageRelationship.AreEnemies(context, targetOwner, targetGo))
             return def.target.HasFlag(EffectTarget.Enemies);
 
         return def.target.HasFlag(EffectTarget.Allies);

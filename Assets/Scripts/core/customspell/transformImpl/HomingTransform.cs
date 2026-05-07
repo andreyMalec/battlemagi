@@ -89,8 +89,8 @@ public class HomingTransform : ISpellTransform {
                         hasAvoidance = TryGetObstacleAvoidanceDirection(desiredDir, out avoidDir);
 
                     if (hasAvoidance) {
-                    _lastDirection =
-                        Vector3.RotateTowards(_lastDirection, avoidDir, Mathf.Deg2Rad * _maxTurnDegrees, 0f);
+                        _lastDirection =
+                            Vector3.RotateTowards(_lastDirection, avoidDir, Mathf.Deg2Rad * _maxTurnDegrees, 0f);
                     } else {
                         var toDesired =
                             Vector3.RotateTowards(_lastDirection, desiredDir, Mathf.Deg2Rad * _maxTurnDegrees, 0f);
@@ -117,7 +117,7 @@ public class HomingTransform : ISpellTransform {
 
     private bool IsTargetValid() {
         if (_target == null) return false;
-        if (TeamManager.Instance.AreAllies(_target.OwnerId, _ctx.OwnerId)) return false;
+        if (DamageRelationship.AreAllies(_ctx, _target.OwnerId, _target.Get)) return false;
         if (!_target.Get.TryGetComponent<Damageable>(out var damageable)) return false;
         if (damageable.IsDead) return false;
         if (damageable.GetComponentInChildren<Freeze>() != null) return false;
@@ -137,8 +137,8 @@ public class HomingTransform : ISpellTransform {
             if (it == (ITarget)_ctx.Caster) return false;
             if (TeamManager.Instance == null)
                 return it.OwnerId != _ctx.Caster.OwnerId;
-            if (TeamManager.Instance.AreAllies(it.OwnerId, _ctx.OwnerId))
-                return false;
+            if (!it.CanGet) return false;
+            if (DamageRelationship.AreAllies(_ctx, it.OwnerId, it.Get)) return false;
 
             return it.IsPlayer
                    && it.Get.TryGetComponent<Damageable>(out var damageable) && !damageable.IsDead

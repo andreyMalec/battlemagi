@@ -20,6 +20,7 @@ public class BotLifecycleManager : MonoBehaviour {
     private bool _spawnQueued;
     private bool _networkSceneSubscribed;
     private NetworkManager _subscribedNetworkManager;
+    private Coroutine _netSubscribeCoroutine;
 
     private void Awake() {
         if (Instance == null) Instance = this;
@@ -28,7 +29,7 @@ public class BotLifecycleManager : MonoBehaviour {
 
     private void Start() {
         SceneManager.sceneLoaded += OnSceneLoaded;
-        StartCoroutine(SubscribeNetworkSceneEventsWhenReady());
+        _netSubscribeCoroutine = StartCoroutine(SubscribeNetworkSceneEventsWhenReady());
     }
 
     private void OnDestroy() {
@@ -36,7 +37,8 @@ public class BotLifecycleManager : MonoBehaviour {
             Instance = null;
 
         SceneManager.sceneLoaded -= OnSceneLoaded;
-        if (_networkSceneSubscribed && _subscribedNetworkManager != null && _subscribedNetworkManager.SceneManager != null)
+        if (_networkSceneSubscribed && _subscribedNetworkManager != null &&
+            _subscribedNetworkManager.SceneManager != null)
             _subscribedNetworkManager.SceneManager.OnLoadEventCompleted -= OnNetworkSceneLoaded;
     }
 
@@ -55,6 +57,7 @@ public class BotLifecycleManager : MonoBehaviour {
     }
 
     public void BeginMatch() {
+        DespawnAllBots();
         _matchBotsEnabled = true;
     }
 
@@ -71,7 +74,7 @@ public class BotLifecycleManager : MonoBehaviour {
         }
 
         for (int i = 0; i < initialBotCount; i++) {
-            SpawnNewBot();
+            SpawnNewBot(Random.Range(1, 1), Random.Range(0f, 360f), Random.Range(0f, 1f));
         }
     }
 
@@ -99,8 +102,11 @@ public class BotLifecycleManager : MonoBehaviour {
         if (!participantId.IsBot) return;
         var botId = participantId.Value;
 
-        if (botObject != null)
-            DespawnBotObject(botObject);
+        if (botObject != null) {
+            botObject.GetComponentInChildren<MeshController>().SetRagdoll(true);
+            botObject.GetComponent<BotMovement>().enabled = false;
+            botObject.GetComponent<BotMovementController>().enabled = false;
+        }
 
         _activeBots.Remove(botId);
 
@@ -108,7 +114,7 @@ public class BotLifecycleManager : MonoBehaviour {
             return;
 
         _pendingRespawn.Add(botId);
-        _respawnCoroutines[botId] = StartCoroutine(RespawnBot(botId));
+        _respawnCoroutines[botId] = StartCoroutine(RespawnBot(botId, botObject));
     }
 
     public bool DespawnBot(ulong botId, bool removeFromRegistry = true) {
@@ -159,8 +165,10 @@ public class BotLifecycleManager : MonoBehaviour {
         }
     }
 
-    private IEnumerator RespawnBot(ulong botId) {
+    private IEnumerator RespawnBot(ulong botId, GameObject oldBotObject) {
         yield return new WaitForSeconds(respawnDelay);
+        DespawnBotObject(oldBotObject);
+        yield return new WaitForEndOfFrame();
         _pendingRespawn.Remove(botId);
         _respawnCoroutines.Remove(botId);
 
@@ -183,6 +191,11 @@ public class BotLifecycleManager : MonoBehaviour {
             return;
 
         if (scene.name == "MainMenu") {
+            _networkSceneSubscribed = false;
+            _subscribedNetworkManager = null;
+            if (_netSubscribeCoroutine != null)
+                StopCoroutine(_netSubscribeCoroutine);
+            _netSubscribeCoroutine = StartCoroutine(SubscribeNetworkSceneEventsWhenReady());
             EndMatch();
             return;
         }
@@ -194,7 +207,9 @@ public class BotLifecycleManager : MonoBehaviour {
         QueueSpawnWhenReady();
     }
 
-    private void OnNetworkSceneLoaded(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut) {
+    private void OnNetworkSceneLoaded(
+        string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut
+    ) {
         if (!_matchBotsEnabled) return;
         if (sceneName == "MainMenu") {
             EndMatch();
@@ -218,7 +233,8 @@ public class BotLifecycleManager : MonoBehaviour {
     }
 
     private IEnumerator WaitForSpawnDependencies() {
-        while (_matchBotsEnabled && (PlayerSpawner.instance == null || PlayerManager.Instance == null || TeamManager.Instance == null)) {
+        while (_matchBotsEnabled && (PlayerSpawner.instance == null || PlayerManager.Instance == null ||
+                                     TeamManager.Instance == null)) {
             yield return null;
         }
 
@@ -231,6 +247,7 @@ public class BotLifecycleManager : MonoBehaviour {
     }
 
     private static void DespawnBotObject(GameObject botObject) {
+        if (botObject == null) return;
         if (botObject.TryGetComponent<NetworkObject>(out var networkObject) && networkObject.IsSpawned) {
             networkObject.Despawn(true);
             return;
@@ -239,5 +256,3 @@ public class BotLifecycleManager : MonoBehaviour {
         Destroy(botObject);
     }
 }
-
-

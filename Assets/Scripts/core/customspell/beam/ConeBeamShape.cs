@@ -52,7 +52,11 @@ public class ConeBeamShape : IShape {
                 var centerOffset = center - origin;
                 var centerDistance = Vector3.Dot(centerOffset, dir);
                 var centerOnAxis = origin + dir * Mathf.Clamp(centerDistance, 0f, length);
-                var point = collider.ClosestPoint(centerOnAxis);
+
+                var point = origin;
+                if (collider is BoxCollider || collider is SphereCollider || collider is CapsuleCollider) {
+                    point = collider.ClosestPoint(centerOnAxis);
+                }
 
                 var pointOffset = point - origin;
                 var distance = Vector3.Dot(pointOffset, dir);

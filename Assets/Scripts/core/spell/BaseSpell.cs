@@ -130,17 +130,17 @@ public class BaseSpell : NetworkBehaviour {
 
         if (other.TryGetComponent<ForceField>(out var field)) {
             // союзный купол? игнор
-            if (TeamManager.Instance.AreAllies(OwnerClientId, field.OwnerClientId))
+            if (TeamManager.Instance.AreAllies(OwnerClientId, gameObject, field.OwnerClientId, field.gameObject))
                 return;
         } else if (other.TryGetComponent<ChildCollider>(out _)) {
             var player = other.GetComponentInParent<Player>();
             if (!spellData.canSelfDamage &&
-                TeamManager.Instance.AreAllies(OwnerClientId, player.OwnerClientId))
+                TeamManager.Instance.AreAllies(OwnerClientId, gameObject, player.OwnerClientId, player.gameObject))
                 return;
             hitOwner = player.OwnerClientId;
         } else if (other.TryGetComponent<Player>(out var player)) {
             if (!spellData.canSelfDamage &&
-                TeamManager.Instance.AreAllies(OwnerClientId, player.OwnerClientId))
+                TeamManager.Instance.AreAllies(OwnerClientId, gameObject, player.OwnerClientId, player.gameObject))
                 return;
             hitOwner = player.OwnerClientId;
         } else if (other.TryGetComponent<BaseSpell>(out var spell)) {

@@ -31,6 +31,7 @@ public class SpellCasterNetworkBridge : NetworkBehaviour, ISpellCasterBridge {
             return spent;
         }
 
+        Debug.Log($"_________________ TrySpendMana:  amount: {amount}");
         var predicted = _core.Mana.SpendWithPrimalServer(amount);
         SpendManaServerRpc(amount);
         return predicted;
@@ -215,6 +216,7 @@ public class SpellCasterNetworkBridge : NetworkBehaviour, ISpellCasterBridge {
         if (!_hasCore) return;
         if (!IsSpawned) return;
 
+        Debug.Log($"_________________ SpendManaServerRpc: {amount}");
         var before = _core.Mana.Mana;
         _core.Mana.SpendWithPrimalServer(amount);
         PlayerAchievementsManager.Instance?.ReportManaSpentServer(OwnerClientId, before, _core.Mana.Mana, _core.Mana.MaxMana);

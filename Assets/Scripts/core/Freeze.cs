@@ -9,6 +9,8 @@ public class Freeze : MonoBehaviour {
     private Animator _animator;
     private PlayerAnimator _playerAnimator;
     private FootControllerIK _footControllerIK;
+    private BotMovement _botMovement;
+    private BotMovementController _botMovementController;
 
     private void Awake() {
         var parent = transform.parent.gameObject;
@@ -17,6 +19,8 @@ public class Freeze : MonoBehaviour {
         _caster = parent.GetComponent<SpellCasterPlayer>();
         _look = parent.GetComponent<FirstPersonLook>();
         _playerAnimator = parent.GetComponent<PlayerAnimator>();
+        _botMovement = parent.GetComponent<BotMovement>();
+        _botMovementController = parent.GetComponent<BotMovementController>();
     }
 
     public void BindAvatar(Animator a, FootControllerIK footControllerIK) {
@@ -33,6 +37,8 @@ public class Freeze : MonoBehaviour {
         if (_animator != null) _animator.speed = 0f;
         if (_footControllerIK != null) _footControllerIK.enabled = false;
         if (_tester != null) _tester.enabled = false;
+        if (_botMovement != null) _botMovement.enabled = false;
+        if (_botMovementController != null) _botMovementController.enabled = false;
     }
 
     private void OnDisable() {
@@ -44,5 +50,7 @@ public class Freeze : MonoBehaviour {
         if (_animator != null) _animator.speed = 1f;
         if (_footControllerIK != null) _footControllerIK.enabled = true;
         if (_tester != null) _tester.enabled = true;
+        if (_botMovement != null) _botMovement.enabled = true;
+        if (_botMovementController != null) _botMovementController.enabled = true;
     }
 }

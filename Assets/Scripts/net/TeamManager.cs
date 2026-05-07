@@ -317,8 +317,47 @@ public class TeamManager : NetworkBehaviour {
         return result;
     }
 
+    private ParticipantId ResolveParticipantId(ulong rawId) {
+        var decoded = ParticipantOwnerCodec.Decode(rawId);
+
+        if ((rawId & ParticipantOwnerCodec.BotMask) != 0)
+            return decoded;
+
+        var human = decoded;
+        var hasHuman = TryGetTeam(human, out _);
+
+        var bot = ParticipantId.Bot(rawId);
+        var hasBot = TryGetTeam(bot, out _);
+
+        if (hasHuman && !hasBot)
+            return human;
+        if (hasBot && !hasHuman)
+            return bot;
+        if (hasBot)
+            return bot;
+
+        return decoded;
+    }
+
+    private ParticipantId ResolveParticipantId(ulong rawId, GameObject contextObject) {
+        if (contextObject != null) {
+            if (contextObject.TryGetComponent<ParticipantIdentity>(out var identity))
+                return identity.Id;
+
+            var parentIdentity = contextObject.GetComponentInParent<ParticipantIdentity>();
+            if (parentIdentity != null)
+                return parentIdentity.Id;
+        }
+
+        return ResolveParticipantId(rawId);
+    }
+
     public bool AreEnemies(ulong a, ulong b) {
-        return AreEnemies(ParticipantOwnerCodec.Decode(a), ParticipantOwnerCodec.Decode(b));
+        return AreEnemies(ResolveParticipantId(a), ResolveParticipantId(b));
+    }
+
+    public bool AreEnemies(ulong a, GameObject aContext, ulong b, GameObject bContext) {
+        return AreEnemies(ResolveParticipantId(a, aContext), ResolveParticipantId(b, bContext));
     }
 
     public bool AreEnemies(ParticipantId a, ParticipantId b) {
@@ -329,6 +368,10 @@ public class TeamManager : NetworkBehaviour {
 
     public bool AreAllies(ulong a, ulong b) {
         return !AreEnemies(a, b);
+    }
+
+    public bool AreAllies(ulong a, GameObject aContext, ulong b, GameObject bContext) {
+        return !AreEnemies(a, aContext, b, bContext);
     }
 
     public bool AreAllies(ParticipantId a, ParticipantId b) {

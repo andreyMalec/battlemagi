@@ -32,7 +32,7 @@ public class ForcedMovementEffect : StatusEffectData {
         resolvedDuration = ResolveMovementDuration(applyContext, target, targetPoint);
 
         if (target.TryGetComponent<StateController>(out var player)) {
-            if (TeamManager.Instance.AreAllies(applyContext.ownerClientId, player.OwnerClientId))
+            if (TeamManager.Instance.AreAllies(applyContext.ownerClientId, null, player.OwnerClientId, target))
                 return false;
 
             player.StartForcedMovement(targetPoint, resolvedDuration);

@@ -61,7 +61,7 @@ public class ForceField : NetworkBehaviour {
         if (!IsServer) return;
         if (!go.TryGetComponent<NetworkObject>(out var netObj)) return;
         if (!netObj.TryGetComponent<OLDSpellLifetime>(out var spell)) return;
-        if (TeamManager.Instance.AreAllies(netObj.OwnerClientId, OwnerClientId)) return;
+        if (TeamManager.Instance.AreAllies(netObj.OwnerClientId, go, OwnerClientId, gameObject)) return;
         spell.Destroy();
         var spellData = baseSpell.spellData;
 

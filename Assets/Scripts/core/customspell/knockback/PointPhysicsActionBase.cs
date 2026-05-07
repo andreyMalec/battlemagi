@@ -43,7 +43,7 @@ public abstract class PointPhysicsActionBase : ISpellAction {
         if (DamageUtils.TryGetOwnerFromCollider(target, out var damageable, out var ownerId)) {
             if (damageable.IsDead) return false;
             if (damageable.TryGetComponent<PlayerPhysics>(out var physics)) {
-                if (!CanAffect(context, ownerId)) return false;
+                if (!CanAffect(context, ownerId, target)) return false;
                 damageable.TryGetComponent<FirstPersonMovement>(out var movement);
                 resolvedTarget = new ResolvedPhysicsTarget(damageable, physics, movement, null, ownerId, true);
                 return true;
@@ -72,11 +72,11 @@ public abstract class PointPhysicsActionBase : ISpellAction {
         return true;
     }
 
-    protected bool CanAffect(ISpellContext context, ulong ownerId) {
+    protected bool CanAffect(ISpellContext context, ulong ownerId, GameObject targetObject) {
         var def = context.Spell.knockback;
         if (def == null) return false;
         if (def.canHitAllies) return true;
-        return TeamManager.Instance.AreEnemies(context.OwnerId, ownerId);
+        return DamageRelationship.AreEnemies(context, ownerId, targetObject);
     }
 
     protected Vector3 ComputeDirection(Transform targetTransform, Vector3 point, KnockbackDefinition def) {

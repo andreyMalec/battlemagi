@@ -81,8 +81,11 @@ public class StateController : NetworkBehaviour {
         var movement = netObj.GetComponent<FirstPersonMovement>();
         if (movement != null)
             movement.enabled = !active;
+        var botMovement = netObj.GetComponent<BotMovement>();
+        if (botMovement != null)
+            botMovement.enabled = !active;
         if (active) {
-            var parent = NetworkManager.ConnectedClients[originClientId].PlayerObject;
+            var parent = TryResolveTarget(originClientId);
             if (parent != null) {
                 netObj.TrySetParent(parent);
             } else {
@@ -91,6 +94,24 @@ public class StateController : NetworkBehaviour {
         } else {
             netObj.TryRemoveParent();
         }
+    }
+
+    private static NetworkObject TryResolveTarget(ulong ownerId) {
+        var participantId = ParticipantOwnerCodec.Decode(ownerId);
+        if (participantId.IsHuman && NetworkManager.Singleton != null &&
+            NetworkManager.Singleton.ConnectedClients.TryGetValue(participantId.Value, out var client) &&
+            client.PlayerObject != null)
+            return client.PlayerObject;
+
+        var participants = FindObjectsByType<ParticipantIdentity>(FindObjectsSortMode.None);
+        for (int i = 0; i < participants.Length; i++) {
+            var participant = participants[i];
+            if (participant.Id != participantId)
+                continue;
+            return participant.gameObject.GetComponent<NetworkObject>();
+        }
+
+        return null;
     }
 
     [ClientRpc]

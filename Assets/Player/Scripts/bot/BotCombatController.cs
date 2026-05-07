@@ -14,6 +14,7 @@ public class BotCombatController : MonoBehaviour {
     [SerializeField] private float strafeSwitchInterval = 1.1f;
     [SerializeField] [Range(0.1f, 1f)] private float targetBodyHeightFactor = 0.75f;
     [SerializeField] private float ballisticTargetLift = 1f;
+    [SerializeField] private float castPrepareDelay = 0.5f;
     [SerializeField] private LayerMask sightMask = ~0;
     [SerializeField] private BotSpellDecisionWeights decisionWeights = new();
 
@@ -26,6 +27,11 @@ public class BotCombatController : MonoBehaviour {
     private readonly List<SpellDefinition> _spells = new();
     private ITarget _target;
     private SpellDefinition _lastCastSpell;
+    private SpellDefinition _preparedSpell;
+    private ITarget _preparedTarget;
+    private float _preparedTrackTargetDuration;
+    private float _preparedCastTimer;
+    private bool _hasPreparedSpell;
 
     private float _retargetTimer;
     private float _thinkTimer;
@@ -60,8 +66,9 @@ public class BotCombatController : MonoBehaviour {
         }
     }
 
-    private void Update() {
+    private void FixedUpdate() {
         if (_spells.Count == 0) {
+            ClearPreparedSpell();
             _movement.ClearLookDirection();
             return;
         }
@@ -72,6 +79,7 @@ public class BotCombatController : MonoBehaviour {
         _castLockTimer -= Time.deltaTime;
         _trackAimTimer -= Time.deltaTime;
         _strafeTimer -= Time.deltaTime;
+        _preparedCastTimer -= Time.deltaTime;
 
         if (_retargetTimer >= retargetInterval || !IsTargetValid(_target)) {
             _retargetTimer = 0f;
@@ -79,6 +87,7 @@ public class BotCombatController : MonoBehaviour {
         }
 
         if (_target == null) {
+            ClearPreparedSpell();
             _movement.ClearLookDirection();
             return;
         }
@@ -129,15 +138,71 @@ public class BotCombatController : MonoBehaviour {
 
         var hasLos = HasLineOfSight(_caster.Origin, targetPosition, _target.Get.transform.root);
         var castAngle = Vector3.Angle(transform.forward, toTarget.normalized);
-        if (_castLockTimer > 0f || !hasLos || castAngle > castAngleTolerance)
+        if (!_hasPreparedSpell) {
+            if (_castLockTimer > 0f || !hasLos || castAngle > castAngleTolerance)
+                return;
+
+            BeginPrepare(spellDecision.Spell, _target, spellDecision.TrackTargetDuration);
+            return;
+        }
+
+        if (spellDecision.Spell != _preparedSpell && _castLockTimer <= 0f && hasLos &&
+            castAngle <= castAngleTolerance) {
+            BeginPrepare(spellDecision.Spell, _target, spellDecision.TrackTargetDuration);
+            return;
+        }
+
+        if (!IsTargetValid(_preparedTarget)) {
+            ClearPreparedSpell();
+            return;
+        }
+
+        if (!CanUseSpellNow(_preparedSpell)) {
+            ClearPreparedSpell();
+            return;
+        }
+
+        if (_preparedCastTimer > 0f)
             return;
 
-        var castTarget = BuildCastTarget(spellDecision.Spell, _target);
-        if (_caster.TryCastBot(spellDecision.Spell, castTarget)) {
-            _lastCastSpell = spellDecision.Spell;
-            _castLockTimer = GetCastCooldown(spellDecision.Spell);
-            _trackAimTimer = Mathf.Max(_trackAimTimer, spellDecision.TrackTargetDuration);
+        var preparedTargetPosition = BallisticCastTargetBuilder.GetAimPoint(_preparedTarget, targetBodyHeightFactor);
+        var preparedHasLos = HasLineOfSight(_caster.Origin, preparedTargetPosition, _preparedTarget.Get.transform.root);
+        var preparedCastAngle =
+            Vector3.Angle(transform.forward, (preparedTargetPosition - transform.position).normalized);
+        if (_castLockTimer > 0f || !preparedHasLos || preparedCastAngle > castAngleTolerance)
+            return;
+
+        var castTarget = BuildCastTarget(_preparedSpell, _preparedTarget);
+        if (_caster.TryCastBot(_preparedSpell, castTarget)) {
+            _lastCastSpell = _preparedSpell;
+            _castLockTimer = GetCastCooldown(_preparedSpell);
+            _trackAimTimer = Mathf.Max(_trackAimTimer, _preparedTrackTargetDuration);
+            ClearPreparedSpell();
         }
+    }
+
+    private void BeginPrepare(SpellDefinition spell, ITarget target, float trackTargetDuration) {
+        if (!CanUseSpellNow(spell))
+            return;
+
+        _preparedSpell = spell;
+        _preparedTarget = target;
+        _preparedTrackTargetDuration = trackTargetDuration;
+        _preparedCastTimer = castPrepareDelay;
+        _hasPreparedSpell = true;
+        _caster.SelectSpell(_preparedSpell);
+    }
+
+    private bool CanUseSpellNow(SpellDefinition spell) {
+        return _caster.CanStartCast(spell) && !_caster.Channeling && !_caster.Charging;
+    }
+
+    private void ClearPreparedSpell() {
+        _preparedSpell = null;
+        _preparedTarget = null;
+        _preparedTrackTargetDuration = 0f;
+        _preparedCastTimer = 0f;
+        _hasPreparedSpell = false;
     }
 
     private ITarget BuildCastTarget(SpellDefinition spell, ITarget target) {
@@ -160,6 +225,8 @@ public class BotCombatController : MonoBehaviour {
             if (spell == null)
                 continue;
             if (spell == _lastCastSpell)
+                continue;
+            if (!CanUseSpellNow(spell))
                 continue;
 
             var input = new BotSpellDecisionInput {
@@ -284,5 +351,4 @@ public class BotCombatController : MonoBehaviour {
         public float PreferredDistance;
         public float TrackTargetDuration;
     }
-
 }

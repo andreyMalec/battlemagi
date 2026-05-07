@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 
 [RequireComponent(typeof(Damageable))]
@@ -14,7 +15,7 @@ public class SpellCasterPlayer : SpellCaster {
     [SerializeField] private bool animateCast = true;
     [SerializeField] private bool animateHand = true;
     [SerializeField] private StatusEffectData primalManaStatus;
-    
+
     [SerializeField] private bool isHuman = true;
 
     private ISpellCasterBridge _bridgeTyped;
@@ -56,8 +57,25 @@ public class SpellCasterPlayer : SpellCaster {
     public bool CastWaiting => _spell != null || _echoSpell != null;
     public bool CanSelectSpell => !CastWaiting && !Channeling && !Charging;
 
-    public override Vector3 Origin => spawnPos.position;
-    public override Vector3 Direction => spawnPos.forward;
+    public override Vector3 Origin {
+        get {
+            try {
+                return spawnPos.position;
+            } catch (Exception e) {
+                return Vector3.zero;
+            }
+        }
+    }
+
+    public override Vector3 Direction {
+        get {
+            try {
+                return spawnPos.forward;
+            } catch (Exception e) {
+                return Vector3.zero;
+            }
+        }
+    }
 
     public override bool IsPlayer => true;
     public override bool IsSpell => false;
@@ -171,14 +189,17 @@ public class SpellCasterPlayer : SpellCaster {
         _preview?.SetSpell(_spell);
     }
 
-    public void SelectSpell(SpellDefinition spell) {
+    public void SelectSpell([CanBeNull] SpellDefinition spell) {
         if (spell != _spell)
             ResetEcho();
         _spell = spell;
 
         SpellLog.Log($"{gameObject.name} Selected spell: " + spell?.spellName);
         if (animateHand)
-            _animator.CastWaitingAnim(true, _spell.castWaitingIndex);
+            if (spell == null)
+                _animator.CastWaitingAnim(false);
+            else
+                _animator.CastWaitingAnim(true, _spell.castWaitingIndex);
     }
 
     public bool TryCastBot(SpellDefinition spell, ITarget target) {
@@ -216,19 +237,38 @@ public class SpellCasterPlayer : SpellCaster {
         StartCoroutine(BeginEcho(spell, usedEcho));
     }
 
+    /**
+     * Каст по цели (наводка из бота)
+     */
+    public override void Cast(SpellDefinition spell, ITarget target) {
+        var usedEcho = spell.charging ? _chargingUsedEcho : ConsumeCostOrEcho(spell);
+        _chargingUsedEcho = false;
+        base.Cast(spell, target);
+
+        if (spell.channeling) {
+            _channelingRoutine = StartCoroutine(Channel(spell));
+        }
+
+        _spell = null;
+        StartCoroutine(BeginEcho(spell, usedEcho));
+    }
+
     private bool ConsumeCostOrEcho(SpellDefinition spell) {
         if (_echoSpell == spell && _echoRemaining > 0) {
             _echoRemaining--;
-            PlayerAchievementsManager.Instance?.ReportEchoConsumedServer(Authority.OwnerId);
+            if (isHuman)
+                PlayerAchievementsManager.Instance?.ReportEchoConsumedServer(Authority.OwnerId);
             return true;
         }
-        PlayerAchievementsManager.Instance?.ReportEchoStartedServer(Authority.OwnerId);
+
+        if (isHuman)
+            PlayerAchievementsManager.Instance?.ReportEchoStartedServer(Authority.OwnerId);
 
         SpendResourceServer(spell, mana.CostForCast(spell));
         return false;
     }
 
-    private bool CanStartCast(SpellDefinition spell) {
+    public bool CanStartCast(SpellDefinition spell) {
         if (spell == null) return false;
         if (spell.bloodMagic) {
             if (_echoSpell == spell && _echoRemaining > 0)
@@ -242,7 +282,6 @@ public class SpellCasterPlayer : SpellCaster {
 
     private bool SpendResourceServer(SpellDefinition spell, float amount) {
         if (spell == null || amount <= 0f) return true;
-
         if (spell.bloodMagic)
             return _bridgeTyped.TrySpendHealth(amount);
 
@@ -400,7 +439,7 @@ public class SpellCasterPlayer : SpellCaster {
                 yield break;
             }
 
-            _chargingDamageMultiplier = Mathf.Clamp01((float)Math.Pow(2, elapsed / duration));
+            _chargingDamageMultiplier = Mathf.Clamp01((float)Math.Pow(elapsed / duration, 2));
             yield return null;
         }
 
@@ -422,6 +461,7 @@ public class SpellCasterPlayer : SpellCaster {
         Charging = false;
         var toCast = spell;
         _chargingSpell = null;
+        SpellLog.Log($"{gameObject.name} ReleaseCharged damageMultiplier={_chargingDamageMultiplier}");
 
         Cast(toCast);
 
