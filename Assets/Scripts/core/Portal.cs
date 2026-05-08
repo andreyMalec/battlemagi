@@ -98,7 +98,7 @@ public class Portal : MonoBehaviour {
         for (var i = 0; i < _pendingTeleports.Count; i++) {
             var tp = _pendingTeleports[i];
             tp.target.position = tp.position;
-            tp.look.ApplyInitialRotation(tp.rotation);
+            tp.look?.ApplyInitialRotation(tp.rotation);
         }
 
         _pendingTeleports.Clear();
@@ -156,7 +156,7 @@ public class Portal : MonoBehaviour {
     private void OnTriggerEnter(Collider other) {
         if (!DamageUtils.TryGetOwnerFromCollider(other, out var player, out var owner))
             return;
-        if (!player.IsOwner || !player.TryGetComponent<Player>(out _))
+        if (!player.IsOwner || !player.TryGetComponent<SpellCasterPlayer>(out _))
             return;
         if (_nextAllowedTime.TryGetValue(owner, out var nextTime) && Time.time < nextTime)
             return;

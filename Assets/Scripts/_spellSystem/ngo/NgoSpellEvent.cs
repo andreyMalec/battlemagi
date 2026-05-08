@@ -1,3 +1,4 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -31,7 +32,12 @@ public class NgoSpellSystemEvent : NetworkBehaviour, SpellSystemEvent {
 
         var instance = obj.GetComponentInChildren<SpellInstance>();
         instance?.Kill();
-        var spellOwnerId = instance?.OwnerId ?? default;
+        ulong spellOwnerId;
+        try {
+            spellOwnerId = instance?.OwnerId ?? obj.OwnerClientId;
+        } catch (Exception e) {
+            spellOwnerId = obj.OwnerClientId;
+        }
 
         foreach (var caster in SpellCaster.Active) {
             if (caster.Authority == null || !caster.Authority.IsOwner) continue;

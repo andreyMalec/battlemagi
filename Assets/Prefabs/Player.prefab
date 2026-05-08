@@ -788,6 +788,7 @@ GameObject:
   - component: {fileID: 129843703706901327}
   - component: {fileID: 2591686918436872089}
   - component: {fileID: 3174336610539449282}
+  - component: {fileID: 1194555110489232473}
   - component: {fileID: 2383334637399937855}
   - component: {fileID: 7537974106103899790}
   - component: {fileID: 2875345282594729022}
@@ -893,6 +894,7 @@ MonoBehaviour:
   animateCast: 1
   animateHand: 1
   primalManaStatus: {fileID: 11400000, guid: 931163521ad02a846a97668c9a754038, type: 2}
+  isHuman: 1
 --- !u!114 &7927841338553304458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1366,6 +1368,19 @@ MonoBehaviour:
     m_InternalValue: 0
   armor:
     m_InternalValue: 0
+--- !u!114 &1194555110489232473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c98219d7660c4067a153fe32284e16cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Colorable
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!114 &2383334637399937855
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -13,7 +13,8 @@ public class LobbyMembers : MonoBehaviour {
 
     private Dictionary<ulong, LobbyMemberItem> lobbyMembers = new Dictionary<ulong, LobbyMemberItem>();
     private Dictionary<ulong, LobbyMemberItem> botMembers = new Dictionary<ulong, LobbyMemberItem>();
-    private LobbyMemberItem _addBotItem;
+    private LobbyMemberItem _addBotItemRed;
+    private LobbyMemberItem _addBotItemBlue;
     private string _lastBotRosterRaw;
 
     private int frame = 0;
@@ -48,7 +49,7 @@ public class LobbyMembers : MonoBehaviour {
             SyncBots(lobby.Value, true);
         }
 
-        EnsureAddBotItem();
+        EnsureAddBotItem(true);
     }
 
     private void Update() {
@@ -63,7 +64,7 @@ public class LobbyMembers : MonoBehaviour {
             }
 
             SyncBots(lobby.Value, false);
-            EnsureAddBotItem();
+            EnsureAddBotItem(false);
         }
 
         var showTeams = TeamManager.Instance.isTeamMode;
@@ -85,8 +86,9 @@ public class LobbyMembers : MonoBehaviour {
     }
 
     private LobbyMemberItem CreateBot(LobbyBotRosterData.Entry bot) {
-        var go = Instantiate(lobbyMemberPrefab, containerTeamRed.transform);
-        go.transform.SetParent(containerTeamRed.transform);
+        var container = GetBotContainer(bot.team);
+        var go = Instantiate(lobbyMemberPrefab, container);
+        go.transform.SetParent(container);
         var item = go.GetComponent<LobbyMemberItem>();
         item.UpdateBotState(
             bot,
@@ -96,32 +98,63 @@ public class LobbyMembers : MonoBehaviour {
         return item;
     }
 
-    private void EnsureAddBotItem() {
+    private void EnsureAddBotItem(bool forceRemove) {
         var isHost = LobbyManager.Instance.IsHost();
+        var isTeamMode = TeamManager.Instance.isTeamMode;
         if (!isHost) {
-            if (_addBotItem != null)
-                Destroy(_addBotItem.root.gameObject);
-            _addBotItem = null;
+            DestroyAddBotItems();
             return;
         }
 
         var maxMembers = LobbyManager.Instance.CurrentLobby?.MaxMembers ?? 0;
-        if (lobbyMembers.Count + botMembers.Count >= maxMembers) {
-            if (_addBotItem != null)
-                Destroy(_addBotItem.root.gameObject);
+        if (forceRemove || lobbyMembers.Count + botMembers.Count >= maxMembers) {
+            DestroyAddBotItems();
+            if (!forceRemove)
+                return;
+        }
+
+        if (isTeamMode) {
+            EnsureAddBotItemForTeam(TeamManager.Team.Red);
+            EnsureAddBotItemForTeam(TeamManager.Team.Blue);
             return;
         }
 
-        if (_addBotItem != null)
+        if (_addBotItemRed != null)
             return;
 
         var go = Instantiate(lobbyMemberPrefab, containerTeamRed.transform);
         go.transform.SetParent(containerTeamRed.transform);
-        _addBotItem = go.GetComponent<LobbyMemberItem>();
-        _addBotItem.UpdateAddBotState(AddBot);
+        _addBotItemRed = go.GetComponent<LobbyMemberItem>();
+        _addBotItemRed.UpdateAddBotState(() => AddBot(TeamManager.Team.None));
     }
 
-    private void AddBot() {
+    private void EnsureAddBotItemForTeam(TeamManager.Team team) {
+        var current = team == TeamManager.Team.Blue ? _addBotItemBlue : _addBotItemRed;
+        if (current != null)
+            return;
+
+        var container = GetBotContainer(team);
+        var go = Instantiate(lobbyMemberPrefab, container);
+        go.transform.SetParent(container);
+        var item = go.GetComponent<LobbyMemberItem>();
+        item.UpdateAddBotState(() => AddBot(team));
+
+        if (team == TeamManager.Team.Blue)
+            _addBotItemBlue = item;
+        else
+            _addBotItemRed = item;
+    }
+
+    private void DestroyAddBotItems() {
+        if (_addBotItemRed != null)
+            Destroy(_addBotItemRed.root.gameObject);
+        if (_addBotItemBlue != null)
+            Destroy(_addBotItemBlue.root.gameObject);
+        _addBotItemRed = null;
+        _addBotItemBlue = null;
+    }
+
+    private void AddBot(TeamManager.Team team) {
         if (!LobbyManager.Instance.IsHost())
             return;
 
@@ -129,15 +162,27 @@ public class LobbyMembers : MonoBehaviour {
         if (!lobby.HasValue)
             return;
 
-        if (_addBotItem != null)
-            Destroy(_addBotItem.root.gameObject);
+        DestroyAddBotItems();
+
+        var hue = Random.Range(0f, 360f);
+        var saturation = Random.Range(0.4f, 1f);
+        if (TeamManager.Instance.isTeamMode) {
+            if (team == TeamManager.Team.Blue) {
+                hue = 228f;
+                saturation = 0.85f;
+            } else {
+                hue = 0f;
+                saturation = 0.85f;
+            }
+        }
 
         var bots = LobbyBotRosterData.LoadFromLobby(lobby.Value);
         var bot = new LobbyBotRosterData.Entry {
             id = LobbyBotRosterData.NextId(bots),
+            team = team,
             archetype = Random.Range(0, 4),
-            hue = Random.Range(0f, 360f),
-            saturation = Random.Range(0.4f, 1f)
+            hue = hue,
+            saturation = saturation
         };
         bots.Add(bot);
         LobbyBotRosterData.SaveToLobby(lobby.Value, bots);
@@ -160,6 +205,7 @@ public class LobbyMembers : MonoBehaviour {
 
         LobbyBotRosterData.SaveToLobby(lobby.Value, bots);
         SyncBots(lobby.Value, true);
+        EnsureAddBotItem(true);
     }
 
     private void SetBotArchetype(ulong botId, int archetype) {
@@ -203,6 +249,9 @@ public class LobbyMembers : MonoBehaviour {
                 RemoveBot,
                 SetBotArchetype
             );
+            var container = GetBotContainer(bot.team);
+            if (item.root.parent != container)
+                item.root.SetParent(container, false);
         }
 
         var existing = new List<ulong>(botMembers.Keys);
@@ -234,6 +283,12 @@ public class LobbyMembers : MonoBehaviour {
         item.SetParent(container, false);
     }
 
+    private Transform GetBotContainer(TeamManager.Team team) {
+        if (TeamManager.Instance.isTeamMode && team == TeamManager.Team.Blue)
+            return containerTeamBlue.transform;
+        return containerTeamRed.transform;
+    }
+
     private void Destroy(ulong steamId) {
         if (lobbyMembers.TryGetValue(steamId, out var item)) {
             Destroy(item.root.gameObject);
@@ -259,12 +314,12 @@ public class LobbyMembers : MonoBehaviour {
 
     private void OnLobbyMemberJoined(Lobby lobby, Friend friend) {
         lobbyMembers[friend.Id.Value] = Create(friend);
-        EnsureAddBotItem();
+        EnsureAddBotItem(true);
     }
 
     private void OnLobbyMemberLeave(Lobby lobby, Friend friend) {
         Destroy(friend.Id.Value);
-        EnsureAddBotItem();
+        EnsureAddBotItem(true);
     }
 
     private void OnDisable() {

@@ -91,8 +91,10 @@ public class SpellCasterNet : NetworkBehaviour {
         var caster = casterNetObj.GetComponentInChildren<SpellCaster>();
 
         var damageKind = SpellPrefabDatabase.Instance.Sound(spell);
-        if (PlayerAchievementsManager.Instance != null)
-            PlayerAchievementsManager.Instance.ReportSpellCastServer(rpcParams.Receive.SenderClientId, damageKind);
+        if (PlayerAchievementsManager.Instance != null) {
+            if (!caster.TryGetComponent<ParticipantIdentity>(out _))
+                PlayerAchievementsManager.Instance.ReportSpellCastServer(rpcParams.Receive.SenderClientId, damageKind);
+        }
 
         var context = caster.CastContext(spell);
         context.target = target;

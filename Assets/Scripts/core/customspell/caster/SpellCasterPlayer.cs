@@ -16,7 +16,7 @@ public class SpellCasterPlayer : SpellCaster {
     [SerializeField] private bool animateHand = true;
     [SerializeField] private StatusEffectData primalManaStatus;
 
-    [SerializeField] private bool isHuman = true;
+    [SerializeField] public bool isHuman = true;
 
     private ISpellCasterBridge _bridgeTyped;
     private Stats _stats;

@@ -15,6 +15,9 @@ public class BotCombatController : MonoBehaviour {
     [SerializeField] [Range(0.1f, 1f)] private float targetBodyHeightFactor = 0.75f;
     [SerializeField] private float ballisticTargetLift = 1f;
     [SerializeField] private float castPrepareDelay = 0.5f;
+    [SerializeField] private float targetLostSightTimeout = 2.25f;
+    [SerializeField] private float targetVisibleAngle = 85f;
+    [SerializeField] private float lostTargetReacquireDelay = 2f;
     [SerializeField] private LayerMask sightMask = ~0;
     [SerializeField] private BotSpellDecisionWeights decisionWeights = new();
 
@@ -39,9 +42,44 @@ public class BotCombatController : MonoBehaviour {
     private float _castLockTimer;
     private float _trackAimTimer;
     private float _strafeTimer;
+    private float _targetOutOfSightTimer;
+    private float _suppressedTargetTimer;
     private int _strafeDirection = 1;
+    private int _suppressedTargetRootId;
+    private string _debugLostReason = "";
 
     private readonly RaycastHit[] _sightHits = new RaycastHit[16];
+
+    public bool HasCombatTarget => IsTargetValid(_target) || IsTargetValid(_preparedTarget);
+    public bool ShouldHoldCombat {
+        get {
+            if (!HasCombatTarget)
+                return false;
+            if (_hasPreparedSpell && _preparedSpell != null)
+                return true;
+            if (_castLockTimer > 0f)
+                return false;
+            return HasAnySpellReadyNow();
+        }
+    }
+    public string DebugState {
+        get {
+            var targetLabel = GetTargetLabel(_target);
+            var preparedTargetLabel = GetTargetLabel(_preparedTarget);
+
+            if (!IsTargetValid(_target) && !IsTargetValid(_preparedTarget))
+                return "NoTarget";
+            if (_hasPreparedSpell && _preparedSpell != null)
+                return $"Prepare:{_preparedSpell.spellName} -> {preparedTargetLabel}";
+            if (_castLockTimer > 0f)
+                return $"Cooldown:{_castLockTimer:0.0}s -> {targetLabel}";
+            if (_target != null)
+                return string.IsNullOrEmpty(_debugLostReason)
+                    ? $"Engage:{targetLabel}"
+                    : $"Engage:{targetLabel} [{_debugLostReason}]";
+            return "Combat";
+        }
+    }
 
     private void Awake() {
         _movement = GetComponent<BotMovement>();
@@ -80,6 +118,7 @@ public class BotCombatController : MonoBehaviour {
         _trackAimTimer -= Time.deltaTime;
         _strafeTimer -= Time.deltaTime;
         _preparedCastTimer -= Time.deltaTime;
+        _suppressedTargetTimer -= Time.deltaTime;
 
         if (_retargetTimer >= retargetInterval || !IsTargetValid(_target)) {
             _retargetTimer = 0f;
@@ -89,6 +128,8 @@ public class BotCombatController : MonoBehaviour {
         if (_target == null) {
             ClearPreparedSpell();
             _movement.ClearLookDirection();
+            _targetOutOfSightTimer = 0f;
+            _debugLostReason = "";
             return;
         }
 
@@ -96,6 +137,9 @@ public class BotCombatController : MonoBehaviour {
         var toTarget = targetPosition - transform.position;
         var lookToTarget = targetPosition - _caster.Origin;
         _movement.SetLookDirection(lookToTarget);
+
+        if (!UpdateTargetVisibility(targetPosition, toTarget))
+            return;
 
         if (_thinkTimer < thinkInterval)
             return;
@@ -137,7 +181,7 @@ public class BotCombatController : MonoBehaviour {
         }
 
         var hasLos = HasLineOfSight(_caster.Origin, targetPosition, _target.Get.transform.root);
-        var castAngle = Vector3.Angle(transform.forward, toTarget.normalized);
+        var castAngle = GetPlanarAngleTo(transform.forward, toTarget);
         if (!_hasPreparedSpell) {
             if (_castLockTimer > 0f || !hasLos || castAngle > castAngleTolerance)
                 return;
@@ -167,8 +211,7 @@ public class BotCombatController : MonoBehaviour {
 
         var preparedTargetPosition = BallisticCastTargetBuilder.GetAimPoint(_preparedTarget, targetBodyHeightFactor);
         var preparedHasLos = HasLineOfSight(_caster.Origin, preparedTargetPosition, _preparedTarget.Get.transform.root);
-        var preparedCastAngle =
-            Vector3.Angle(transform.forward, (preparedTargetPosition - transform.position).normalized);
+        var preparedCastAngle = GetPlanarAngleTo(transform.forward, preparedTargetPosition - transform.position);
         if (_castLockTimer > 0f || !preparedHasLos || preparedCastAngle > castAngleTolerance)
             return;
 
@@ -177,8 +220,47 @@ public class BotCombatController : MonoBehaviour {
             _lastCastSpell = _preparedSpell;
             _castLockTimer = GetCastCooldown(_preparedSpell);
             _trackAimTimer = Mathf.Max(_trackAimTimer, _preparedTrackTargetDuration);
+            _debugLostReason = "";
             ClearPreparedSpell();
         }
+    }
+
+    private bool UpdateTargetVisibility(Vector3 targetPosition, Vector3 toTarget) {
+        var targetRoot = _target.Get.transform.root;
+        var hasLos = HasLineOfSight(_caster.Origin, targetPosition, targetRoot);
+        var lookAngle = GetPlanarAngleTo(transform.forward, toTarget);
+        var inView = hasLos && lookAngle <= targetVisibleAngle;
+
+        if (inView) {
+            _targetOutOfSightTimer = 0f;
+            _debugLostReason = "";
+            return true;
+        }
+
+        _targetOutOfSightTimer += Time.deltaTime;
+        _debugLostReason = hasLos ? $"OutOfFov:{lookAngle:0}" : "NoLoS";
+
+        if (_targetOutOfSightTimer < targetLostSightTimeout)
+            return true;
+
+        SuppressTarget(_target);
+        _target = null;
+        ClearPreparedSpell();
+        _movement.ClearLookDirection();
+        _targetOutOfSightTimer = 0f;
+        return false;
+    }
+
+    private void SuppressTarget(ITarget target) {
+        if (target == null || !target.CanGet)
+            return;
+
+        var go = target.Get;
+        if (go == null)
+            return;
+
+        _suppressedTargetRootId = go.transform.root.GetInstanceID();
+        _suppressedTargetTimer = lostTargetReacquireDelay;
     }
 
     private void BeginPrepare(SpellDefinition spell, ITarget target, float trackTargetDuration) {
@@ -195,6 +277,27 @@ public class BotCombatController : MonoBehaviour {
 
     private bool CanUseSpellNow(SpellDefinition spell) {
         return _caster.CanStartCast(spell) && !_caster.Channeling && !_caster.Charging;
+    }
+
+    private bool HasAnySpellReadyNow() {
+        if (_spells.Count == 0)
+            return false;
+
+        var hasAlternative = false;
+        for (var i = 0; i < _spells.Count; i++) {
+            var spell = _spells[i];
+            if (spell == null)
+                continue;
+            if (spell != _lastCastSpell)
+                hasAlternative = true;
+            if (!CanUseSpellNow(spell))
+                continue;
+            if (spell == _lastCastSpell && hasAlternative)
+                continue;
+            return true;
+        }
+
+        return false;
     }
 
     private void ClearPreparedSpell() {
@@ -261,6 +364,7 @@ public class BotCombatController : MonoBehaviour {
         var best = default(ITarget);
         var bestDistanceSqr = float.MaxValue;
         var selfPosition = transform.position;
+        var hasSuppressedTarget = _suppressedTargetTimer > 0f;
 
         for (var i = 0; i < SpellCaster.Active.Count; i++) {
             var candidate = SpellCaster.Active[i];
@@ -270,9 +374,14 @@ public class BotCombatController : MonoBehaviour {
                 continue;
             if (!IsEnemy(candidate))
                 continue;
+            if (hasSuppressedTarget && candidate.Get != null &&
+                candidate.Get.transform.root.GetInstanceID() == _suppressedTargetRootId)
+                continue;
 
             var dSqr = (candidate.Position - selfPosition).sqrMagnitude;
             if (dSqr > targetSearchRadius * targetSearchRadius)
+                continue;
+            if (!CanAcquireTarget(candidate))
                 continue;
             if (dSqr >= bestDistanceSqr)
                 continue;
@@ -282,6 +391,23 @@ public class BotCombatController : MonoBehaviour {
         }
 
         return best;
+    }
+
+    private bool CanAcquireTarget(ITarget candidate) {
+        if (candidate == null || !candidate.CanGet)
+            return false;
+
+        var targetGo = candidate.Get;
+        if (targetGo == null)
+            return false;
+
+        var targetPosition = BallisticCastTargetBuilder.GetAimPoint(candidate, targetBodyHeightFactor);
+        var toTarget = targetPosition - transform.position;
+        var lookAngle = GetPlanarAngleTo(transform.forward, toTarget);
+        if (lookAngle > targetVisibleAngle)
+            return false;
+
+        return HasLineOfSight(_caster.Origin, targetPosition, targetGo.transform.root);
     }
 
     private bool IsTargetValid(ITarget target) {
@@ -343,6 +469,29 @@ public class BotCombatController : MonoBehaviour {
         if (spell.channeling)
             cooldown += Mathf.Min(0.75f, spell.channelDuration * 0.4f);
         return cooldown;
+    }
+
+    private static float GetPlanarAngleTo(Vector3 forward, Vector3 toTarget) {
+        forward.y = 0f;
+        toTarget.y = 0f;
+        if (forward.sqrMagnitude < 0.0001f || toTarget.sqrMagnitude < 0.0001f)
+            return 0f;
+        return Vector3.Angle(forward.normalized, toTarget.normalized);
+    }
+
+    private static string GetTargetLabel(ITarget target) {
+        if (target == null || !target.CanGet)
+            return "-";
+
+        var go = target.Get;
+        if (go == null)
+            return "-";
+
+        var identity = go.GetComponent<ParticipantIdentity>();
+        if (identity == null)
+            return go.name;
+
+        return identity.Id.IsBot ? $"Bot:{identity.Id.Value}" : $"P:{identity.Id.Value}";
     }
 
     private struct SpellDecision {

@@ -176,6 +176,11 @@ public class StateController : NetworkBehaviour {
         if (movement == null)
             return;
 
+        if (TryGetComponent<Damageable>(out var damageable) && damageable.IsDead) {
+            movement.enabled = false;
+            return;
+        }
+
         var frozen = _freeze != null && _freeze.gameObject.activeSelf;
         movement.enabled = IsOwner && !_forcedMovementActive && !frozen;
     }

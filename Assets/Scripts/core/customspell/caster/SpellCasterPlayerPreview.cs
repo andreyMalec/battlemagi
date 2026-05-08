@@ -36,7 +36,8 @@ public class SpellCasterPlayerPreview : MonoBehaviour {
 
         _spell = spell;
 
-        UpdatePreview(_caster.input.AlternativeSpawnPressedThisFrame());
+        if (_caster.isHuman)
+            UpdatePreview(_caster.input.AlternativeSpawnPressedThisFrame());
     }
 
     public void StartCharging() {

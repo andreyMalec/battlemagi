@@ -99,6 +99,7 @@ public class LobbyMemberItem : MonoBehaviour, IPointerEnterHandler, IPointerExit
         _mode = Mode.Player;
         _isMe = member.IsMe;
         var image = member.IsReady() ? spriteReady : spriteNotReady;
+        readyImage.gameObject.SetActive(true);
         readyImage.overrideSprite = image;
         var color = member.GetColor();
         colorImage.material.SetFloat(ColorizeMesh.Hue, color.hue);
@@ -132,7 +133,7 @@ public class LobbyMemberItem : MonoBehaviour, IPointerEnterHandler, IPointerExit
         _botId = bot.id;
 
         nameText.text = $"Bot #{bot.id}";
-        readyImage.overrideSprite = null;
+        readyImage.gameObject.SetActive(false);
         if (bot.archetype >= 0 && bot.archetype < spriteArchetypes.Length)
             archetypeImage.overrideSprite = spriteArchetypes[bot.archetype];
         else

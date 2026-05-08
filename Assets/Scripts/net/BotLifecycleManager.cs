@@ -78,7 +78,7 @@ public class BotLifecycleManager : MonoBehaviour {
             var lobbyBots = LobbyBotRosterData.LoadFromLobby(LobbyManager.Instance.CurrentLobby.Value);
             for (int i = 0; i < lobbyBots.Count; i++) {
                 var bot = lobbyBots[i];
-                SpawnNewBot(bot.archetype, bot.hue, bot.saturation);
+                SpawnNewBot(bot.archetype, bot.hue, bot.saturation, bot.team);
             }
 
             return;
@@ -91,9 +91,26 @@ public class BotLifecycleManager : MonoBehaviour {
         }
     }
 
-    public ParticipantId SpawnNewBot(int archetype = 0, float hue = 78f, float saturation = 0.5f) {
+    public ParticipantId SpawnNewBot(
+        int archetype = 0,
+        float hue = 78f,
+        float saturation = 0.5f,
+        TeamManager.Team requestedTeam = TeamManager.Team.None
+    ) {
         var botId = _nextBotId++;
         var participantId = ParticipantId.Bot(botId);
+
+        TeamManager.Instance.RegisterBot(botId, requestedTeam);
+        var assignedTeam = TeamManager.Instance.GetTeam(participantId);
+        if (TeamManager.Instance.isTeamMode) {
+            if (assignedTeam == TeamManager.Team.Blue) {
+                hue = 228f;
+                saturation = 0.85f;
+            } else if (assignedTeam == TeamManager.Team.Red) {
+                hue = 0f;
+                saturation = 0.85f;
+            }
+        }
 
         var participantData = new MatchParticipantData(participantId, 0) {
             Archetype = archetype,
@@ -102,7 +119,6 @@ public class BotLifecycleManager : MonoBehaviour {
         };
 
         PlayerManager.Instance.RegisterParticipant(participantData);
-        TeamManager.Instance.RegisterBot(botId);
 
         var bot = PlayerSpawner.instance.SpawnBotObject(botId);
         if (bot != null)
@@ -117,6 +133,9 @@ public class BotLifecycleManager : MonoBehaviour {
 
         if (botObject != null) {
             botObject.GetComponentInChildren<MeshController>().SetRagdoll(true);
+            var bot = botObject.GetComponent<Bot>();
+            if (bot != null && bot.IsSpawned)
+                bot.SetRagdollClientRpc(true);
             botObject.GetComponent<BotMovement>().enabled = false;
             botObject.GetComponent<BotMovementController>().enabled = false;
             botObject.GetComponent<SpellCasterPlayer>().enabled = false;

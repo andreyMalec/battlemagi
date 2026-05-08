@@ -506,6 +506,7 @@ GameObject:
   - component: {fileID: 9206681557752848795}
   - component: {fileID: 6647561921926816087}
   - component: {fileID: 1197001777428341157}
+  - component: {fileID: 1596381522218168168}
   - component: {fileID: 7657837534262987194}
   - component: {fileID: 3390494672658608002}
   - component: {fileID: 894724963278705181}
@@ -1014,6 +1015,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 233976980f7741f9ba4e68301fd7d0ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IceSlideMovementModule
+--- !u!114 &1596381522218168168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c98219d7660c4067a153fe32284e16cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Colorable
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!114 &7657837534262987194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1126,11 +1140,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BotMovementController
   patrolPoints: []
-  waypointReachDistance: 1.5
+  waypointReachDistance: 0.5
   repathInterval: 1.25
   stuckCheckInterval: 0.5
   stuckMinProgress: 0.4
   randomPointRadius: 12
+  wanderTurnAngle: 28
+  wanderSampleAttempts: 5
   microEscapeRadius: 3.5
   jumpProbeMask:
     serializedVersion: 2
@@ -1145,6 +1161,13 @@ MonoBehaviour:
   minMoveIntent: 0
   minJumpUpHeight: 0
   minDropHeight: 0.6
+  pickupSearchRadius: 20
+  pickupDistancePenalty: 0.06
+  pickupMinScore: 0.2
+  attackNeedBias: 1
+  defenseNeedBias: 1
+  mobilityNeedBias: 0.5
+  baselineMobilityNeed: 0.2
 --- !u!114 &-2981949303995918848
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1157,7 +1180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e8bb7f18aa940ca9dc0c340b81612ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BotCombatController
-  targetSearchRadius: 45
+  targetSearchRadius: 65
   retargetInterval: 0.5
   thinkInterval: 0.15
   repathInterval: 0.25
@@ -1166,7 +1189,10 @@ MonoBehaviour:
   strafeSwitchInterval: 1.1
   targetBodyHeightFactor: 0.75
   ballisticTargetLift: 0.1
-  castPrepareDelay: 0.5
+  castPrepareDelay: 1
+  targetLostSightTimeout: 4
+  targetVisibleAngle: 85
+  lostTargetReacquireDelay: 2
   sightMask:
     serializedVersion: 2
     m_Bits: 705

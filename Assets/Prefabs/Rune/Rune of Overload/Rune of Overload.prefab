@@ -4924,6 +4924,30 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   effects:
   - {fileID: 11400000, guid: 065aa89ca25e1d2499399ccd52c2e711, type: 2}
+  attackWeight: 1
+  defenseWeight: 0.3
+  mobilityWeight: 0
+--- !u!135 &1864525624325782472
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5573621734820598480}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.6813235
+  m_Center: {x: 0, y: 0.000000029802322, z: 0}
 --- !u!114 &8860000000000000001
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4962,27 +4986,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4c3f0dd9edc4019ae2d886bce9a11d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Draggable
---- !u!135 &1864525624325782472
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5573621734820598480}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.6813235
-  m_Center: {x: 0, y: 0.000000029802322, z: 0}
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!114 &-2815977233204209582
 MonoBehaviour:
   m_ObjectHideFlags: 0

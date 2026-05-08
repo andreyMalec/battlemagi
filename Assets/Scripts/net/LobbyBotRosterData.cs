@@ -14,6 +14,7 @@ public static class LobbyBotRosterData {
     [Serializable]
     public class Entry {
         public ulong id;
+        public TeamManager.Team team = TeamManager.Team.None;
         public int archetype;
         public float hue;
         public float saturation;

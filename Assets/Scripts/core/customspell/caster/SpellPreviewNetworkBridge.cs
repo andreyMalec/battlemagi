@@ -5,11 +5,6 @@ public class SpellPreviewNetworkBridge : NetworkBehaviour, ISpellPreviewBridge {
     public ulong OwnerId => OwnerClientId;
 
     private Transform _hand;
-    private ParticipantIdentity _participantIdentity;
-
-    private void Awake() {
-        _participantIdentity = GetComponent<ParticipantIdentity>();
-    }
 
     public void BindHand(Transform hand) {
         _hand = hand;
@@ -17,36 +12,36 @@ public class SpellPreviewNetworkBridge : NetworkBehaviour, ISpellPreviewBridge {
 
     public void Show(SpellDefinition spell) {
         Hide();
-        ShowServerRpc(spell.name, GetPreviewOwnerId());
+        ShowServerRpc(spell.name, NetworkObjectId);
     }
 
     public void Hide() {
-        HideServerRpc(GetPreviewOwnerId());
+        HideServerRpc(NetworkObjectId);
     }
 
     public void StartCharging() {
-        StartChargingServerRpc(GetPreviewOwnerId());
+        StartChargingServerRpc(NetworkObjectId);
     }
 
-    [ServerRpc]
-    private void StartChargingServerRpc(ulong ownerId) {
-        StartChargingClientRpc(ownerId);
+    [ServerRpc(RequireOwnership = false)]
+    private void StartChargingServerRpc(ulong previewObjectId) {
+        StartChargingClientRpc(previewObjectId);
     }
 
     [ClientRpc]
-    private void StartChargingClientRpc(ulong ownerId) {
-        if (!TryResolveBridge(ownerId, out var bridge)) return;
+    private void StartChargingClientRpc(ulong previewObjectId) {
+        if (!TryResolveBridge(previewObjectId, out var bridge)) return;
         bridge.GetComponentInChildren<SpellInHand>()?.StartCharging();
     }
 
-    [ServerRpc]
-    private void ShowServerRpc(string spellName, ulong ownerId) {
-        ShowInHandClientRpc(spellName, ownerId);
+    [ServerRpc(RequireOwnership = false)]
+    private void ShowServerRpc(string spellName, ulong previewObjectId) {
+        ShowInHandClientRpc(spellName, previewObjectId);
     }
 
     [ClientRpc]
-    private void ShowInHandClientRpc(string spellName, ulong ownerId) {
-        if (!TryResolveBridge(ownerId, out var bridge)) return;
+    private void ShowInHandClientRpc(string spellName, ulong previewObjectId) {
+        if (!TryResolveBridge(previewObjectId, out var bridge)) return;
 
         var prefab = DefaultSpells.Get(spellName)?.inHandPrefab;
         if (prefab == null) return;
@@ -55,46 +50,27 @@ public class SpellPreviewNetworkBridge : NetworkBehaviour, ISpellPreviewBridge {
         obj.transform.localRotation = Quaternion.identity;
     }
 
-    [ServerRpc]
-    private void HideServerRpc(ulong ownerId) {
-        ClearInHandClientRpc(ownerId);
+    [ServerRpc(RequireOwnership = false)]
+    private void HideServerRpc(ulong previewObjectId) {
+        ClearInHandClientRpc(previewObjectId);
     }
 
     [ClientRpc]
-    private void ClearInHandClientRpc(ulong ownerId) {
-        if (!TryResolveBridge(ownerId, out var bridge)) return;
+    private void ClearInHandClientRpc(ulong previewObjectId) {
+        if (!TryResolveBridge(previewObjectId, out var bridge)) return;
 
         for (int i = 0; i < bridge._hand.childCount; i++) {
             Destroy(bridge._hand.GetChild(i).gameObject);
         }
     }
 
-    private ulong GetPreviewOwnerId() {
-        if (_participantIdentity == null)
-            return OwnerId;
-
-        return ParticipantOwnerCodec.Encode(_participantIdentity.Id);
-    }
-
-    private static bool TryResolveBridge(ulong ownerId, out SpellPreviewNetworkBridge bridge) {
+    private static bool TryResolveBridge(ulong previewObjectId, out SpellPreviewNetworkBridge bridge) {
         bridge = null;
-
-        var participantId = ParticipantOwnerCodec.Decode(ownerId);
-        if (participantId.IsHuman && NetworkManager.Singleton != null &&
-            NetworkManager.Singleton.ConnectedClients.TryGetValue(participantId.Value, out var client) &&
-            client.PlayerObject != null && client.PlayerObject.TryGetComponent(out bridge))
-            return true;
-
-        var participants = FindObjectsByType<ParticipantIdentity>(FindObjectsSortMode.None);
-        for (int i = 0; i < participants.Length; i++) {
-            var participant = participants[i];
-            if (participant.Id != participantId)
-                continue;
-            if (!participant.TryGetComponent(out bridge))
-                continue;
-            return true;
-        }
-
-        return false;
+        var networkManager = NetworkManager.Singleton;
+        if (networkManager == null || networkManager.SpawnManager == null)
+            return false;
+        if (!networkManager.SpawnManager.SpawnedObjects.TryGetValue(previewObjectId, out var networkObject))
+            return false;
+        return networkObject.TryGetComponent(out bridge);
     }
 }

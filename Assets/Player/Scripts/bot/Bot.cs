@@ -28,6 +28,9 @@ public class Bot : NetworkBehaviour {
         // invoke Awake via reflection to rebuild internal state
         _networkAnimatorAwake = typeof(NetworkAnimator).GetMethod("Awake",
             BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+
+        if (GetComponent<BotStateOverheadView>() == null)
+            gameObject.AddComponent<BotStateOverheadView>();
     }
 
     public override void OnNetworkSpawn() {
@@ -107,6 +110,15 @@ public class Bot : NetworkBehaviour {
     [ClientRpc]
     public void RemoveEffectColorClientRpc(Color color) {
         ApplyColor(prev => prev - color);
+    }
+
+    [ClientRpc]
+    public void SetRagdollClientRpc(bool enabled) {
+        if (meshController == null)
+            meshController = GetComponentInChildren<MeshController>(true);
+        if (meshController == null)
+            return;
+        meshController.SetRagdoll(enabled);
     }
 
     private void ApplyColor(Func<Color, Color> operation) {
