@@ -1161,13 +1161,13 @@ MonoBehaviour:
   minMoveIntent: 0
   minJumpUpHeight: 0
   minDropHeight: 0.6
-  pickupSearchRadius: 20
+  pickupSearchRadius: 30
   pickupDistancePenalty: 0.06
   pickupMinScore: 0.2
-  attackNeedBias: 1
+  attackNeedBias: 1.5
   defenseNeedBias: 1
-  mobilityNeedBias: 0.5
-  baselineMobilityNeed: 0.2
+  mobilityNeedBias: 2
+  baselineMobilityNeed: 1
 --- !u!114 &-2981949303995918848
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1193,28 +1193,27 @@ MonoBehaviour:
   targetLostSightTimeout: 4
   targetVisibleAngle: 85
   lostTargetReacquireDelay: 2
+  echoRecastDelay: 0.2
+  manaCombatRatio: 0.15
   sightMask:
     serializedVersion: 2
     m_Bits: 705
   decisionWeights:
-    attackBias: 0.7
+    attackBias: 0.46
     lowHealthThreshold: 0.4
-    manaPressureStart: 0.35
-    rangeWeight: 1
     damageWeight: 1.1
-    manaCostWeight: 0.6
+    manaCostWeight: 0.8
+    flightTimeWeight: 0.3
     mobilityWeight: 0.55
-    gravityPenaltyWeight: 0.2
     offensiveEffectWeight: 0.7
     defensiveEffectWeight: 0.65
-    spawnChainWeight: 0.65
+    spawnChainWeight: 1
     spawnOnHitWeight: 1
     spawnStepWeight: 0.55
     spawnLifetimeWeight: 0.4
     spawnMaxDistanceWeight: 0.3
     spawnEnemySpellWeight: 0.4
     spawnChainDecay: 0.65
-    continuousAimBonus: 0.3
 --- !u!114 &7179451071591709364
 MonoBehaviour:
   m_ObjectHideFlags: 0

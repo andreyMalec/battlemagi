@@ -50,14 +50,12 @@ public static class DamageRelationship {
         participantId = default;
         if (context?.Caster == null)
             return false;
-        if (!context.Caster.TryGetComponent<ParticipantIdentity>(out var identity))
-            return false;
-
-        participantId = identity.Id;
-        return true;
+        return TryGetTargetParticipant(context.Caster.gameObject, context.OwnerId, out participantId);
     }
 
-    private static bool TryGetTargetParticipant(GameObject targetObject, ulong fallbackOwnerId, out ParticipantId participantId) {
+    public static bool TryGetTargetParticipant(
+        GameObject targetObject, ulong fallbackOwnerId, out ParticipantId participantId
+    ) {
         participantId = default;
         if (targetObject != null) {
             if (targetObject.TryGetComponent<ParticipantIdentity>(out var identity) ||

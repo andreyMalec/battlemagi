@@ -10,7 +10,7 @@ public class AIContext {
     public OwnerId OwnerId;
     public TargetFilter TargetFilter;
     public bool CanTargetAllies;
-    public IEnumerable<ITarget> Targets;
+    public IEnumerable<ITarget> Targets = new List<ITarget>();
     [CanBeNull] public ITarget ActiveTarget;
     public Vector3 HomePosition;
 

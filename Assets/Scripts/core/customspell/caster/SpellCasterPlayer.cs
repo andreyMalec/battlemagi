@@ -205,6 +205,7 @@ public class SpellCasterPlayer : SpellCaster {
     public bool TryCastBot(SpellDefinition spell, ITarget target) {
         if (spell == null) return false;
         if (!CanCast || Channeling || Charging) return false;
+        if (TryCastEcho(_spell)) return true;
         if (!CanStartCast(spell)) return false;
 
         _spell = spell;

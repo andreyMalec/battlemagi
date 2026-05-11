@@ -6,14 +6,12 @@ using UnityEngine;
 public class BotSpellDecisionWeights {
     [Range(0f, 1f)] public float attackBias = 0.7f;
     public float lowHealthThreshold = 0.4f;
-    public float manaPressureStart = 0.35f;
 
-    public float rangeWeight = 2.2f;
     public float damageWeight = 1.1f;
     public float manaCostWeight = 0.6f;
+    public float flightTimeWeight = 0.3f;
 
     public float mobilityWeight = 0.55f;
-    public float gravityPenaltyWeight = 0.35f;
 
     public float offensiveEffectWeight = 0.5f;
     public float defensiveEffectWeight = 0.65f;
@@ -25,14 +23,24 @@ public class BotSpellDecisionWeights {
     public float spawnMaxDistanceWeight = 0.3f;
     public float spawnEnemySpellWeight = 0.4f;
     public float spawnChainDecay = 0.65f;
+}
 
-    public float continuousAimBonus = 0.3f;
+[Serializable]
+public class SpellWeights {
+    public bool available;
+    public SpellDefinition spell;
+
+    public float offensive = 1f;
+    public float defensive = 1f;
+    public float mobility = 1f;
 }
 
 public struct BotSpellDecisionInput {
-    public SpellDefinition Spell;
+    public SpellWeights SpellWeights;
+    public Vector3 Start;
+    public Vector3 Target;
+    public Vector3 TargetVelocity;
     public float Distance;
-    public Vector3 ToTarget;
     public float HealthRatio;
     public float ManaRatio;
     public float MaxMana;
@@ -61,31 +69,36 @@ public class BotSpellDecisionEngine {
     }
 
     public BotSpellDecisionResult Evaluate(BotSpellDecisionInput input) {
-        var evaluator = ResolveEvaluator(input.Spell);
+        var evaluator = ResolveEvaluator(input.SpellWeights.spell);
         var tactical = evaluator.Evaluate(input);
-        var profile = AnalyzeProfile(input.Spell);
+        var profile = AnalyzeProfile(input.SpellWeights.spell);
 
-        var defenseUrgency = Mathf.Clamp01((_weights.lowHealthThreshold - input.HealthRatio) / Mathf.Max(0.01f, _weights.lowHealthThreshold));
+        var defenseUrgency = Mathf.Clamp01((_weights.lowHealthThreshold - input.HealthRatio) /
+                                           Mathf.Max(0.01f, _weights.lowHealthThreshold));
         var attackWeight = Mathf.Lerp(_weights.attackBias, 0.2f, defenseUrgency);
         var defenseWeight = 1f - attackWeight;
-        var manaPressure = Mathf.Clamp01((_weights.manaPressureStart - input.ManaRatio) / Mathf.Max(0.01f, _weights.manaPressureStart));
 
         var score = tactical.BaseScore;
-        score += profile.DamagePotential * _weights.damageWeight * attackWeight;
-        score += profile.OffensiveEffectPotential * _weights.offensiveEffectWeight * attackWeight;
-        score += profile.DefensiveEffectPotential * _weights.defensiveEffectWeight * defenseWeight;
-        score += profile.SpawnPotential * _weights.spawnChainWeight * attackWeight;
-        score += tactical.MobilityScore * _weights.mobilityWeight;
-        score -= tactical.GravityPenalty * _weights.gravityPenaltyWeight;
+        score += profile.DamagePotential * _weights.damageWeight * attackWeight * input.SpellWeights.offensive;
+        score += profile.OffensiveEffectPotential * _weights.offensiveEffectWeight * attackWeight
+                 * input.SpellWeights.offensive;
+        score += profile.DefensiveEffectPotential * _weights.defensiveEffectWeight * defenseWeight
+                 * input.SpellWeights.defensive;
+        score += profile.SpawnPotential * _weights.spawnChainWeight * attackWeight * input.SpellWeights.offensive;
+        score += tactical.MobilityScore * _weights.mobilityWeight * input.SpellWeights.mobility;
+        score -= tactical.FlightTime * _weights.flightTimeWeight;
 
-        var manaNorm = EstimateManaCost(input.Spell) / Mathf.Max(1f, input.MaxMana * 0.45f);
-        score -= Mathf.Clamp(manaNorm, 0f, 3f) * _weights.manaCostWeight * (0.3f + manaPressure);
+        var manaNorm = EstimateManaCost(input.SpellWeights.spell) / Mathf.Max(1f, input.MaxMana * 0.45f);
+        score -= Mathf.Clamp(manaNorm, 0f, 3f) * _weights.manaCostWeight * (1f - input.ManaRatio);
 
-        if (tactical.TrackTargetDuration > 0f)
-            score += _weights.continuousAimBonus;
+        Debug.Log(
+            $"Spell: {input.SpellWeights.spell.name}, Base Score: {tactical.BaseScore:F2}, Damage: {profile.DamagePotential:F2}, " +
+            $"Offensive Effects: {profile.OffensiveEffectPotential:F2}, Defensive Effects: {profile.DefensiveEffectPotential:F2}, " +
+            $"Spawn Potential: {profile.SpawnPotential:F2}, Mobility: {tactical.MobilityScore:F2}, Flight Time: {tactical.FlightTime:F2}, " +
+            $"manaNorm:{manaNorm:F2}, m={Mathf.Clamp(manaNorm, 0f, 3f) * _weights.manaCostWeight * (1f - input.ManaRatio)} Final Score: {score:F2}");
 
         return new BotSpellDecisionResult {
-            Spell = input.Spell,
+            Spell = input.SpellWeights.spell,
             Score = score,
             PreferredDistance = tactical.PreferredDistance,
             TrackTargetDuration = tactical.TrackTargetDuration
@@ -171,6 +184,10 @@ public class BotSpellDecisionEngine {
             AddLink(links, spell.beam.atMaxDistanceSpawn, _weights.spawnMaxDistanceWeight);
         }
 
+        if (spell.summon != null) {
+            AddLink(links, spell.summon.mainSpell, _weights.spawnOnHitWeight);
+        }
+
         return links;
     }
 
@@ -186,17 +203,16 @@ public class BotSpellDecisionEngine {
 
     private static float EstimateDamage(SpellDefinition spell) {
         if (spell.damage == null)
-            return 0.35f;
+            return 0f;
 
         var raw = spell.damage.baseType == SpellDamageBaseType.Flat
             ? spell.damage.amount
             : spell.damage.percent * 100f;
 
-        if (spell.damage.mode == SpellDamageMode.DamageOverTime)
-            raw *= 1.25f;
-
-        if (spell.channeling || spell.charging)
-            raw *= 1.1f;
+        if (spell.damage.mode == SpellDamageMode.DamageOverTime) {
+            var perSecond = 1 / spell.damage.tickInterval * raw;
+            raw = perSecond * Math.Min(2f, spell.lifetime * 0.33f);
+        }
 
         return Mathf.Clamp(raw / 60f, 0.15f, 3f);
     }
@@ -215,21 +231,31 @@ public class BotSpellDecisionEngine {
             if (!hostile)
                 continue;
 
-            score += effect.oneShot ? 0.2f : 0.35f;
+            var m = effect.oneShot ? 0.75f : 1f;
             if (effect.type == StatusEffectType.DamageOverTime)
-                score += 0.3f;
+                score += 0.3f * m;
             if (effect.type == StatusEffectType.Freeze || effect.type == StatusEffectType.ForcedMovement)
-                score += 0.25f;
+                score += 0.25f * m;
+            if (effect.type == StatusEffectType.Attach)
+                score += 0.5f * m;
         }
 
         return Mathf.Clamp(score, 0f, 2.5f);
     }
 
     private static float EstimateDefensiveEffects(SpellDefinition spell) {
-        if (spell.effects == null || spell.effects.Count == 0)
-            return 0f;
-
         var score = 0f;
+        if (spell.coreType == CoreType.Zone && spell.zone.destroyIncomingSpells) {
+            score += 1f;
+        }
+
+        if (spell.coreType == CoreType.Summon && spell.summon.brain == SummonBrain.Defensive) {
+            score += 1f;
+        }
+
+        if (spell.effects == null || spell.effects.Count == 0)
+            return score;
+
         for (var i = 0; i < spell.effects.Count; i++) {
             var effect = spell.effects[i];
             if (effect == null)
@@ -239,18 +265,33 @@ public class BotSpellDecisionEngine {
             if (!isDefensive)
                 continue;
 
-            score += effect.oneShot ? 0.2f : 0.3f;
-            if (effect.type == StatusEffectType.StatMultiplier)
-                score += 0.25f;
+            var m = effect.oneShot ? 0.75f : 1f;
+            if (effect.type == StatusEffectType.StatMultiplier) {
+                var e = effect.effect as StatMultiplierEffect;
+                var k = e!.multiplier;
+                var type = e!.statType();
+                if (type == StatType.ManaCost) {
+                    score += (1 - k > 1 ? 0.25f : -0.25f) * m;
+                } else
+                    score += (k > 1 ? 0.25f : -0.25f) * m;
+            }
+
+            if (effect.type == StatusEffectType.Attach)
+                score += 0.5f;
         }
 
-        return Mathf.Clamp(score, 0f, 2.5f);
+
+        return Mathf.Clamp(score, -2.5f, 2.5f);
     }
 
     private static float EstimateManaCost(SpellDefinition spell) {
         var total = spell.manaCost;
-        if (spell.channeling || spell.charging)
-            total += spell.manaPerSecond * 0.8f;
+        if (spell.echoCount > 0)
+            total /= spell.echoCount + 1;
+        if (spell.channeling)
+            total += spell.manaPerSecond * spell.channelDuration;
+        if (spell.charging)
+            total += spell.manaPerSecond * spell.chargeDuration;
         return total;
     }
 
@@ -275,7 +316,7 @@ public class BotSpellDecisionEngine {
         public float BaseScore;
         public float PreferredDistance;
         public float MobilityScore;
-        public float GravityPenalty;
+        public float FlightTime;
         public float TrackTargetDuration;
     }
 
@@ -284,67 +325,50 @@ public class BotSpellDecisionEngine {
 
         public abstract TacticalDecision Evaluate(BotSpellDecisionInput input);
 
-        protected TacticalDecision Base(BotSpellDecisionInput input, float preferredDistance, float effectiveRange, float baseBonus = 0f) {
-            var rangeScore = 1f - Mathf.Clamp01(Mathf.Abs(input.Distance - preferredDistance) / Mathf.Max(1f, effectiveRange));
+        protected TacticalDecision Base(
+            BotSpellDecisionInput input, float effectiveRange, float baseBonus = 0f
+        ) {
+            var rangeScore = Mathf.Exp(-input.Distance / effectiveRange);
             return new TacticalDecision {
-                PreferredDistance = preferredDistance,
-                BaseScore = rangeScore * _weightsRef.rangeWeight + baseBonus
+                BaseScore = rangeScore + baseBonus,
+                PreferredDistance = effectiveRange * 0.55f,
             };
-        }
-
-        private static BotSpellDecisionWeights _weightsRef;
-
-        public static void BindWeights(BotSpellDecisionWeights weights) {
-            _weightsRef = weights;
         }
     }
 
     private sealed class ProjectileEvaluator : EvaluatorBase {
         public override bool Supports(SpellDefinition spell) {
-            return spell.coreType == CoreType.Projectile && spell.projectile != null;
+            return spell.coreType == CoreType.Projectile;
         }
 
         public override TacticalDecision Evaluate(BotSpellDecisionInput input) {
-            var projectile = input.Spell.projectile;
-            var speed = Mathf.Max(2f, projectile.moveSpeed);
-            var effectiveRange = projectile.enableMaxDistance ? Mathf.Max(2f, projectile.maxDistance) : Mathf.Max(8f, speed * 2.4f);
-            var preferredDistance = Mathf.Clamp(effectiveRange * 0.72f, 4f, effectiveRange);
+            var s = input.SpellWeights.spell;
+            var projectile = s.projectile;
+            var speed = projectile.moveSpeed;
 
-            var decision = Base(input, preferredDistance, effectiveRange, Mathf.Clamp01(speed / 30f));
+            var effectiveRange = projectile.enableMaxDistance ? projectile.maxDistance : speed * s.lifetime;
+
+            var gravityY = 0f;
             if (projectile.enableGravity) {
-                var gravityY = Mathf.Abs(projectile.gravity.y);
-                var horizontalDistance = new Vector2(input.ToTarget.x, input.ToTarget.z).magnitude;
-                var verticalOffset = input.ToTarget.y;
+                gravityY = Mathf.Abs(projectile.gravity.y);
+                var v2 = speed * speed;
+                var maxBallisticRange = v2 / gravityY;
+                effectiveRange = Mathf.Min(maxBallisticRange, effectiveRange);
+            }
 
-                if (gravityY > 0.01f && horizontalDistance > 0.01f) {
-                    var v2 = speed * speed;
-                    var discriminant = v2 * v2 - gravityY * (gravityY * horizontalDistance * horizontalDistance + 2f * verticalOffset * v2);
+            var decision = Base(input, effectiveRange);
 
-                    var maxBallisticRange = v2 / gravityY;
-                    effectiveRange = Mathf.Min(effectiveRange, Mathf.Max(3f, maxBallisticRange));
-                    preferredDistance = Mathf.Clamp(effectiveRange * 0.65f, 3f, effectiveRange);
-                    decision.PreferredDistance = preferredDistance;
-
-                    if (discriminant < 0f) {
-                        decision.BaseScore -= 2.5f;
-                        decision.GravityPenalty = 4f;
-                    } else {
-                        var sqrt = Mathf.Sqrt(discriminant);
-                        var lowAngleTan = (v2 - sqrt) / (gravityY * horizontalDistance);
-                        var lowAngle = Mathf.Atan(lowAngleTan);
-                        var cos = Mathf.Cos(lowAngle);
-                        if (cos > 0.01f) {
-                            var flightTime = horizontalDistance / (speed * cos);
-                            decision.GravityPenalty = Mathf.Clamp(flightTime * 0.45f, 0f, 2.2f);
-                        }
-                    }
-                }
+            if (BallisticCastTargetBuilder.FlightTime(input.Start, input.Target, input.TargetVelocity, speed,
+                    -gravityY, out var flightTime)) {
+                decision.FlightTime = flightTime;
+            } else {
+                decision.BaseScore -= 5f;
             }
 
             if (projectile.enableHoming)
-                decision.MobilityScore += 0.2f;
+                decision.MobilityScore += 0.7f;
 
-            decision.TrackTargetDuration = ContinuousAimDuration(input.Spell);
+            decision.TrackTargetDuration = ContinuousAimDuration(input.SpellWeights.spell);
             return decision;
         }
     }
@@ -355,12 +379,19 @@ public class BotSpellDecisionEngine {
         }
 
         public override TacticalDecision Evaluate(BotSpellDecisionInput input) {
-            var effectiveRange = Mathf.Max(3f, input.Spell.beam.MaxLength);
-            var preferredDistance = Mathf.Clamp(effectiveRange * 0.8f, 3f, effectiveRange);
-            var decision = Base(input, preferredDistance, effectiveRange, 1.1f);
-            if (input.Spell.beam.moveType != SpellMovement.Static)
-                decision.MobilityScore = Mathf.Clamp01(input.Spell.beam.moveSpeed / 25f);
-            decision.TrackTargetDuration = ContinuousAimDuration(input.Spell);
+            var effectiveRange = input.SpellWeights.spell.beam.MaxLength;
+            var rangeScore = 1f - Mathf.Clamp01(-input.Distance / effectiveRange);
+            if (input.Distance < effectiveRange)
+                rangeScore *= 2f;
+            else
+                rangeScore *= -1f;
+            var decision = new TacticalDecision {
+                BaseScore = rangeScore,
+                PreferredDistance = effectiveRange * 0.75f,
+            };
+            if (input.SpellWeights.spell.beam.moveType != SpellMovement.Static)
+                decision.MobilityScore = Mathf.Clamp01(input.SpellWeights.spell.beam.moveSpeed / 25f);
+            decision.TrackTargetDuration = ContinuousAimDuration(input.SpellWeights.spell);
             return decision;
         }
     }
@@ -371,18 +402,47 @@ public class BotSpellDecisionEngine {
         }
 
         public override TacticalDecision Evaluate(BotSpellDecisionInput input) {
-            var zone = input.Spell.zone;
-            var zoneRadius = Mathf.Max(1f, input.Spell.scale);
+            var s = input.SpellWeights.spell;
+            var zone = s.zone;
+            var zoneRadius = Mathf.Max(1f, s.scale);
             if (zone.shapeType == ZoneShapeType.Plate)
                 zoneRadius *= 1.2f;
 
-            var effectiveRange = Mathf.Max(zoneRadius + 1f, zone.enableMaxDistance ? zone.maxDistance : zoneRadius + 8f);
-            var preferredDistance = Mathf.Clamp(zoneRadius * 0.85f, 1.5f, 7f);
+            var castRange = s.spawn.MaxCastRange();
+            var effectiveRange = zoneRadius / 2 + 1f + castRange;
+            TacticalDecision decision;
+            if (zone.moveType == SpellMovement.Static) {
+                var rangeScore = 1f - Mathf.Clamp01(-input.Distance / effectiveRange);
+                if (input.Distance < effectiveRange)
+                    rangeScore *= 2f;
+                else
+                    rangeScore *= -1f;
+                if (zone.teleportOnSpawn)
+                    rangeScore = 0.1f;
+                decision = new TacticalDecision {
+                    BaseScore = rangeScore,
+                    PreferredDistance = effectiveRange * 0.5f,
+                };
+            } else {
+                var moveRange = zone.enableMaxDistance ? zone.maxDistance : zone.moveSpeed * s.lifetime;
+                decision = Base(input, moveRange + effectiveRange);
+            }
 
-            var decision = Base(input, preferredDistance, effectiveRange, Mathf.Clamp(zoneRadius / 7f, 0f, 1.5f));
-            if (zone.moveType != SpellMovement.Static)
-                decision.MobilityScore = Mathf.Clamp01(zone.moveSpeed / 22f);
-            decision.TrackTargetDuration = ContinuousAimDuration(input.Spell);
+            if (zone.enableHoming)
+                decision.MobilityScore += 0.7f;
+            if (zone.teleportOnSpawn)
+                decision.MobilityScore += 0.5f;
+            if (zone.moveType != SpellMovement.Static && zone.moveType != SpellMovement.FollowCaster) {
+                if (BallisticCastTargetBuilder.FlightTime(input.Start, input.Target, input.TargetVelocity,
+                        zone.moveSpeed,
+                        0, out var flightTime)) {
+                    decision.FlightTime = flightTime;
+                } else {
+                    decision.BaseScore -= 5f;
+                }
+            }
+
+            decision.TrackTargetDuration = ContinuousAimDuration(s);
             return decision;
         }
     }
@@ -393,7 +453,19 @@ public class BotSpellDecisionEngine {
         }
 
         public override TacticalDecision Evaluate(BotSpellDecisionInput input) {
-            return Base(input, 12f, 22f, 0.25f);
+            var s = input.SpellWeights.spell;
+            var summon = s.summon;
+            var castRange = s.spawn.MaxCastRange() + summon.MaxCastRange();
+            var effectiveRange = castRange;
+            if (summon.mainSpell != null && summon.mainSpell.coreType == CoreType.Zone) {
+                var zoneRadius = Mathf.Max(1f, s.scale);
+                if (summon.mainSpell.zone.shapeType == ZoneShapeType.Plate)
+                    zoneRadius *= 1.2f;
+
+                effectiveRange += zoneRadius / 2 + 1f;
+            }
+
+            return Base(input, effectiveRange, 0.5f);
         }
     }
 
@@ -403,9 +475,8 @@ public class BotSpellDecisionEngine {
         }
 
         public override TacticalDecision Evaluate(BotSpellDecisionInput input) {
-            var decision = Base(input, 2f, 4f, -1.2f);
-            if (input.HealthRatio < 0.35f)
-                decision.BaseScore += 0.7f;
+            var decision = Base(input, 10f, 15f);
+            decision.BaseScore = 0.5f;
             return decision;
         }
     }
@@ -416,7 +487,10 @@ public class BotSpellDecisionEngine {
         }
 
         public override TacticalDecision Evaluate(BotSpellDecisionInput input) {
-            return Base(input, 9f, 12f);
+            var s = input.SpellWeights.spell;
+            var castRange = s.spawn.MaxCastRange();
+            var effectiveRange = castRange;
+            return Base(input, effectiveRange);
         }
     }
 
@@ -434,15 +508,4 @@ public class BotSpellDecisionEngine {
             duration = Mathf.Max(duration, spell.channelDuration);
         return duration;
     }
-
-    static BotSpellDecisionEngine() {
-        EvaluatorBase.BindWeights(new BotSpellDecisionWeights());
-    }
-
-    public void RebindWeights() {
-        EvaluatorBase.BindWeights(_weights);
-    }
 }
-
-
-

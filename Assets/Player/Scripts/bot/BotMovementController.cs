@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -49,20 +50,25 @@ public class BotMovementController : MonoBehaviour {
     public string DebugState => _debugState;
     public string DebugPickup => _debugPickup;
 
+    private bool isServer;
+
     private void Awake() {
         _movement = GetComponent<BotMovement>();
         _caster = GetComponent<SpellCasterPlayer>();
         _damageable = GetComponent<Damageable>();
         _combat = GetComponent<BotCombatController>();
+        isServer = NetworkManager.Singleton.IsServer;
     }
 
     private void Start() {
+        if (!isServer) return;
         _lastStuckCheckPosition = transform.position;
         _wanderDirection = GetPlanarDirectionOrFallback(transform.forward);
         SetNextDestination();
     }
 
     private void Update() {
+        if (!isServer) return;
         if (_combat != null && _combat.ShouldHoldCombat) {
             _debugState = "CombatMove";
             TryHandleJumpAssist();
@@ -167,7 +173,8 @@ public class BotMovementController : MonoBehaviour {
 
         var attackNeed = Mathf.Clamp01((1f - manaRatio) * attackNeedBias);
         var defenseNeed = Mathf.Clamp01((1f - healthRatio) * defenseNeedBias);
-        var mobilityNeed = Mathf.Clamp01(baselineMobilityNeed + (1f - Mathf.Max(attackNeed, defenseNeed)) * mobilityNeedBias);
+        var mobilityNeed =
+            Mathf.Clamp01(baselineMobilityNeed + (1f - Mathf.Max(attackNeed, defenseNeed)) * mobilityNeedBias);
         var need = $"A{attackNeed:F2} D{defenseNeed:F2} M{mobilityNeed:F2}";
         _debugPickup += need;
 
@@ -280,7 +287,9 @@ public class BotMovementController : MonoBehaviour {
             return false;
 
         var origin = transform.position + Vector3.up * obstacleProbeHeight;
-        var hitCount = Physics.RaycastNonAlloc(new Ray(origin, transform.forward), _rayHits, obstacleCheckDistance,
+        var forward = GetPlanarDirectionOrFallback(nextCorner - transform.position);
+        Debug.DrawLine(origin, origin + forward * obstacleCheckDistance, Color.blue, 0.25f);
+        var hitCount = Physics.RaycastNonAlloc(new Ray(origin, forward), _rayHits, obstacleCheckDistance,
             jumpProbeMask, QueryTriggerInteraction.Ignore);
         for (var i = 0; i < hitCount; i++) {
             var hit = _rayHits[i];
@@ -289,7 +298,7 @@ public class BotMovementController : MonoBehaviour {
             if (hit.transform.root == transform)
                 continue;
 
-            var topProbe = hit.point + transform.forward * 0.05f + Vector3.up * maxJumpableHeight;
+            var topProbe = hit.point + forward * 0.05f + Vector3.up * maxJumpableHeight;
             if (!Physics.Raycast(topProbe, Vector3.down, out var topHit, maxJumpableHeight + 0.2f, jumpProbeMask,
                     QueryTriggerInteraction.Ignore))
                 continue;
@@ -310,7 +319,8 @@ public class BotMovementController : MonoBehaviour {
         if (deltaToCorner > -minDropHeight || Mathf.Abs(deltaToCorner) > maxDropHeight)
             return false;
 
-        var ahead = transform.position + transform.forward * dropCheckDistance;
+        var forward = GetPlanarDirectionOrFallback(nextCorner - transform.position);
+        var ahead = transform.position + forward * dropCheckDistance;
         var downOrigin = ahead + Vector3.up * 0.5f;
         var hasGroundAhead = Physics.Raycast(downOrigin, Vector3.down, downRayDistance, jumpProbeMask,
             QueryTriggerInteraction.Ignore);

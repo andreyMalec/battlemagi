@@ -12,6 +12,19 @@ public class SpellView : MonoBehaviour {
         gameObject.AddComponent<Statusable>();
     }
 
+    private Coroutine _waitAndKillCoroutine;
+
+    public void WaitAndKill(float waitTime, ISpellContext context) {
+        if (_waitAndKillCoroutine != null)
+            StopCoroutine(_waitAndKillCoroutine);
+        _waitAndKillCoroutine = StartCoroutine(WaitAndKillCoroutine(waitTime, context));
+    }
+
+    private IEnumerator WaitAndKillCoroutine(float waitTime, ISpellContext context) {
+        yield return new WaitForSeconds(waitTime);
+        Kill(context);
+    }
+
     public void Kill(ISpellContext context) {
         if (!IsAlive) return;
         IsAlive = false;

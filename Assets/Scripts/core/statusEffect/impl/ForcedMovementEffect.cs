@@ -36,7 +36,8 @@ public class ForcedMovementEffect : StatusEffectData {
                 return false;
 
             player.StartForcedMovement(targetPoint, resolvedDuration);
-            PlayerAchievementsManager.Instance.ReportEnemyLaunchedServer(applyContext.ownerClientId, player.OwnerClientId);
+            PlayerAchievementsManager.Instance.ReportEnemyLaunchedServer(applyContext.ownerClientId,
+                player.OwnerClientId);
             return true;
         }
 
@@ -48,7 +49,9 @@ public class ForcedMovementEffect : StatusEffectData {
         return false;
     }
 
-    private float ResolveMovementDuration(StatusEffectApplyContext applyContext, GameObject target, Vector3 targetPoint) {
+    private float ResolveMovementDuration(
+        StatusEffectApplyContext applyContext, GameObject target, Vector3 targetPoint
+    ) {
         var speed = ResolveMovementSpeed(applyContext);
         if (speed <= 0.0001f)
             return Mathf.Max(duration, Time.fixedDeltaTime);
@@ -76,9 +79,23 @@ public class ForcedMovementEffect : StatusEffectData {
     }
 
     private Vector3 GetCasterPosition(StatusEffectApplyContext applyContext, GameObject target) {
-        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(applyContext.ownerClientId, out var client) &&
+        var participantId = ParticipantOwnerCodec.Decode(applyContext.ownerClientId);
+        if (participantId.IsHuman && NetworkManager.Singleton != null &&
+            NetworkManager.Singleton.ConnectedClients.TryGetValue(participantId.Value, out var client) &&
             client.PlayerObject != null)
             return client.PlayerObject.transform.position;
+
+        if (DamageRelationship.TryGetTargetParticipant(applyContext.sourceObject, applyContext.ownerClientId,
+                out participantId)) {
+            var participants = FindObjectsByType<Bot>(FindObjectsSortMode.None);
+            for (var i = 0; i < participants.Length; i++) {
+                var participant = participants[i];
+                if (participant.GetComponent<ParticipantIdentity>().Id != participantId)
+                    continue;
+
+                return participant.transform.position;
+            }
+        }
 
         return target.transform.position;
     }

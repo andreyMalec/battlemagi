@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 
 [RequireComponent(typeof(BotMovement))]
@@ -18,6 +20,8 @@ public class BotCombatController : MonoBehaviour {
     [SerializeField] private float targetLostSightTimeout = 2.25f;
     [SerializeField] private float targetVisibleAngle = 85f;
     [SerializeField] private float lostTargetReacquireDelay = 2f;
+    [SerializeField] private float echoRecastDelay = 0.3f;
+    [SerializeField] [Range(0f, 1f)] private float manaCombatRatio = 0.15f;
     [SerializeField] private LayerMask sightMask = ~0;
     [SerializeField] private BotSpellDecisionWeights decisionWeights = new();
 
@@ -27,8 +31,9 @@ public class BotCombatController : MonoBehaviour {
     private Damageable _damageable;
     private BotSpellDecisionEngine _decisionEngine;
 
-    private readonly List<SpellDefinition> _spells = new();
+    private readonly List<SpellWeights> _spells = new();
     private ITarget _target;
+    private SpellDecision _lastSpellDecision;
     private SpellDefinition _lastCastSpell;
     private SpellDefinition _preparedSpell;
     private ITarget _preparedTarget;
@@ -47,12 +52,20 @@ public class BotCombatController : MonoBehaviour {
     private int _strafeDirection = 1;
     private int _suppressedTargetRootId;
     private string _debugLostReason = "";
+    private bool isServer;
 
     private readonly RaycastHit[] _sightHits = new RaycastHit[16];
 
     public bool HasCombatTarget => IsTargetValid(_target) || IsTargetValid(_preparedTarget);
+
     public bool ShouldHoldCombat {
         get {
+            if (cantCast)
+                return false;
+            if (_caster.Mana.Mana / _caster.Mana.MaxMana < manaCombatRatio)
+                return false;
+            if (!HasCombatTarget)
+                return false;
             if (!HasCombatTarget)
                 return false;
             if (_hasPreparedSpell && _preparedSpell != null)
@@ -62,6 +75,7 @@ public class BotCombatController : MonoBehaviour {
             return HasAnySpellReadyNow();
         }
     }
+
     public string DebugState {
         get {
             var targetLabel = GetTargetLabel(_target);
@@ -87,7 +101,7 @@ public class BotCombatController : MonoBehaviour {
         _selfIdentity = GetComponent<ParticipantIdentity>();
         _damageable = GetComponent<Damageable>();
         _decisionEngine = new BotSpellDecisionEngine(decisionWeights);
-        _decisionEngine.RebindWeights();
+        isServer = NetworkManager.Singleton.IsServer;
     }
 
     public void SetAvailableSpells(SpellDefinition[] spells) {
@@ -95,16 +109,14 @@ public class BotCombatController : MonoBehaviour {
         if (spells == null)
             return;
 
-        for (var i = 0; i < spells.Length; i++) {
-            var spell = spells[i];
-            if (spell == null)
-                continue;
-            if (!_spells.Contains(spell))
-                _spells.Add(spell);
-        }
+        _spells.AddRange(BotSpellWeights.Instance.weights.Filter(it => spells.Contains(it.spell)));
     }
 
+    private Vector3 _lastTargetPosition;
+    private bool cantCast = false;
+
     private void FixedUpdate() {
+        if (!isServer) return;
         if (_spells.Count == 0) {
             ClearPreparedSpell();
             _movement.ClearLookDirection();
@@ -133,6 +145,8 @@ public class BotCombatController : MonoBehaviour {
             return;
         }
 
+        var targetVelocity = (_lastTargetPosition - _target.Position) / Time.deltaTime;
+        _lastTargetPosition = _target.Position;
         var targetPosition = BallisticCastTargetBuilder.GetAimPoint(_target, targetBodyHeightFactor);
         var toTarget = targetPosition - transform.position;
         var lookToTarget = targetPosition - _caster.Origin;
@@ -147,14 +161,17 @@ public class BotCombatController : MonoBehaviour {
         _thinkTimer = 0f;
         var planarDistance = new Vector2(toTarget.x, toTarget.z).magnitude;
 
-        if (!TryChooseSpell(planarDistance, toTarget, out var spellDecision)) {
+        if (!TryChooseSpell(transform.position, targetPosition, targetVelocity, planarDistance,
+                out var spellDecision)) {
+            cantCast = true;
             if (_repathTimer >= repathInterval) {
-                _movement.SetDestination(targetPosition, 1.5f);
+                _movement.SetDestination(transform.position, 1.5f);
                 _repathTimer = 0f;
             }
 
             return;
         }
+        cantCast = false;
 
         var desiredDistance = Mathf.Max(1f, spellDecision.PreferredDistance);
         var moveDirection = new Vector3(toTarget.x, 0f, toTarget.z).normalized;
@@ -217,11 +234,18 @@ public class BotCombatController : MonoBehaviour {
 
         var castTarget = BuildCastTarget(_preparedSpell, _preparedTarget);
         if (_caster.TryCastBot(_preparedSpell, castTarget)) {
-            _lastCastSpell = _preparedSpell;
-            _castLockTimer = GetCastCooldown(_preparedSpell);
+            var castedSpell = _preparedSpell;
+            _lastSpellDecision = spellDecision;
+            _lastCastSpell = castedSpell;
+            if (castedSpell.echoCount > 0) {
+                _castLockTimer = echoRecastDelay;
+            } else {
+                _castLockTimer = GetCastCooldown(castedSpell);
+                ClearPreparedSpell();
+            }
+
             _trackAimTimer = Mathf.Max(_trackAimTimer, _preparedTrackTargetDuration);
             _debugLostReason = "";
-            ClearPreparedSpell();
         }
     }
 
@@ -283,16 +307,19 @@ public class BotCombatController : MonoBehaviour {
         if (_spells.Count == 0)
             return false;
 
+        if (TryChooseEchoContinuation(out var echoDecision))
+            return echoDecision.Spell != null;
+
         var hasAlternative = false;
         for (var i = 0; i < _spells.Count; i++) {
             var spell = _spells[i];
-            if (spell == null)
+            if (spell == null || !spell.available)
                 continue;
-            if (spell != _lastCastSpell)
+            if (spell.spell != _lastCastSpell)
                 hasAlternative = true;
-            if (!CanUseSpellNow(spell))
+            if (!CanUseSpellNow(spell.spell))
                 continue;
-            if (spell == _lastCastSpell && hasAlternative)
+            if (spell.spell == _lastCastSpell && hasAlternative && !HasEchoContinuation(spell.spell))
                 continue;
             return true;
         }
@@ -312,30 +339,37 @@ public class BotCombatController : MonoBehaviour {
         return BallisticCastTargetBuilder.Build(_caster, target, spell, ballisticTargetLift, targetBodyHeightFactor);
     }
 
-    private bool TryChooseSpell(float distance, Vector3 toTarget, out SpellDecision decision) {
+    private bool TryChooseSpell(
+        Vector3 start, Vector3 target, Vector3 targetVelocity, float distance, out SpellDecision decision
+    ) {
+        if (TryChooseEchoContinuation(out decision))
+            return true;
+
         decision = default;
+        decision.PreferredDistance = distance;
         var hasChoice = false;
         var bestScore = float.MinValue;
 
         var mana = _caster.Mana;
-        var manaRatio = mana.MaxMana > 0.001f ? mana.Mana / mana.MaxMana : 1f;
-        var healthRatio = _damageable.Health.maxHealth > 0.001f
-            ? _damageable.CurrentHealth / _damageable.Health.maxHealth
-            : 1f;
+        var manaRatio = mana.Mana / mana.MaxMana;
+        var healthRatio = _damageable.CurrentHealth / _damageable.Health.maxHealth;
 
+        Debug.Log($"______________________________________________________________ distance={distance}");
         for (var i = 0; i < _spells.Count; i++) {
             var spell = _spells[i];
-            if (spell == null)
+            if (spell == null || !spell.available)
                 continue;
-            if (spell == _lastCastSpell)
+            if (spell.spell == _lastCastSpell)
                 continue;
-            if (!CanUseSpellNow(spell))
+            if (!CanUseSpellNow(spell.spell))
                 continue;
 
             var input = new BotSpellDecisionInput {
-                Spell = spell,
+                SpellWeights = spell,
+                Start = start,
+                Target = target,
+                TargetVelocity = targetVelocity,
                 Distance = distance,
-                ToTarget = toTarget,
                 HealthRatio = healthRatio,
                 ManaRatio = manaRatio,
                 MaxMana = mana.MaxMana
@@ -358,6 +392,22 @@ public class BotCombatController : MonoBehaviour {
         }
 
         return hasChoice;
+    }
+
+    private bool TryChooseEchoContinuation(
+        out SpellDecision decision
+    ) {
+        decision = default;
+        if (_lastCastSpell == null || _preparedTarget == null) return false;
+        if (_caster.EchoCount <= 0 || _lastCastSpell.echoCount <= 0) return false;
+        if (!_caster.TryCastBot(_lastCastSpell, _preparedTarget)) return false;
+        decision = _lastSpellDecision;
+
+        return false;
+    }
+
+    private bool HasEchoContinuation(SpellDefinition spell) {
+        return spell != null && spell.echoCount > 0 && _lastCastSpell == spell && _caster.EchoCount > 0;
     }
 
     private ITarget FindBestTarget() {
@@ -468,6 +518,8 @@ public class BotCombatController : MonoBehaviour {
         var cooldown = 3f;
         if (spell.channeling)
             cooldown += Mathf.Min(0.75f, spell.channelDuration * 0.4f);
+        if (spell.charging)
+            cooldown += spell.chargeDuration;
         return cooldown;
     }
 

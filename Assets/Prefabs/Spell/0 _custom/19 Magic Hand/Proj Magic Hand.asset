@@ -20,8 +20,8 @@ MonoBehaviour:
   enableMaxDistance: 1
   maxDistance: 50
   returnToCaster: 0
-  enableGravity: 0
-  gravity: {x: 0, y: -15, z: 0}
+  enableGravity: 1
+  gravity: {x: 0, y: -0.1, z: 0}
   lookAtMaxDistance: 50
   lookAtRayMask:
     serializedVersion: 2
@@ -46,6 +46,7 @@ MonoBehaviour:
   bounceSpeedMultiplier: 0.1
   enablePierce: 0
   maxPierces: 1
+  pierceTargetMode: 1
   enableFork: 0
   forkCount: 3
   forkSpreadAngle: 35

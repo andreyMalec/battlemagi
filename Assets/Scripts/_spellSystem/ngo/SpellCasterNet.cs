@@ -115,6 +115,12 @@ public class SpellCasterNet : NetworkBehaviour {
         var networkObject = main.GetComponent<NetworkObject>();
         networkObject.SpawnWithOwnership(casterNetObj.OwnerClientId);
         var id = networkObject.NetworkObjectId;
+        var botIdentity = context.caster.GetComponentInParent<ParticipantIdentity>();
+        if (botIdentity != null) {
+            var botSpellIdentity = main.AddComponent<ParticipantIdentity>();
+            botSpellIdentity.SetParticipantId(botIdentity.Id);
+        }
+
         context.caster.HandleSpellLimit(context.spell, main);
         var index = main.AddComponent<ArcIndex>();
         index.Index = context.index;

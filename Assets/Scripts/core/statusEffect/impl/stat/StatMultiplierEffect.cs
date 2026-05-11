@@ -3,7 +3,7 @@ using UnityEngine;
 public abstract class StatMultiplierEffect : StatusEffectData {
     public float multiplier = 2f;
 
-    protected abstract StatType statType();
+    public abstract StatType statType();
 
     public override StatusEffectRuntime CreateRuntime() {
         return new StatMultiplierRuntime(this);

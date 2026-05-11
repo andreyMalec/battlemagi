@@ -26,8 +26,6 @@ public class NewGroundPointArcSpawn : ISpellSpawn {
     }
 
     private static SpawnContext ApplyDirectionToTarget(SpawnContext context) {
-        if (context.target is BallisticCastTarget)
-            return context;
         if (context.target == null)
             return context;
 

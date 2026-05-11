@@ -107,10 +107,10 @@ public class StateController : NetworkBehaviour {
             client.PlayerObject != null)
             return client.PlayerObject;
 
-        var participants = FindObjectsByType<ParticipantIdentity>(FindObjectsSortMode.None);
+        var participants = FindObjectsByType<Bot>(FindObjectsSortMode.None);
         for (int i = 0; i < participants.Length; i++) {
             var participant = participants[i];
-            if (participant.Id != participantId)
+            if (participant.GetComponent<ParticipantIdentity>().Id != participantId)
                 continue;
             return participant.gameObject.GetComponent<NetworkObject>();
         }
