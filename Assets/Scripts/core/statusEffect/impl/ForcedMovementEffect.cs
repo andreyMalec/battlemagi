@@ -31,13 +31,13 @@ public class ForcedMovementEffect : StatusEffectData {
         var targetPoint = ResolveTargetPoint(applyContext, target);
         resolvedDuration = ResolveMovementDuration(applyContext, target, targetPoint);
 
-        if (target.TryGetComponent<StateController>(out var player)) {
-            if (TeamManager.Instance.AreAllies(applyContext.ownerClientId, null, player.OwnerClientId, target))
+        if (target.TryGetComponent<StateController>(out var player) &&
+            player.TryGetComponent<ParticipantIdentity>(out var identity)) {
+            if (TeamManager.Instance.AreAllies(applyContext.OwnerId, identity.Id))
                 return false;
 
             player.StartForcedMovement(targetPoint, resolvedDuration);
-            PlayerAchievementsManager.Instance.ReportEnemyLaunchedServer(applyContext.ownerClientId,
-                player.OwnerClientId);
+            PlayerAchievementsManager.Instance.ReportEnemyLaunchedServer(applyContext.OwnerId, identity.Id);
             return true;
         }
 
@@ -79,22 +79,8 @@ public class ForcedMovementEffect : StatusEffectData {
     }
 
     private Vector3 GetCasterPosition(StatusEffectApplyContext applyContext, GameObject target) {
-        var participantId = ParticipantOwnerCodec.Decode(applyContext.ownerClientId);
-        if (participantId.IsHuman && NetworkManager.Singleton != null &&
-            NetworkManager.Singleton.ConnectedClients.TryGetValue(participantId.Value, out var client) &&
-            client.PlayerObject != null)
-            return client.PlayerObject.transform.position;
-
-        if (DamageRelationship.TryGetTargetParticipant(applyContext.sourceObject, applyContext.ownerClientId,
-                out participantId)) {
-            var participants = FindObjectsByType<Bot>(FindObjectsSortMode.None);
-            for (var i = 0; i < participants.Length; i++) {
-                var participant = participants[i];
-                if (participant.GetComponent<ParticipantIdentity>().Id != participantId)
-                    continue;
-
-                return participant.transform.position;
-            }
+        if (ParticipantIdentity.TryFind(applyContext.OwnerId, out var participant)) {
+            return participant.transform.position;
         }
 
         return target.transform.position;

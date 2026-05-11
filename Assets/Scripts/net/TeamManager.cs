@@ -97,7 +97,8 @@ public class TeamManager : NetworkBehaviour {
     }
 
     private bool IsMatchInProgress() {
-        return IsServer && LobbyManager.Instance != null && LobbyManager.Instance.State == LobbyManager.PlayerState.InGame;
+        return IsServer && LobbyManager.Instance != null &&
+               LobbyManager.Instance.State == LobbyManager.PlayerState.InGame;
     }
 
     private int FindIndexByClientId(ulong clientId) {
@@ -198,7 +199,7 @@ public class TeamManager : NetworkBehaviour {
 
         var assignedTeam = requestedTeam;
         if (assignedTeam == Team.None || !isTeamMode)
-            assignedTeam = AssignTeamInternal(botId);
+            assignedTeam = AssignTeamInternal(ParticipantIdentityCodec.EncodeBot(botId));
 
         _botTeams[botId] = assignedTeam;
         Debug.Log($"[TeamManager] Bot {botId} joined team {assignedTeam}");
@@ -318,9 +319,9 @@ public class TeamManager : NetworkBehaviour {
     }
 
     private ParticipantId ResolveParticipantId(ulong rawId) {
-        var decoded = ParticipantOwnerCodec.Decode(rawId);
+        var decoded = ParticipantIdentityCodec.Decode(rawId);
 
-        if ((rawId & ParticipantOwnerCodec.BotMask) != 0)
+        if ((rawId & ParticipantIdentityCodec.BotMask) != 0)
             return decoded;
 
         var human = decoded;
@@ -352,26 +353,10 @@ public class TeamManager : NetworkBehaviour {
         return ResolveParticipantId(rawId);
     }
 
-    public bool AreEnemies(ulong a, ulong b) {
-        return AreEnemies(ResolveParticipantId(a), ResolveParticipantId(b));
-    }
-
-    public bool AreEnemies(ulong a, GameObject aContext, ulong b, GameObject bContext) {
-        return AreEnemies(ResolveParticipantId(a, aContext), ResolveParticipantId(b, bContext));
-    }
-
     public bool AreEnemies(ParticipantId a, ParticipantId b) {
         if (!isTeamMode)
             return a != b;
         return GetTeam(a) != GetTeam(b);
-    }
-
-    public bool AreAllies(ulong a, ulong b) {
-        return !AreEnemies(a, b);
-    }
-
-    public bool AreAllies(ulong a, GameObject aContext, ulong b, GameObject bContext) {
-        return !AreEnemies(a, aContext, b, bContext);
     }
 
     public bool AreAllies(ParticipantId a, ParticipantId b) {

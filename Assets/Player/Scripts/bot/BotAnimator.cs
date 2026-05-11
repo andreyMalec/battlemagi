@@ -61,7 +61,8 @@ public class BotAnimator : NetworkBehaviour {
         ikRot = ikHand.localRotation;
     }
 
-    private void OnDestroy() {
+    public override void OnDestroy() {
+        base.OnDestroy();
         movement.Jumped -= Jumped;
     }
 
@@ -103,13 +104,6 @@ public class BotAnimator : NetworkBehaviour {
 
     public void CancelSpellChanneling() {
         AnimateTrigger(CancelChanneling);
-    }
-
-    public IEnumerator CastSpell(SpellData spell) {
-        AnimateFloat(CastSpeed, _stats?.GetFinal(StatType.CastSpeed) ?? 1f);
-        AnimateFloat(Invocation, spell.invocationIndex);
-        yield return new WaitForSeconds(0.1f);
-        AnimateFloat(Invocation, 0);
     }
 
     private void Update() {

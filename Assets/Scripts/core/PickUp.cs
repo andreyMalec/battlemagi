@@ -33,11 +33,8 @@ public class PickUp : NetworkBehaviour {
 
         if (other.TryGetComponent<SpellCasterPlayer>(out _) && other.TryGetComponent<Statusable>(out var statusable)) {
             var pickedByBot = other.GetComponent<Bot>() != null;
-            var ownerId = OwnerClientId;
-            if (NetworkObject.IsSceneObject == true)
-                ownerId = PlayerId.EnvironmentId;
             foreach (var effect in effects) {
-                statusable.AddEffect(ownerId, effect);
+                statusable.AddEffect(ParticipantId.EnvironmentId, effect);
             }
 
             var toUI = effects.First();

@@ -24,8 +24,8 @@ public abstract class StatMultiplierEffect : StatusEffectData {
             _data = data;
         }
 
-        public override void OnApply(ulong ownerClientId, GameObject target) {
-            base.OnApply(ownerClientId, target);
+        public override void OnApply(ParticipantId ownerId, GameObject target) {
+            base.OnApply(ownerId, target);
             var stats = target.GetComponent<Stats>();
             if (stats != null)
                 stats.AddModifier(_data.statType(), _data.multiplier);

@@ -7,7 +7,7 @@ public class AIContext {
     public Transform Self;
     public StatSystem Stats;
     public SpellCaster Caster;
-    public OwnerId OwnerId;
+    public ParticipantId OwnerId;
     public TargetFilter TargetFilter;
     public bool CanTargetAllies;
     public IEnumerable<ITarget> Targets = new List<ITarget>();

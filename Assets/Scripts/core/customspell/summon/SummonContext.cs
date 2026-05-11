@@ -3,7 +3,7 @@ using Unity.VisualScripting;
 
 public class SummonContext : ISpellContext {
     public SpellCaster Caster { get; }
-    public OwnerId OwnerId { get; }
+    public ParticipantId OwnerId { get; }
     public SpellView View { get; }
 
     public ISpellTransform Movement => throw new InvalidImplementationException();

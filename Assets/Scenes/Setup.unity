@@ -204,7 +204,7 @@ MonoBehaviour:
     mobility: 0
   - available: 1
     spell: {fileID: 11400000, guid: 0ba56c3f60114144f916acf15a5ca00a, type: 2}
-    offensive: 1.5
+    offensive: 1.8
     defensive: 2
     mobility: 1
   - available: 1
@@ -219,7 +219,7 @@ MonoBehaviour:
     mobility: 1
   - available: 1
     spell: {fileID: 11400000, guid: 9b0054fe8b00fa743ae839480a669c87, type: 2}
-    offensive: 1.1
+    offensive: 1.2
     defensive: 1
     mobility: 1
   - available: 1
@@ -1816,7 +1816,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4209512637272849082, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
       propertyPath: initialBotCount
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5984348537018640584, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -1826,7 +1826,8 @@ PrefabInstance:
       propertyPath: InScenePlacedSourceGlobalObjectIdHash
       value: 1460481888
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1935008753744762931, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:

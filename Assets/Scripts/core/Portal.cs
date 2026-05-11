@@ -22,7 +22,7 @@ public class Portal : MonoBehaviour {
 
     private RenderTexture _rt;
 
-    private readonly Dictionary<ulong, float> _nextAllowedTime = new();
+    private readonly Dictionary<ParticipantId, float> _nextAllowedTime = new();
 
     private struct PendingTeleport {
         public Transform target;

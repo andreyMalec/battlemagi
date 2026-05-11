@@ -21,26 +21,25 @@ public class Killfeed : NetworkBehaviour {
     [ClientRpc]
     public void HandleClientRpc(ulong killerId, ulong targetId, ulong sourceId = 0) {
         var item = Instantiate(itemPrefab, container.transform);
-        var killerName = ResolveName(killerId);
-        var targetName = ResolveName(targetId);
+        var killerName = ResolveName(ParticipantIdentityCodec.Decode(killerId));
+        var targetName = ResolveName(ParticipantIdentityCodec.Decode(targetId));
 
         var killInfo = $"{killerName} → {targetName}";
 
         item.GetComponent<KillfeedItem>().SetText(killInfo);
     }
 
-    private static string ResolveName(ulong rawId) {
-        if (rawId == ulong.MaxValue) return "";
+    private static string ResolveName(ParticipantId id) {
+        if (id == ParticipantId.EnvironmentId) return "";
 
-        var participantId = ParticipantOwnerCodec.Decode(rawId);
-        if (participantId.IsHuman) {
-            var player = PlayerManager.Instance.FindByClientId(participantId.Value);
+        if (id.IsHuman) {
+            var player = PlayerManager.Instance.FindByClientId(id.Value);
             if (!player.HasValue)
                 return "";
             return Trim(player.Value.Name());
         }
 
-        return Trim($"Bot_{participantId.Value}");
+        return Trim($"Bot_{id.Value}");
     }
 
     private static string Trim(string value) {

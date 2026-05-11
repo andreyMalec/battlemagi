@@ -234,7 +234,7 @@ public sealed class BallisticCastTarget : ITarget {
     public Vector3 Position => _position;
     public bool IsPlayer => _baseTarget.IsPlayer;
     public bool IsSpell => _baseTarget.IsSpell;
-    public OwnerId OwnerId => _baseTarget.OwnerId;
+    public ParticipantId OwnerId => _baseTarget.OwnerId;
     public ulong ObjectId => _baseTarget.ObjectId;
     public bool CanGet => _baseTarget.CanGet;
     public GameObject Get => _baseTarget.Get;

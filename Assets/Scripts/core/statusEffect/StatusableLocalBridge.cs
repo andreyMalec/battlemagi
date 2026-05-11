@@ -2,14 +2,19 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class StatusableLocalBridge : MonoBehaviour, IStatusableBridge {
-    [SerializeField] private ulong clientId;
+    [SerializeField] private ParticipantKind ownerKind = ParticipantKind.Human;
+    [SerializeField] private ulong ownerValue;
 
     private Statusable _core;
     private bool _hasStatusable;
 
     public bool IsServer => true;
     public bool IsSpawned => true;
-    public ulong OwnerId => clientId;
+    public ParticipantId OwnerId {
+        get => new ParticipantId(ownerKind, ownerValue);
+        set => throw new System.NotImplementedException();
+    }
+
     public List<Statusable.DurationEffect> DurationEffects { get; } = new();
 
     private void FixedUpdate() {
@@ -29,9 +34,9 @@ public class StatusableLocalBridge : MonoBehaviour, IStatusableBridge {
     public void SyncFromCore(Statusable core) {
     }
 
-    public void HandleExpireChain(ulong ownerClientId, StatusEffectData expiredEffect) {
+    public void HandleExpireChain(ParticipantId ownerId, StatusEffectData expiredEffect) {
         if (expiredEffect != null && expiredEffect.onExpire != null)
-            _core.AddEffect(ownerClientId, expiredEffect.onExpire);
+            _core.AddEffect(ownerId, expiredEffect.onExpire);
     }
 
     public void HandleHit(DamageRequest hit) {

@@ -485,6 +485,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3580683726391601925}
   - component: {fileID: 6341828913972651628}
+  - component: {fileID: 3810270007300051747}
   - component: {fileID: 4264968793503388057}
   - component: {fileID: 7927841338553304458}
   - component: {fileID: 3595582522434657761}
@@ -566,6 +567,20 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &3810270007300051747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 823a5065ca2b4550a0192d87bba78867, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ParticipantIdentity
+  kind: 0
+  value: 0
 --- !u!114 &4264968793503388057
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1045,6 +1060,11 @@ MonoBehaviour:
   defaultStoppingDistance: 1.5
   jumpCooldown: 0.75
   camera: {fileID: 2934301547977243489}
+  avoidDynamicHazards: 1
+  hazardClearance: 0.8
+  hazardDetourPadding: 1.4
+  hazardDetourSamples: 8
+  hazardSampleRadius: 2.5
   groundCheck: {fileID: 6466238404988819252}
   jumpStrength: 0
   movementSpeed: 0

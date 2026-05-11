@@ -18,7 +18,7 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
 
     bool IDamageableBridge.IsServer => base.IsServer;
     bool IDamageableBridge.IsSpawned => base.IsSpawned;
-    public ulong OwnerId => OwnerClientId;
+    public ParticipantId OwnerId { get; set; }
 
     private Statusable _statusable;
 
@@ -45,6 +45,7 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
             armor.OnValueChanged -= OnArmorChanged;
             _networkStateBound = false;
         }
+
         base.OnNetworkDespawn();
     }
 
@@ -63,7 +64,6 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
         if (IsServer)
             SyncFromCore(_core);
     }
-
 
     private void OnHealthChanged(float prev, float next) {
         _core.SetNetworkState(next, _core.CurrentArmor);
@@ -118,7 +118,7 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
             var appliedPreview = PreviewDamageNoSideEffects(_core, in request);
             if (_core.Health.Health - appliedPreview.healthApplied <= 0f && beforeHealth > 0f) {
                 var removed = (RuneOfStasisEffect)_statusable.RemoveEffect("Rune of Stasis");
-                _statusable.AddEffect(OwnerClientId, removed.onExpire);
+                _statusable.AddEffect(OwnerId, removed.onExpire);
                 return false;
             }
         }
@@ -132,14 +132,11 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
         if (_core.IsAlive) {
             if (request.source != "Pain Mirror" && request.fromId != OwnerId) {
                 if (_statusable != null && _statusable.HasEffect("Pain Mirror")) {
-                    if (NetworkManager.ConnectedClients.TryGetValue(request.fromId, out var client)) {
-                        var player = client.PlayerObject;
-                        if (player != null) {
-                            var reflectDamage = applied.incoming * _stats.GetFinal(StatType.DamageReflection);
-                            player.GetComponent<Damageable>()
-                                .TakeDamage("Pain Mirror", OwnerId, reflectDamage, DamageKind.Reflect,
-                                    ignoreSoundCooldown);
-                        }
+                    if (ParticipantIdentity.TryFind(request.fromId, out var player) && player != null) {
+                        var reflectDamage = applied.incoming * _stats.GetFinal(StatType.DamageReflection);
+                        player.GetComponent<Damageable>()
+                            .TakeDamage("Pain Mirror", OwnerId, reflectDamage, DamageKind.Reflect,
+                                ignoreSoundCooldown);
                     }
                 }
             }
@@ -159,7 +156,7 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
 
     [ServerRpc]
     private void SuicideServerRpc() {
-        _core.TakeDamage("Suicide", OwnerClientId, 9999f, DamageKind.Fall, true);
+        _core.TakeDamage("Suicide", OwnerId, 9999f, DamageKind.Fall, true);
     }
 
     private static DamageApplied PreviewDamageNoSideEffects(Damageable core, in DamageRequest request) {

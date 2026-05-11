@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
 
-public abstract class SpellCaster : MonoBehaviour, ITarget {
+public abstract class SpellCaster : MonoBehaviour, ITarget, IdentityUser {
     public static readonly List<SpellCaster> Active = new();
 
     public abstract bool CanCast { get; }
@@ -11,7 +11,7 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
     public abstract Vector3 Origin { get; }
     public abstract Vector3 Direction { get; }
 
-    public OwnerId OwnerId { get; private set; }
+    public ParticipantId OwnerId { get; set; }
     public ulong ObjectId => Authority.ObjectId;
     public SpellSystem SpellSystem { get; private set; }
     public IAuthorityService Authority { get; private set; }
@@ -27,7 +27,7 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
         get {
             try {
                 return enabled && gameObject != null;
-            } catch (Exception e) {
+            } catch (Exception) {
                 return false;
             }
         }
@@ -52,7 +52,7 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
     }
 
     public void Initialize(
-        OwnerId ownerId,
+        ParticipantId ownerId,
         SpellSystem spellSystem,
         IAuthorityService authority
     ) {
@@ -137,7 +137,7 @@ public abstract class SpellCaster : MonoBehaviour, ITarget {
 
     public void HandleSpellLimit(SpellDefinition spell, GameObject target) {
         if (spell.spawn.instanceLimit > 0) {
-            var removed = SpellInstanceLimiter.Register(OwnerId, spell, target);
+            var removed = SpellInstanceLimiter.Register(OwnerId.Value, spell, target);
             foreach (var old in removed) {
                 if (old == null) continue;
                 var view = old.GetComponentInChildren<SpellView>();

@@ -2,7 +2,7 @@ using Unity.Netcode;
 using UnityEngine;
 
 public class SpellPreviewNetworkBridge : NetworkBehaviour, ISpellPreviewBridge {
-    public ulong OwnerId => OwnerClientId;
+    public ParticipantId OwnerId { get; set; }
 
     private Transform _hand;
 

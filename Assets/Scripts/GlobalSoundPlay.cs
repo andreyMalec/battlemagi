@@ -9,9 +9,8 @@ public class GlobalSoundPlay : MonoBehaviour {
 
     private void OnEnable() {
         var go = new GameObject("One shot audio");
-        if (parentToPlayer && TryGetComponent<NetworkObject>(out var networkObject)) {
-            var player = NetworkManager.Singleton.ConnectedClients[networkObject.OwnerClientId].PlayerObject;
-            if (player != null) {
+        if (parentToPlayer && TryGetComponent<ParticipantIdentity>(out var identity)) {
+            if (ParticipantIdentity.TryFind(identity.Id, out var player) && player != null) {
                 go.transform.parent = player.transform;
                 go.transform.localPosition = Vector3.zero;
             }

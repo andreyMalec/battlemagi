@@ -23,7 +23,7 @@ public class SpellInstance : MonoBehaviour, ITarget {
     public bool IsPlayer => false;
     public bool IsSpell => true;
     public bool IsAlive => _view != null && _view.IsAlive;
-    public OwnerId OwnerId => _authorityService.OwnerId;
+    public ParticipantId OwnerId => _authorityService.OwnerId;
     public ulong ObjectId => _authorityService.ObjectId;
     public bool CanGet => gameObject != null;
     public GameObject Get => gameObject;
@@ -79,7 +79,7 @@ public class SpellInstance : MonoBehaviour, ITarget {
         }
 
         if (_authorityService != null && _authorityService.IsServer) {
-            SpellInstanceLimiter.Unregister(OwnerId, Bind.Context.Spell, gameObject);
+            SpellInstanceLimiter.Unregister(OwnerId.Value, Bind.Context.Spell, gameObject);
         }
     }
 

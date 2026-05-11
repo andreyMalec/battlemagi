@@ -32,16 +32,11 @@ public class NgoSpellSystemEvent : NetworkBehaviour, SpellSystemEvent {
 
         var instance = obj.GetComponentInChildren<SpellInstance>();
         instance?.Kill();
-        ulong spellOwnerId;
-        try {
-            spellOwnerId = instance?.OwnerId ?? obj.OwnerClientId;
-        } catch (Exception e) {
-            spellOwnerId = obj.OwnerClientId;
-        }
+        if (instance == null) return;
 
         foreach (var caster in SpellCaster.Active) {
             if (caster.Authority == null || !caster.Authority.IsOwner) continue;
-            if (caster.OwnerId != spellOwnerId) continue;
+            if (caster.OwnerId != instance.GetComponentInParent<ParticipantIdentity>().Id) continue;
             var bridge = caster.GetComponentInParent<ISpellCasterBridge>();
             bridge?.StopChannelingSpell(netObjectId);
             break;
@@ -59,7 +54,7 @@ public class NgoSpellSystemEvent : NetworkBehaviour, SpellSystemEvent {
         SpellLog.Log($"[NetworkSpellSystemEvent] OnFadeOutAudioClientRpc: {netObjectId}");
 
         var instance = obj.GetComponentInChildren<SpellInstance>();
-        instance.FadeOutAudio();
+        instance?.FadeOutAudio();
     }
 
     public void OnRemoveVisible(SpellView view) {
@@ -73,7 +68,7 @@ public class NgoSpellSystemEvent : NetworkBehaviour, SpellSystemEvent {
         SpellLog.Log($"[NetworkSpellSystemEvent] OnRemoveVisibleClientRpc: {netObjectId}");
 
         var instance = obj.GetComponentInChildren<SpellInstance>();
-        instance.RemoveVisual();
+        instance?.RemoveVisual();
     }
 
     public void OnAttack(SpellCasterSummon caster) {

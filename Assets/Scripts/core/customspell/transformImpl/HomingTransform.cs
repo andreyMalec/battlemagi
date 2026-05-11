@@ -117,7 +117,7 @@ public class HomingTransform : ISpellTransform {
 
     private bool IsTargetValid() {
         if (_target == null) return false;
-        if (DamageRelationship.AreAllies(_ctx, _target.OwnerId, _target.Get)) return false;
+        if (DamageRelationship.AreAllies(_ctx, _target.OwnerId)) return false;
         if (!_target.Get.TryGetComponent<Damageable>(out var damageable)) return false;
         if (damageable.IsDead) return false;
         if (damageable.GetComponentInChildren<Freeze>() != null) return false;
@@ -138,7 +138,7 @@ public class HomingTransform : ISpellTransform {
             if (TeamManager.Instance == null)
                 return it.OwnerId != _ctx.Caster.OwnerId;
             if (!it.CanGet) return false;
-            if (DamageRelationship.AreAllies(_ctx, it.OwnerId, it.Get)) return false;
+            if (DamageRelationship.AreAllies(_ctx, it.OwnerId)) return false;
 
             return it.IsPlayer
                    && it.Get.TryGetComponent<Damageable>(out var damageable) && !damageable.IsDead

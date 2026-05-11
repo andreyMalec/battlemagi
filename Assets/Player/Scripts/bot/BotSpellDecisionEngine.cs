@@ -91,11 +91,11 @@ public class BotSpellDecisionEngine {
         var manaNorm = EstimateManaCost(input.SpellWeights.spell) / Mathf.Max(1f, input.MaxMana * 0.45f);
         score -= Mathf.Clamp(manaNorm, 0f, 3f) * _weights.manaCostWeight * (1f - input.ManaRatio);
 
-        Debug.Log(
-            $"Spell: {input.SpellWeights.spell.name}, Base Score: {tactical.BaseScore:F2}, Damage: {profile.DamagePotential:F2}, " +
-            $"Offensive Effects: {profile.OffensiveEffectPotential:F2}, Defensive Effects: {profile.DefensiveEffectPotential:F2}, " +
-            $"Spawn Potential: {profile.SpawnPotential:F2}, Mobility: {tactical.MobilityScore:F2}, Flight Time: {tactical.FlightTime:F2}, " +
-            $"manaNorm:{manaNorm:F2}, m={Mathf.Clamp(manaNorm, 0f, 3f) * _weights.manaCostWeight * (1f - input.ManaRatio)} Final Score: {score:F2}");
+        // Debug.Log(
+        //     $"Spell: {input.SpellWeights.spell.name}, Base Score: {tactical.BaseScore:F2}, Damage: {profile.DamagePotential:F2}, " +
+        //     $"Offensive Effects: {profile.OffensiveEffectPotential:F2}, Defensive Effects: {profile.DefensiveEffectPotential:F2}, " +
+        //     $"Spawn Potential: {profile.SpawnPotential:F2}, Mobility: {tactical.MobilityScore:F2}, Flight Time: {tactical.FlightTime:F2}, " +
+        //     $"manaNorm:{manaNorm:F2}, m={Mathf.Clamp(manaNorm, 0f, 3f) * _weights.manaCostWeight * (1f - input.ManaRatio)} Final Score: {score:F2}");
 
         return new BotSpellDecisionResult {
             Spell = input.SpellWeights.spell,

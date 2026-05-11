@@ -47,8 +47,8 @@ public class StateController : NetworkBehaviour {
             stateController.RefreshMovementState();
     }
 
-    public void Attach(ulong originClientId, bool active) {
-        AttachClientRpc(originClientId, NetworkObjectId, active);
+    public void Attach(ParticipantId originClientId, bool active) {
+        AttachClientRpc(ParticipantIdentityCodec.Encode(originClientId), NetworkObjectId, active);
     }
 
     public void StartForcedMovement(Vector3 targetPoint, float duration) {
@@ -101,7 +101,7 @@ public class StateController : NetworkBehaviour {
     }
 
     private static NetworkObject TryResolveTarget(ulong ownerId) {
-        var participantId = ParticipantOwnerCodec.Decode(ownerId);
+        var participantId = ParticipantIdentityCodec.Decode(ownerId);
         if (participantId.IsHuman && NetworkManager.Singleton != null &&
             NetworkManager.Singleton.ConnectedClients.TryGetValue(participantId.Value, out var client) &&
             client.PlayerObject != null)

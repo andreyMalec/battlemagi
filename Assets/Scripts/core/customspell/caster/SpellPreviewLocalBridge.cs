@@ -9,7 +9,10 @@ public class SpellPreviewLocalBridge : MonoBehaviour, ISpellPreviewBridge {
     public bool IsServer => true;
     public bool IsSpawned => true;
     public bool IsOwner => clientId == 0;
-    public ulong OwnerId => clientId;
+    public ParticipantId OwnerId {
+        get => ParticipantId.Human(clientId);
+        set => throw new NotImplementedException();
+    }
 
     private Transform _hand;
 

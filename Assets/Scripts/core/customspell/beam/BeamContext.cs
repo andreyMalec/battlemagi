@@ -1,10 +1,9 @@
 using System;
-using Unity.Netcode;
 using UnityEngine;
 
 public class BeamContext : IBeamContext {
     public SpellCaster Caster { get; }
-    public OwnerId OwnerId { get; }
+    public ParticipantId OwnerId { get; }
     public SpellView View { get; }
     public ISpellTransform Movement { get; }
     public SpellDefinition Spell { get; }

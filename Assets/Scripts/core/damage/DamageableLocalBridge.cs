@@ -2,7 +2,8 @@ using TMPro;
 using UnityEngine;
 
 public class DamageableLocalBridge : MonoBehaviour, IDamageableBridge {
-    [SerializeField] private ulong clientId;
+    [SerializeField] private ParticipantKind ownerKind = ParticipantKind.Human;
+    [SerializeField] private ulong ownerValue;
     [SerializeField] private TMP_Text _hpText;
 
     private Damageable _core;
@@ -13,8 +14,12 @@ public class DamageableLocalBridge : MonoBehaviour, IDamageableBridge {
 
     public bool IsServer => true;
     public bool IsSpawned => true;
-    public bool IsOwner => clientId == 0;
-    public ulong OwnerId => clientId;
+    public bool IsOwner => OwnerId == ParticipantId.Human(0);
+
+    public ParticipantId OwnerId {
+        get => new ParticipantId(ownerKind, ownerValue);
+        set => throw new System.NotImplementedException();
+    }
 
     private void Update() {
         if (!_hasDamageable) return;

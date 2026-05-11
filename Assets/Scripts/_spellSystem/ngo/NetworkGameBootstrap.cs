@@ -2,18 +2,12 @@ using Unity.Netcode;
 using UnityEngine;
 
 [DefaultExecutionOrder(-100)]
-public class NetworkGameBootstrap : NetworkBehaviour, IAuthorityService, SpellBootstrap {
-    public OwnerId OwnerId => _logicalOwnerId ?? OwnerClientId;
+public class NetworkGameBootstrap : NetworkBehaviour, IAuthorityService, SpellBootstrap, IdentityUser {
+    public ParticipantId OwnerId { get; set; }
     public ulong ObjectId => NetworkObjectId;
-
-    private OwnerId? _logicalOwnerId;
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
-        var identity = GetComponent<ParticipantIdentity>();
-        if (identity != null) {
-            _logicalOwnerId = ParticipantOwnerCodec.Encode(identity.Id);
-        }
 
         var caster = GetComponentInChildren<SpellCaster>();
         Init(caster);

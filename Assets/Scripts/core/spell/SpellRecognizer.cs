@@ -86,41 +86,6 @@ public sealed class SpellRecognizer {
         return result;
     }
 
-    // Call once (e.g., at startup) to prewarm cache from SpellDatabase and set whitelist
-    public static void PrewarmFromDatabase() {
-        var db = SpellDatabase.Instance;
-        if (db == null) return;
-
-        var set = new HashSet<string>(StringComparer.Ordinal);
-        foreach (var spell in db.spells) {
-            if (spell.spellWords != null)
-                foreach (var p in spell.spellWords)
-                    if (!string.IsNullOrWhiteSpace(p))
-                        set.Add(p);
-            if (spell.spellWordsRu != null)
-                foreach (var p in spell.spellWordsRu)
-                    if (!string.IsNullOrWhiteSpace(p))
-                        set.Add(p);
-        }
-
-        // Build token cache for known phrases
-        var localTokens = new Dictionary<string, string[]>(StringComparer.Ordinal);
-        foreach (var phrase in set) {
-            var tokens = s_tokenRegex.Matches(phrase.ToLowerInvariant())
-                .Cast<Match>()
-                .Select(m => m.Value)
-                .ToArray();
-            localTokens[phrase] = tokens;
-        }
-
-        lock (s_cacheLock) {
-            s_knownPhrases = set;
-            foreach (var kv in localTokens) {
-                s_phraseTokensCache[kv.Key] = kv.Value;
-            }
-        }
-    }
-
     public static void ClearCache() {
         lock (s_cacheLock) {
             s_phraseTokensCache.Clear();

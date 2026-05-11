@@ -1,4 +1,3 @@
-using System;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -20,13 +19,6 @@ public class SpellPrefab : MonoBehaviour, IEntityManager {
 
         DontDestroyOnLoad(gameObject);
         Instance = this;
-    }
-    
-    public GameObject Spawn(OwnerId ownerId, GameObject prefab, Vector3 pos, Quaternion rot) {
-        var obj = Instantiate(prefab, pos, rot);
-        var networkObject = obj.GetComponent<NetworkObject>();
-        networkObject.SpawnWithOwnership(ownerId.Value);
-        return obj;
     }
 
     public void Despawn(GameObject go) {

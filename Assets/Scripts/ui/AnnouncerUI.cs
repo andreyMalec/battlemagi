@@ -27,7 +27,7 @@ public class AnnouncerUI : MonoBehaviour {
     }
 
     private void PlayerWin(ulong clientId) {
-        var winnerId = ParticipantOwnerCodec.Decode(clientId);
+        var winnerId = ParticipantIdentityCodec.Decode(clientId);
         if (!PlayerManager.Instance.TryGetParticipant(winnerId, out var data)) return;
         coloredText.color = Color.HSVToRGB(data.Hue / 360f, data.Saturation, 0.8f);
         coloredText.text = winnerId.IsBot ? $"Bot #{winnerId.Value}" : ResolveHumanWinnerName(data);

@@ -2,6 +2,8 @@ using System;
 
 [Serializable]
 public readonly struct ParticipantId : IEquatable<ParticipantId> {
+    public static ParticipantId EnvironmentId = Human(1337);
+
     public readonly ParticipantKind Kind;
     public readonly ulong Value;
 
@@ -47,4 +49,3 @@ public readonly struct ParticipantId : IEquatable<ParticipantId> {
         return $"{Kind}:{Value}";
     }
 }
-

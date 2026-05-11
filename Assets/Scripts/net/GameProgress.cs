@@ -97,8 +97,8 @@ public class GameProgress : NetworkBehaviour {
         }
     }
 
-    private void HandlePlayersListChanged(List<PlayerManager.PlayerData> players) {
-        _ = players;
+    private void HandlePlayersListChanged(NetworkList<MatchParticipantData> participantsList) {
+        _ = participantsList;
         if (!IsServer) return;
         if (ended) return;
         if (TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.CaptureTheFlag) {
@@ -139,7 +139,7 @@ public class GameProgress : NetworkBehaviour {
                         PlayerAchievementsManager.Instance?.ReportMatchWinnerServer(p.Id.Value);
                     }
 
-                    GameAnnouncer.Instance.PlayerWin(ParticipantOwnerCodec.Encode(p.Id));
+                    GameAnnouncer.Instance.PlayerWin(ParticipantIdentityCodec.Encode(p.Id));
 
                     StartCoroutine(EndMatch());
                     return;

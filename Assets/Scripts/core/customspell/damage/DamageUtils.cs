@@ -2,9 +2,9 @@ using System.Linq;
 using UnityEngine;
 
 public static class DamageUtils {
-    public static bool TryGetOwnerFromCollider(Collider other, out Damageable damageable, out ulong owner) {
+    public static bool TryGetOwnerFromCollider(Collider other, out Damageable damageable, out ParticipantId owner) {
         damageable = null;
-        owner = ulong.MaxValue;
+        owner = default;
 
         if (other.TryGetComponent<ChildCollider>(out _)) {
             damageable = other.GetComponentInParent<Damageable>();
@@ -19,9 +19,9 @@ public static class DamageUtils {
         return true;
     }
 
-    public static bool TryGetOwnerFromCollider(GameObject other, out Damageable damageable, out ulong owner) {
+    public static bool TryGetOwnerFromCollider(GameObject other, out Damageable damageable, out ParticipantId owner) {
         damageable = null;
-        owner = ulong.MaxValue;
+        owner = default;
 
         if (other.TryGetComponent<ChildCollider>(out _)) {
             damageable = other.GetComponentInParent<Damageable>();

@@ -16,7 +16,7 @@ public class Statusable : MonoBehaviour {
     internal IReadOnlyCollection<StatusEffectRuntime> ActiveEffects => _active.Values;
 
     public List<DurationEffect> DurationEffects => _bridgeTyped.DurationEffects;
-    public ulong OwnerId => _bridgeTyped.OwnerId;
+    public ParticipantId OwnerId => _bridgeTyped.OwnerId;
 
     private void Awake() {
         if (_bridge != null)
@@ -30,8 +30,8 @@ public class Statusable : MonoBehaviour {
         return _active.ContainsKey(effectName);
     }
 
-    public void AddEffect(ulong ownerClientId, StatusEffectData data) {
-        AddEffect(new StatusEffectApplyContext(ownerClientId), data);
+    public void AddEffect(ParticipantId ownerId, StatusEffectData data) {
+        AddEffect(new StatusEffectApplyContext(ownerId), data);
     }
 
     public void AddEffect(StatusEffectApplyContext applyContext, StatusEffectData data) {
@@ -40,7 +40,7 @@ public class Statusable : MonoBehaviour {
         if (!_bridgeTyped.IsServer) return;
         if (!_bridgeTyped.IsSpawned) return;
 
-        SpellLog.Log($"Adding effect {data.effectName} to {gameObject.name} from client {applyContext.ownerClientId}");
+        SpellLog.Log($"Adding effect {data.effectName} to {gameObject.name} from client {applyContext.ownerId}");
         if (_active.TryGetValue(data.effectName, out var previous)) {
             switch (data.CompareTo(previous.data)) {
                 case StatusEffectData.RESET_TIME:
@@ -116,7 +116,7 @@ public class Statusable : MonoBehaviour {
         for (var i = 0; i < toRemove.Count; i++) {
             var expired = toRemove[i];
             RemoveEffect(expired.data.effectName);
-            _bridgeTyped.HandleExpireChain(expired.ownerClientId, expired.data);
+            _bridgeTyped.HandleExpireChain(expired.OwnerId, expired.data);
         }
 
 

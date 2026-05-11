@@ -53,7 +53,7 @@ public class Damageable : MonoBehaviour {
     public bool IsDead => (State & DamageableState.Dead) != 0;
 
     public bool IsOwner => _bridgeTyped.IsOwner;
-    public ulong OwnerId => _bridgeTyped.OwnerId;
+    public ParticipantId OwnerId => _bridgeTyped.OwnerId;
 
     public event Action<DamageApplied> OnDamageApplied;
     public event Action<float> OnHealed;
@@ -230,7 +230,7 @@ public class Damageable : MonoBehaviour {
 
     public void TakeDamage(
         string source,
-        ulong fromId,
+        ParticipantId fromId,
         float amount,
         DamageKind sound = DamageKind.Default,
         bool ignoreSoundCooldown = false

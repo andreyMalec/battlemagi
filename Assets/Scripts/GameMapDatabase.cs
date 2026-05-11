@@ -1,6 +1,4 @@
-using System;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GameMapDatabase : MonoBehaviour {
     public static GameMapDatabase instance;

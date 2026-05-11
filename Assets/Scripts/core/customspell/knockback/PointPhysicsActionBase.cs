@@ -7,7 +7,7 @@ public abstract class PointPhysicsActionBase : ISpellAction {
         public readonly PlayerPhysics Physics;
         public readonly FirstPersonMovement Movement;
         public readonly Rigidbody Rigidbody;
-        public readonly ulong OwnerId;
+        public readonly ParticipantId OwnerId;
         public readonly bool HasOwner;
 
         public ResolvedPhysicsTarget(
@@ -15,7 +15,7 @@ public abstract class PointPhysicsActionBase : ISpellAction {
             PlayerPhysics physics,
             FirstPersonMovement movement,
             Rigidbody rigidbody,
-            ulong ownerId,
+            ParticipantId ownerId,
             bool hasOwner
         ) {
             Damageable = damageable;
@@ -43,7 +43,7 @@ public abstract class PointPhysicsActionBase : ISpellAction {
         if (DamageUtils.TryGetOwnerFromCollider(target, out var damageable, out var ownerId)) {
             if (damageable.IsDead) return false;
             if (damageable.TryGetComponent<PlayerPhysics>(out var physics)) {
-                if (!CanAffect(context, ownerId, target)) return false;
+                if (!CanAffect(context, ownerId)) return false;
                 damageable.TryGetComponent<FirstPersonMovement>(out var movement);
                 resolvedTarget = new ResolvedPhysicsTarget(damageable, physics, movement, null, ownerId, true);
                 return true;
@@ -55,7 +55,7 @@ public abstract class PointPhysicsActionBase : ISpellAction {
         }
 
         if (!TryResolveRigidbody(target, out var rigidbody)) return false;
-        resolvedTarget = new ResolvedPhysicsTarget(null, null, null, rigidbody, 0, false);
+        resolvedTarget = new ResolvedPhysicsTarget(null, null, null, rigidbody, default, false);
         return true;
     }
 
@@ -72,11 +72,11 @@ public abstract class PointPhysicsActionBase : ISpellAction {
         return true;
     }
 
-    protected bool CanAffect(ISpellContext context, ulong ownerId, GameObject targetObject) {
+    protected bool CanAffect(ISpellContext context, ParticipantId ownerId) {
         var def = context.Spell.knockback;
         if (def == null) return false;
         if (def.canHitAllies) return true;
-        return DamageRelationship.AreEnemies(context, ownerId, targetObject);
+        return DamageRelationship.AreEnemies(context, ownerId);
     }
 
     protected Vector3 ComputeDirection(Transform targetTransform, Vector3 point, KnockbackDefinition def) {

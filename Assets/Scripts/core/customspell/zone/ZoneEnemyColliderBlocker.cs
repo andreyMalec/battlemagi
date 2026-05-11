@@ -10,7 +10,7 @@ public class ZoneEnemyColliderBlocker : MonoBehaviour {
     private readonly Dictionary<Damageable, Vector3> _displacements = new();
 
     private SpellView _view;
-    private OwnerId _ownerId;
+    private ParticipantId _ownerId;
     private Collider _collider;
     private SphereCollider _sphereCollider;
     private BoxCollider _boxCollider;
@@ -18,22 +18,22 @@ public class ZoneEnemyColliderBlocker : MonoBehaviour {
     private float _radius;
     private Vector3 _boxSize;
 
-    public static void Attach(GameObject main, OwnerId ownerId, float radius, SpellView view) {
+    public static void Attach(GameObject main, ParticipantId ownerId, float radius, SpellView view) {
         Attach(main, ownerId, radius, ZoneShapeType.Sphere, view);
     }
 
-    public static void Attach(GameObject main, OwnerId ownerId, float radius, ZoneShapeType shapeType, SpellView view) {
+    public static void Attach(GameObject main, ParticipantId ownerId, float radius, ZoneShapeType shapeType, SpellView view) {
         var blocker = main.GetComponent<ZoneEnemyColliderBlocker>();
         if (blocker == null)
             blocker = main.AddComponent<ZoneEnemyColliderBlocker>();
         blocker.Init(ownerId, radius, shapeType, view);
     }
 
-    public void Init(OwnerId ownerId, float radius, SpellView view) {
+    public void Init(ParticipantId ownerId, float radius, SpellView view) {
         Init(ownerId, radius, ZoneShapeType.Sphere, view);
     }
 
-    public void Init(OwnerId ownerId, float radius, ZoneShapeType shapeType, SpellView view) {
+    public void Init(ParticipantId ownerId, float radius, ZoneShapeType shapeType, SpellView view) {
         _ownerId = ownerId;
         _radius = radius;
         _shapeType = shapeType;
@@ -133,7 +133,7 @@ public class ZoneEnemyColliderBlocker : MonoBehaviour {
             if (other == _collider) continue;
             if (!DamageUtils.TryGetOwnerFromCollider(other, out var damageable, out var owner)) continue;
             if (damageable.IsDead) continue;
-            if (TeamManager.Instance.AreAllies(_ownerId, gameObject, owner, damageable.gameObject)) continue;
+            if (TeamManager.Instance.AreAllies(_ownerId, owner)) continue;
             var outward = GetOutwardDirection(damageable, other, center);
             if (!Physics.ComputePenetration(
                     _collider,

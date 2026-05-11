@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 
 public class Scoreboard : MonoBehaviour {
@@ -38,7 +39,8 @@ public class Scoreboard : MonoBehaviour {
         ClearItems();
     }
 
-    private void OnPlayersChanged(List<PlayerManager.PlayerData> players) {
+    private void OnPlayersChanged(NetworkList<MatchParticipantData> participants) {
+        _ = participants;
         RefreshItems(PlayerManager.Instance.Participants);
     }
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 [DefaultExecutionOrder(-100)]
 public class LocalGameBootstrap : MonoBehaviour, SpellBootstrap {
-    [SerializeField] private ulong ownerId;
+    [SerializeField] private ParticipantId ownerId;
     private bool _initialized;
 
     private void Awake() {

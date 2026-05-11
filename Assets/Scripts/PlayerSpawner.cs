@@ -188,11 +188,7 @@ public class PlayerSpawner : NetworkBehaviour {
             Team = TeamManager.Instance.GetTeam(clientId)
         };
 
-        SpawnParticipant(descriptor, clientId, true);
-    }
-
-    public void SpawnBot(ulong botId) {
-        SpawnBotObject(botId);
+        SpawnParticipant(descriptor, clientId);
     }
 
     public GameObject SpawnBotObject(ulong botId) {
@@ -210,14 +206,12 @@ public class PlayerSpawner : NetworkBehaviour {
             Team = TeamManager.Instance.GetTeam(botData.Id)
         };
 
-        var canUseNetcode = NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && IsServer;
-        return SpawnParticipant(descriptor, 0, canUseNetcode);
+        return SpawnParticipant(descriptor, NetworkManager.ServerClientId);
     }
 
     private GameObject SpawnParticipant(
         ParticipantSpawnDescriptor descriptor,
-        ulong ownerClientId,
-        bool useNetcodeSpawn
+        ulong ownerClientId
     ) {
         var spawn = FindFirstObjectByType<Spawn>();
         if (spawn == null) {
@@ -235,50 +229,45 @@ public class PlayerSpawner : NetworkBehaviour {
             GameObject newBot = Instantiate(botPrefab, position, rotation);
             newBot.transform.SetPositionAndRotation(position, rotation);
             var botIdentity = newBot.GetComponent<ParticipantIdentity>();
-            if (botIdentity == null)
-                botIdentity = newBot.AddComponent<ParticipantIdentity>();
             botIdentity.SetParticipantId(descriptor.ParticipantId);
+            foreach (var identityUser in newBot.GetComponents<IdentityUser>()) {
+                identityUser.Use(newBot);
+            }
 
             var bot = newBot.GetComponent<Bot>();
             bot.ApplyPlayerState(descriptor.SteamId, descriptor.Archetype, descriptor.Hue, descriptor.Saturation);
 
-            if (useNetcodeSpawn) {
-                var netObj = newBot.GetComponent<NetworkObject>();
-                netObj.Spawn(true);
-            }
+            var netObj = newBot.GetComponent<NetworkObject>();
+            netObj.Spawn(true);
 
             newBot.name = $"Bot_{descriptor.ParticipantId.Value}";
 
             return newBot;
-        }
+        } else {
+            GameObject newPlayer = Instantiate(playerPrefab, position, rotation);
+            newPlayer.transform.SetPositionAndRotation(position, rotation);
+            var participantIdentity = newPlayer.GetComponent<ParticipantIdentity>();
+            participantIdentity.SetParticipantId(descriptor.ParticipantId);
+            foreach (var identityUser in newPlayer.GetComponents<IdentityUser>()) {
+                identityUser.Use(newPlayer);
+            }
 
-        GameObject newPlayer = Instantiate(playerPrefab, position, rotation);
-        newPlayer.transform.SetPositionAndRotation(position, rotation);
-        var participantIdentity = newPlayer.GetComponent<ParticipantIdentity>();
-        if (participantIdentity == null)
-            participantIdentity = newPlayer.AddComponent<ParticipantIdentity>();
-        participantIdentity.SetParticipantId(descriptor.ParticipantId);
+            var player = newPlayer.GetComponent<Player>();
+            player.ApplyPlayerState(descriptor.SteamId, descriptor.Archetype, descriptor.Hue, descriptor.Saturation);
 
-        var player = newPlayer.GetComponent<Player>();
-        player.ApplyPlayerState(descriptor.SteamId, descriptor.Archetype, descriptor.Hue, descriptor.Saturation);
-
-        if (useNetcodeSpawn) {
             var netObj = newPlayer.GetComponent<NetworkObject>();
-            if (descriptor.ParticipantId.IsHuman)
-                netObj.SpawnAsPlayerObject(ownerClientId, true);
-            else
-                netObj.Spawn(true);
-            player.Init(ownerClientId, position, rotation);
+            netObj.SpawnAsPlayerObject(ownerClientId, true);
+            player.Init(ParticipantIdentityCodec.Encode(participantIdentity.Id), position, rotation);
+
+            newPlayer.name = $"Player_{ownerClientId}";
+
+            return newPlayer;
         }
-
-        newPlayer.name = $"Player_{ownerClientId}";
-
-        return newPlayer;
     }
 
     private void SpawnLobbyEnjoyer(ulong clientId) {
         var newLobbyEnjoyer = Instantiate(lobbyEnjoyer, Vector3.zero, Quaternion.identity);
         newLobbyEnjoyer.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
-        Debug.Log($"[Menu] Сервер: Создан новый LobbyEnjoyer_{clientId}");
+        Debug.Log($"[PlayerSpawner] Сервер: Создан новый LobbyEnjoyer_{clientId}");
     }
 }

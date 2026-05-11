@@ -8,7 +8,10 @@ public class SpellCasterLocalBridge : MonoBehaviour, ISpellCasterBridge {
     public bool IsServer => true;
     public bool IsSpawned => true;
     public bool IsOwner => clientId == 0;
-    public ulong OwnerId => clientId;
+    public ParticipantId OwnerId {
+        get => ParticipantId.Human(clientId);
+        set => throw new System.NotImplementedException();
+    }
 
     private SpellCasterPlayer _core;
     private bool _hasCore;
@@ -43,10 +46,7 @@ public class SpellCasterLocalBridge : MonoBehaviour, ISpellCasterBridge {
 
     public bool TrySpendMana(float amount) {
         if (!_hasCore) return false;
-        var before = _core.Mana.Mana;
         var spent = _core.Mana.SpendWithPrimalServer(amount);
-        if (PlayerAchievementsManager.Instance != null)
-            PlayerAchievementsManager.Instance.ReportManaSpentServer(OwnerId, before, _core.Mana.Mana, _core.Mana.MaxMana);
         return spent;
     }
 

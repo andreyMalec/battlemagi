@@ -2,7 +2,7 @@ using Unity.Netcode;
 using UnityEngine;
 
 public static class DamageRelationship {
-    public static bool CanDamage(ISpellContext context, Damageable target, ulong targetOwner) {
+    public static bool CanDamage(ISpellContext context, Damageable target, ParticipantId targetOwner) {
         if (context == null) return false;
         if (target == null) return false;
 
@@ -12,49 +12,30 @@ public static class DamageRelationship {
         if (target.IsStructure && target.TryGetComponent<NetworkObject>(out var networkObject) &&
             networkObject.IsSceneObject == true) return true;
 
-        return AreEnemies(context, targetOwner, target.gameObject);
+        return AreEnemies(context, targetOwner);
     }
 
-    public static bool AreEnemies(ISpellContext context, ulong targetOwner, GameObject targetObject = null) {
-        var attackerId = TryGetCasterParticipant(context, out var attackerParticipant)
-            ? attackerParticipant
-            : ParticipantOwnerCodec.Decode(context.OwnerId);
-
-        var targetId = TryGetTargetParticipant(targetObject, targetOwner, out var targetParticipant)
-            ? targetParticipant
-            : ParticipantOwnerCodec.Decode(targetOwner);
+    public static bool AreEnemies(ISpellContext context, ParticipantId targetOwner) {
+        var attackerId = context.OwnerId;
 
         if (TeamManager.Instance == null)
-            return attackerId != targetId;
+            return attackerId != targetOwner;
 
-        return TeamManager.Instance.AreEnemies(attackerId, targetId);
+        return TeamManager.Instance.AreEnemies(attackerId, targetOwner);
     }
 
-    public static bool AreAllies(ISpellContext context, ulong targetOwner, GameObject targetObject = null) {
-        return !AreEnemies(context, targetOwner, targetObject);
+    public static bool AreAllies(ISpellContext context, ParticipantId targetOwner) {
+        return !AreEnemies(context, targetOwner);
     }
 
-    public static bool IsSelf(ISpellContext context, ulong targetOwner, GameObject targetObject = null) {
-        var attackerId = TryGetCasterParticipant(context, out var attackerParticipant)
-            ? attackerParticipant
-            : ParticipantOwnerCodec.Decode(context.OwnerId);
+    public static bool IsSelf(ISpellContext context, ParticipantId targetOwner) {
+        var attackerId = context.OwnerId;
 
-        var targetId = TryGetTargetParticipant(targetObject, targetOwner, out var targetParticipant)
-            ? targetParticipant
-            : ParticipantOwnerCodec.Decode(targetOwner);
-
-        return attackerId == targetId;
-    }
-
-    private static bool TryGetCasterParticipant(ISpellContext context, out ParticipantId participantId) {
-        participantId = default;
-        if (context?.Caster == null)
-            return false;
-        return TryGetTargetParticipant(context.Caster.gameObject, context.OwnerId, out participantId);
+        return attackerId == targetOwner;
     }
 
     public static bool TryGetTargetParticipant(
-        GameObject targetObject, ulong fallbackOwnerId, out ParticipantId participantId
+        GameObject targetObject, out ParticipantId participantId
     ) {
         participantId = default;
         if (targetObject != null) {
@@ -65,10 +46,7 @@ public static class DamageRelationship {
             }
         }
 
-        if (fallbackOwnerId == ulong.MaxValue)
-            return false;
-
-        participantId = ParticipantOwnerCodec.Decode(fallbackOwnerId);
+        participantId = default;
         return true;
     }
 }

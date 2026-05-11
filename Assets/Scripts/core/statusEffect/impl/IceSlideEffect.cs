@@ -16,8 +16,8 @@ public class IceSlideEffect : StatusEffectData {
             _data = data;
         }
 
-        public override void OnApply(ulong sourceOwnerClientId, GameObject target) {
-            base.OnApply(sourceOwnerClientId, target);
+        public override void OnApply(ParticipantId ownerId, GameObject target) {
+            base.OnApply(ownerId, target);
             if (target.TryGetComponent<StateController>(out var player)) {
                 player.SetIceSliding(true, _data.acceleration, _data.deceleration);
                 return;

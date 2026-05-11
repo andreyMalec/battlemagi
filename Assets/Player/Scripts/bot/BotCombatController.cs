@@ -354,7 +354,6 @@ public class BotCombatController : MonoBehaviour {
         var manaRatio = mana.Mana / mana.MaxMana;
         var healthRatio = _damageable.CurrentHealth / _damageable.Health.maxHealth;
 
-        Debug.Log($"______________________________________________________________ distance={distance}");
         for (var i = 0; i < _spells.Count; i++) {
             var spell = _spells[i];
             if (spell == null || !spell.available)

@@ -61,7 +61,7 @@ public class SpellCasterPlayer : SpellCaster {
         get {
             try {
                 return spawnPos.position;
-            } catch (Exception e) {
+            } catch (Exception) {
                 return Vector3.zero;
             }
         }
@@ -71,7 +71,7 @@ public class SpellCasterPlayer : SpellCaster {
         get {
             try {
                 return spawnPos.forward;
-            } catch (Exception e) {
+            } catch (Exception) {
                 return Vector3.zero;
             }
         }
@@ -258,12 +258,12 @@ public class SpellCasterPlayer : SpellCaster {
         if (_echoSpell == spell && _echoRemaining > 0) {
             _echoRemaining--;
             if (isHuman)
-                PlayerAchievementsManager.Instance?.ReportEchoConsumedServer(Authority.OwnerId);
+                PlayerAchievementsManager.Instance?.ReportEchoConsumedServer(Authority.OwnerId.Value);
             return true;
         }
 
         if (isHuman)
-            PlayerAchievementsManager.Instance?.ReportEchoStartedServer(Authority.OwnerId);
+            PlayerAchievementsManager.Instance?.ReportEchoStartedServer(Authority.OwnerId.Value);
 
         SpendResourceServer(spell, mana.CostForCast(spell));
         return false;

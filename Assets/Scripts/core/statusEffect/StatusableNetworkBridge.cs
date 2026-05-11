@@ -26,7 +26,7 @@ public class StatusableNetworkBridge : NetworkBehaviour, IStatusableBridge {
     private NetworkList<NetDurationEffect> _synced;
     private NetworkList<NetDurationEffect>.OnListChangedDelegate _onSyncedChanged;
 
-    public ulong OwnerId => OwnerClientId;
+    public ParticipantId OwnerId { get; set; }
     public List<Statusable.DurationEffect> DurationEffects { get; private set; } = new();
 
     private void Awake() {
@@ -84,28 +84,25 @@ public class StatusableNetworkBridge : NetworkBehaviour, IStatusableBridge {
         }
     }
 
-    public void HandleExpireChain(ulong ownerClientId, StatusEffectData expiredEffect) {
+    public void HandleExpireChain(ParticipantId ownerId, StatusEffectData expiredEffect) {
         if (!IsServer) return;
         if (!IsSpawned) return;
 
         if (expiredEffect != null && expiredEffect.onExpire != null)
-            _core.AddEffect(ownerClientId, expiredEffect.onExpire);
+            _core.AddEffect(ownerId, expiredEffect.onExpire);
     }
 
     public void HandleHit(DamageRequest hit) {
-        if (hit.source != "Pain Mirror" && hit.fromId != OwnerClientId) {
+        if (hit.source != "Pain Mirror" && hit.fromId != OwnerId) {
             if (_core.HasEffect("Pain Mirror")) {
-                if (NetworkManager.Singleton.ConnectedClients.TryGetValue(hit.fromId, out var client)) {
-                    var player = client.PlayerObject;
-                    if (player != null) {
-                        var reflectDamage = hit.amount;
-                        if (_stats != null)
-                            reflectDamage *= _stats.GetFinal(StatType.DamageReflection);
+                if (ParticipantIdentity.TryFind(hit.fromId, out var player) && player != null) {
+                    var reflectDamage = hit.amount;
+                    if (_stats != null)
+                        reflectDamage *= _stats.GetFinal(StatType.DamageReflection);
 
-                        player.GetComponent<Damageable>()
-                            .TakeDamage("Pain Mirror", OwnerClientId, reflectDamage, DamageKind.Reflect,
-                                true);
-                    }
+                    player.GetComponent<Damageable>()
+                        .TakeDamage("Pain Mirror", OwnerId, reflectDamage, DamageKind.Reflect,
+                            true);
                 }
             }
         }
