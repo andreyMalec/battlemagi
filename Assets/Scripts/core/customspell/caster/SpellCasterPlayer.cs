@@ -202,11 +202,19 @@ public class SpellCasterPlayer : SpellCaster {
                 _animator.CastWaitingAnim(true, _spell.castWaitingIndex);
     }
 
-    public bool TryCastBot(SpellDefinition spell, ITarget target) {
-        if (spell == null) return false;
-        if (!CanCast || Channeling || Charging) return false;
-        if (TryCastEcho(_spell)) return true;
-        if (!CanStartCast(spell)) return false;
+    public enum BotCastResult {
+        AlreadyCasting,
+        NoResource,
+        EchoUsed,
+        StartEcho,
+        StartCharging,
+        Casted
+    }
+
+    public BotCastResult TryCastBot(SpellDefinition spell, ITarget target) {
+        if (spell == null) return BotCastResult.AlreadyCasting;
+        if (!CanCast || Channeling || Charging) return BotCastResult.AlreadyCasting;
+        if (!CanStartCast(spell)) return BotCastResult.NoResource;
 
         _spell = spell;
         if (animateHand)
@@ -214,7 +222,7 @@ public class SpellCasterPlayer : SpellCaster {
 
         if (spell.charging) {
             StartCharging(spell);
-            return true;
+            return BotCastResult.StartCharging;
         }
 
         if (target == null)
@@ -222,7 +230,7 @@ public class SpellCasterPlayer : SpellCaster {
         else
             Cast(spell, target);
 
-        return true;
+        return spell?.echoCount > 0 ? BotCastResult.StartEcho : BotCastResult.Casted;
     }
 
     public override void Cast(SpellDefinition spell) {
@@ -289,27 +297,19 @@ public class SpellCasterPlayer : SpellCaster {
         return _bridgeTyped.TrySpendMana(amount);
     }
 
-    internal void BindChannelingSpell(ulong spellObjectId, string spellName) {
-        _bridgeTyped.BindChannelingSpell(spellObjectId, spellName);
-    }
-
-    internal void StopChannelingSpell(ulong spellObjectId) {
-        _bridgeTyped.StopChannelingSpell(spellObjectId);
-    }
-
     internal void StopChannelingFromBridge() {
         if (!Channeling) return;
         StopChanneling(false);
     }
 
-    private bool TryCastEcho(SpellDefinition spell) {
+    public bool TryCastEcho(SpellDefinition spell, ITarget target = null) {
         if (_echoSpell != spell) return false;
         if (_echoRemaining <= 0) return false;
 
         if (animateCast)
             _animator.AnimateCast(spell);
         else
-            Cast(spell);
+            Cast(spell, target);
 
         return true;
     }
@@ -357,7 +357,7 @@ public class SpellCasterPlayer : SpellCaster {
         return spell.echoCount;
     }
 
-    private void CancelCast() {
+    public void CancelCast() {
         if (Charging) {
             ReleaseCharged(_chargingSpell);
             return;

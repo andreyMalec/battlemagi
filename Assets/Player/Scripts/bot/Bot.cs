@@ -33,6 +33,20 @@ public class Bot : NetworkBehaviour {
             gameObject.AddComponent<BotStateOverheadView>();
     }
 
+    public void Init(ulong ownerId) {
+        InitClientRpc(ownerId);
+    }
+
+    [ClientRpc]
+    private void InitClientRpc(ulong ownerId) {
+        var participantIdentity = GetComponent<ParticipantIdentity>();
+        participantIdentity.SetParticipantId(ParticipantIdentityCodec.Decode(ownerId));
+        foreach (var identityUser in GetComponents<IdentityUser>()) {
+            identityUser.Use(gameObject);
+        }
+        GetComponent<BotCombatController>().Init();
+    }
+
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
 

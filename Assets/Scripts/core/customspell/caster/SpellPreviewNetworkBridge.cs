@@ -43,7 +43,11 @@ public class SpellPreviewNetworkBridge : NetworkBehaviour, ISpellPreviewBridge {
     private void ShowInHandClientRpc(string spellName, ulong previewObjectId) {
         if (!TryResolveBridge(previewObjectId, out var bridge)) return;
 
-        var prefab = DefaultSpells.Get(spellName)?.inHandPrefab;
+        var spell = DefaultSpells.Get(spellName);
+        if (bridge.OwnerId.IsBot && spell != null) {
+            bridge.GetComponent<BotCombatController>().PlayVoice(spell.spell.spellName);
+        }
+        var prefab = spell?.inHandPrefab;
         if (prefab == null) return;
         GameObject obj = Instantiate(prefab, bridge._hand);
         obj.transform.localPosition = Vector3.zero;

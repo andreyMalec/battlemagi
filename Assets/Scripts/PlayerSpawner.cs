@@ -239,6 +239,7 @@ public class PlayerSpawner : NetworkBehaviour {
 
             var netObj = newBot.GetComponent<NetworkObject>();
             netObj.Spawn(true);
+            bot.Init(ParticipantIdentityCodec.Encode(botIdentity.Id));
 
             newBot.name = $"Bot_{descriptor.ParticipantId.Value}";
 

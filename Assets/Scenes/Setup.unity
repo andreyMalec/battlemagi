@@ -237,6 +237,105 @@ MonoBehaviour:
     offensive: 2
     defensive: 1.2
     mobility: 1
+--- !u!114 &133353951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 133353935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a080fa9e69454ad68d55aee226c640a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BotSpellVoice
+  bundles:
+  - id: max
+    language: 0
+    voices:
+    - words: Air Bullet
+      line: {fileID: 8300000, guid: 7727e43357ee2b844a2964f4a403b6ec, type: 3}
+    - words: Ball Lightning
+      line: {fileID: 8300000, guid: 5861045845d5aad40a1a894fd22f03cc, type: 3}
+    - words: Charged Shot
+      line: {fileID: 8300000, guid: 3c41c5b16d415ea4fb1b07d8568b975f, type: 3}
+    - words: Dirt Wall
+      line: {fileID: 8300000, guid: 172a72549df241e4e80f53a2279922de, type: 3}
+    - words: Ember Lash
+      line: {fileID: 8300000, guid: 44451b11ddd3d4a4d82db9badeae64af, type: 3}
+    - words: Fireball
+      line: {fileID: 8300000, guid: 3832af95053009d4f9dd4fa2d02f7838, type: 3}
+    - words: Flame Dash
+      line: {fileID: 8300000, guid: e5ec7bd9025b03f40b7b3fb81ce50885, type: 3}
+    - words: Force Field
+      line: {fileID: 8300000, guid: 08ed99efc9845f9489e66415f52a84ed, type: 3}
+    - words: Frost Nova
+      line: {fileID: 8300000, guid: 7fe29b4faedfe634b94d7bb3c0420ebf, type: 3}
+    - words: Furious Sun
+      line: {fileID: 8300000, guid: 9d19fce2fb2566343ba90d51b47611be, type: 3}
+    - words: Ice Shards
+      line: {fileID: 8300000, guid: a726d027e74ba474e91386247d1f449e, type: 3}
+    - words: Ice Spear
+      line: {fileID: 8300000, guid: 38fabcb0f37a40347b188993489e515a, type: 3}
+    - words: Magic Hand
+      line: {fileID: 8300000, guid: 6f80d8fa5f22b29478e89d325ba8fb4a, type: 3}
+    - words: Pain Mirror
+      line: {fileID: 8300000, guid: 2ef171d426b0cf54a82082969b52f7c1, type: 3}
+    - words: Rune Trap
+      line: {fileID: 8300000, guid: 0c2958da45a1c6b4a8dac660fde86fa9, type: 3}
+    - words: Scorching Ray
+      line: {fileID: 8300000, guid: 208a93a8fbd670341ba82b472619f796, type: 3}
+    - words: Shadow Step
+      line: {fileID: 8300000, guid: f4a5c03ce92c55e42b1bed6e8e15d94a, type: 3}
+    - words: Shockwave Totem
+      line: {fileID: 8300000, guid: 190a033f21f8f6146b61dc95204b13ae, type: 3}
+    - words: Tempest Vortex
+      line: {fileID: 8300000, guid: 8926de719b1287e43be8cc9fce799e74, type: 3}
+    - words: Toxic Sphere
+      line: {fileID: 8300000, guid: 6460aa6ce73b2c84790955d94fc4bacc, type: 3}
+  - id: and
+    language: 0
+    voices:
+    - words: Air Bullet
+      line: {fileID: 8300000, guid: 125a5033fca6b5e4ba45420ac10599e7, type: 3}
+    - words: Ball Lightning
+      line: {fileID: 8300000, guid: 9df37cfc3579f4449ada96831e698198, type: 3}
+    - words: Charged Shot
+      line: {fileID: 8300000, guid: 2602ae55cbba2ae4788c3172a30e45bd, type: 3}
+    - words: Dirt Wall
+      line: {fileID: 8300000, guid: f65c394d509181c438683030c7b78124, type: 3}
+    - words: Ember Lash
+      line: {fileID: 8300000, guid: 2c6ce9303bb2b5f4aa957eb8f24f68d3, type: 3}
+    - words: Fireball
+      line: {fileID: 8300000, guid: f02d42482ccd8c348ad94b0ac94a8cfd, type: 3}
+    - words: Flame Dash
+      line: {fileID: 8300000, guid: bf9c2f4e965ee16469cfdcf612dd5aff, type: 3}
+    - words: Force Field
+      line: {fileID: 8300000, guid: 41327051545a52e46b955b2b14c259ce, type: 3}
+    - words: Frost Nova
+      line: {fileID: 8300000, guid: b71f8b11268138b49adf811383e9b2b7, type: 3}
+    - words: Furious Sun
+      line: {fileID: 8300000, guid: 4ccd2bb0fb55b554f80d57845622f1ce, type: 3}
+    - words: Ice Shards
+      line: {fileID: 8300000, guid: a00b915bf3adf2147907492166e3dc50, type: 3}
+    - words: Ice Spear
+      line: {fileID: 8300000, guid: 9dc2f427866b8d640acdbbf22bbf0a4e, type: 3}
+    - words: Magic Hand
+      line: {fileID: 8300000, guid: 34a7f5586e06add4da2dc61eb076af80, type: 3}
+    - words: Pain Mirror
+      line: {fileID: 8300000, guid: 90c0caa8154c8b84c99765ed3508037f, type: 3}
+    - words: Rune Trap
+      line: {fileID: 8300000, guid: e3e8a4244e4aafc478ae2336d9f1d2a0, type: 3}
+    - words: Scorching Ray
+      line: {fileID: 8300000, guid: 80bcc29b5e275cc4bba8fbee574ae353, type: 3}
+    - words: Shadow Step
+      line: {fileID: 8300000, guid: 6d08e92826cc3e64eb952984dbe78d39, type: 3}
+    - words: Shockwave Totem
+      line: {fileID: 8300000, guid: 140dd8fe91aaba94e98cfdddfb61e28a, type: 3}
+    - words: Tempest Vortex
+      line: {fileID: 8300000, guid: f79f09da0d1c06e48b6b3b408bd96ac6, type: 3}
+    - words: Toxic Sphere
+      line: {fileID: 8300000, guid: b19b1528df0fc3c43a4595ee930d69c7, type: 3}
 --- !u!1 &227666618
 GameObject:
   m_ObjectHideFlags: 0
@@ -1834,6 +1933,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1639143551227860678, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
       insertIndex: -1
       addedObject: {fileID: 133353950}
+    - targetCorrespondingSourceObject: {fileID: 1639143551227860678, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 133353951}
   m_SourcePrefab: {fileID: 100100000, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
 --- !u!1001 &2041527074817933183
 PrefabInstance:
