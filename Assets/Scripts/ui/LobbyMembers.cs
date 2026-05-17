@@ -16,6 +16,7 @@ public class LobbyMembers : MonoBehaviour {
     private LobbyMemberItem _addBotItemRed;
     private LobbyMemberItem _addBotItemBlue;
     private string _lastBotRosterRaw;
+    private bool? _lastIsTeamMode;
 
     private int frame = 0;
 
@@ -50,12 +51,23 @@ public class LobbyMembers : MonoBehaviour {
         }
 
         EnsureAddBotItem(true);
+        KeepAddBotItemsAtEnd();
+        _lastIsTeamMode = TeamManager.Instance.isTeamMode;
     }
 
     private void Update() {
         frame++;
         var lobby = LobbyManager.Instance.CurrentLobby;
         if (!lobby.HasValue) return;
+
+        var showTeams = TeamManager.Instance.isTeamMode;
+        var modeChanged = _lastIsTeamMode.HasValue && _lastIsTeamMode.Value != showTeams;
+        if (modeChanged) {
+            SyncBots(lobby.Value, true);
+            EnsureAddBotItem(true);
+            KeepAddBotItemsAtEnd();
+        }
+
         if (frame % 5 == 0) {
             foreach (var member in lobby.Value.Members) {
                 if (!lobbyMembers.TryGetValue(member.Id.Value, out var item)) continue;
@@ -65,12 +77,13 @@ public class LobbyMembers : MonoBehaviour {
 
             SyncBots(lobby.Value, false);
             EnsureAddBotItem(false);
+            KeepAddBotItemsAtEnd();
         }
 
-        var showTeams = TeamManager.Instance.isTeamMode;
         buttonJoinRed.gameObject.SetActive(showTeams);
         buttonJoinBlue.gameObject.SetActive(showTeams);
         containerTeamBlue.gameObject.transform.parent.gameObject.SetActive(showTeams);
+        _lastIsTeamMode = showTeams;
     }
 
     private LobbyMemberItem Create(Friend friend) {
@@ -143,6 +156,8 @@ public class LobbyMembers : MonoBehaviour {
             _addBotItemBlue = item;
         else
             _addBotItemRed = item;
+
+        KeepAddBotItemsAtEnd();
     }
 
     private void DestroyAddBotItems() {
@@ -263,6 +278,8 @@ public class LobbyMembers : MonoBehaviour {
                 Destroy(item.root.gameObject);
             botMembers.Remove(id);
         }
+
+        KeepAddBotItemsAtEnd();
     }
 
     private void ClearBotItems() {
@@ -287,6 +304,13 @@ public class LobbyMembers : MonoBehaviour {
         if (TeamManager.Instance.isTeamMode && team == TeamManager.Team.Blue)
             return containerTeamBlue.transform;
         return containerTeamRed.transform;
+    }
+
+    private void KeepAddBotItemsAtEnd() {
+        if (_addBotItemRed != null)
+            _addBotItemRed.root.SetAsLastSibling();
+        if (_addBotItemBlue != null)
+            _addBotItemBlue.root.SetAsLastSibling();
     }
 
     private void Destroy(ulong steamId) {
@@ -315,11 +339,13 @@ public class LobbyMembers : MonoBehaviour {
     private void OnLobbyMemberJoined(Lobby lobby, Friend friend) {
         lobbyMembers[friend.Id.Value] = Create(friend);
         EnsureAddBotItem(true);
+        KeepAddBotItemsAtEnd();
     }
 
     private void OnLobbyMemberLeave(Lobby lobby, Friend friend) {
         Destroy(friend.Id.Value);
         EnsureAddBotItem(true);
+        KeepAddBotItemsAtEnd();
     }
 
     private void OnDisable() {

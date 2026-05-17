@@ -52,6 +52,23 @@ public class LobbyMemberItem : MonoBehaviour, IPointerEnterHandler, IPointerExit
         SetHover(false);
     }
 
+    private void ApplyColor(float hue, float saturation) {
+        var material = colorImage.material;
+        material.SetFloat(ColorizeMesh.Hue, hue);
+        material.SetFloat(ColorizeMesh.Saturation, saturation);
+
+        var maskedMaterial = colorImage.materialForRendering;
+        if (maskedMaterial != null && maskedMaterial != material) {
+            maskedMaterial.SetFloat(ColorizeMesh.Hue, hue);
+            maskedMaterial.SetFloat(ColorizeMesh.Saturation, saturation);
+            colorImage.canvasRenderer.materialCount = 1;
+            colorImage.canvasRenderer.SetMaterial(maskedMaterial, 0);
+        }
+
+        colorImage.SetMaterialDirty();
+        colorImage.SetVerticesDirty();
+    }
+
     public void OnPointerEnter(PointerEventData eventData) {
         if (!_isMe)
             SetHover(true);
@@ -74,6 +91,8 @@ public class LobbyMemberItem : MonoBehaviour, IPointerEnterHandler, IPointerExit
         if (_mode == Mode.AddBot) return;
 
         var isHost = NetworkManager.Singleton.IsServer;
+        if (!isHost)
+            nameText.gameObject.SetActive(true);
         botArchetypeNextButton.gameObject.SetActive(isHost && isHover && _mode == Mode.Bot);
         botArchetypePrevButton.gameObject.SetActive(isHost && isHover && _mode == Mode.Bot);
         kickButton.gameObject.SetActive(isHost && isHover);
@@ -102,8 +121,7 @@ public class LobbyMemberItem : MonoBehaviour, IPointerEnterHandler, IPointerExit
         readyImage.gameObject.SetActive(true);
         readyImage.overrideSprite = image;
         var color = member.GetColor();
-        colorImage.material.SetFloat(ColorizeMesh.Hue, color.hue);
-        colorImage.material.SetFloat(ColorizeMesh.Saturation, color.saturation);
+        ApplyColor(color.hue, color.saturation);
         var d = PlayerManager.Instance.FindBySteamId(member.Id.Value);
         if (d.HasValue && d.Value.Archetype >= 0)
             archetypeImage.overrideSprite = spriteArchetypes[d.Value.Archetype];
@@ -139,8 +157,7 @@ public class LobbyMemberItem : MonoBehaviour, IPointerEnterHandler, IPointerExit
         else
             archetypeImage.overrideSprite = null;
 
-        colorImage.material.SetFloat(ColorizeMesh.Hue, bot.hue);
-        colorImage.material.SetFloat(ColorizeMesh.Saturation, bot.saturation);
+        ApplyColor(bot.hue, bot.saturation);
 
         volumeSlider.gameObject.SetActive(false);
 
@@ -161,7 +178,6 @@ public class LobbyMemberItem : MonoBehaviour, IPointerEnterHandler, IPointerExit
         nameText.text = playerName;
 
         var color = new Friend(steamId).GetColor();
-        colorImage.material.SetFloat(ColorizeMesh.Hue, color.hue);
-        colorImage.material.SetFloat(ColorizeMesh.Saturation, color.saturation);
+        ApplyColor(color.hue, color.saturation);
     }
 }

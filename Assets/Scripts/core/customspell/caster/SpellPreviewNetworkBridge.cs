@@ -44,9 +44,6 @@ public class SpellPreviewNetworkBridge : NetworkBehaviour, ISpellPreviewBridge {
         if (!TryResolveBridge(previewObjectId, out var bridge)) return;
 
         var spell = DefaultSpells.Get(spellName);
-        if (bridge.OwnerId.IsBot && spell != null) {
-            bridge.GetComponent<BotCombatController>().PlayVoice(spell.spell.spellName);
-        }
         var prefab = spell?.inHandPrefab;
         if (prefab == null) return;
         GameObject obj = Instantiate(prefab, bridge._hand);

@@ -44,6 +44,7 @@ public class Bot : NetworkBehaviour {
         foreach (var identityUser in GetComponents<IdentityUser>()) {
             identityUser.Use(gameObject);
         }
+
         GetComponent<BotCombatController>().Init();
     }
 
@@ -133,6 +134,19 @@ public class Bot : NetworkBehaviour {
         if (meshController == null)
             return;
         meshController.SetRagdoll(enabled);
+    }
+
+    public void PlayVoice(string spellName) {
+        var id = GetComponent<ParticipantIdentity>().Id;
+        PlayVoiceClientRpc(spellName, ParticipantIdentityCodec.Encode(id));
+    }
+
+    [ClientRpc]
+    private void PlayVoiceClientRpc(string spellName, ulong ownerId) {
+        ParticipantIdentity.TryFind(ParticipantIdentityCodec.Decode(ownerId), out var participant);
+        if (participant == null) return;
+        var combat = GetComponent<BotCombatController>();
+        combat.PlayVoice(spellName);
     }
 
     private void ApplyColor(Func<Color, Color> operation) {

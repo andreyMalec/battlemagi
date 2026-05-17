@@ -23,6 +23,9 @@ public class BotCombatController : MonoBehaviour {
     [SerializeField] private float castAngleTolerance = 18f;
     [SerializeField] private float strafeRadius = 3f;
     [SerializeField] private float strafeSwitchInterval = 1.1f;
+    [SerializeField] private float noLosFlankRadius = 4f;
+    [SerializeField] private float noLosRepathInterval = 0.35f;
+    [SerializeField] private float noSpellChaseDistance = 5f;
     [SerializeField] [Range(0.1f, 1f)] private float targetBodyHeightFactor = 0.75f;
     [SerializeField] private float ballisticTargetLift = 1f;
     [SerializeField] private float switchSpellDelay = 2f;
@@ -37,6 +40,7 @@ public class BotCombatController : MonoBehaviour {
     [SerializeField] private BotVoiceBundle voiceBundle;
     [SerializeField] private AudioSource voiceAudioSource;
 
+    private Bot _bot;
     private BotMovement _movement;
     private SpellCasterPlayer _caster;
     private ParticipantIdentity _selfIdentity;
@@ -66,6 +70,7 @@ public class BotCombatController : MonoBehaviour {
     private float _strafeTimer;
     private float _targetOutOfSightTimer;
     private float _suppressedTargetTimer;
+    private float _noLosRepathTimer;
     private int _strafeDirection = 1;
     private int _suppressedTargetRootId;
     private string _debugLostReason = "";
@@ -114,6 +119,7 @@ public class BotCombatController : MonoBehaviour {
     }
 
     private void Awake() {
+        _bot = GetComponent<Bot>();
         _movement = GetComponent<BotMovement>();
         _caster = GetComponent<SpellCasterPlayer>();
         _selfIdentity = GetComponent<ParticipantIdentity>();
@@ -153,6 +159,7 @@ public class BotCombatController : MonoBehaviour {
         _preparedCastTimer -= Time.deltaTime;
         _spellSwitchTimer -= Time.deltaTime;
         _suppressedTargetTimer -= Time.deltaTime;
+        _noLosRepathTimer -= Time.deltaTime;
 
         switch (_state) {
             case BotCombatState.NoTarget:
@@ -208,7 +215,7 @@ public class BotCombatController : MonoBehaviour {
                 out var spellDecision)) {
             cantCast = true;
             if (_repathTimer >= repathInterval) {
-                _movement.SetDestination(transform.position, 1.5f);
+                UpdateMovementWithoutSpell();
                 _repathTimer = 0f;
             }
 
@@ -217,9 +224,14 @@ public class BotCombatController : MonoBehaviour {
 
         cantCast = false;
         _currentDecision = spellDecision;
-        UpdateMovementByDecision(spellDecision, _currentToTarget, _currentTargetPosition, _currentPlanarDistance);
-
         var hasLos = HasLineOfSight(_caster.Origin, _currentTargetPosition, _target.Get.transform.root);
+        UpdateMovementByDecision(
+            spellDecision,
+            _currentToTarget,
+            _currentTargetPosition,
+            _currentPlanarDistance,
+            hasLos
+        );
         var castAngle = GetPlanarAngleTo(transform.forward, _currentToTarget);
         if (!_hasPreparedSpell) {
             if (_castLockTimer > 0f || !hasLos || castAngle > castAngleTolerance)
@@ -241,6 +253,8 @@ public class BotCombatController : MonoBehaviour {
     private void TickAcquireTargetState() {
         if (!TryUpdateTargetContext())
             return;
+
+        UpdatePreparedCombatMovement();
 
         if (!_hasPreparedSpell || !IsTargetValid(_preparedTarget)) {
             ClearPreparedSpell();
@@ -278,6 +292,7 @@ public class BotCombatController : MonoBehaviour {
         var preparedHasLos = HasLineOfSight(_caster.Origin, preparedTargetPosition, _preparedTarget.Get.transform.root);
         var preparedCastAngle = GetPlanarAngleTo(transform.forward, preparedTargetPosition - transform.position);
         if (_castLockTimer > 0f || !preparedHasLos || preparedCastAngle > castAngleTolerance) {
+            UpdatePreparedCombatMovement();
             _state = BotCombatState.AcquireTarget;
             return;
         }
@@ -349,13 +364,19 @@ public class BotCombatController : MonoBehaviour {
 
     private void UpdateMovementByDecision(
         SpellDecision spellDecision, Vector3 toTarget, Vector3 targetPosition,
-        float planarDistance
+        float planarDistance, bool hasLos
     ) {
         var desiredDistance = Mathf.Max(1f, spellDecision.PreferredDistance);
         var moveDirection = new Vector3(toTarget.x, 0f, toTarget.z).normalized;
 
         if (_repathTimer < repathInterval)
             return;
+
+        if (!hasLos) {
+            UpdateNoLosMovement(moveDirection, targetPosition);
+            _repathTimer = 0f;
+            return;
+        }
 
         if (planarDistance > desiredDistance * 1.1f) {
             _movement.SetDestination(targetPosition, desiredDistance * 0.85f);
@@ -381,30 +402,63 @@ public class BotCombatController : MonoBehaviour {
         _repathTimer = 0f;
     }
 
+    private void UpdateNoLosMovement(Vector3 moveDirection, Vector3 targetPosition) {
+        if (_noLosRepathTimer > 0f) {
+            _movement.Repath();
+            return;
+        }
+
+        if (_strafeTimer <= 0f) {
+            _strafeDirection *= -1;
+            _strafeTimer = strafeSwitchInterval;
+        }
+
+        var side = Vector3.Cross(Vector3.up, moveDirection).normalized;
+        var flankPoint = targetPosition + side * (_strafeDirection * noLosFlankRadius);
+        _movement.SetDestination(flankPoint, 0.5f);
+        _noLosRepathTimer = noLosRepathInterval;
+    }
+
+    private void UpdateMovementWithoutSpell() {
+        if (_noLosRepathTimer > 0f) {
+            _movement.Repath();
+            return;
+        }
+        
+        var toTarget = _currentTargetPosition - transform.position;
+        var planar = new Vector3(toTarget.x, 0f, toTarget.z);
+        if (planar.sqrMagnitude < 0.01f)
+            return;
+
+        var destination = _currentTargetPosition - planar.normalized * noSpellChaseDistance;
+        _movement.SetDestination(destination, 0.75f);
+        _noLosRepathTimer = noLosRepathInterval;
+    }
+
+    private void UpdatePreparedCombatMovement() {
+        var hasLos = HasLineOfSight(_caster.Origin, _currentTargetPosition, _target.Get.transform.root);
+        if (_currentDecision.Spell != null) {
+            UpdateMovementByDecision(
+                _currentDecision,
+                _currentToTarget,
+                _currentTargetPosition,
+                _currentPlanarDistance,
+                hasLos
+            );
+            return;
+        }
+
+        UpdateMovementWithoutSpell();
+    }
+
     private bool UpdateTargetVisibility(Vector3 targetPosition, Vector3 toTarget) {
         var targetRoot = _target.Get.transform.root;
         var hasLos = HasLineOfSight(_caster.Origin, targetPosition, targetRoot);
         var lookAngle = GetPlanarAngleTo(transform.forward, toTarget);
-        var inView = hasLos && lookAngle <= targetVisibleAngle;
 
-        if (inView) {
-            _targetOutOfSightTimer = 0f;
-            _debugLostReason = "";
-            return true;
-        }
-
-        _targetOutOfSightTimer += Time.deltaTime;
-        _debugLostReason = hasLos ? $"OutOfFov:{lookAngle:0}" : "NoLoS";
-
-        if (_targetOutOfSightTimer < targetLostSightTimeout)
-            return true;
-
-        SuppressTarget(_target);
-        _target = null;
-        ClearPreparedSpell();
-        _movement.ClearLookDirection();
-        _targetOutOfSightTimer = 0f;
-        return false;
+        _targetOutOfSightTimer = hasLos ? 0f : _targetOutOfSightTimer + Time.deltaTime;
+        _debugLostReason = hasLos ? "" : $"TrackNoLoS:{lookAngle:0}";
+        return true;
     }
 
     private void SuppressTarget(ITarget target) {
@@ -423,6 +477,7 @@ public class BotCombatController : MonoBehaviour {
         if (!CanUseSpellNow(spell))
             return;
 
+        _bot.PlayVoice(spell.spellName);
         _preparedSpell = spell;
         _preparedTarget = target;
         _preparedCastTimer = castPrepareDelay;
@@ -580,16 +635,7 @@ public class BotCombatController : MonoBehaviour {
             return false;
 
         var targetGo = candidate.Get;
-        if (targetGo == null)
-            return false;
-
-        var targetPosition = BallisticCastTargetBuilder.GetAimPoint(candidate, targetBodyHeightFactor);
-        var toTarget = targetPosition - transform.position;
-        var lookAngle = GetPlanarAngleTo(transform.forward, toTarget);
-        if (lookAngle > targetVisibleAngle)
-            return false;
-
-        return HasLineOfSight(_caster.Origin, targetPosition, targetGo.transform.root);
+        return targetGo != null;
     }
 
     private bool IsTargetValid(ITarget target) {
