@@ -78,7 +78,7 @@ public class BotLifecycleManager : MonoBehaviour {
             var lobbyBots = LobbyBotRosterData.LoadFromLobby(LobbyManager.Instance.CurrentLobby.Value);
             for (int i = 0; i < lobbyBots.Count; i++) {
                 var bot = lobbyBots[i];
-                SpawnNewBot(bot.archetype, bot.hue, bot.saturation, bot.team);
+                SpawnNewBot(bot.archetype, bot.hue, bot.saturation, bot.team, bot.name);
             }
 
             return;
@@ -95,10 +95,13 @@ public class BotLifecycleManager : MonoBehaviour {
         int archetype = 0,
         float hue = 78f,
         float saturation = 0.5f,
-        TeamManager.Team requestedTeam = TeamManager.Team.None
+        TeamManager.Team requestedTeam = TeamManager.Team.None,
+        string botName = null
     ) {
         var botId = _nextBotId++;
         var participantId = ParticipantId.Bot(botId);
+        if (string.IsNullOrEmpty(botName))
+            botName = BotNameCatalog.Resolve(botId);
 
         TeamManager.Instance.RegisterBot(botId, requestedTeam);
         var assignedTeam = TeamManager.Instance.GetTeam(participantId);

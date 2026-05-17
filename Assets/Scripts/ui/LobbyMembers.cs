@@ -6,7 +6,9 @@ using UnityEngine.UI;
 
 public class LobbyMembers : MonoBehaviour {
     [SerializeField] private GameObject lobbyMemberPrefab;
+    [SerializeField] private RectTransform rootTeamRed;
     [SerializeField] private LayoutGroup containerTeamRed;
+    [SerializeField] private RectTransform rootTeamBlue;
     [SerializeField] private LayoutGroup containerTeamBlue;
     [SerializeField] private Button buttonJoinRed;
     [SerializeField] private Button buttonJoinBlue;
@@ -82,7 +84,7 @@ public class LobbyMembers : MonoBehaviour {
 
         buttonJoinRed.gameObject.SetActive(showTeams);
         buttonJoinBlue.gameObject.SetActive(showTeams);
-        containerTeamBlue.gameObject.transform.parent.gameObject.SetActive(showTeams);
+        rootTeamBlue.gameObject.SetActive(showTeams);
         _lastIsTeamMode = showTeams;
     }
 
@@ -192,8 +194,10 @@ public class LobbyMembers : MonoBehaviour {
         }
 
         var bots = LobbyBotRosterData.LoadFromLobby(lobby.Value);
+        var botId = LobbyBotRosterData.NextId(bots);
         var bot = new LobbyBotRosterData.Entry {
-            id = LobbyBotRosterData.NextId(bots),
+            id = botId,
+            name = BotNameCatalog.Resolve(botId),
             team = team,
             archetype = Random.Range(0, 4),
             hue = hue,
@@ -250,6 +254,17 @@ public class LobbyMembers : MonoBehaviour {
         _lastBotRosterRaw = raw;
 
         var bots = LobbyBotRosterData.LoadFromLobby(lobby);
+        var hasMissingNames = false;
+        for (int i = 0; i < bots.Count; i++) {
+            if (!string.IsNullOrEmpty(bots[i].name))
+                continue;
+            bots[i].name = BotNameCatalog.Resolve(bots[i].id);
+            hasMissingNames = true;
+        }
+
+        if (hasMissingNames && LobbyManager.Instance.IsHost())
+            LobbyBotRosterData.SaveToLobby(lobby, bots);
+
         var keep = new HashSet<ulong>();
         for (int i = 0; i < bots.Count; i++) {
             var bot = bots[i];

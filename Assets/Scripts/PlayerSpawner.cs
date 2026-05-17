@@ -241,7 +241,7 @@ public class PlayerSpawner : NetworkBehaviour {
             netObj.Spawn(true);
             bot.Init(ParticipantIdentityCodec.Encode(botIdentity.Id));
 
-            newBot.name = $"Bot_{descriptor.ParticipantId.Value}";
+            newBot.name = BotNameCatalog.Resolve(descriptor.ParticipantId.Value);
 
             return newBot;
         } else {

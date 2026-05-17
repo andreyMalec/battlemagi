@@ -68,7 +68,7 @@ public class Scoreboard : MonoBehaviour {
 
     private static string ResolveParticipantName(MatchParticipantData participant) {
         if (participant.Id.IsBot)
-            return $"Bot #{participant.Id.Value}";
+            return BotNameCatalog.Resolve(participant.Id.Value);
 
         var lobby = LobbyManager.Instance.CurrentLobby;
         if (lobby.HasValue) {

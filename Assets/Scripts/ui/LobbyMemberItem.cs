@@ -150,7 +150,7 @@ public class LobbyMemberItem : MonoBehaviour, IPointerEnterHandler, IPointerExit
         _isMe = false;
         _botId = bot.id;
 
-        nameText.text = $"Bot #{bot.id}";
+        nameText.text = string.IsNullOrEmpty(bot.name) ? BotNameCatalog.Resolve(bot.id) : bot.name;
         readyImage.gameObject.SetActive(false);
         if (bot.archetype >= 0 && bot.archetype < spriteArchetypes.Length)
             archetypeImage.overrideSprite = spriteArchetypes[bot.archetype];

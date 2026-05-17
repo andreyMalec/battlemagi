@@ -39,7 +39,7 @@ public class Killfeed : NetworkBehaviour {
             return Trim(player.Value.Name());
         }
 
-        return Trim($"Bot_{id.Value}");
+        return Trim(BotNameCatalog.Resolve(id.Value));
     }
 
     private static string Trim(string value) {

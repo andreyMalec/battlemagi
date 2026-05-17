@@ -14,6 +14,7 @@ public static class LobbyBotRosterData {
     [Serializable]
     public class Entry {
         public ulong id;
+        public string name;
         public TeamManager.Team team = TeamManager.Team.None;
         public int archetype;
         public float hue;
@@ -28,6 +29,12 @@ public static class LobbyBotRosterData {
         var wrapper = JsonUtility.FromJson<Wrapper>(raw);
         if (wrapper == null || wrapper.bots == null)
             return new List<Entry>();
+
+        for (int i = 0; i < wrapper.bots.Count; i++) {
+            if (!string.IsNullOrEmpty(wrapper.bots[i].name))
+                continue;
+            wrapper.bots[i].name = BotNameCatalog.Resolve(wrapper.bots[i].id);
+        }
 
         return wrapper.bots;
     }
