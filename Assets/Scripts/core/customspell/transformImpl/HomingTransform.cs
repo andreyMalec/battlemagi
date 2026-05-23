@@ -116,7 +116,7 @@ public class HomingTransform : ISpellTransform {
     }
 
     private bool IsTargetValid() {
-        if (_target == null) return false;
+        if (_target == null || !_target.CanGet) return false;
         if (DamageRelationship.AreAllies(_ctx, _target.OwnerId)) return false;
         if (!_target.Get.TryGetComponent<Damageable>(out var damageable)) return false;
         if (damageable.IsDead) return false;
