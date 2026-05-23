@@ -34,7 +34,7 @@ public class OLD_SpellCasterNet : NetworkBehaviour {
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)] 
     private void UploadSpellChunkServerRpc(
         FixedString64Bytes id,
         FixedString4096Bytes jsonChunk,
@@ -65,7 +65,7 @@ public class OLD_SpellCasterNet : NetworkBehaviour {
         _pendingChunks.Remove(id);
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)] 
     private void RequestSpawnServerRpc(
         ulong casterNetObjectId,
         FixedString64Bytes spellId,
@@ -96,7 +96,7 @@ public class OLD_SpellCasterNet : NetworkBehaviour {
         StartCoroutine(spellSpawn!.Request(context, ServerSpawnMain));
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)] 
     private void RequestCastServerRpc(
         ulong casterNetObjectId,
         FixedString64Bytes spellId,

@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e3514659b6b48dead8a23bfa0bf8a01, type: 3}
   m_Name: GameConfig
   m_EditorClassIdentifier: Assembly-CSharp::GameConfig
-  useAnalytic: 1
+  useAnalytic: 0
   spellDebugLogs: 0
-  spellMetricsEnabled: 0
+  spellMetricsEnabled: 1
   spellMetricsSummaryLogs: 0
   spellMetricsSummaryInterval: 5
   recognitionThreshold: 0.9
-  allowKeySpells: 0
+  allowKeySpells: 1

@@ -332,7 +332,7 @@ public class TeamManager : NetworkBehaviour {
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)] 
     public void RequestChangeTeamServerRpc(ulong clientId, int newTeamId) {
         if (!IsServer) return;
         int index = FindIndexByClientId(clientId);

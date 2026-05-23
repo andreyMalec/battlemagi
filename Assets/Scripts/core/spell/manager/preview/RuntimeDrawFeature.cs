@@ -1,49 +1,26 @@
-using System;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Rendering.RenderGraphModule;
 
 public class RuntimeDrawFeature : ScriptableRendererFeature {
-    public delegate void RenderCommand(CommandBuffer cmd);
     public delegate void RenderGraphCommand(RasterCommandBuffer cmd);
 
     class Pass : ScriptableRenderPass {
-        private readonly List<RenderCommand> _queue;
         private readonly List<RenderGraphCommand> _rgQueue;
         private readonly ProfilingSampler _sampler = new("RuntimeDraw");
 
-        public Pass(List<RenderCommand> queue, List<RenderGraphCommand> rgQueue) {
-            _queue = queue;
+        public Pass(List<RenderGraphCommand> rgQueue) {
             _rgQueue = rgQueue;
             renderPassEvent = RenderPassEvent.AfterRenderingTransparents;
         }
 
         private bool ShouldExecute() {
-            return _queue.Count != 0 || _rgQueue.Count != 0;
-        }
-
-        [Obsolete]
-        public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData) {
-            if (!ShouldExecute())
-                return;
-
-            var cmd = CommandBufferPool.Get();
-            using (new ProfilingScope(cmd, _sampler)) {
-                for (var i = 0; i < _queue.Count; i++) {
-                    _queue[i]?.Invoke(cmd);
-                }
-
-                _queue.Clear();
-            }
-
-            context.ExecuteCommandBuffer(cmd);
-            CommandBufferPool.Release(cmd);
+            return _rgQueue.Count != 0;
         }
 
         private class RenderGraphPassData {
-            public Pass pass;
+            public Pass Pass;
         }
 
         public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData) {
@@ -59,33 +36,25 @@ public class RuntimeDrawFeature : ScriptableRendererFeature {
             var depth = resources.activeDepthTexture;
 
             using (var builder = renderGraph.AddRasterRenderPass<RenderGraphPassData>("RuntimeDraw", out var passData, _sampler)) {
-                passData.pass = this;
+                passData.Pass = this;
 
                 builder.SetRenderAttachment(color, 0);
                 builder.SetRenderAttachmentDepth(depth);
 
                 builder.AllowPassCulling(false);
                 builder.SetRenderFunc((RenderGraphPassData data, RasterGraphContext ctx) => {
-                    for (var i = 0; i < data.pass._rgQueue.Count; i++) {
-                        data.pass._rgQueue[i]?.Invoke(ctx.cmd);
+                    for (var i = 0; i < data.Pass._rgQueue.Count; i++) {
+                        data.Pass._rgQueue[i]?.Invoke(ctx.cmd);
                     }
 
-                    data.pass._rgQueue.Clear();
+                    data.Pass._rgQueue.Clear();
                 });
             }
         }
     }
 
-    private static readonly List<RenderCommand> Queue = new();
     private static readonly List<RenderGraphCommand> RenderGraphQueue = new();
     private Pass _pass;
-
-    public static void Enqueue(RenderCommand command) {
-        if (command == null)
-            return;
-
-        Queue.Add(command);
-    }
 
     public static void Enqueue(RenderGraphCommand command) {
         if (command == null)
@@ -95,7 +64,7 @@ public class RuntimeDrawFeature : ScriptableRendererFeature {
     }
 
     public override void Create() {
-        _pass = new Pass(Queue, RenderGraphQueue);
+        _pass = new Pass(RenderGraphQueue);
     }
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData) {

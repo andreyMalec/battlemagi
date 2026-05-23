@@ -19,15 +19,15 @@ public class Player : NetworkBehaviour {
     public readonly NetworkVariable<float> HueValue = new();
     public readonly NetworkVariable<float> SaturationValue = new();
 
-    private MethodInfo _networkAnimatorAwake;
+    // private MethodInfo _networkAnimatorAwake;
 
     public int ArchetypeId => ArchetypeValue.Value;
     public ulong SteamId => SteamIdValue.Value;
 
     private void Awake() {
         // invoke Awake via reflection to rebuild internal state
-        _networkAnimatorAwake = typeof(NetworkAnimator).GetMethod("Awake",
-            BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+        // _networkAnimatorAwake = typeof(NetworkAnimator).GetMethod("Awake",
+        //     BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
     }
 
     private void SpawnAvatar(int arch) {
@@ -41,7 +41,8 @@ public class Player : NetworkBehaviour {
         animator = currentAvatar.GetComponent<Animator>();
         var netAnim = GetComponent<NetworkAnimator>();
         netAnim.Animator = animator;
-        _networkAnimatorAwake.Invoke(netAnim, null);
+        animator.Rebind();
+        // _networkAnimatorAwake.Invoke(netAnim, null);
 
         // Bind avatar to dependent components on player
         var pa = GetComponent<PlayerAnimator>();

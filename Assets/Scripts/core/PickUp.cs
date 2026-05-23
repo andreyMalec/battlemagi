@@ -66,7 +66,7 @@ public class PickUp : NetworkBehaviour {
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)] 
     public void DestroyServerRpc() {
         DestroySelf();
     }

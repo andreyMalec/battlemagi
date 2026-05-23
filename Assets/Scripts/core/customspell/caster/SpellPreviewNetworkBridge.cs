@@ -23,7 +23,7 @@ public class SpellPreviewNetworkBridge : NetworkBehaviour, ISpellPreviewBridge {
         StartChargingServerRpc(NetworkObjectId);
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)] 
     private void StartChargingServerRpc(ulong previewObjectId) {
         StartChargingClientRpc(previewObjectId);
     }
@@ -34,7 +34,7 @@ public class SpellPreviewNetworkBridge : NetworkBehaviour, ISpellPreviewBridge {
         bridge.GetComponentInChildren<SpellInHand>()?.StartCharging();
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)] 
     private void ShowServerRpc(string spellName, ulong previewObjectId) {
         ShowInHandClientRpc(spellName, previewObjectId);
     }
@@ -51,7 +51,7 @@ public class SpellPreviewNetworkBridge : NetworkBehaviour, ISpellPreviewBridge {
         obj.transform.localRotation = Quaternion.identity;
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)] 
     private void HideServerRpc(ulong previewObjectId) {
         ClearInHandClientRpc(previewObjectId);
     }

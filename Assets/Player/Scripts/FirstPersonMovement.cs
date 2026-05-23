@@ -146,7 +146,7 @@ public class FirstPersonMovement : NetworkBehaviour {
         ApplyMovement(input, running);
     }
 
-    [ServerRpc(RequireOwnership = true)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)] 
     private void SetRunKeyHeldServerRpc(bool held) {
         _runKeyHeldServer = held;
         if (!held) {

@@ -15,7 +15,7 @@ public class SpellCasterNet : NetworkBehaviour {
         );
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)] 
     private void RequestSpawnServerRpc(
         ulong casterNetObjectId,
         string spellName,
@@ -58,7 +58,7 @@ public class SpellCasterNet : NetworkBehaviour {
             context.spellDamageMultiplier);
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)] 
     private void RequestCastServerRpc(
         ulong casterNetObjectId,
         string spellName,
@@ -66,7 +66,7 @@ public class SpellCasterNet : NetworkBehaviour {
         ulong targetNetObjectId = ulong.MaxValue,
         Vector3 targetPosition = default,
         float damageMultiplier = 1f,
-        ServerRpcParams rpcParams = default
+        RpcParams rpcParams = default
     ) {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(casterNetObjectId, out var casterNetObj))
             return;

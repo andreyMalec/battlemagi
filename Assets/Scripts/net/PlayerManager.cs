@@ -55,7 +55,8 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
             PingMs == other.PingMs && Mathf.Approximately(PacketLossPercent, other.PacketLossPercent);
 
         public override string ToString() {
-            return $"PlayerData({ClientId}, {SteamId}, {Archetype}, {Flags}, {Kills}, {Deaths}, {Assists}, {Hue}, {Saturation}, {PingMs}, {PacketLossPercent})";
+            return
+                $"PlayerData({ClientId}, {SteamId}, {Archetype}, {Flags}, {Kills}, {Deaths}, {Assists}, {Hue}, {Saturation}, {PingMs}, {PacketLossPercent})";
         }
 
         public GameObject PlayerObject() {
@@ -163,7 +164,8 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
     }
 
     private Netcode.Transports.Facepunch.FacepunchTransport GetFacepunchTransport() {
-        return NetworkManager.Singleton.NetworkConfig.NetworkTransport as Netcode.Transports.Facepunch.FacepunchTransport;
+        return NetworkManager.Singleton.NetworkConfig.NetworkTransport as
+            Netcode.Transports.Facepunch.FacepunchTransport;
     }
 
     private void SyncNetworkStats() {
@@ -189,17 +191,19 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
     private void ReportLocalNetworkStats() {
         var transport = GetFacepunchTransport();
         if (transport == null) return;
-        if (!transport.TryGetNetworkMetrics(NetworkManager.ServerClientId, out var pingMs, out var packetLossPercent)) return;
+        if (!transport.TryGetNetworkMetrics(NetworkManager.ServerClientId, out var pingMs,
+                out var packetLossPercent)) return;
 
-        if (_lastReportedPingMs == pingMs && Mathf.Approximately(_lastReportedPacketLossPercent, packetLossPercent)) return;
+        if (_lastReportedPingMs == pingMs &&
+            Mathf.Approximately(_lastReportedPacketLossPercent, packetLossPercent)) return;
 
         _lastReportedPingMs = pingMs;
         _lastReportedPacketLossPercent = packetLossPercent;
         UpdateNetworkStatsServerRpc(pingMs, packetLossPercent);
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void UpdateNetworkStatsServerRpc(int pingMs, float packetLossPercent, ServerRpcParams rpcParams = default) {
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)] 
+    private void UpdateNetworkStatsServerRpc(int pingMs, float packetLossPercent, RpcParams rpcParams = default) {
         var clientId = rpcParams.Receive.SenderClientId;
         for (int i = 0; i < players.Count; i++) {
             var player = players[i];
@@ -251,7 +255,8 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
     }
 
     private bool IsMatchInProgress() {
-        return IsServer && LobbyManager.Instance != null && LobbyManager.Instance.State == LobbyManager.PlayerState.InGame;
+        return IsServer && LobbyManager.Instance != null &&
+               LobbyManager.Instance.State == LobbyManager.PlayerState.InGame;
     }
 
     private int FindIndexBySteamId(ulong steamId) {
@@ -272,8 +277,8 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void RegisterPlayerServerRpc(ulong steamId, ServerRpcParams rpcParams = default) {
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)] 
+    private void RegisterPlayerServerRpc(ulong steamId, RpcParams rpcParams = default) {
         ulong clientId = rpcParams.Receive.SenderClientId;
         int existingIndex = FindIndexBySteamId(steamId);
         if (existingIndex >= 0) {
@@ -314,7 +319,7 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
     private void OnClientDisconnected(ulong clientId) {
         if (!IsServer && (clientId == 0 || clientId == NetworkManager.Singleton.LocalClientId)) {
             LobbyManager.Instance.LeaveLobby();
-            
+            SceneLoader.LoadMenu(true);
             return;
         }
 
@@ -386,7 +391,8 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
 
     public void RegisterParticipant(MatchParticipantData data) {
         if (data.Id.IsHuman) {
-            Debug.LogWarning($"[PlayerManager] RegisterParticipant ignored for human {data.Id}. Humans are synced by netcode.");
+            Debug.LogWarning(
+                $"[PlayerManager] RegisterParticipant ignored for human {data.Id}. Humans are synced by netcode.");
             return;
         }
 
@@ -646,8 +652,8 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void SetArchetypeServerRpc(int archetype, ServerRpcParams rpcParams = default) {
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)] 
+    public void SetArchetypeServerRpc(int archetype, RpcParams rpcParams = default) {
         var clientId = rpcParams.Receive.SenderClientId;
         for (int i = players.Count - 1; i >= 0; i--) {
             var player = players[i];
@@ -659,8 +665,8 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void SetColorServerRpc(float hue, float saturation, ServerRpcParams rpcParams = default) {
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)] 
+    public void SetColorServerRpc(float hue, float saturation, RpcParams rpcParams = default) {
         var clientId = rpcParams.Receive.SenderClientId;
         for (int i = players.Count - 1; i >= 0; i--) {
             var player = players[i];

@@ -19,8 +19,9 @@ public class SceneLoader : MonoBehaviour {
         LoadMenu();
     }
 
-    public static void LoadMenu() {
-        if (NetworkManager.Singleton == null
+    public static void LoadMenu(bool hostDisconnected = false) {
+        if (hostDisconnected
+            || NetworkManager.Singleton == null
             || !NetworkManager.Singleton.IsListening
             || NetworkManager.Singleton.SceneManager == null)
             SceneManager.LoadScene("MainMenu");

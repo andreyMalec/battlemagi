@@ -30,8 +30,6 @@ public class BotCombatController : MonoBehaviour {
     [SerializeField] private float ballisticTargetLift = 1f;
     [SerializeField] private float switchSpellDelay = 2f;
     [SerializeField] private float castPrepareDelay = 0.5f;
-    [SerializeField] private float targetLostSightTimeout = 2.25f;
-    [SerializeField] private float targetVisibleAngle = 85f;
     [SerializeField] private float lostTargetReacquireDelay = 2f;
     [SerializeField] private float echoRecastDelay = 0.3f;
     [SerializeField] [Range(0f, 1f)] private float manaCombatRatio = 0.15f;

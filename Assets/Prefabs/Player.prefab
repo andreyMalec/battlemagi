@@ -782,7 +782,6 @@ GameObject:
   - component: {fileID: 1507093393527865229}
   - component: {fileID: 5865273710895956458}
   - component: {fileID: 2716919782836391855}
-  - component: {fileID: 4273735624293180111}
   - component: {fileID: 3149046875761574569}
   - component: {fileID: 334994221300718969}
   - component: {fileID: 2821027763571427141}
@@ -801,6 +800,7 @@ GameObject:
   - component: {fileID: 6647561921926816087}
   - component: {fileID: 7903666636042901437}
   - component: {fileID: 1197001777428341157}
+  - component: {fileID: 4796387428326743296}
   m_Layer: 9
   m_Name: Player
   m_TagString: Untagged
@@ -844,7 +844,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1910923140
+  GlobalObjectIdHash: 2196398029
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -924,8 +924,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpellCasterNetworkBridge
   ShowTopMostFoldoutHeaderGroup: 1
   mana:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
   primalMana:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
 --- !u!114 &5777521522989648823
 MonoBehaviour:
@@ -1269,21 +1275,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StateController
   ShowTopMostFoldoutHeaderGroup: 1
   movement: {fileID: 6916625131687324290}
---- !u!114 &4273735624293180111
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5793509697026975924}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db6c6a74e72f4a35a892e6fd0b70ab5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::OwnerNetworkAnimator
-  ShowTopMostFoldoutHeaderGroup: 1
-  TransitionStateInfoList: []
-  m_Animator: {fileID: 6647561921926816087}
 --- !u!114 &3149046875761574569
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1380,8 +1371,14 @@ MonoBehaviour:
   _hpText: {fileID: 0}
   _stats: {fileID: 2875345282594729022}
   health:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
   armor:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
 --- !u!114 &1194555110489232473
 MonoBehaviour:
@@ -1510,7 +1507,7 @@ Animator:
   m_GameObject: {fileID: 5793509697026975924}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4e0652b040ff68848bce7c876a15d7e9, type: 2}
   m_CullingMode: 2
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1549,6 +1546,89 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 233976980f7741f9ba4e68301fd7d0ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IceSlideMovementModule
+--- !u!114 &4796387428326743296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkAnimator
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkAnimatorExpanded: 0
+  AuthorityMode: 1
+  m_Animator: {fileID: 6647561921926816087}
+  TransitionStateInfoList:
+  - IsCrossFadeExit: 0
+    Layer: 4
+    OriginatingState: 180383847
+    DestinationState: -499022955
+    TransitionDuration: 0.14307326
+    TriggerNameHash: 637825243
+    TransitionIndex: 1
+  AnimatorParameterEntries:
+    ParameterEntries:
+    - name: Velocity Z
+      NameHash: 13321214
+      Synchronize: 1
+      ParameterType: 1
+    - name: Velocity X
+      NameHash: -289070382
+      Synchronize: 1
+      ParameterType: 1
+    - name: Velocity Any
+      NameHash: -421065459
+      Synchronize: 1
+      ParameterType: 1
+    - name: Jump Start
+      NameHash: -392784796
+      Synchronize: 1
+      ParameterType: 4
+    - name: Fall Start
+      NameHash: 1867682227
+      Synchronize: 1
+      ParameterType: 4
+    - name: Invocation
+      NameHash: -1018993301
+      Synchronize: 1
+      ParameterType: 1
+    - name: Footstep
+      NameHash: 1612968623
+      Synchronize: 1
+      ParameterType: 1
+    - name: Jump
+      NameHash: 125937960
+      Synchronize: 1
+      ParameterType: 1
+    - name: Cast Waiting
+      NameHash: -566341681
+      Synchronize: 1
+      ParameterType: 4
+    - name: CastWaitingIndex
+      NameHash: 600005648
+      Synchronize: 1
+      ParameterType: 1
+    - name: CastSpeed
+      NameHash: 1486956743
+      Synchronize: 1
+      ParameterType: 1
+    - name: Cast
+      NameHash: -1299573048
+      Synchronize: 1
+      ParameterType: 1
+    - name: Burst
+      NameHash: -1124102220
+      Synchronize: 1
+      ParameterType: 1
+    - name: CancelChanneling
+      NameHash: 637825243
+      Synchronize: 1
+      ParameterType: 9
+  AnimatorParametersExpanded: 0
 --- !u!1 &5894542900604772476
 GameObject:
   m_ObjectHideFlags: 0
@@ -2296,6 +2376,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!65 &504837146363618102
 BoxCollider:
