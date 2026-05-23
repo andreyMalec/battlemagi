@@ -641,8 +641,14 @@ MonoBehaviour:
   _hpText: {fileID: 0}
   _stats: {fileID: 0}
   health:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
   armor:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
 --- !u!114 &-8069450155507817243
 MonoBehaviour:
@@ -863,6 +869,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!43 &-7265163809259941664
 Mesh:
