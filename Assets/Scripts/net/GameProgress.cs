@@ -170,7 +170,7 @@ public class GameProgress : NetworkBehaviour {
         }
 
         SpellInstanceLimiter.Clear();
-        NetworkManager.Singleton.SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
+        SceneLoader.LoadMenu();
         TeamManager.Instance.Reset();
         ended = false;
     }

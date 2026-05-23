@@ -64,6 +64,7 @@ public class BotLifecycleManager : MonoBehaviour {
 
     public void EndMatch() {
         _matchBotsEnabled = false;
+        _nextBotId = 1;
         DespawnAllBots();
     }
 

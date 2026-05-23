@@ -15,6 +15,6 @@ public class ReturnToMenu : MonoBehaviour {
     private void Leave() {
         TeamManager.Instance.Reset();
         LobbyManager.Instance.LeaveLobby();
-        SceneManager.LoadScene("MainMenu");
+        SceneLoader.LoadMenu();
     }
 }

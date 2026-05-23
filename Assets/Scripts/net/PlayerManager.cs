@@ -314,7 +314,7 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
     private void OnClientDisconnected(ulong clientId) {
         if (!IsServer && (clientId == 0 || clientId == NetworkManager.Singleton.LocalClientId)) {
             LobbyManager.Instance.LeaveLobby();
-            SceneManager.LoadScene("MainMenu");
+            
             return;
         }
 

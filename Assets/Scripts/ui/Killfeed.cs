@@ -1,3 +1,4 @@
+using System;
 using JetBrains.Annotations;
 using Unity.Netcode;
 using UnityEngine;
@@ -20,13 +21,17 @@ public class Killfeed : NetworkBehaviour {
 
     [ClientRpc]
     public void HandleClientRpc(ulong killerId, ulong targetId, ulong sourceId = 0) {
-        var item = Instantiate(itemPrefab, container.transform);
-        var killerName = ResolveName(ParticipantIdentityCodec.Decode(killerId));
-        var targetName = ResolveName(ParticipantIdentityCodec.Decode(targetId));
+        try {
+            var item = Instantiate(itemPrefab, container.transform);
+            var killerName = ResolveName(ParticipantIdentityCodec.Decode(killerId));
+            var targetName = ResolveName(ParticipantIdentityCodec.Decode(targetId));
 
-        var killInfo = $"{killerName} → {targetName}";
+            var killInfo = $"{killerName} → {targetName}";
 
-        item.GetComponent<KillfeedItem>().SetText(killInfo);
+            item.GetComponent<KillfeedItem>().SetText(killInfo);
+        } catch (Exception) {
+            // вероятно мы уже в меню, игнорируем
+        }
     }
 
     private static string ResolveName(ParticipantId id) {
