@@ -36,7 +36,7 @@ public class ArchetypeSelector : MonoBehaviour {
         label.text = data != null ? R.String($"class.{data.archetypeName}") : "—";
 
         GetComponentInParent<ColorizeMesh>().UpdateRenderer();
-        if (PlayerManager.Instance != null)
+        if (PlayerManager.Instance != null && data != null)
             PlayerManager.Instance.SetArchetypeServerRpc(data.id);
     }
 }

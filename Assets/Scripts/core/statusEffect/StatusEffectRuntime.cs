@@ -2,7 +2,7 @@ using UnityEngine;
 
 public abstract class StatusEffectRuntime {
     public StatusEffectData data;
-    public ulong ownerClientId;
+    public ParticipantId OwnerId;
     public float _timeRemaining;
 
     public StatusEffectRuntime(StatusEffectData data) {
@@ -15,17 +15,17 @@ public abstract class StatusEffectRuntime {
     }
 
     public virtual void OnApply(StatusEffectApplyContext applyContext, GameObject target) {
-        OnApply(applyContext.ownerClientId, target);
+        OnApply(applyContext.ownerId, target);
     }
 
-    public virtual void OnApply(ulong ownerClientId, GameObject target) {
-        this.ownerClientId = ownerClientId;
-        if (target.TryGetComponent<Player>(out var player))
+    public virtual void OnApply(ParticipantId ownerId, GameObject target) {
+        this.OwnerId = ownerId;
+        if (target.TryGetComponent<Colorable>(out var player))
             player.ApplyEffectColorClientRpc(data.color);
     }
 
     public virtual void OnExpire(GameObject target) {
-        if (target.TryGetComponent<Player>(out var player))
+        if (target.TryGetComponent<Colorable>(out var player))
             player.RemoveEffectColorClientRpc(data.color);
     }
 

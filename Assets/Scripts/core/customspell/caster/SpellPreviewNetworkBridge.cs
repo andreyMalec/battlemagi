@@ -1,10 +1,8 @@
-using System;
-using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
 public class SpellPreviewNetworkBridge : NetworkBehaviour, ISpellPreviewBridge {
-    public ulong OwnerId => OwnerClientId;
+    public ParticipantId OwnerId { get; set; }
 
     private Transform _hand;
 
@@ -14,57 +12,66 @@ public class SpellPreviewNetworkBridge : NetworkBehaviour, ISpellPreviewBridge {
 
     public void Show(SpellDefinition spell) {
         Hide();
-        ShowServerRpc(spell.name, OwnerId);
+        ShowServerRpc(spell.name, NetworkObjectId);
     }
 
     public void Hide() {
-        HideServerRpc(OwnerId);
+        HideServerRpc(NetworkObjectId);
     }
 
     public void StartCharging() {
-        StartChargingServerRpc(OwnerId);
+        StartChargingServerRpc(NetworkObjectId);
     }
 
-    [ServerRpc]
-    private void StartChargingServerRpc(ulong clientId) {
-        StartChargingClientRpc(clientId);
-    }
-
-    [ClientRpc]
-    private void StartChargingClientRpc(ulong clientId) {
-        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client)) return;
-        client.PlayerObject.GetComponentInChildren<SpellInHand>()?.StartCharging();
-    }
-
-    [ServerRpc]
-    private void ShowServerRpc(string spellName, ulong clientId) {
-        ShowInHandClientRpc(spellName, clientId);
+    [ServerRpc(RequireOwnership = false)]
+    private void StartChargingServerRpc(ulong previewObjectId) {
+        StartChargingClientRpc(previewObjectId);
     }
 
     [ClientRpc]
-    private void ShowInHandClientRpc(string spellName, ulong clientId) {
-        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client)) return;
-        if (!client.PlayerObject.TryGetComponent<SpellPreviewNetworkBridge>(out var bridge)) return;
+    private void StartChargingClientRpc(ulong previewObjectId) {
+        if (!TryResolveBridge(previewObjectId, out var bridge)) return;
+        bridge.GetComponentInChildren<SpellInHand>()?.StartCharging();
+    }
 
-        var prefab = DefaultSpells.Get(spellName)?.inHandPrefab;
+    [ServerRpc(RequireOwnership = false)]
+    private void ShowServerRpc(string spellName, ulong previewObjectId) {
+        ShowInHandClientRpc(spellName, previewObjectId);
+    }
+
+    [ClientRpc]
+    private void ShowInHandClientRpc(string spellName, ulong previewObjectId) {
+        if (!TryResolveBridge(previewObjectId, out var bridge)) return;
+
+        var spell = DefaultSpells.Get(spellName);
+        var prefab = spell?.inHandPrefab;
         if (prefab == null) return;
         GameObject obj = Instantiate(prefab, bridge._hand);
         obj.transform.localPosition = Vector3.zero;
         obj.transform.localRotation = Quaternion.identity;
     }
 
-    [ServerRpc]
-    private void HideServerRpc(ulong clientId) {
-        ClearInHandClientRpc(clientId);
+    [ServerRpc(RequireOwnership = false)]
+    private void HideServerRpc(ulong previewObjectId) {
+        ClearInHandClientRpc(previewObjectId);
     }
 
     [ClientRpc]
-    private void ClearInHandClientRpc(ulong clientId) {
-        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client)) return;
-        if (!client.PlayerObject.TryGetComponent<SpellPreviewNetworkBridge>(out var bridge)) return;
+    private void ClearInHandClientRpc(ulong previewObjectId) {
+        if (!TryResolveBridge(previewObjectId, out var bridge)) return;
 
         for (int i = 0; i < bridge._hand.childCount; i++) {
             Destroy(bridge._hand.GetChild(i).gameObject);
         }
+    }
+
+    private static bool TryResolveBridge(ulong previewObjectId, out SpellPreviewNetworkBridge bridge) {
+        bridge = null;
+        var networkManager = NetworkManager.Singleton;
+        if (networkManager == null || networkManager.SpawnManager == null)
+            return false;
+        if (!networkManager.SpawnManager.SpawnedObjects.TryGetValue(previewObjectId, out var networkObject))
+            return false;
+        return networkObject.TryGetComponent(out bridge);
     }
 }

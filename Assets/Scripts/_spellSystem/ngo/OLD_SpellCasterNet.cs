@@ -132,7 +132,9 @@ public class OLD_SpellCasterNet : NetworkBehaviour {
         var prefab = SpellPrefab.Instance.GetPrefab(true);
         var main = Instantiate(prefab, context.position, context.rotation);
         var networkObject = main.GetComponent<NetworkObject>();
-        networkObject.SpawnWithOwnership(context.caster.OwnerId);
+        var ownerId = context.caster.OwnerId;
+        var ownerClientId = ownerId.IsBot ? NetworkManager.ServerClientId : ownerId.Value;
+        networkObject.SpawnWithOwnership(ownerClientId);
         var id = networkObject.NetworkObjectId;
 
         var prefabId = context.spell.coreType switch {
@@ -177,6 +179,7 @@ public class OLD_SpellCasterNet : NetworkBehaviour {
         var instance = main.GetComponentInChildren<SpellInstance>();
         instance.Scale(scale, lifetime);
         if (impassableForEnemies)
-            ZoneEnemyColliderBlocker.Attach(main.gameObject, main.OwnerClientId, scale, instance.GetComponent<SpellView>());
+            ZoneEnemyColliderBlocker.Attach(main.gameObject, caster.GetComponent<ParticipantIdentity>().Id, scale,
+                instance.GetComponent<SpellView>());
     }
 }

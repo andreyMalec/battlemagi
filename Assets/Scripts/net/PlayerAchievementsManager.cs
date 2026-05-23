@@ -105,13 +105,13 @@ public class PlayerAchievementsManager : NetworkBehaviour {
         }
     }
 
-    public void ReportEnemyLaunchedServer(ulong attackerId, ulong victimId) {
+    public void ReportEnemyLaunchedServer(ParticipantId attackerId, ParticipantId victimId) {
         if (!IsServer) return;
         if (attackerId == victimId) return;
         if (!TeamManager.Instance.AreEnemies(attackerId, victimId)) return;
 
-        var victimState = GetAchievementState(victimId);
-        victimState.lastLaunchBy = attackerId;
+        var victimState = GetAchievementState(victimId.Value);
+        victimState.lastLaunchBy = attackerId.Value;
         victimState.lastLaunchAt = Time.time;
     }
 
@@ -166,25 +166,6 @@ public class PlayerAchievementsManager : NetworkBehaviour {
         }
     }
 
-    public void ReportManaSpentServer(ulong clientId, float manaBefore, float manaAfter, float maxMana) {
-        if (!IsServer) return;
-        var now = Time.time;
-        var state = GetAchievementState(clientId);
-
-        if (manaBefore >= maxMana * 0.9f) {
-            state.manaBurstStartedAt = now;
-            state.manaBurstStartValue = manaBefore;
-        }
-
-        // if (now - state.manaBurstStartedAt <= 3f && state.manaBurstStartValue >= maxMana * 0.9f && manaAfter <= 0.5f)
-        //     UnlockServer(clientId, SteamAchievementsCatalog.TooMuchMana);
-
-        if (now - state.manaBurstStartedAt > 3f) {
-            state.manaBurstStartedAt = -999f;
-            state.manaBurstStartValue = 0f;
-        }
-    }
-
     public void ReportDamageAppliedServer(ulong victimId, DamageApplied applied) {
         if (!IsServer) return;
 
@@ -194,12 +175,12 @@ public class PlayerAchievementsManager : NetworkBehaviour {
             victimState.noDamageKillStreak = 0;
         }
 
-        if (applied.request.fromId == victimId)
+        if (applied.request.fromId.Value == victimId)
             return;
 
         var attackerId = applied.request.fromId;
         if (applied.overkill > 50f)
-            UnlockServer(attackerId, SteamAchievementsCatalog.Overkill);
+            UnlockServer(attackerId.Value, SteamAchievementsCatalog.Overkill);
     }
 
     public void ReportLifeDamageServer(Dictionary<ulong, float> damageByAttacker) {
@@ -225,22 +206,22 @@ public class PlayerAchievementsManager : NetworkBehaviour {
         if (_matchStarted && now - _matchStartedAt <= 3f && deathInfo.fromId != deathInfo.ownerId)
             UnlockServer(victimId, SteamAchievementsCatalog.PressF);
 
-        if (deathInfo.fromId == victimId && deathInfo.source != "Suicide")
+        if (deathInfo.fromId.Value == victimId && deathInfo.source != "Suicide")
             UnlockServer(victimId, SteamAchievementsCatalog.Plan);
 
         if (deathInfo.source == "Pain Mirror")
-            UnlockServer(deathInfo.fromId, SteamAchievementsCatalog.UnoReverse);
+            UnlockServer(deathInfo.fromId.Value, SteamAchievementsCatalog.UnoReverse);
 
-        if (deathInfo.fromId != victimId) {
-            var killerState = GetAchievementState(deathInfo.fromId);
+        if (deathInfo.fromId.Value != victimId) {
+            var killerState = GetAchievementState(deathInfo.fromId.Value);
 
             if (killerState.currentAirTime >= parkourAirtimeThreshold)
-                UnlockServer(deathInfo.fromId, SteamAchievementsCatalog.Parkour80);
+                UnlockServer(deathInfo.fromId.Value, SteamAchievementsCatalog.Parkour80);
 
             if (Mathf.Abs(killerState.lastDeathAt - now) <= 1.2f)
                 UnlockServer(victimId, SteamAchievementsCatalog.ClownFiesta);
 
-            if (NetworkManager.Singleton.ConnectedClients.TryGetValue(deathInfo.fromId, out var killerClient)) {
+            if (NetworkManager.Singleton.ConnectedClients.TryGetValue(deathInfo.fromId.Value, out var killerClient)) {
                 var killerDamageable = killerClient.PlayerObject.GetComponent<Damageable>();
                 if (killerDamageable.IsAlive && killerDamageable.CurrentHealth <= 3f)
                     UnlockServer(victimId, SteamAchievementsCatalog.NotLikeThis);
@@ -248,12 +229,12 @@ public class PlayerAchievementsManager : NetworkBehaviour {
 
             killerState.killStreak++;
             if (killerState.killStreak >= 9)
-                UnlockServer(deathInfo.fromId, SteamAchievementsCatalog.Godlike);
+                UnlockServer(deathInfo.fromId.Value, SteamAchievementsCatalog.Godlike);
 
             if (!killerState.tookDamageThisLife) {
                 killerState.noDamageKillStreak++;
                 if (killerState.noDamageKillStreak >= 5)
-                    UnlockServer(deathInfo.fromId, SteamAchievementsCatalog.WizardDiff);
+                    UnlockServer(deathInfo.fromId.Value, SteamAchievementsCatalog.WizardDiff);
             }
 
             if (!killerState.killBySourceTimes.TryGetValue(deathInfo.source ?? string.Empty, out var sourceKills)) {
@@ -264,7 +245,7 @@ public class PlayerAchievementsManager : NetworkBehaviour {
             sourceKills.Enqueue(now);
             TrimQueue(sourceKills, now, 2f);
             if (sourceKills.Count >= 3)
-                UnlockServer(deathInfo.fromId, SteamAchievementsCatalog.ChainReaction);
+                UnlockServer(deathInfo.fromId.Value, SteamAchievementsCatalog.ChainReaction);
         }
 
         if (deathInfo.source == "Killbox" && victimState.lastLaunchBy != ulong.MaxValue && now - victimState.lastLaunchAt <= launchFallKillWindow)

@@ -7,7 +7,7 @@ public abstract class PointPhysicsActionBase : ISpellAction {
         public readonly PlayerPhysics Physics;
         public readonly FirstPersonMovement Movement;
         public readonly Rigidbody Rigidbody;
-        public readonly ulong OwnerId;
+        public readonly ParticipantId OwnerId;
         public readonly bool HasOwner;
 
         public ResolvedPhysicsTarget(
@@ -15,7 +15,7 @@ public abstract class PointPhysicsActionBase : ISpellAction {
             PlayerPhysics physics,
             FirstPersonMovement movement,
             Rigidbody rigidbody,
-            ulong ownerId,
+            ParticipantId ownerId,
             bool hasOwner
         ) {
             Damageable = damageable;
@@ -55,7 +55,7 @@ public abstract class PointPhysicsActionBase : ISpellAction {
         }
 
         if (!TryResolveRigidbody(target, out var rigidbody)) return false;
-        resolvedTarget = new ResolvedPhysicsTarget(null, null, null, rigidbody, 0, false);
+        resolvedTarget = new ResolvedPhysicsTarget(null, null, null, rigidbody, default, false);
         return true;
     }
 
@@ -72,11 +72,11 @@ public abstract class PointPhysicsActionBase : ISpellAction {
         return true;
     }
 
-    protected bool CanAffect(ISpellContext context, ulong ownerId) {
+    protected bool CanAffect(ISpellContext context, ParticipantId ownerId) {
         var def = context.Spell.knockback;
         if (def == null) return false;
         if (def.canHitAllies) return true;
-        return TeamManager.Instance.AreEnemies(context.OwnerId, ownerId);
+        return DamageRelationship.AreEnemies(context, ownerId);
     }
 
     protected Vector3 ComputeDirection(Transform targetTransform, Vector3 point, KnockbackDefinition def) {

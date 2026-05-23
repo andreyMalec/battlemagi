@@ -13,7 +13,7 @@ public interface ISpellContext {
 
     float Lifetime { get; }
 
-    OwnerId OwnerId { get; }
+    ParticipantId OwnerId { get; }
     float Time { get; }
     float DeltaTime { get; }
 

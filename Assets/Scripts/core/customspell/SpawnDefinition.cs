@@ -57,6 +57,17 @@ public class SpawnDefinition : ScriptableObject, IValidate {
         _isDirectDown = IsDirectDown(spawnMode) || IsDirectDown(alternativeSpawnMode);
     }
 
+    public float MaxCastRange() {
+        var range = 1f;
+        if (_isRaycast && spawnMode != SpawnMode.DirectDown)
+            range = Mathf.Max(range, raycastMaxDistance);
+        if (_isForward)
+            range = Mathf.Max(range, forwardStep * instanceCount);
+        if (_isCone)
+            range = Mathf.Max(range, coneHeight);
+        return range;
+    }
+
 #if UNITY_EDITOR
     private void OnValidate() {
         Validate();

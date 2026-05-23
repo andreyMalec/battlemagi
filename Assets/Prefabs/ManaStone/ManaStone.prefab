@@ -101,6 +101,9 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   effects:
   - {fileID: 11400000, guid: ce1238441a8d13747b111df26627c3a1, type: 2}
+  attackWeight: 1
+  defenseWeight: 0
+  mobilityWeight: 0
 --- !u!114 &8810000000000000001
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -139,6 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4c3f0dd9edc4019ae2d886bce9a11d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Draggable
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!199 &7049482552439277263
 ParticleSystemRenderer:
   serializedVersion: 6

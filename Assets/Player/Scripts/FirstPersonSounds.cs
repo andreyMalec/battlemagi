@@ -35,7 +35,7 @@ public class FirstPersonSounds : MonoBehaviour {
     private void Update() {
         UpdateStep();
         UpdateJump();
-        stepsAudio.volume = movement.IsRunning ? 0.4f : 1f;
+        stepsAudio.volume = movement?.IsRunning == true ? 0.4f : 1f;
     }
 
     private void UpdateStep() {

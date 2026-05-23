@@ -8,7 +8,7 @@ public class Trampoline : MonoBehaviour {
     [SerializeField] private AudioClip[] jumpSound;
     [SerializeField] private AudioSource audioSource;
 
-    private readonly List<ulong> _affected = new();
+    private readonly List<ParticipantId> _affected = new();
 
     private void OnTriggerEnter(Collider other) {
         if (DamageUtils.TryGetOwnerFromCollider(other, out var damageable, out var owner) &&
@@ -20,7 +20,7 @@ public class Trampoline : MonoBehaviour {
         }
     }
 
-    private IEnumerator ApplyImpulse(ulong owner, PlayerPhysics physics) {
+    private IEnumerator ApplyImpulse(ParticipantId owner, PlayerPhysics physics) {
         physics.ApplyImpulseWithoutSnap(new Vector3(vector.up.x * 4, vector.up.y, vector.up.z * 4) * force);
         yield return null;
 

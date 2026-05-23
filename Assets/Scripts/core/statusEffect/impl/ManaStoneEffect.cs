@@ -19,8 +19,8 @@ public class ManaStoneEffect : StatusEffectData {
             _data = data;
         }
 
-        public override void OnApply(ulong applierClientId, GameObject target) {
-            base.OnApply(applierClientId, target);
+        public override void OnApply(ParticipantId ownerId, GameObject target) {
+            base.OnApply(ownerId, target);
             if (target.TryGetComponent<SpellCasterPlayer>(out var caster)) {
                 caster.Mana.RestoreManaServer(_data.amount);
             }

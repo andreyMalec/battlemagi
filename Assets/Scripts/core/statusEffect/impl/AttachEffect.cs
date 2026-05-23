@@ -14,19 +14,19 @@ public class AttachEffect : StatusEffectData {
             _data = data;
         }
 
-        public override void OnApply(ulong ownerClientId, GameObject target) {
-            base.OnApply(ownerClientId, target);
+        public override void OnApply(ParticipantId ownerId, GameObject target) {
+            base.OnApply(ownerId, target);
             if (target.TryGetComponent<StateController>(out var player)) {
-                if (TeamManager.Instance.AreAllies(ownerClientId, player.OwnerClientId))
+                if (TeamManager.Instance.AreAllies(ownerId, player.GetComponent<ParticipantIdentity>().Id))
                     return;
-                player.Attach(ownerClientId, true);
+                player.Attach(ownerId, true);
             }
         }
 
         public override void OnExpire(GameObject target) {
             base.OnExpire(target);
             if (target.TryGetComponent<StateController>(out var player))
-                player.Attach(ulong.MaxValue, false);
+                player.Attach(ParticipantId.Human(0), false);
         }
     }
 }

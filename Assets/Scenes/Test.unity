@@ -364,6 +364,7 @@ MonoBehaviour:
   stamina: {fileID: 2138223745}
   uiContainers: []
   effectsContainer: {fileID: 0}
+  echoContainer: {fileID: 0}
   alternativeSpawn: {fileID: 0}
 --- !u!114 &209071251
 MonoBehaviour:
@@ -4813,6 +4814,7 @@ MonoBehaviour:
   _immortal: 1
   _invulnerable: 0
   _isStructure: 0
+  despawnOnDeath: 0
   _bridge: {fileID: 0}
 --- !u!114 &1787711404
 MonoBehaviour:
@@ -6398,6 +6400,7 @@ MonoBehaviour:
   _immortal: 1
   _invulnerable: 0
   _isStructure: 0
+  despawnOnDeath: 0
   _bridge: {fileID: 0}
 --- !u!114 &7351032199263568248
 MonoBehaviour:
@@ -6546,6 +6549,57 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7351032199263568244}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &9104836201546327001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9104836201546327002}
+  - component: {fileID: 9104836201546327003}
+  m_Layer: 0
+  m_Name: TestBotController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9104836201546327002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9104836201546327001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9104836201546327003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9104836201546327001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fa18760ea504a49b969e074e0fec5e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  botPrefab: {fileID: 5793509697026975924, guid: 0b399508206f73b48a704aeb2350225e, type: 3}
+  spawnPoints:
+  - {fileID: 1055849605}
+  archetype: 0
+  hue: 78
+  saturation: 0.5
+  spawnCount: 1
 --- !u!114 &9185943500124383018
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6592,3 +6646,4 @@ SceneRoots:
   - {fileID: 1787711409}
   - {fileID: 2023091144}
   - {fileID: 1747937443}
+  - {fileID: 9104836201546327002}

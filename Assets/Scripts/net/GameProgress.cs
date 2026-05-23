@@ -50,6 +50,7 @@ public class GameProgress : NetworkBehaviour {
     public void StartMatch() {
         if (!IsServer || started) return;
         PlayerAchievementsManager.Instance?.ReportMatchStartedServer();
+        BotLifecycleManager.Instance?.BeginMatch();
         NetworkManager.Singleton.SceneManager.LoadScene(SceneName, LoadSceneMode.Single);
         LobbyManager.Instance.GameStarted();
         started = true;
@@ -96,7 +97,8 @@ public class GameProgress : NetworkBehaviour {
         }
     }
 
-    private void HandlePlayersListChanged(List<PlayerManager.PlayerData> players) {
+    private void HandlePlayersListChanged(NetworkList<MatchParticipantData> participantsList) {
+        _ = participantsList;
         if (!IsServer) return;
         if (ended) return;
         if (TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.CaptureTheFlag) {
@@ -106,14 +108,15 @@ public class GameProgress : NetworkBehaviour {
 
         int endChoice = TeamManager.Instance.EndChoice.Value;
         int target = endChoice >= 0 && endChoice < killsTargets.Length ? killsTargets[endChoice] : killsTargets[0];
+        var participants = PlayerManager.Instance.Participants;
 
         if (TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.TwoTeams) {
             var redKills = 0;
             var blueKills = 0;
-            foreach (var p in players) {
-                if (TeamManager.Instance.GetTeam(p.ClientId) == TeamManager.Team.Red)
+            foreach (var p in participants) {
+                if (TeamManager.Instance.GetTeam(p.Id) == TeamManager.Team.Red)
                     redKills += p.Kills;
-                else if (TeamManager.Instance.GetTeam(p.ClientId) == TeamManager.Team.Blue)
+                else if (TeamManager.Instance.GetTeam(p.Id) == TeamManager.Team.Blue)
                     blueKills += p.Kills;
             }
 
@@ -130,10 +133,14 @@ public class GameProgress : NetworkBehaviour {
                 StartCoroutine(EndMatch());
             }
         } else {
-            foreach (var p in players) {
+            foreach (var p in participants) {
                 if (p.Kills >= target) {
-                    GameAnnouncer.Instance.PlayerWin(p.ClientId);
-                    PlayerAchievementsManager.Instance?.ReportMatchWinnerServer(p.ClientId);
+                    if (p.Id.IsHuman) {
+                        PlayerAchievementsManager.Instance?.ReportMatchWinnerServer(p.Id.Value);
+                    }
+
+                    GameAnnouncer.Instance.PlayerWin(ParticipantIdentityCodec.Encode(p.Id));
+
                     StartCoroutine(EndMatch());
                     return;
                 }
@@ -148,6 +155,7 @@ public class GameProgress : NetworkBehaviour {
         Debug.Log("[GameProgressTracker] Match ended by reaching target");
 
         yield return new WaitForSeconds(7f);
+        BotLifecycleManager.Instance?.EndMatch();
         LobbyManager.Instance.CurrentLobby?.SetJoinable(true);
         LobbyManager.Instance.RestartLobby();
         var spawned = NetworkManager.Singleton.SpawnManager.SpawnedObjectsList.ToList();
@@ -162,7 +170,7 @@ public class GameProgress : NetworkBehaviour {
         }
 
         SpellInstanceLimiter.Clear();
-        NetworkManager.Singleton.SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
+        SceneLoader.LoadMenu();
         TeamManager.Instance.Reset();
         ended = false;
     }

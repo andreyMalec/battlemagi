@@ -1,3 +1,4 @@
+using System;
 using JetBrains.Annotations;
 using Unity.Netcode;
 using UnityEngine;
@@ -20,25 +21,35 @@ public class Killfeed : NetworkBehaviour {
 
     [ClientRpc]
     public void HandleClientRpc(ulong killerId, ulong targetId, ulong sourceId = 0) {
-        var item = Instantiate(itemPrefab, container.transform);
-        var killer = PlayerManager.Instance.FindByClientId(killerId);
-        var killerName = "";
-        if (killer.HasValue) {
-            killerName = killer.Value.Name();
-            if (killerName.Length > 12)
-                killerName = $"{killerName[..12]}..";
+        try {
+            var item = Instantiate(itemPrefab, container.transform);
+            var killerName = ResolveName(ParticipantIdentityCodec.Decode(killerId));
+            var targetName = ResolveName(ParticipantIdentityCodec.Decode(targetId));
+
+            var killInfo = $"{killerName} → {targetName}";
+
+            item.GetComponent<KillfeedItem>().SetText(killInfo);
+        } catch (Exception) {
+            // вероятно мы уже в меню, игнорируем
+        }
+    }
+
+    private static string ResolveName(ParticipantId id) {
+        if (id == ParticipantId.EnvironmentId) return "";
+
+        if (id.IsHuman) {
+            var player = PlayerManager.Instance.FindByClientId(id.Value);
+            if (!player.HasValue)
+                return "";
+            return Trim(player.Value.Name());
         }
 
-        var target = PlayerManager.Instance.FindByClientId(targetId);
-        var targetName = "";
-        if (target.HasValue) {
-            targetName = target.Value.Name();
-            if (targetName.Length > 12)
-                targetName = $"{targetName[..12]}..";
-        }
+        return Trim(BotNameCatalog.Resolve(id.Value));
+    }
 
-        var killInfo = $"{killerName} → {targetName}";
-
-        item.GetComponent<KillfeedItem>().SetText(killInfo);
+    private static string Trim(string value) {
+        if (value.Length > 12)
+            return $"{value[..12]}..";
+        return value;
     }
 }

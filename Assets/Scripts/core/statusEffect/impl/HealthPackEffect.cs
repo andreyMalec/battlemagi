@@ -20,8 +20,8 @@ public class HealthPackEffect : StatusEffectData {
             _data = data;
         }
 
-        public override void OnApply(ulong ownerClientId, GameObject target) {
-            base.OnApply(ownerClientId, target);
+        public override void OnApply(ParticipantId ownerId, GameObject target) {
+            base.OnApply(ownerId, target);
             if (target.TryGetComponent<Damageable>(out var damageable)) {
                 damageable.TakeHeal("Health pack", _data.amount);
             }

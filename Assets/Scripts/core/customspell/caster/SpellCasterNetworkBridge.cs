@@ -8,7 +8,7 @@ public class SpellCasterNetworkBridge : NetworkBehaviour, ISpellCasterBridge {
     public new bool IsServer => base.IsServer;
     public new bool IsSpawned => base.IsSpawned;
     public new bool IsOwner => base.IsOwner;
-    public ulong OwnerId => OwnerClientId;
+    public ParticipantId OwnerId { get; set; }
 
     private SpellCasterPlayer _core;
     private bool _hasCore;
@@ -24,9 +24,7 @@ public class SpellCasterNetworkBridge : NetworkBehaviour, ISpellCasterBridge {
         if (amount <= 0f) return true;
 
         if (IsServer) {
-            var before = _core.Mana.Mana;
             var spent = _core.Mana.SpendWithPrimalServer(amount);
-            PlayerAchievementsManager.Instance?.ReportManaSpentServer(OwnerClientId, before, _core.Mana.Mana, _core.Mana.MaxMana);
             SyncFromCore();
             return spent;
         }
@@ -215,9 +213,7 @@ public class SpellCasterNetworkBridge : NetworkBehaviour, ISpellCasterBridge {
         if (!_hasCore) return;
         if (!IsSpawned) return;
 
-        var before = _core.Mana.Mana;
         _core.Mana.SpendWithPrimalServer(amount);
-        PlayerAchievementsManager.Instance?.ReportManaSpentServer(OwnerClientId, before, _core.Mana.Mana, _core.Mana.MaxMana);
         SyncFromCore();
     }
 

@@ -2,11 +2,11 @@ using System;
 
 public readonly struct DamageRequest {
     public readonly string source;
-    public readonly ulong fromId;
+    public readonly ParticipantId fromId;
     public readonly float amount;
     public readonly DamageKind kind;
 
-    public DamageRequest(string source, ulong fromId, float amount, DamageKind kind) {
+    public DamageRequest(string source, ParticipantId fromId, float amount, DamageKind kind) {
         this.source = source;
         this.fromId = fromId;
         this.amount = amount;
@@ -33,11 +33,11 @@ public readonly struct DamageApplied {
 }
 
 public readonly struct DeathInfo {
-    public readonly ulong ownerId;
-    public readonly ulong fromId;
+    public readonly ParticipantId ownerId;
+    public readonly ParticipantId fromId;
     public readonly string source;
 
-    public DeathInfo(ulong ownerId, ulong fromId, string source) {
+    public DeathInfo(ParticipantId ownerId, ParticipantId fromId, string source) {
         this.ownerId = ownerId;
         this.fromId = fromId;
         this.source = source;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 
 [RequireComponent(typeof(Damageable))]
@@ -14,6 +15,8 @@ public class SpellCasterPlayer : SpellCaster {
     [SerializeField] private bool animateCast = true;
     [SerializeField] private bool animateHand = true;
     [SerializeField] private StatusEffectData primalManaStatus;
+
+    [SerializeField] public bool isHuman = true;
 
     private ISpellCasterBridge _bridgeTyped;
     private Stats _stats;
@@ -54,8 +57,25 @@ public class SpellCasterPlayer : SpellCaster {
     public bool CastWaiting => _spell != null || _echoSpell != null;
     public bool CanSelectSpell => !CastWaiting && !Channeling && !Charging;
 
-    public override Vector3 Origin => spawnPos.position;
-    public override Vector3 Direction => spawnPos.forward;
+    public override Vector3 Origin {
+        get {
+            try {
+                return spawnPos.position;
+            } catch (Exception) {
+                return Vector3.zero;
+            }
+        }
+    }
+
+    public override Vector3 Direction {
+        get {
+            try {
+                return spawnPos.forward;
+            } catch (Exception) {
+                return Vector3.zero;
+            }
+        }
+    }
 
     public override bool IsPlayer => true;
     public override bool IsSpell => false;
@@ -134,25 +154,25 @@ public class SpellCasterPlayer : SpellCaster {
     void Update() {
         if (!CanCast) return;
 
-        if (input.AlternativeSpawnPressedThisFrame()) {
+        if (input.AlternativeSpawnPressedThisFrame() && isHuman) {
             alternativeSpawn = !alternativeSpawn;
         }
 
         var index = input.GetSpellIndexPressedThisFrame();
-        if (CanSelectSpell && index >= 0 && index < _availableSpells.Count) {
+        if (isHuman && CanSelectSpell && index >= 0 && index < _availableSpells.Count) {
             var selected = _availableSpells[index];
             SelectSpell(selected);
         }
 
-        if (input.CancelPressedThisFrame()) {
+        if (isHuman && input.CancelPressedThisFrame()) {
             CancelCast();
         }
 
-        if (Charging && input.CastPressedThisFrame()) {
+        if (isHuman && Charging && input.CastPressedThisFrame()) {
             ReleaseCharged(_chargingSpell);
         }
 
-        if (!Channeling && !Charging && _spell != null && input.CastPressedThisFrame()) {
+        if (isHuman && !Channeling && !Charging && _spell != null && input.CastPressedThisFrame()) {
             if (TryCastEcho(_spell)) {
             } else if (CanStartCast(_spell)) {
                 if (_spell.charging) {
@@ -169,14 +189,48 @@ public class SpellCasterPlayer : SpellCaster {
         _preview?.SetSpell(_spell);
     }
 
-    public void SelectSpell(SpellDefinition spell) {
+    public void SelectSpell([CanBeNull] SpellDefinition spell) {
         if (spell != _spell)
             ResetEcho();
         _spell = spell;
 
         SpellLog.Log($"{gameObject.name} Selected spell: " + spell?.spellName);
         if (animateHand)
-            _animator.CastWaitingAnim(true, _spell.castWaitingIndex);
+            if (spell == null)
+                _animator.CastWaitingAnim(false);
+            else
+                _animator.CastWaitingAnim(true, _spell.castWaitingIndex);
+    }
+
+    public enum BotCastResult {
+        AlreadyCasting,
+        NoResource,
+        EchoUsed,
+        StartEcho,
+        StartCharging,
+        Casted
+    }
+
+    public BotCastResult TryCastBot(SpellDefinition spell, ITarget target) {
+        if (spell == null) return BotCastResult.AlreadyCasting;
+        if (!CanCast || Channeling || Charging) return BotCastResult.AlreadyCasting;
+        if (!CanStartCast(spell)) return BotCastResult.NoResource;
+
+        _spell = spell;
+        if (animateHand)
+            _animator.CastWaitingAnim(false);
+
+        if (spell.charging) {
+            StartCharging(spell);
+            return BotCastResult.StartCharging;
+        }
+
+        if (target == null)
+            Cast(spell);
+        else
+            Cast(spell, target);
+
+        return spell?.echoCount > 0 ? BotCastResult.StartEcho : BotCastResult.Casted;
     }
 
     public override void Cast(SpellDefinition spell) {
@@ -192,19 +246,38 @@ public class SpellCasterPlayer : SpellCaster {
         StartCoroutine(BeginEcho(spell, usedEcho));
     }
 
+    /**
+     * Каст по цели (наводка из бота)
+     */
+    public override void Cast(SpellDefinition spell, ITarget target) {
+        var usedEcho = spell.charging ? _chargingUsedEcho : ConsumeCostOrEcho(spell);
+        _chargingUsedEcho = false;
+        base.Cast(spell, target);
+
+        if (spell.channeling) {
+            _channelingRoutine = StartCoroutine(Channel(spell));
+        }
+
+        _spell = null;
+        StartCoroutine(BeginEcho(spell, usedEcho));
+    }
+
     private bool ConsumeCostOrEcho(SpellDefinition spell) {
         if (_echoSpell == spell && _echoRemaining > 0) {
             _echoRemaining--;
-            PlayerAchievementsManager.Instance?.ReportEchoConsumedServer(Authority.OwnerId);
+            if (isHuman)
+                PlayerAchievementsManager.Instance?.ReportEchoConsumedServer(Authority.OwnerId.Value);
             return true;
         }
-        PlayerAchievementsManager.Instance?.ReportEchoStartedServer(Authority.OwnerId);
+
+        if (isHuman)
+            PlayerAchievementsManager.Instance?.ReportEchoStartedServer(Authority.OwnerId.Value);
 
         SpendResourceServer(spell, mana.CostForCast(spell));
         return false;
     }
 
-    private bool CanStartCast(SpellDefinition spell) {
+    public bool CanStartCast(SpellDefinition spell) {
         if (spell == null) return false;
         if (spell.bloodMagic) {
             if (_echoSpell == spell && _echoRemaining > 0)
@@ -218,19 +291,10 @@ public class SpellCasterPlayer : SpellCaster {
 
     private bool SpendResourceServer(SpellDefinition spell, float amount) {
         if (spell == null || amount <= 0f) return true;
-
         if (spell.bloodMagic)
             return _bridgeTyped.TrySpendHealth(amount);
 
         return _bridgeTyped.TrySpendMana(amount);
-    }
-
-    internal void BindChannelingSpell(ulong spellObjectId, string spellName) {
-        _bridgeTyped.BindChannelingSpell(spellObjectId, spellName);
-    }
-
-    internal void StopChannelingSpell(ulong spellObjectId) {
-        _bridgeTyped.StopChannelingSpell(spellObjectId);
     }
 
     internal void StopChannelingFromBridge() {
@@ -238,14 +302,14 @@ public class SpellCasterPlayer : SpellCaster {
         StopChanneling(false);
     }
 
-    private bool TryCastEcho(SpellDefinition spell) {
+    public bool TryCastEcho(SpellDefinition spell, ITarget target = null) {
         if (_echoSpell != spell) return false;
         if (_echoRemaining <= 0) return false;
 
         if (animateCast)
             _animator.AnimateCast(spell);
         else
-            Cast(spell);
+            Cast(spell, target);
 
         return true;
     }
@@ -293,7 +357,7 @@ public class SpellCasterPlayer : SpellCaster {
         return spell.echoCount;
     }
 
-    private void CancelCast() {
+    public void CancelCast() {
         if (Charging) {
             ReleaseCharged(_chargingSpell);
             return;
@@ -376,7 +440,7 @@ public class SpellCasterPlayer : SpellCaster {
                 yield break;
             }
 
-            _chargingDamageMultiplier = Mathf.Clamp01((float)Math.Pow(2, elapsed / duration));
+            _chargingDamageMultiplier = Mathf.Clamp01((float)Math.Pow(elapsed / duration, 2));
             yield return null;
         }
 
@@ -398,6 +462,7 @@ public class SpellCasterPlayer : SpellCaster {
         Charging = false;
         var toCast = spell;
         _chargingSpell = null;
+        SpellLog.Log($"{gameObject.name} ReleaseCharged damageMultiplier={_chargingDamageMultiplier}");
 
         Cast(toCast);
 

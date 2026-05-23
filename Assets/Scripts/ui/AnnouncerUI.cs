@@ -27,13 +27,26 @@ public class AnnouncerUI : MonoBehaviour {
     }
 
     private void PlayerWin(ulong clientId) {
-        var data = PlayerManager.Instance.FindByClientId(clientId);
-        if (!data.HasValue) return;
-        var hsv = new Friend(data.Value.SteamId).GetColor();
-        coloredText.color = Color.HSVToRGB(hsv.hue / 360, hsv.saturation, 0.8f);
-        coloredText.text = data?.Name();
+        var winnerId = ParticipantIdentityCodec.Decode(clientId);
+        if (!PlayerManager.Instance.TryGetParticipant(winnerId, out var data)) return;
+        coloredText.color = Color.HSVToRGB(data.Hue / 360f, data.Saturation, 0.8f);
+        coloredText.text = winnerId.IsBot
+            ? BotNameCatalog.Resolve(winnerId.Value)
+            : ResolveHumanWinnerName(data);
         normalText.text = R.String("announcer.playerWin");
         ShowMessage();
+    }
+
+    private static string ResolveHumanWinnerName(MatchParticipantData data) {
+        var lobby = LobbyManager.Instance.CurrentLobby;
+        if (lobby.HasValue) {
+            foreach (var member in lobby.Value.Members) {
+                if (member.Id.Value == data.SteamId)
+                    return member.Name;
+            }
+        }
+
+        return $"Player_{data.Id.Value}";
     }
 
     private void TeamWin(int winTeam) {

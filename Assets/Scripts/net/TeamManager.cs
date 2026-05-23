@@ -20,14 +20,22 @@ public class TeamManager : NetworkBehaviour {
     public struct TeamEntry : INetworkSerializable, IEquatable<TeamEntry> {
         public ulong clientId;
         public Team team;
+        public float time;
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter {
             serializer.SerializeValue(ref clientId);
             serializer.SerializeValue(ref team);
+            serializer.SerializeValue(ref time);
         }
 
-        public bool Equals(TeamEntry other) => clientId == other.clientId && team == other.team;
-        public override int GetHashCode() => ((int)clientId * 397) ^ (int)team;
+        public bool Equals(TeamEntry other) => clientId == other.clientId && team == other.team && Mathf.Approximately(time, other.time);
+        public override int GetHashCode() => ((int)clientId * 397) ^ (int)team ^ time.GetHashCode();
+    }
+
+    private struct RebalanceParticipant {
+        public ulong id;
+        public bool isBot;
+        public int lobbyBotIndex;
     }
 
     public event Action<Team> MyTeam;
@@ -39,6 +47,7 @@ public class TeamManager : NetworkBehaviour {
     public NetworkVariable<int> BlueScore = new(0);
     public NetworkVariable<int> EndChoice = new(0);
     private NetworkList<TeamEntry> _teams;
+    private readonly Dictionary<ulong, Team> _botTeams = new();
 
     public static TeamManager Instance { get; private set; }
 
@@ -65,6 +74,7 @@ public class TeamManager : NetworkBehaviour {
         RedScore.Value = 0;
         BlueScore.Value = 0;
         EndChoice.Value = 0;
+        _botTeams.Clear();
         RedistributePlayers();
     }
 
@@ -95,7 +105,8 @@ public class TeamManager : NetworkBehaviour {
     }
 
     private bool IsMatchInProgress() {
-        return IsServer && LobbyManager.Instance != null && LobbyManager.Instance.State == LobbyManager.PlayerState.InGame;
+        return IsServer && LobbyManager.Instance != null &&
+               LobbyManager.Instance.State == LobbyManager.PlayerState.InGame;
     }
 
     private int FindIndexByClientId(ulong clientId) {
@@ -110,7 +121,7 @@ public class TeamManager : NetworkBehaviour {
         if (IsMatchInProgress()) return;
 
         Team team = AssignTeam(clientId);
-        _teams.Add(new TeamEntry { clientId = clientId, team = team });
+        _teams.Add(new TeamEntry { clientId = clientId, team = team, time = Time.time });
 
         Debug.Log($"[TeamManager] {clientId} joined team {team}");
     }
@@ -124,8 +135,12 @@ public class TeamManager : NetworkBehaviour {
     }
 
     private Team AssignTeam(ulong clientId) {
+        return AssignTeamInternal(clientId);
+    }
+
+    private Team AssignTeamInternal(ulong uniqueId) {
         if (!isTeamMode)
-            return (Team)clientId; // уникальный ID — каждый сам за себя
+            return (Team)uniqueId; // уникальный ID — каждый сам за себя
 
         // TwoTeams — добавляем в менее заполненную
         int red = 0;
@@ -136,6 +151,16 @@ public class TeamManager : NetworkBehaviour {
             if (entry.team == Team.Blue)
                 blue++;
         }
+
+        foreach (var team in _botTeams.Values) {
+            if (team == Team.Red)
+                red++;
+            if (team == Team.Blue)
+                blue++;
+        }
+
+        if (_botTeams.Count == 0)
+            AppendLobbyBotCounts(ref red, ref blue);
 
         return red < blue ? Team.Red : Team.Blue;
     }
@@ -162,15 +187,137 @@ public class TeamManager : NetworkBehaviour {
     }
 
     private void RedistributePlayers() {
-        foreach (var entry in _teams) {
-            Team newTeam = AssignTeam(entry.clientId);
+        if (!isTeamMode) {
+            foreach (var entry in _teams) {
+                Team newTeam = AssignTeam(entry.clientId);
 
-            int idx = FindIndexByClientId(entry.clientId);
-            if (idx >= 0)
-                _teams[idx] = new TeamEntry { clientId = entry.clientId, team = newTeam };
+                int idx = FindIndexByClientId(entry.clientId);
+                if (idx >= 0)
+                    _teams[idx] = new TeamEntry { clientId = entry.clientId, team = newTeam, time = Time.time };
+            }
+
+            Debug.Log($"[TeamManager] Rebalanced into {CurrentMode.Value}");
+            return;
         }
 
+        List<LobbyBotRosterData.Entry> lobbyBots = null;
+        var useLobbyBots = _botTeams.Count == 0 && LobbyManager.Instance != null && LobbyManager.Instance.CurrentLobby.HasValue;
+        if (useLobbyBots)
+            lobbyBots = LobbyBotRosterData.LoadFromLobby(LobbyManager.Instance.CurrentLobby.Value);
+
+        var participants = BuildRebalanceParticipants(lobbyBots);
+        var red = 0;
+        var blue = 0;
+
+        for (int i = 0; i < participants.Count; i++) {
+            var participant = participants[i];
+            var newTeam = red <= blue ? Team.Red : Team.Blue;
+
+            if (participant.isBot) {
+                if (useLobbyBots)
+                    lobbyBots[participant.lobbyBotIndex].team = newTeam;
+                else
+                    _botTeams[participant.id] = newTeam;
+            } else {
+                var playerIndex = FindIndexByClientId(participant.id);
+                if (playerIndex >= 0)
+                    _teams[playerIndex] = new TeamEntry { clientId = participant.id, team = newTeam, time = Time.time };
+            }
+
+            IncrementCount(newTeam, ref red, ref blue);
+        }
+
+        if (useLobbyBots)
+            LobbyBotRosterData.SaveToLobby(LobbyManager.Instance.CurrentLobby.Value, lobbyBots);
+
         Debug.Log($"[TeamManager] Rebalanced into {CurrentMode.Value}");
+    }
+
+    private List<RebalanceParticipant> BuildRebalanceParticipants(List<LobbyBotRosterData.Entry> lobbyBots) {
+        var humanIds = new List<ulong>();
+        for (int i = 0; i < _teams.Count; i++)
+            humanIds.Add(_teams[i].clientId);
+        humanIds.Sort();
+
+        var botIds = new List<ulong>();
+        var botLobbyIndices = new Dictionary<ulong, int>();
+        if (lobbyBots != null) {
+            for (int i = 0; i < lobbyBots.Count; i++) {
+                var botId = lobbyBots[i].id;
+                botIds.Add(botId);
+                if (!botLobbyIndices.ContainsKey(botId))
+                    botLobbyIndices[botId] = i;
+            }
+        } else {
+            foreach (var botId in _botTeams.Keys)
+                botIds.Add(botId);
+        }
+
+        botIds.Sort();
+
+        var participants = new List<RebalanceParticipant>(humanIds.Count + botIds.Count);
+        var max = Mathf.Max(humanIds.Count, botIds.Count);
+        for (int i = 0; i < max; i++) {
+            if (i < humanIds.Count) {
+                participants.Add(new RebalanceParticipant {
+                    id = humanIds[i],
+                    isBot = false,
+                    lobbyBotIndex = -1
+                });
+            }
+
+            if (i < botIds.Count) {
+                var botId = botIds[i];
+                var lobbyIndex = -1;
+                if (lobbyBots != null && botLobbyIndices.TryGetValue(botId, out var idx))
+                    lobbyIndex = idx;
+
+                participants.Add(new RebalanceParticipant {
+                    id = botId,
+                    isBot = true,
+                    lobbyBotIndex = lobbyIndex
+                });
+            }
+        }
+
+        return participants;
+    }
+
+    private void AppendLobbyBotCounts(ref int red, ref int blue) {
+        if (IsMatchInProgress())
+            return;
+
+        if (LobbyManager.Instance == null || !LobbyManager.Instance.CurrentLobby.HasValue)
+            return;
+
+        var bots = LobbyBotRosterData.LoadFromLobby(LobbyManager.Instance.CurrentLobby.Value);
+        for (int i = 0; i < bots.Count; i++) {
+            IncrementCount(bots[i].team, ref red, ref blue);
+        }
+    }
+
+
+    private static void IncrementCount(Team team, ref int red, ref int blue) {
+        if (team == Team.Red)
+            red++;
+        if (team == Team.Blue)
+            blue++;
+    }
+
+    public void RegisterBot(ulong botId, Team requestedTeam = Team.None) {
+        if (!IsServer) return;
+
+        var assignedTeam = requestedTeam;
+        if (assignedTeam == Team.None || !isTeamMode)
+            assignedTeam = AssignTeamInternal(ParticipantIdentityCodec.EncodeBot(botId));
+
+        _botTeams[botId] = assignedTeam;
+        Debug.Log($"[TeamManager] Bot {botId} joined team {assignedTeam}");
+    }
+
+    public void RemoveBot(ulong botId) {
+        if (!IsServer) return;
+        _botTeams.Remove(botId);
     }
 
     // ===============================
@@ -241,6 +388,10 @@ public class TeamManager : NetworkBehaviour {
         return TryGetTeam(clientId, out _);
     }
 
+    public bool HasTeam(ParticipantId participantId) {
+        return TryGetTeam(participantId, out _);
+    }
+
     public bool TryGetLocalTeam(out Team team) {
         if (NetworkManager.Singleton == null) {
             team = Team.None;
@@ -252,6 +403,17 @@ public class TeamManager : NetworkBehaviour {
 
     public Team GetTeam(ulong? clientId) {
         return TryGetTeam(clientId, out var team) ? team : Team.None;
+    }
+
+    public bool TryGetTeam(ParticipantId participantId, out Team team) {
+        if (participantId.IsHuman)
+            return TryGetTeam(participantId.Value, out team);
+
+        return _botTeams.TryGetValue(participantId.Value, out team);
+    }
+
+    public Team GetTeam(ParticipantId participantId) {
+        return TryGetTeam(participantId, out var team) ? team : Team.None;
     }
 
     public List<ulong> FindAllies(ulong clientId) {
@@ -266,13 +428,48 @@ public class TeamManager : NetworkBehaviour {
         return result;
     }
 
-    public bool AreEnemies(ulong a, ulong b) {
+    private ParticipantId ResolveParticipantId(ulong rawId) {
+        var decoded = ParticipantIdentityCodec.Decode(rawId);
+
+        if ((rawId & ParticipantIdentityCodec.BotMask) != 0)
+            return decoded;
+
+        var human = decoded;
+        var hasHuman = TryGetTeam(human, out _);
+
+        var bot = ParticipantId.Bot(rawId);
+        var hasBot = TryGetTeam(bot, out _);
+
+        if (hasHuman && !hasBot)
+            return human;
+        if (hasBot && !hasHuman)
+            return bot;
+        if (hasBot)
+            return bot;
+
+        return decoded;
+    }
+
+    private ParticipantId ResolveParticipantId(ulong rawId, GameObject contextObject) {
+        if (contextObject != null) {
+            if (contextObject.TryGetComponent<ParticipantIdentity>(out var identity))
+                return identity.Id;
+
+            var parentIdentity = contextObject.GetComponentInParent<ParticipantIdentity>();
+            if (parentIdentity != null)
+                return parentIdentity.Id;
+        }
+
+        return ResolveParticipantId(rawId);
+    }
+
+    public bool AreEnemies(ParticipantId a, ParticipantId b) {
         if (!isTeamMode)
             return a != b;
         return GetTeam(a) != GetTeam(b);
     }
 
-    public bool AreAllies(ulong a, ulong b) {
+    public bool AreAllies(ParticipantId a, ParticipantId b) {
         return !AreEnemies(a, b);
     }
 }

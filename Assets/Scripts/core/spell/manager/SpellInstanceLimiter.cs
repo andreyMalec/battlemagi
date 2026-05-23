@@ -41,14 +41,6 @@ public static class SpellInstanceLimiter {
         if (list.Count == 0) _map.Remove(key);
     }
 
-    public static List<GameObject> Register(ulong ownerId, SpellData data, GameObject obj) {
-        return Register(ownerId, data.instanceLimit, data.id.ToString(), obj);
-    }
-
-    public static void Unregister(ulong ownerId, SpellData data, GameObject obj) {
-        Unregister(ownerId, data.instanceLimit, data.id.ToString(), obj);
-    }
-
     public static List<GameObject> Register(ulong ownerId, SpellDefinition data, GameObject obj) {
         return Register(ownerId, data.spawn.instanceLimit, data.spellName, obj);
     }

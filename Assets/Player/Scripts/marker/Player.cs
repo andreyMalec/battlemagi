@@ -6,9 +6,6 @@ using System.Reflection; // reflection for Awake
 
 [DefaultExecutionOrder(-100)]
 public class Player : NetworkBehaviour {
-    private static readonly int OutlineColor = Shader.PropertyToID("OutlineColor");
-    private static readonly int OutlineAlpha = Shader.PropertyToID("OutlineAlpha");
-
     [SerializeField] private bool isDummy = false;
     [SerializeField] private Behaviour[] scriptsToDisable;
     [SerializeField] private GameObject[] objectsToDisable;
@@ -125,39 +122,15 @@ public class Player : NetworkBehaviour {
         }
     }
 
-    [ClientRpc]
-    public void ApplyEffectColorClientRpc(Color color) {
-        ApplyColor(prev => prev + color);
-    }
-
-    [ClientRpc]
-    public void RemoveEffectColorClientRpc(Color color) {
-        ApplyColor(prev => prev - color);
-    }
-
-    private void ApplyColor(Func<Color, Color> operation) {
-        var materials = GetComponentInChildren<MeshBody>().GetComponent<SkinnedMeshRenderer>().materials;
-        foreach (var material in materials) {
-            if (!material.HasColor(OutlineColor)) continue;
-            var prev = material.GetColor(OutlineColor);
-            var next = operation.Invoke(prev);
-            var alpha = 0f;
-            if (next.a > 0)
-                alpha = 1f;
-            material.SetFloat(OutlineAlpha, alpha);
-            material.SetColor(OutlineColor, next);
-        }
-    }
-
-    public void Init(ulong clientId, Vector3 position, Quaternion rotation) {
+    public void Init(ulong ownerId, Vector3 position, Quaternion rotation) {
         var archetype = ArchetypeDatabase.Instance.GetArchetype(ArchetypeValue.Value);
 
         var movement = GetComponent<FirstPersonMovement>();
         movement.spawnPoint.Value = position;
-        Debug.Log($"[PlayerSpawner] Init Сервер: Player_{clientId} создан в {position}, {rotation}");
+        Debug.Log($"[PlayerSpawner] Init Сервер: Player_{ownerId} создан в {position}, {rotation}");
         movement.stamina.Value = archetype.maxStamina;
 
-        InitClientRpc(clientId, rotation);
+        InitClientRpc(ownerId, rotation);
     }
 
     public void ApplyPlayerState(ulong steamId, int archetype, float hue, float saturation) {
@@ -168,9 +141,14 @@ public class Player : NetworkBehaviour {
     }
 
     [ClientRpc]
-    private void InitClientRpc(ulong clientId, Quaternion rotation) {
-        Debug.Log($" [PlayerSpawner] InitClientRpc Клиент: Инициализация Player_{clientId}");
+    private void InitClientRpc(ulong ownerId, Quaternion rotation) {
+        Debug.Log($" [PlayerSpawner] InitClientRpc Клиент: Инициализация Player_{ownerId}");
         GetComponent<FirstPersonLook>().ApplyInitialRotation(rotation);
+        var participantIdentity = GetComponent<ParticipantIdentity>();
+        participantIdentity.SetParticipantId(ParticipantIdentityCodec.Decode(ownerId));
+        foreach (var identityUser in GetComponents<IdentityUser>()) {
+            identityUser.Use(gameObject);
+        }
     }
 
     private void ApplyMaterial(int arch, float hue, float saturation) {

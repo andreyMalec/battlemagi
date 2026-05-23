@@ -6,24 +6,39 @@ using UnityEngine;
 [RequireComponent(typeof(NetworkObject))]
 public class PickUp : NetworkBehaviour {
     [SerializeField] private List<StatusEffectData> effects;
+    [SerializeField] [Min(0f)] private float attackWeight = 1f;
+    [SerializeField] [Min(0f)] private float defenseWeight = 1f;
+    [SerializeField] [Min(0f)] private float mobilityWeight = 0.5f;
+
+    public static IReadOnlyList<PickUp> Active => _active;
+    public Vector3 BotPriorityWeights => new(attackWeight, defenseWeight, mobilityWeight);
 
     private bool _destroyed = false;
+    private static readonly List<PickUp> _active = new();
+
+    private void OnEnable() {
+        if (_active.Contains(this))
+            return;
+        _active.Add(this);
+    }
+
+    private void OnDisable() {
+        _active.Remove(this);
+    }
 
     private void OnTriggerEnter(Collider other) {
         if (other.isTrigger) return;
         if (_destroyed) return;
         if (!IsServer) return;
 
-        if (other.TryGetComponent<Player>(out _) && other.TryGetComponent<Statusable>(out var statusable)) {
-            var ownerId = OwnerClientId;
-            if (NetworkObject.IsSceneObject == true)
-                ownerId = PlayerId.EnvironmentId;
+        if (other.TryGetComponent<SpellCasterPlayer>(out _) && other.TryGetComponent<Statusable>(out var statusable)) {
+            var pickedByBot = other.GetComponent<Bot>() != null;
             foreach (var effect in effects) {
-                statusable.AddEffect(ownerId, effect);
+                statusable.AddEffect(ParticipantId.EnvironmentId, effect);
             }
 
             var toUI = effects.First();
-            if (string.IsNullOrWhiteSpace(toUI.title)) {
+            if (pickedByBot || string.IsNullOrWhiteSpace(toUI.title)) {
                 OnPickupClientRpc();
             } else
                 OnPickupClientRpc(

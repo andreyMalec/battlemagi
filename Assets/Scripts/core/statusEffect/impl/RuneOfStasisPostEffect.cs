@@ -15,14 +15,14 @@ public class RuneOfStasisPostEffect : StatusEffectData {
             _data = data;
         }
 
-        public override void OnApply(ulong ownerClientId, GameObject target) {
-            base.OnApply(ownerClientId, target);
+        public override void OnApply(ParticipantId ownerId, GameObject target) {
+            base.OnApply(ownerId, target);
             var stats = target.GetComponent<Stats>();
             if (stats != null) {
                 stats.System.AddModifier(StatType.HealthRegen, _data.healthRegenMultiplier);
             }
 
-            target.GetComponent<Player>().ApplyEffectColorClientRpc(_data.color);
+            target.GetComponent<Colorable>().ApplyEffectColorClientRpc(_data.color);
             target.GetComponent<StateController>().SetFreeze(true);
             target.GetComponent<Damageable>().SetInvulnerable(true);
         }
@@ -34,7 +34,7 @@ public class RuneOfStasisPostEffect : StatusEffectData {
                 stats.RemoveModifier(StatType.HealthRegen, _data.healthRegenMultiplier);
             }
 
-            target.GetComponent<Player>().RemoveEffectColorClientRpc(_data.color);
+            target.GetComponent<Colorable>().RemoveEffectColorClientRpc(_data.color);
             target.GetComponent<StateController>().SetFreeze(false);
             target.GetComponent<Damageable>().SetInvulnerable(false);
         }

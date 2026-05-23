@@ -1,9 +1,7 @@
-public interface IDamageableBridge {
+public interface IDamageableBridge : IdentityUser {
     bool IsServer { get; }
     bool IsSpawned { get; }
     bool IsOwner { get; }
-
-    ulong OwnerId { get; }
 
     void Bind(Damageable core);
     void TickFixed(Damageable core);

@@ -31,12 +31,13 @@ public class ForcedMovementEffect : StatusEffectData {
         var targetPoint = ResolveTargetPoint(applyContext, target);
         resolvedDuration = ResolveMovementDuration(applyContext, target, targetPoint);
 
-        if (target.TryGetComponent<StateController>(out var player)) {
-            if (TeamManager.Instance.AreAllies(applyContext.ownerClientId, player.OwnerClientId))
+        if (target.TryGetComponent<StateController>(out var player) &&
+            player.TryGetComponent<ParticipantIdentity>(out var identity)) {
+            if (TeamManager.Instance.AreAllies(applyContext.OwnerId, identity.Id))
                 return false;
 
             player.StartForcedMovement(targetPoint, resolvedDuration);
-            PlayerAchievementsManager.Instance.ReportEnemyLaunchedServer(applyContext.ownerClientId, player.OwnerClientId);
+            PlayerAchievementsManager.Instance.ReportEnemyLaunchedServer(applyContext.OwnerId, identity.Id);
             return true;
         }
 
@@ -48,7 +49,9 @@ public class ForcedMovementEffect : StatusEffectData {
         return false;
     }
 
-    private float ResolveMovementDuration(StatusEffectApplyContext applyContext, GameObject target, Vector3 targetPoint) {
+    private float ResolveMovementDuration(
+        StatusEffectApplyContext applyContext, GameObject target, Vector3 targetPoint
+    ) {
         var speed = ResolveMovementSpeed(applyContext);
         if (speed <= 0.0001f)
             return Mathf.Max(duration, Time.fixedDeltaTime);
@@ -76,9 +79,9 @@ public class ForcedMovementEffect : StatusEffectData {
     }
 
     private Vector3 GetCasterPosition(StatusEffectApplyContext applyContext, GameObject target) {
-        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(applyContext.ownerClientId, out var client) &&
-            client.PlayerObject != null)
-            return client.PlayerObject.transform.position;
+        if (ParticipantIdentity.TryFind(applyContext.OwnerId, out var participant)) {
+            return participant.transform.position;
+        }
 
         return target.transform.position;
     }

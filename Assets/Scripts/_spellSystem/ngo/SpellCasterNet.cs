@@ -54,6 +54,7 @@ public class SpellCasterNet : NetworkBehaviour {
     public void RequestCast(SpawnContext context) {
         RequestCastServerRpc(NetworkObjectId, context.spell.name, context.alternativeSpawn,
             context.target?.ObjectId ?? ulong.MaxValue,
+            context.target?.Position ?? Vector3.zero,
             context.spellDamageMultiplier);
     }
 
@@ -63,6 +64,7 @@ public class SpellCasterNet : NetworkBehaviour {
         string spellName,
         bool alternativeSpawn,
         ulong targetNetObjectId = ulong.MaxValue,
+        Vector3 targetPosition = default,
         float damageMultiplier = 1f,
         ServerRpcParams rpcParams = default
     ) {
@@ -72,7 +74,9 @@ public class SpellCasterNet : NetworkBehaviour {
         NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetNetObjectId, out var targetNetObj);
         ITarget target = null;
         if (targetNetObj != null && targetNetObj.IsSpawned) {
-            target = targetNetObj.GetComponentInChildren<ITarget>();
+            var baseTarget = targetNetObj.GetComponentInChildren<ITarget>();
+            if (baseTarget != null)
+                target = new BallisticCastTarget(baseTarget, targetPosition);
         }
 
         FirebaseAnalytic.Instance.SendEvent("SpellCasted", new Dictionary<string, object> {
@@ -87,8 +91,10 @@ public class SpellCasterNet : NetworkBehaviour {
         var caster = casterNetObj.GetComponentInChildren<SpellCaster>();
 
         var damageKind = SpellPrefabDatabase.Instance.Sound(spell);
-        if (PlayerAchievementsManager.Instance != null)
-            PlayerAchievementsManager.Instance.ReportSpellCastServer(rpcParams.Receive.SenderClientId, damageKind);
+        if (PlayerAchievementsManager.Instance != null) {
+            if (!caster.TryGetComponent<ParticipantIdentity>(out _))
+                PlayerAchievementsManager.Instance.ReportSpellCastServer(rpcParams.Receive.SenderClientId, damageKind);
+        }
 
         var context = caster.CastContext(spell);
         context.target = target;
@@ -107,8 +113,17 @@ public class SpellCasterNet : NetworkBehaviour {
         var prefab = SpellPrefab.Instance.GetPrefab(true);
         var main = Instantiate(prefab, context.position, context.rotation);
         var networkObject = main.GetComponent<NetworkObject>();
-        networkObject.SpawnWithOwnership(context.caster.OwnerId);
+        var ownerId = context.caster.OwnerId;
+        var ownerClientId = ownerId.IsBot ? NetworkManager.ServerClientId : ownerId.Value;
+        networkObject.SpawnWithOwnership(ownerClientId);
         var id = networkObject.NetworkObjectId;
+        var identity = context.caster.GetComponentInParent<ParticipantIdentity>();
+        var spellIdentity = main.GetComponent<ParticipantIdentity>();
+        spellIdentity.SetParticipantId(identity.Id);
+        foreach (var identityUser in main.GetComponents<IdentityUser>()) {
+            identityUser.Use(main);
+        }
+
         context.caster.HandleSpellLimit(context.spell, main);
         var index = main.AddComponent<ArcIndex>();
         index.Index = context.index;
@@ -129,12 +144,14 @@ public class SpellCasterNet : NetworkBehaviour {
                 { TargetClientIds = NetworkManager.ConnectedClients.Keys.Filter(it => it > 0).ToArray() }
         };
         if (prefabId > -1)
-            OnCastClientRpc(id, casterNetObj.NetworkObjectId, context.spell.name, (int)context.spell.coreType, prefabId,
+            OnCastClientRpc(ParticipantIdentityCodec.Encode(identity.Id), id, casterNetObj.NetworkObjectId,
+                context.spell.name, (int)context.spell.coreType, prefabId,
                 context.spell.scale, context.spell.lifetime, impassableForEnemies, excludeHost);
     }
 
     [ClientRpc]
     private void OnCastClientRpc(
+        ulong ownerId,
         ulong spellNetObjectId,
         ulong casterNetObjectId,
         string spellName,
@@ -156,12 +173,18 @@ public class SpellCasterNet : NetworkBehaviour {
         EnsureCasterInitialized(casterNetObj.gameObject, caster);
         var bridge = caster.GetComponentInParent<ISpellCasterBridge>();
         bridge?.BindChannelingSpell(spellNetObjectId, spellName);
+        var identityId = ParticipantIdentityCodec.Decode(ownerId);
+        var spellIdentity = main.GetComponent<ParticipantIdentity>();
+        spellIdentity.SetParticipantId(identityId);
+        foreach (var identityUser in main.GetComponents<IdentityUser>()) {
+            identityUser.Use(main.gameObject);
+        }
 
         caster.SpellSystem.ShowSpell(main.gameObject, (CoreType)coreType, prefabId);
         var instance = main.GetComponentInChildren<SpellInstance>();
         instance.Scale(scale, lifetime);
         if (impassableForEnemies)
-            ZoneEnemyColliderBlocker.Attach(main.gameObject, main.OwnerClientId, scale,
+            ZoneEnemyColliderBlocker.Attach(main.gameObject, identityId, scale,
                 instance.GetComponent<SpellView>());
     }
 

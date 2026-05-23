@@ -16,10 +16,11 @@ public class FreezeEffect : StatusEffectData {
             _data = data;
         }
 
-        public override void OnApply(ulong ownerClientId, GameObject target) {
-            base.OnApply(ownerClientId, target);
-            if (target.TryGetComponent<StateController>(out var player)) {
-                if (!_data.canSelfFreeze && TeamManager.Instance.AreAllies(ownerClientId, player.OwnerClientId))
+        public override void OnApply(ParticipantId ownerId, GameObject target) {
+            base.OnApply(ownerId, target);
+            if (target.TryGetComponent<StateController>(out var player) &&
+                player.TryGetComponent<ParticipantIdentity>(out var identity)) {
+                if (!_data.canSelfFreeze && TeamManager.Instance.AreAllies(ownerId, identity.Id))
                     return;
                 player.SetFreeze(true);
                 return;

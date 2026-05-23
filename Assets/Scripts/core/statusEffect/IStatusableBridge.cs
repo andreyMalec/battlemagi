@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 
-public interface IStatusableBridge {
+public interface IStatusableBridge:IdentityUser {
     bool IsServer { get; }
     bool IsSpawned { get; }
-    ulong OwnerId { get; }
 
     List<Statusable.DurationEffect> DurationEffects { get; }
 
@@ -11,6 +10,6 @@ public interface IStatusableBridge {
     void TickFixed(Statusable core);
 
     void SyncFromCore(Statusable core);
-    void HandleExpireChain(ulong ownerClientId, StatusEffectData expiredEffect);
+    void HandleExpireChain(ParticipantId ownerId, StatusEffectData expiredEffect);
     void HandleHit(DamageRequest hit);
 }

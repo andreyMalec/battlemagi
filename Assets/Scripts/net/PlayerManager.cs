@@ -5,7 +5,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PlayerManager : NetworkBehaviour {
+public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
     [Serializable]
     public struct PlayerData : INetworkSerializable, IEquatable<PlayerData> {
         public ulong ClientId;
@@ -67,11 +67,16 @@ public class PlayerManager : NetworkBehaviour {
 
     public event Action<PlayerData> OnPlayerAdded;
     public event Action<PlayerData> OnPlayerRemoved;
-    public event Action<List<PlayerData>> OnListChanged;
+    public event Action<NetworkList<MatchParticipantData>> OnListChanged;
+    public event Action<IReadOnlyList<MatchParticipantData>> OnParticipantsChanged;
 
     private NetworkList<PlayerData> players;
+    private NetworkList<MatchParticipantData> participants;
+    private readonly Dictionary<ulong, MatchParticipantData> _botParticipants = new();
+    private readonly List<MatchParticipantData> _participantsBuffer = new();
 
     [SerializeField] private List<PlayerData> debugPlayers = new(); // видимый в инспекторе
+    [SerializeField] private List<MatchParticipantData> debugBots = new();
     [SerializeField] private float networkStatsRefreshInterval = 1f;
 
     public static PlayerManager Instance { get; private set; }
@@ -80,15 +85,27 @@ public class PlayerManager : NetworkBehaviour {
     private int _lastReportedPingMs = -1;
     private float _lastReportedPacketLossPercent = -1f;
 
+    public IReadOnlyList<MatchParticipantData> Participants {
+        get {
+            _participantsBuffer.Clear();
+            foreach (var participant in participants)
+                _participantsBuffer.Add(participant);
+            return _participantsBuffer;
+        }
+    }
+
     private void Awake() {
         if (Instance == null) Instance = this;
         DontDestroyOnLoad(gameObject);
         players = new NetworkList<PlayerData>();
+        participants = new NetworkList<MatchParticipantData>();
         players.OnListChanged += OnPlayersChanged;
+        participants.OnListChanged += OnParticipantsListChanged;
     }
 
     private void Start() {
-        NetworkManager.Singleton.OnConnectionEvent += OnConnectionEvent;
+        if (NetworkManager.Singleton != null)
+            NetworkManager.Singleton.OnConnectionEvent += OnConnectionEvent;
     }
 
     private void Update() {
@@ -108,6 +125,11 @@ public class PlayerManager : NetworkBehaviour {
 
     public override void OnDestroy() {
         base.OnDestroy();
+
+        if (players != null)
+            players.OnListChanged -= OnPlayersChanged;
+        if (participants != null)
+            participants.OnListChanged -= OnParticipantsListChanged;
 
         if (NetworkManager.Singleton != null) {
             NetworkManager.Singleton.OnConnectionEvent -= OnConnectionEvent;
@@ -134,6 +156,8 @@ public class PlayerManager : NetworkBehaviour {
     public override void OnNetworkSpawn() {
         if (IsServer) {
             players.Clear();
+            participants.Clear();
+            _botParticipants.Clear();
             _networkStatsRefreshTimer = 0f;
         }
     }
@@ -193,9 +217,37 @@ public class PlayerManager : NetworkBehaviour {
         debugPlayers.Clear();
         foreach (var player in players) {
             debugPlayers.Add(player);
+            if (IsServer)
+                UpsertParticipant(ToMatchParticipantData(player));
         }
 
-        OnListChanged?.Invoke(debugPlayers);
+        if (!IsServer)
+            return;
+
+        for (int i = participants.Count - 1; i >= 0; i--) {
+            var participant = participants[i];
+            if (!participant.Id.IsHuman)
+                continue;
+
+            if (FindByClientId(participant.Id.Value).HasValue)
+                continue;
+
+            participants.RemoveAt(i);
+        }
+    }
+
+    private void OnParticipantsListChanged(NetworkListEvent<MatchParticipantData> changeEvent) {
+        _ = changeEvent;
+        OnListChanged?.Invoke(participants);
+        NotifyParticipantsChanged();
+        RefreshDebugBots();
+    }
+
+    private void NotifyParticipantsChanged() {
+        _participantsBuffer.Clear();
+        foreach (var participant in participants)
+            _participantsBuffer.Add(participant);
+        OnParticipantsChanged?.Invoke(_participantsBuffer);
     }
 
     private bool IsMatchInProgress() {
@@ -262,7 +314,7 @@ public class PlayerManager : NetworkBehaviour {
     private void OnClientDisconnected(ulong clientId) {
         if (!IsServer && (clientId == 0 || clientId == NetworkManager.Singleton.LocalClientId)) {
             LobbyManager.Instance.LeaveLobby();
-            SceneManager.LoadScene("MainMenu");
+            
             return;
         }
 
@@ -307,6 +359,60 @@ public class PlayerManager : NetworkBehaviour {
         return false;
     }
 
+    public bool TryGetParticipant(ParticipantId participantId, out MatchParticipantData data) {
+        for (var i = 0; i < participants.Count; i++) {
+            var participant = participants[i];
+            if (participant.Id != participantId)
+                continue;
+            data = participant;
+            return true;
+        }
+
+        data = default;
+        return false;
+    }
+
+    public bool TryGetParticipantBySteamId(ulong steamId, out MatchParticipantData data) {
+        for (var i = 0; i < participants.Count; i++) {
+            var participant = participants[i];
+            if (participant.SteamId != steamId) continue;
+            data = participant;
+            return true;
+        }
+
+        data = default;
+        return false;
+    }
+
+    public void RegisterParticipant(MatchParticipantData data) {
+        if (data.Id.IsHuman) {
+            Debug.LogWarning($"[PlayerManager] RegisterParticipant ignored for human {data.Id}. Humans are synced by netcode.");
+            return;
+        }
+
+        _botParticipants[data.Id.Value] = data;
+        if (IsServer)
+            UpsertParticipant(data);
+    }
+
+    public bool RemoveParticipant(ParticipantId participantId) {
+        if (!participantId.IsBot) return false;
+        var removed = _botParticipants.Remove(participantId.Value);
+        if (removed && IsServer)
+            RemoveParticipantEntry(participantId);
+        return removed;
+    }
+
+    public void RegisterBot(ulong botId, ulong steamId = 0) {
+        var id = ParticipantId.Bot(botId);
+        var data = new MatchParticipantData(id, steamId);
+        RegisterParticipant(data);
+    }
+
+    public bool TryGetBotData(ulong botId, out MatchParticipantData data) {
+        return TryGetParticipant(ParticipantId.Bot(botId), out data);
+    }
+
     public bool TryGetPlayerDataBySteamId(ulong steamId, out PlayerData data) {
         var player = FindBySteamId(steamId);
         if (player.HasValue) {
@@ -348,6 +454,20 @@ public class PlayerManager : NetworkBehaviour {
     }
 
     public void ResetScore(ulong clientId) {
+        var participantId = ParticipantIdentityCodec.Decode(clientId);
+        if (participantId.IsBot) {
+            if (_botParticipants.TryGetValue(participantId.Value, out var botData)) {
+                botData.Kills = 0;
+                botData.Deaths = 0;
+                botData.Assists = 0;
+                _botParticipants[participantId.Value] = botData;
+                UpsertParticipant(botData);
+            }
+
+            return;
+        }
+
+        clientId = participantId.Value;
         for (int i = players.Count - 1; i >= 0; i--) {
             var player = players[i];
             if (player.ClientId == clientId) {
@@ -361,6 +481,13 @@ public class PlayerManager : NetworkBehaviour {
     }
 
     public void AddKill(ulong clientId) {
+        var participantId = ParticipantIdentityCodec.Decode(clientId);
+        if (participantId.IsBot) {
+            AddKill(participantId);
+            return;
+        }
+
+        clientId = participantId.Value;
         for (int i = players.Count - 1; i >= 0; i--) {
             var player = players[i];
             if (player.ClientId == clientId) {
@@ -371,7 +498,26 @@ public class PlayerManager : NetworkBehaviour {
         }
     }
 
+    public void AddKill(ParticipantId participantId) {
+        if (participantId.IsHuman) {
+            AddKill(participantId.Value);
+            return;
+        }
+
+        if (!_botParticipants.TryGetValue(participantId.Value, out var data)) return;
+        data.Kills++;
+        _botParticipants[participantId.Value] = data;
+        UpsertParticipant(data);
+    }
+
     public void AddDeath(ulong clientId) {
+        var participantId = ParticipantIdentityCodec.Decode(clientId);
+        if (participantId.IsBot) {
+            AddDeath(participantId);
+            return;
+        }
+
+        clientId = participantId.Value;
         for (int i = players.Count - 1; i >= 0; i--) {
             var player = players[i];
             if (player.ClientId == clientId) {
@@ -382,7 +528,26 @@ public class PlayerManager : NetworkBehaviour {
         }
     }
 
+    public void AddDeath(ParticipantId participantId) {
+        if (participantId.IsHuman) {
+            AddDeath(participantId.Value);
+            return;
+        }
+
+        if (!_botParticipants.TryGetValue(participantId.Value, out var data)) return;
+        data.Deaths++;
+        _botParticipants[participantId.Value] = data;
+        UpsertParticipant(data);
+    }
+
     public void AddAssist(ulong clientId) {
+        var participantId = ParticipantIdentityCodec.Decode(clientId);
+        if (participantId.IsBot) {
+            AddAssist(participantId);
+            return;
+        }
+
+        clientId = participantId.Value;
         for (int i = players.Count - 1; i >= 0; i--) {
             var player = players[i];
             if (player.ClientId == clientId) {
@@ -393,7 +558,26 @@ public class PlayerManager : NetworkBehaviour {
         }
     }
 
+    public void AddAssist(ParticipantId participantId) {
+        if (participantId.IsHuman) {
+            AddAssist(participantId.Value);
+            return;
+        }
+
+        if (!_botParticipants.TryGetValue(participantId.Value, out var data)) return;
+        data.Assists++;
+        _botParticipants[participantId.Value] = data;
+        UpsertParticipant(data);
+    }
+
     public void AddFlag(ulong clientId) {
+        var participantId = ParticipantIdentityCodec.Decode(clientId);
+        if (participantId.IsBot) {
+            AddFlag(participantId);
+            return;
+        }
+
+        clientId = participantId.Value;
         for (int i = players.Count - 1; i >= 0; i--) {
             var player = players[i];
             if (player.ClientId == clientId) {
@@ -401,6 +585,64 @@ public class PlayerManager : NetworkBehaviour {
                 player.Flags++;
                 players[i] = player;
             }
+        }
+    }
+
+    public void AddFlag(ParticipantId participantId) {
+        if (participantId.IsHuman) {
+            AddFlag(participantId.Value);
+            return;
+        }
+
+        if (!_botParticipants.TryGetValue(participantId.Value, out var data)) return;
+        data.Flags++;
+        _botParticipants[participantId.Value] = data;
+        UpsertParticipant(data);
+    }
+
+    private int FindParticipantIndex(ParticipantId participantId) {
+        for (var i = 0; i < participants.Count; i++) {
+            if (participants[i].Id == participantId)
+                return i;
+        }
+
+        return -1;
+    }
+
+    private void UpsertParticipant(MatchParticipantData data) {
+        var index = FindParticipantIndex(data.Id);
+        if (index >= 0) {
+            participants[index] = data;
+            return;
+        }
+
+        participants.Add(data);
+    }
+
+    private void RemoveParticipantEntry(ParticipantId participantId) {
+        var index = FindParticipantIndex(participantId);
+        if (index >= 0)
+            participants.RemoveAt(index);
+    }
+
+    private static MatchParticipantData ToMatchParticipantData(PlayerData playerData) {
+        return new MatchParticipantData(ParticipantId.Human(playerData.ClientId), playerData.SteamId) {
+            Kills = playerData.Kills,
+            Deaths = playerData.Deaths,
+            Assists = playerData.Assists,
+            Flags = playerData.Flags,
+            Archetype = playerData.Archetype,
+            Hue = playerData.Hue,
+            Saturation = playerData.Saturation
+        };
+    }
+
+    private void RefreshDebugBots() {
+        debugBots.Clear();
+        foreach (var participant in participants) {
+            if (!participant.Id.IsBot)
+                continue;
+            debugBots.Add(participant);
         }
     }
 

@@ -1,28 +1,25 @@
 using UnityEngine;
 
 public static class SpellEffectResolver {
-    public static bool CanAffect(EffectDefinition def, ISpellContext context, GameObject targetGo, ulong targetOwner) {
+    public static bool CanAffect(EffectDefinition def, ISpellContext context, GameObject targetGo, ParticipantId targetOwner) {
         if (def == null) return false;
         if (context == null) return false;
 
         if (IsDraggableTarget(targetGo))
             return def.target.HasFlag(EffectTarget.Draggable);
 
-        if (targetOwner == ulong.MaxValue)
-            return false;
-
-        if (targetOwner == context.OwnerId)
+        if (DamageRelationship.IsSelf(context, targetOwner))
             return def.target.HasFlag(EffectTarget.Self);
 
-        if (TeamManager.Instance.AreEnemies(context.OwnerId, targetOwner))
+        if (DamageRelationship.AreEnemies(context, targetOwner))
             return def.target.HasFlag(EffectTarget.Enemies);
 
         return def.target.HasFlag(EffectTarget.Allies);
     }
 
-    public static bool TryGetStatusable(GameObject targetGo, out Statusable statusable, out ulong ownerId) {
+    public static bool TryGetStatusable(GameObject targetGo, out Statusable statusable, out ParticipantId ownerId) {
         statusable = null;
-        ownerId = ulong.MaxValue;
+        ownerId = default;
         if (targetGo == null) return false;
 
         if (DamageUtils.TryGetOwnerFromCollider(targetGo, out _, out ownerId)) {

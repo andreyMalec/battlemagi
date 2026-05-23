@@ -1,23 +1,23 @@
 using Unity.Netcode;
 using UnityEngine;
 
-[RequireComponent(typeof(FirstPersonMovement))]
 [RequireComponent(typeof(PlayerPhysics))]
 public class StateController : NetworkBehaviour {
     private const int ForcedMovementVelocitySourceId = 134771489;
     private const float ForcedMovementReachDistance = 0.05f;
 
-    private FirstPersonMovement _movement;
+    [SerializeField] private MonoBehaviour movement;
     private PlayerPhysics _physics;
     private IceSlideMovementModule _iceSlide;
+    private Freeze _freeze;
     private bool _forcedMovementActive;
     private Vector3 _forcedMovementTargetPoint;
     private float _forcedMovementRemaining;
 
     private void Awake() {
-        _movement = GetComponent<FirstPersonMovement>();
         _physics = GetComponent<PlayerPhysics>();
         _iceSlide = GetComponent<IceSlideMovementModule>();
+        _freeze = GetComponentInChildren<Freeze>(true);
     }
 
     public override void OnNetworkDespawn() {
@@ -41,12 +41,14 @@ public class StateController : NetworkBehaviour {
     private void FreezeClientRpc(ulong targetNetObj, bool active) {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetNetObj, out var netObj)) return;
         Debug.Log($"FreezeClientRpc targetNetObj={netObj}, active={active}");
-        var freeze = GetComponentInChildren<Freeze>(true);
+        var freeze = netObj.GetComponentInChildren<Freeze>(true);
         if (freeze != null) freeze.gameObject.SetActive(active);
+        if (netObj.TryGetComponent<StateController>(out var stateController))
+            stateController.RefreshMovementState();
     }
 
-    public void Attach(ulong originClientId, bool active) {
-        AttachClientRpc(originClientId, NetworkObjectId, active);
+    public void Attach(ParticipantId originClientId, bool active) {
+        AttachClientRpc(ParticipantIdentityCodec.Encode(originClientId), NetworkObjectId, active);
     }
 
     public void StartForcedMovement(Vector3 targetPoint, float duration) {
@@ -80,11 +82,14 @@ public class StateController : NetworkBehaviour {
     private void AttachClientRpc(ulong originClientId, ulong targetNetObj, bool active) {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetNetObj, out var netObj)) return;
         Debug.Log($"AttachClientRpc originClientId={originClientId}, targetNetObj={netObj}, active={active}");
-        var movement = netObj.GetComponent<FirstPersonMovement>();
-        if (movement != null)
-            movement.enabled = !active;
+        var fpMovement = netObj.GetComponent<FirstPersonMovement>();
+        if (fpMovement != null)
+            fpMovement.enabled = !active;
+        var botMovement = netObj.GetComponent<BotMovement>();
+        if (botMovement != null)
+            botMovement.enabled = !active;
         if (active) {
-            var parent = NetworkManager.ConnectedClients[originClientId].PlayerObject;
+            var parent = TryResolveTarget(originClientId);
             if (parent != null) {
                 netObj.TrySetParent(parent);
             } else {
@@ -95,13 +100,33 @@ public class StateController : NetworkBehaviour {
         }
     }
 
+    private static NetworkObject TryResolveTarget(ulong ownerId) {
+        var participantId = ParticipantIdentityCodec.Decode(ownerId);
+        if (participantId.IsHuman && NetworkManager.Singleton != null &&
+            NetworkManager.Singleton.ConnectedClients.TryGetValue(participantId.Value, out var client) &&
+            client.PlayerObject != null)
+            return client.PlayerObject;
+
+        var participants = FindObjectsByType<Bot>(FindObjectsSortMode.None);
+        for (int i = 0; i < participants.Length; i++) {
+            var participant = participants[i];
+            if (participant.GetComponent<ParticipantIdentity>().Id != participantId)
+                continue;
+            return participant.gameObject.GetComponent<NetworkObject>();
+        }
+
+        return null;
+    }
+
     [ClientRpc]
-    private void StartForcedMovementClientRpc(Vector3 targetPoint, float duration, ClientRpcParams clientRpcParams = default) {
+    private void StartForcedMovementClientRpc(
+        Vector3 targetPoint, float duration, ClientRpcParams clientRpcParams = default
+    ) {
         _forcedMovementTargetPoint = targetPoint;
         _forcedMovementRemaining = Mathf.Max(duration, Time.fixedDeltaTime);
         _forcedMovementActive = true;
         _physics.ClearVelocitySource(ForcedMovementVelocitySourceId);
-        _movement.enabled = false;
+        RefreshMovementState();
     }
 
     [ClientRpc]
@@ -110,8 +135,10 @@ public class StateController : NetworkBehaviour {
     }
 
     [ClientRpc]
-    private void SetIceSlidingClientRpc(bool active, float acceleration, float deceleration,
-        ClientRpcParams clientRpcParams = default) {
+    private void SetIceSlidingClientRpc(
+        bool active, float acceleration, float deceleration,
+        ClientRpcParams clientRpcParams = default
+    ) {
         if (active) {
             _iceSlide.SetSliding(acceleration, deceleration);
             return;
@@ -142,8 +169,20 @@ public class StateController : NetworkBehaviour {
         _forcedMovementActive = false;
         _forcedMovementRemaining = 0f;
         _physics.ClearVelocitySource(ForcedMovementVelocitySourceId);
-        if (IsOwner)
-            _movement.enabled = true;
+        RefreshMovementState();
+    }
+
+    public void RefreshMovementState() {
+        if (movement == null)
+            return;
+
+        if (TryGetComponent<Damageable>(out var damageable) && damageable.IsDead) {
+            movement.enabled = false;
+            return;
+        }
+
+        var frozen = _freeze != null && _freeze.gameObject.activeSelf;
+        movement.enabled = IsOwner && !_forcedMovementActive && !frozen;
     }
 
     private void ClearIceSliding() {

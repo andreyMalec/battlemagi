@@ -23,7 +23,7 @@ public class MenuStateMain : MonoBehaviour {
         fieldJoinLobbyId.onEndEdit.AddListener(id => {
             try {
                 lobbyId = Convert.ToUInt64(id);
-            } catch (FormatException e) {
+            } catch (FormatException) {
                 lobbyId = 0;
                 fieldJoinLobbyId.text = "";
             }

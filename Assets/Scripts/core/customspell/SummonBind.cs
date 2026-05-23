@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 public class SummonBind<TContext> : ISpellBind
@@ -44,7 +45,11 @@ public class SummonBind<TContext> : ISpellBind
         using var _ = SpellMetrics.Measure(SpellMetricSection.SummonBindTick);
         _core.Tick(deltaTime);
 
-        _ai.HomePosition = _context.Caster?.Origin ?? _ai.Self.position;
+        try {
+            _ai.HomePosition = _context.Caster?.Origin ?? _ai.Self.position;
+        } catch (Exception) {
+            _ai.HomePosition = _ai.Self.position;
+        }
 
         using (SpellMetrics.Measure(SpellMetricSection.SummonSensorsTick)) {
             foreach (var sensor in _sensors)

@@ -1,6 +1,5 @@
-public interface IAuthorityService {
+public interface IAuthorityService : IdentityUser {
     bool IsServer { get; }
     bool IsOwner { get; }
-    OwnerId OwnerId { get; }
     ulong ObjectId { get; }
 }

@@ -10,7 +10,7 @@ public class GroundEffect : NetworkBehaviour {
     [SerializeField] private bool oneShot = false;
 
     private float _tickTimer;
-    private readonly List<ulong> _affectedIds = new();
+    private readonly List<ParticipantId> _affectedIds = new();
 
     private bool _destroyed = false;
 
@@ -28,9 +28,7 @@ public class GroundEffect : NetworkBehaviour {
             _affectedIds.Add(statusable.OwnerId);
         }
 
-        var ownerId = OwnerClientId;
-        if (NetworkObject.IsSceneObject == true)
-            ownerId = PlayerId.EnvironmentId;
+        var ownerId = ParticipantId.EnvironmentId;
         foreach (var effect in effects) {
             statusable.AddEffect(ownerId, effect);
         }

@@ -766,6 +766,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3580683726391601925}
   - component: {fileID: 6341828913972651628}
+  - component: {fileID: 5650398532245496338}
   - component: {fileID: 6143822494640418198}
   - component: {fileID: 4264968793503388057}
   - component: {fileID: 7927841338553304458}
@@ -788,6 +789,7 @@ GameObject:
   - component: {fileID: 129843703706901327}
   - component: {fileID: 2591686918436872089}
   - component: {fileID: 3174336610539449282}
+  - component: {fileID: 1194555110489232473}
   - component: {fileID: 2383334637399937855}
   - component: {fileID: 7537974106103899790}
   - component: {fileID: 2875345282594729022}
@@ -855,6 +857,20 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &5650398532245496338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 823a5065ca2b4550a0192d87bba78867, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ParticipantIdentity
+  kind: 0
+  value: 0
 --- !u!114 &6143822494640418198
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -893,6 +909,7 @@ MonoBehaviour:
   animateCast: 1
   animateHand: 1
   primalManaStatus: {fileID: 11400000, guid: 931163521ad02a846a97668c9a754038, type: 2}
+  isHuman: 1
 --- !u!114 &7927841338553304458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1090,7 +1107,7 @@ CharacterController:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1024
   m_LayerOverridePriority: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
@@ -1251,6 +1268,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StateController
   ShowTopMostFoldoutHeaderGroup: 1
+  movement: {fileID: 6916625131687324290}
 --- !u!114 &4273735624293180111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1365,6 +1383,19 @@ MonoBehaviour:
     m_InternalValue: 0
   armor:
     m_InternalValue: 0
+--- !u!114 &1194555110489232473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c98219d7660c4067a153fe32284e16cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Colorable
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!114 &2383334637399937855
 MonoBehaviour:
   m_ObjectHideFlags: 0

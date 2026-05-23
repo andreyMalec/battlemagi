@@ -92,14 +92,14 @@ public interface ISpellSpawn {
 
     public static ISpellSpawn GetMode(SpawnMode mode) {
         return mode switch {
-            SpawnMode.Direct => new NewDirectSpawn(),
-            SpawnMode.DirectDown => new NewDirectDownSpawn(),
+            SpawnMode.Direct => new DirectSpawn(),
+            SpawnMode.DirectDown => new DirectDownSpawn(),
             SpawnMode.DirectDownForward => new DirectDownForwardSpawn(),
-            SpawnMode.Arc => new NewArcSpawn(),
-            SpawnMode.GroundPoint => new NewGroundPointSpawn(),
-            SpawnMode.GroundPointArc => new NewGroundPointArcSpawn(),
-            SpawnMode.GroundPointArcDown => new NewGroundPointArcDownSpawn(),
-            SpawnMode.GroundPointForward => new NewGroundPointForwardSpawn(),
+            SpawnMode.Arc => new ArcSpawn(),
+            SpawnMode.GroundPoint => new GroundPointSpawn(),
+            SpawnMode.GroundPointArc => new GroundPointArcSpawn(),
+            SpawnMode.GroundPointArcDown => new GroundPointArcDownSpawn(),
+            SpawnMode.GroundPointForward => new GroundPointForwardSpawn(),
             SpawnMode.GroundPointCircleUp => new GroundPointCircleUpSpawn(),
             SpawnMode.GroundPointDiskUp => new GroundPointDiskUpSpawn(),
             SpawnMode.Cone => new ConeSpawn(),

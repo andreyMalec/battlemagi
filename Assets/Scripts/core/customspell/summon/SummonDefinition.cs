@@ -17,6 +17,13 @@ public class SummonDefinition : ScriptableObject, IValidate {
     [ShowIf("_floating")] public float floatingHeight = 5f;
     [ShowIf("_senserRadius")] public float sensorRadius = 20f;
 
+    public float MaxCastRange() {
+        var range = 1f;
+        if (_senserRadius)
+            range = Mathf.Max(range, sensorRadius);
+        return range;
+    }
+
     private bool _canMove = false;
     private bool _floating = false;
     private bool _senserRadius = false;
