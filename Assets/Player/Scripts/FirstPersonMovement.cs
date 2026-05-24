@@ -16,7 +16,6 @@ public class FirstPersonMovement : NetworkBehaviour {
     public float jumpStrength;
     public float movementSpeed;
     public float runSpeed;
-    public float maxStamina;
 
     public bool IsRunning { get; private set; }
     public event System.Action Jumped;
@@ -24,7 +23,6 @@ public class FirstPersonMovement : NetworkBehaviour {
     // Сетевые переменные
     private readonly NetworkVariable<bool> _isRunningNetwork = new();
     private readonly NetworkVariable<bool> _isJumpingNetwork = new();
-    public readonly NetworkVariable<float> stamina = new();
     public readonly NetworkVariable<Vector3> spawnPoint = new();
     private int _spawnTick;
 
@@ -37,8 +35,6 @@ public class FirstPersonMovement : NetworkBehaviour {
     private bool _lastSentRunKeyHeld; // клиентская оптимизация: шлём RPC только при изменении
     private bool _runKeyHeldServer; // серверный флаг (который ставит SetRunKeyHeldServerRpc)
     private bool _runLock; // серверный лок: запрещает авто-включение пока не отпустили кнопку
-
-    private const float MinStaminaThreshold = 0.05f;
 
     private Vector3 _teleportPosition;
     private Quaternion _teleportRotation;
@@ -56,10 +52,6 @@ public class FirstPersonMovement : NetworkBehaviour {
 
         _isRunningNetwork.OnValueChanged += OnIsRunningChanged;
         _isJumpingNetwork.OnValueChanged += OnIsJumpingChanged;
-
-        if (IsServer) {
-            stamina.Value = maxStamina;
-        }
 
         if (IsOwner) {
             spawnPoint.OnValueChanged += OnSpawnPointChanged;
@@ -157,7 +149,7 @@ public class FirstPersonMovement : NetworkBehaviour {
     }
 
     private void UpdateRunningStateServer() {
-        bool shouldRun = _runKeyHeldServer && !_runLock && stamina.Value > MinStaminaThreshold;
+        bool shouldRun = _runKeyHeldServer && !_runLock;
         if (shouldRun != _isRunningNetwork.Value) {
             _isRunningNetwork.Value = shouldRun;
         }

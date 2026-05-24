@@ -99,7 +99,6 @@ public class Bot : NetworkBehaviour {
 
         var movement = GetComponent<BotMovement>();
         movement.movementSpeed = archetype.movementSpeed;
-        movement.maxStamina = archetype.maxStamina;
         movement.jumpStrength = archetype.jumpStrength;
 
         var caster = GetComponent<SpellCasterPlayer>();

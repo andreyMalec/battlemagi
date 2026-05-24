@@ -21,7 +21,6 @@ public class BotMovement : MonoBehaviour {
 
     public float jumpStrength;
     public float movementSpeed;
-    public float maxStamina;
     public event System.Action Jumped;
 
     public bool HasPath => _hasDestination && _agent.hasPath;

@@ -24,6 +24,7 @@ public class SpellCasterPlayer : SpellCaster {
     private Damageable _damageable;
 
     private SpellDefinition _spell;
+    public SpellDefinition ActiveSpell => _spell;
     private SpellCasterPlayerPreview _preview;
     private SpellCasterPlayerAnimator _animator;
 
@@ -277,6 +278,20 @@ public class SpellCasterPlayer : SpellCaster {
         return false;
     }
 
+    public SpellCost CostForActiveSpell() {
+        if (_spell == null) return new SpellCost();
+        if (_echoSpell == _spell && _echoRemaining > 0) return new SpellCost();
+        var cost = mana.CostForCast(_spell);
+        if (_spell.charging)
+            cost += mana.CostPerSecond(_spell) * _spell.chargeDuration;
+        if (_spell.channeling)
+            cost += mana.CostPerSecond(_spell);
+        return new SpellCost {
+            Health = _spell.bloodMagic ? cost : 0f,
+            Mana = _spell.bloodMagic ? 0f : cost
+        };
+    }
+
     public bool CanStartCast(SpellDefinition spell) {
         if (spell == null) return false;
         if (spell.bloodMagic) {
@@ -504,4 +519,9 @@ public class SpellCasterPlayer : SpellCaster {
         c.spellDamageMultiplier = _chargingDamageMultiplier;
         return c;
     }
+}
+
+public struct SpellCost {
+    public float Health;
+    public float Mana;
 }

@@ -63,7 +63,6 @@ public class Player : NetworkBehaviour {
         var movement = GetComponent<FirstPersonMovement>();
         movement.movementSpeed = archetype.movementSpeed;
         movement.runSpeed = archetype.runSpeed;
-        movement.maxStamina = archetype.maxStamina;
         movement.jumpStrength = archetype.jumpStrength;
 
         var look = GetComponent<FirstPersonLook>();
@@ -124,12 +123,10 @@ public class Player : NetworkBehaviour {
     }
 
     public void Init(ulong ownerId, Vector3 position, Quaternion rotation) {
-        var archetype = ArchetypeDatabase.Instance.GetArchetype(ArchetypeValue.Value);
 
         var movement = GetComponent<FirstPersonMovement>();
         movement.spawnPoint.Value = position;
         Debug.Log($"[PlayerSpawner] Init Сервер: Player_{ownerId} создан в {position}, {rotation}");
-        movement.stamina.Value = archetype.maxStamina;
 
         InitClientRpc(ownerId, rotation);
     }

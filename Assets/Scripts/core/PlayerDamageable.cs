@@ -22,9 +22,12 @@ public class PlayerDamageable : NetworkBehaviour {
     private void OnDamageApplied(DamageApplied damageApplied) {
         if (!_damagedBy.Contains(damageApplied.request.fromId) && _identity.Id != damageApplied.request.fromId)
             _damagedBy.Add(damageApplied.request.fromId);
+        var damageSource = damageApplied.request.source;
+        if (damageApplied.request.fromId.IsBot)
+            damageSource += " (Bot)";
         _damagedBySource.Add(new DamageInfo {
             damage = damageApplied.final,
-            source = damageApplied.request.source,
+            source = damageSource,
             fromId = ParticipantIdentityCodec.Encode(damageApplied.request.fromId)
         });
 
@@ -46,8 +49,12 @@ public class PlayerDamageable : NetworkBehaviour {
         PlayerManager.Instance.AddDeath(OwnerClientId);
         PlayerSpawner.instance.HandleDeathServer(OwnerClientId);
 
-        Killfeed.Instance?.HandleClientRpc(ParticipantIdentityCodec.Encode(deathInfo.fromId), ParticipantIdentityCodec.Encode(_identity.Id));
-        SendAnalytics(OwnerClientId, deathInfo.source);
+        Killfeed.Instance?.HandleClientRpc(ParticipantIdentityCodec.Encode(killer),
+            ParticipantIdentityCodec.Encode(_identity.Id));
+        var deathSource = deathInfo.source;
+        if (killer.IsBot)
+            deathSource += " (Bot)";
+        SendAnalytics(OwnerClientId, deathSource);
 
         var lifeDamageByAttacker = _damagedBySource
             .Where(x => x.fromId != OwnerClientId)

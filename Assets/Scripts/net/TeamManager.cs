@@ -38,6 +38,11 @@ public class TeamManager : NetworkBehaviour {
         public int lobbyBotIndex;
     }
 
+    private struct BotColor {
+        public float hue;
+        public float saturation;
+    }
+
     public event Action<Team> MyTeam;
     public event Action<int, int> OnScoreChanged;
 
@@ -76,6 +81,7 @@ public class TeamManager : NetworkBehaviour {
         EndChoice.Value = 0;
         _botTeams.Clear();
         RedistributePlayers();
+        RefreshBotColorsForCurrentMode();
     }
 
     private void Start() {
@@ -171,6 +177,7 @@ public class TeamManager : NetworkBehaviour {
         RedScore.Value = 0;
         BlueScore.Value = 0;
         RedistributePlayers();
+        RefreshBotColorsForCurrentMode();
     }
 
     public void ReplaceClientId(ulong previousClientId, ulong newClientId) {
@@ -302,6 +309,53 @@ public class TeamManager : NetworkBehaviour {
             red++;
         if (team == Team.Blue)
             blue++;
+    }
+
+    private void RefreshBotColorsForCurrentMode() {
+        if (!IsServer)
+            return;
+
+        var botColors = new Dictionary<ulong, BotColor>();
+
+        if (LobbyManager.Instance != null && LobbyManager.Instance.CurrentLobby.HasValue) {
+            var lobby = LobbyManager.Instance.CurrentLobby.Value;
+            var lobbyBots = LobbyBotRosterData.LoadFromLobby(lobby);
+            var lobbyChanged = false;
+
+            for (int i = 0; i < lobbyBots.Count; i++) {
+                var color = GetOrCreateBotColor(lobbyBots[i].id, lobbyBots[i].team, botColors);
+                if (!Mathf.Approximately(lobbyBots[i].hue, color.hue) ||
+                    !Mathf.Approximately(lobbyBots[i].saturation, color.saturation)) {
+                    lobbyBots[i].hue = color.hue;
+                    lobbyBots[i].saturation = color.saturation;
+                    lobbyChanged = true;
+                }
+            }
+
+            if (lobbyChanged)
+                LobbyBotRosterData.SaveToLobby(lobby, lobbyBots);
+        }
+    }
+
+    private BotColor GetOrCreateBotColor(ulong botId, Team team, Dictionary<ulong, BotColor> botColors) {
+        if (botColors.TryGetValue(botId, out var existing))
+            return existing;
+
+        BotColor color;
+        if (isTeamMode) {
+            color = new BotColor {
+                hue = team == Team.Blue ? 228f : 0f,
+                saturation = 0.85f
+            };
+        } else {
+            color = new BotColor {
+                hue = UnityEngine.Random.Range(0f, 360f),
+                saturation = UnityEngine.Random.Range(0.4f, 1f)
+            };
+        }
+
+        botColors[botId] = color;
+        return color;
     }
 
     public void RegisterBot(ulong botId, Team requestedTeam = Team.None) {
