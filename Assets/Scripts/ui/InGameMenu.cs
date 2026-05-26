@@ -74,7 +74,7 @@ public class InGameMenu : MonoBehaviour {
         if (lobby.HasValue) {
             TeamManager.Instance.Reset();
             LobbyManager.Instance.LeaveLobby();
-            SceneLoader.LoadMenu();
+            SceneLoader.LoadMenu(true);
         }
     }
 

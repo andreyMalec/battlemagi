@@ -175,7 +175,7 @@ public class PlayerSpawner : NetworkBehaviour {
 
     private void SpawnPlayer(ulong clientId) {
         if (!PlayerManager.Instance.TryGetPlayerData(clientId, out var playerData)) {
-            Debug.LogError($"[PlayerSpawner] Сервер: Не найдены данные PlayerManager для игрока {clientId}");
+            Debug.LogWarning($"[PlayerSpawner] Сервер: Не найдены данные PlayerManager для игрока {clientId}");
             return;
         }
 
@@ -193,7 +193,7 @@ public class PlayerSpawner : NetworkBehaviour {
 
     public GameObject SpawnBotObject(ulong botId) {
         if (!PlayerManager.Instance.TryGetBotData(botId, out var botData)) {
-            Debug.LogError($"[PlayerSpawner] Bot {botId} is not registered in PlayerManager");
+            Debug.LogWarning($"[PlayerSpawner] Bot {botId} is not registered in PlayerManager");
             return null;
         }
 

@@ -68,10 +68,21 @@ public class MeshSpawnPreview : ISpellSpawnPreview {
     }
 
     private void Draw(SpawnContext context) {
+        var drawMesh = mesh;
+        var drawWireMesh = _wireMesh;
+        var drawFillMat = fillMat;
+        var drawWireMat = wireMat;
+        var drawPosition = position;
+        var drawRotation = rotation;
+        var drawScale = scale;
+
+        if (context == null || drawMesh == null || drawWireMesh == null || drawFillMat == null || drawWireMat == null)
+            return;
+
         RuntimeDrawFeature.Enqueue((UnityEngine.Rendering.RasterCommandBuffer cmd) => {
-            var matrix = Matrix4x4.TRS(context.position + position, context.rotation * rotation, scale);
-            cmd.DrawMesh(mesh, matrix, fillMat, 0, 0);
-            cmd.DrawMesh(_wireMesh, matrix, wireMat, 0, 0);
+            var matrix = Matrix4x4.TRS(context.position + drawPosition, context.rotation * drawRotation, drawScale);
+            cmd.DrawMesh(drawMesh, matrix, drawFillMat, 0, 0);
+            cmd.DrawMesh(drawWireMesh, matrix, drawWireMat, 0, 0);
         });
     }
 

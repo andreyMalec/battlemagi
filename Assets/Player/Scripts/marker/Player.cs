@@ -1,8 +1,6 @@
-using System;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
-using System.Reflection; // reflection for Awake
 
 [DefaultExecutionOrder(-100)]
 public class Player : NetworkBehaviour {
@@ -19,16 +17,8 @@ public class Player : NetworkBehaviour {
     public readonly NetworkVariable<float> HueValue = new();
     public readonly NetworkVariable<float> SaturationValue = new();
 
-    // private MethodInfo _networkAnimatorAwake;
-
     public int ArchetypeId => ArchetypeValue.Value;
     public ulong SteamId => SteamIdValue.Value;
-
-    private void Awake() {
-        // invoke Awake via reflection to rebuild internal state
-        // _networkAnimatorAwake = typeof(NetworkAnimator).GetMethod("Awake",
-        //     BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-    }
 
     private void SpawnAvatar(int arch) {
         if (_avatarSpawned)
@@ -123,7 +113,6 @@ public class Player : NetworkBehaviour {
     }
 
     public void Init(ulong ownerId, Vector3 position, Quaternion rotation) {
-
         var movement = GetComponent<FirstPersonMovement>();
         movement.spawnPoint.Value = position;
         Debug.Log($"[PlayerSpawner] Init Сервер: Player_{ownerId} создан в {position}, {rotation}");
