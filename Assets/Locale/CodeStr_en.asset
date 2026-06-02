@@ -167,8 +167,9 @@ MonoBehaviour:
     m_Localized: 'A living spark of storm, roaming restlessly in search of prey.
 
 
-      Slowly
-      pursues the nearest enemy and shocks them on contact.'
+      The
+      projectile, attracted to enemies in a small radius, splits into several copies
+      when hit, bounces off surfaces.'
     m_Metadata:
       m_Items: []
   - m_Id: 22242802016256
@@ -536,6 +537,14 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 58316245831938048
     m_Localized: DM
+    m_Metadata:
+      m_Items: []
+  - m_Id: 59210123355254784
+    m_Localized: IG
+    m_Metadata:
+      m_Items: []
+  - m_Id: 59210160906858496
+    m_Localized: Instagib
     m_Metadata:
       m_Items: []
   references:

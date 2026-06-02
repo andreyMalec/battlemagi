@@ -79,12 +79,14 @@ public class SpellBook : MonoBehaviour {
                 var all = DefaultSpells.Instance.list.ToList();
                 var typed = ArchetypeDatabase.Instance.GetArchetype(arch.Value.Archetype).spells;
                 list = typed.Map(s => all.Find(sp => sp.spell.spellName == s.spellName)).ToList();
+                list = GameModeRules.FilterDefaultSpellsForMode(list);
                 currentIndex = Math.Clamp(currentIndex, 0, list.Count - 1);
                 return list;
             }
         }
 
         list = DefaultSpells.Instance.list.ToList();
+        list = GameModeRules.FilterDefaultSpellsForMode(list);
         currentIndex = Math.Clamp(currentIndex, 0, list.Count - 1);
         return list;
     }

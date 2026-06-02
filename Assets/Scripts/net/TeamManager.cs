@@ -7,7 +7,8 @@ public class TeamManager : NetworkBehaviour {
     public enum TeamMode {
         FreeForAll,
         TwoTeams,
-        CaptureTheFlag
+        CaptureTheFlag,
+        ChargedShotOnly
     }
 
     public enum Team {
@@ -56,7 +57,7 @@ public class TeamManager : NetworkBehaviour {
 
     public static TeamManager Instance { get; private set; }
 
-    public bool isTeamMode => CurrentMode.Value != TeamMode.FreeForAll;
+    public bool isTeamMode => CurrentMode.Value == TeamMode.TwoTeams || CurrentMode.Value == TeamMode.CaptureTheFlag;
 
     private void Awake() {
         if (Instance == null) Instance = this;

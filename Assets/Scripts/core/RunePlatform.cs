@@ -8,6 +8,7 @@ using UnityEngine;
 [RequireComponent(typeof(NetworkObject))]
 public class RunePlatform : NetworkBehaviour {
     [SerializeField] private List<GameObject> runes;
+    [SerializeField] private List<GameObject> instagibRunes;
     [SerializeField] private float restoreTime = 40f;
     [SerializeField] private float duration = 20f;
     [SerializeField] private Transform spawnPoint;
@@ -58,7 +59,7 @@ public class RunePlatform : NetworkBehaviour {
 
     private void SpawnRune() {
         if (GetActiveRune() != null) return;
-        var prefab = runes.Randomize();
+        var prefab = GameModeRules.IsChargedShotOnlyMode() ? instagibRunes.Randomize() : runes.Randomize();
         var runeObj = Instantiate(prefab, spawnPoint.position, spawnPoint.rotation);
         var netObj = runeObj.GetComponent<NetworkObject>();
         netObj.Spawn(true);

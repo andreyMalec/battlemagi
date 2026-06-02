@@ -59,7 +59,8 @@ public class MenuStateLobby : MonoBehaviour {
         var freeForAll = R.String("gameMode.freeForAll");
         var teamDeathmatch = R.String("gameMode.teamDeathmatch");
         var captureTheFlag = R.String("gameMode.captureTheFlag");
-        dropdownMode.AddOptions(new List<string> { freeForAll, teamDeathmatch, captureTheFlag });
+        var chargedShotOnly = R.String("gameMode.chargedShotOnly");
+        dropdownMode.AddOptions(new List<string> { freeForAll, teamDeathmatch, captureTheFlag, chargedShotOnly });
 
         dropdownLobbyVisibility.options = new List<TMP_Dropdown.OptionData>() {
             new(R.String("menuLobby.public")),

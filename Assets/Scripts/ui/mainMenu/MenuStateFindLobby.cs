@@ -128,7 +128,8 @@ public class MenuStateFindLobby : MonoBehaviour {
             R.String("gameMode.all"),
             GetModeName((int)TeamManager.TeamMode.FreeForAll),
             GetModeName((int)TeamManager.TeamMode.TwoTeams),
-            GetModeName((int)TeamManager.TeamMode.CaptureTheFlag)
+            GetModeName((int)TeamManager.TeamMode.CaptureTheFlag),
+            GetModeName((int)TeamManager.TeamMode.ChargedShotOnly)
         });
         dropdownMode.value = 0;
     }
@@ -150,6 +151,9 @@ public class MenuStateFindLobby : MonoBehaviour {
 
         if (modeIndex == (int)TeamManager.TeamMode.CaptureTheFlag)
             return R.String("gameMode.short.captureTheFlag");
+
+        if (modeIndex == (int)TeamManager.TeamMode.ChargedShotOnly)
+            return R.String("gameMode.short.chargedShotOnly");
 
         return "Unknown";
     }

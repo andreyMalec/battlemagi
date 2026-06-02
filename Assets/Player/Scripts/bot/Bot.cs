@@ -103,10 +103,11 @@ public class Bot : NetworkBehaviour {
 
         var caster = GetComponent<SpellCasterPlayer>();
         caster.Mana.SetDefaults(archetype.maxMana, archetype.manaRegen);
-        caster.UpdateAvailableSpells(new List<SpellDefinition>(archetype.spells));
+        var availableSpells = GameModeRules.FilterSpellsForMode(archetype.spells);
+        caster.UpdateAvailableSpells(availableSpells);
         var combat = GetComponent<BotCombatController>();
         if (combat != null)
-            combat.SetAvailableSpells(archetype.spells);
+            combat.SetAvailableSpells(availableSpells.ToArray());
         var damageable = GetComponent<Damageable>();
         damageable.Health.SetDefaults(archetype.maxHealth, archetype.healthRegen);
         var fpss = GetComponentInChildren<FirstPersonSounds>();

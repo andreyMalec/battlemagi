@@ -20,6 +20,7 @@ public class PickUpSpawn : NetworkBehaviour {
 
     private void Update() {
         if (!IsServer) return;
+        if (GameModeRules.IsChargedShotOnlyMode()) return;
 
         var activeNetObj = GetActiveItem();
         var hasActive = activeNetObj != null && activeNetObj.IsSpawned;

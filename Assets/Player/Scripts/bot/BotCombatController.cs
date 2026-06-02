@@ -545,7 +545,7 @@ public class BotCombatController : MonoBehaviour {
             var spell = _spells[i];
             if (spell == null || !spell.available)
                 continue;
-            if (spell.spell == _lastCastSpell)
+            if (spell.spell == _lastCastSpell && _spells.Count > 1)
                 continue;
             if (!CanUseSpellNow(spell.spell))
                 continue;

@@ -4,6 +4,9 @@ public static class DamageResolver {
     public static float Resolve(DamageDefinition def, ISpellContext context, Damageable target, Vector3 point) {
         if (def == null) return 0f;
 
+        if (GameModeRules.IsChargedShotOnlyMode() && GameModeRules.IsChargedShotSpell(context.Spell))
+            return 999;
+
         var damageMulti = 1f;
         if (def.scaleWithRange) {
             var distance = Vector3.Distance(context.View.transform.position, point);

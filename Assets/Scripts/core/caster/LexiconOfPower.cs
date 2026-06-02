@@ -34,7 +34,7 @@ public class LexiconOfPower : NetworkBehaviour {
 
     private void Initialize(Language language) {
         var archetype = ArchetypeDatabase.Instance.GetArchetype(_player.ArchetypeId);
-        var spells = archetype.spells.ToList();
+        var spells = GameModeRules.FilterSpellsForMode(archetype.spells);
         _recognizer = new SpellRecognizer(spells, language);
         _mouth.RestrictWords(_recognizer.SpellWords());
         _caster.UpdateAvailableSpells(spells);
@@ -45,7 +45,7 @@ public class LexiconOfPower : NetworkBehaviour {
     }
 
     private void OnMouthClose(string[] lastWords) {
-        if (_caster.Mana.PrimalMana > 0) return;
+        if (!GameModeRules.IsChargedShotOnlyMode() && _caster.Mana.PrimalMana > 0) return;
         if (!_caster.CanSelectSpell) return;
         if (_recognizer == null) return;
 
