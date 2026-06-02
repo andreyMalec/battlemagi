@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -32,7 +33,7 @@ public class PlayerSpawner : NetworkBehaviour {
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
     }
 
-    private void Update() {
+    private void FixedUpdate() {
         if (!IsServer) return;
 
         if (toKill.Count > 0) {
@@ -122,7 +123,7 @@ public class PlayerSpawner : NetworkBehaviour {
                 PlayerDiedServer?.Invoke(clientId, pos);
 
                 HandleDeathClientRpc(clientId);
-                if (!toKill.Contains(clientId))
+                if (!toKill.ToHashSet().Contains(clientId))
                     toKill.Add(clientId);
                 Debug.Log($"[PlayerSpawner] Сервер: Добавляем {clientId} в очередь на удаление");
             }

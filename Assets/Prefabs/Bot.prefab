@@ -1194,7 +1194,6 @@ MonoBehaviour:
   groundCheck: {fileID: 6466238404988819252}
   jumpStrength: 0
   movementSpeed: 0
-  maxStamina: 0
 --- !u!114 &3390494672658608002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1340,11 +1339,9 @@ MonoBehaviour:
   ballisticTargetLift: 0.1
   switchSpellDelay: 2
   castPrepareDelay: 1.5
-  targetLostSightTimeout: 4
-  targetVisibleAngle: 85
   lostTargetReacquireDelay: 2
   echoRecastDelay: 0.2
-  manaCombatRatio: 0.15
+  manaCombatRatio: 0.25
   sightMask:
     serializedVersion: 2
     m_Bits: 705

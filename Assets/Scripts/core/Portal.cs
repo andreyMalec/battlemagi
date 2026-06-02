@@ -8,6 +8,7 @@ public class Portal : MonoBehaviour {
     [SerializeField] private Portal linked;
     [SerializeField] private float reactivationTimeout = 1f;
     [SerializeField] private float exitOffset = 1.2f;
+    [SerializeField] private float exitSampleRadius = 2f;
     [SerializeField] private AudioSource audioSource;
 
     [Header("Portal View")]
@@ -109,14 +110,42 @@ public class Portal : MonoBehaviour {
 
         for (var i = 0; i < _pendingTeleports.Count; i++) {
             var tp = _pendingTeleports[i];
-            tp.target.position = tp.position;
-            if (tp.target.TryGetComponent<NavMeshAgent>(out var agent))
-                agent.Warp(tp.position);
+            var teleportPosition = ResolveTeleportPosition(tp.target, tp.position);
+            TeleportTarget(tp.target, teleportPosition, tp.rotation);
             tp.look?.ApplyInitialRotation(tp.rotation);
             Teleported?.Invoke(tp.target, tp.source, tp.destination);
         }
 
         _pendingTeleports.Clear();
+    }
+
+    private Vector3 ResolveTeleportPosition(Transform target, Vector3 desiredPosition) {
+        if (!target.TryGetComponent<NavMeshAgent>(out var agent))
+            return desiredPosition;
+
+        if (NavMesh.SamplePosition(desiredPosition, out var hit, exitSampleRadius, agent.areaMask))
+            return hit.position;
+        if (NavMesh.SamplePosition(desiredPosition, out hit, exitSampleRadius, NavMesh.AllAreas))
+            return hit.position;
+
+        return desiredPosition;
+    }
+
+    private void TeleportTarget(Transform target, Vector3 position, Quaternion rotation) {
+        var hasController = target.TryGetComponent<CharacterController>(out var controller);
+        if (hasController)
+            controller.enabled = false;
+
+        if (target.TryGetComponent<NavMeshAgent>(out var agent)) {
+            agent.ResetPath();
+            agent.Warp(position);
+            agent.nextPosition = position;
+        }
+
+        target.SetPositionAndRotation(position, rotation);
+
+        if (hasController)
+            controller.enabled = true;
     }
 
     private void EnsureLinkedRenderTexture() {
@@ -171,33 +200,35 @@ public class Portal : MonoBehaviour {
     private void OnTriggerEnter(Collider other) {
         if (!DamageUtils.TryGetOwnerFromCollider(other, out var player, out var owner))
             return;
-        if (!player.IsOwner || !player.TryGetComponent<SpellCasterPlayer>(out _))
+        if (!player.TryGetComponent<SpellCasterPlayer>(out _))
             return;
         if (_nextAllowedTime.TryGetValue(owner, out var nextTime) && Time.time < nextTime)
             return;
         if (linked._nextAllowedTime.TryGetValue(owner, out var linkedNext) && Time.time < linkedNext)
             return;
 
-        _nextAllowedTime[owner] = Time.time + reactivationTimeout;
-        linked._nextAllowedTime[owner] = Time.time + reactivationTimeout;
+        if (player.IsOwner) {
+            _nextAllowedTime[owner] = Time.time + reactivationTimeout;
+            linked._nextAllowedTime[owner] = Time.time + reactivationTimeout;
 
-        var exitPos = linked.transform.position + linked.transform.forward * exitOffset;
-        var rot = linked.transform.rotation;
+            var exitPos = linked.transform.position + linked.transform.forward * exitOffset;
+            var rot = linked.transform.rotation;
 
-        var look = player.GetComponent<FirstPersonLook>();
+            var look = player.GetComponent<FirstPersonLook>();
 
-        _pendingTeleports.Add(new PendingTeleport {
-            target = player.transform.root,
-            position = exitPos,
-            rotation = rot,
-            look = look,
-            source = this,
-            destination = linked
-        });
+            _pendingTeleports.Add(new PendingTeleport {
+                target = player.transform.root,
+                position = exitPos,
+                rotation = rot,
+                look = look,
+                source = this,
+                destination = linked
+            });
+            Debug.Log($"[Portal] {player.gameObject.name} - scheduled teleport to {exitPos}");
+        }
 
         audioSource.Play();
         linked.audioSource.Play();
-        Debug.Log($"[Portal] {player.gameObject.name} - scheduled teleport to {exitPos}");
     }
 
     private void OnDrawGizmos() {

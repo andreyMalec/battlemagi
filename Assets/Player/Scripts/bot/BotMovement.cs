@@ -16,6 +16,12 @@ public class BotMovement : MonoBehaviour {
     [SerializeField] private float hazardDetourPadding = 1.4f;
     [SerializeField] private int hazardDetourSamples = 8;
     [SerializeField] private float hazardSampleRadius = 2.5f;
+    [SerializeField] private bool usePortals = true;
+    [SerializeField] private float portalStoppingDistance = 0.1f;
+    [SerializeField] private float portalUseMinGain = 2f;
+    [SerializeField] private float portalTraversalPenalty = 1f;
+    [SerializeField] private float portalSampleRadius = 2.5f;
+    [SerializeField] private float portalRepathDelayAfterTeleport = 0.25f;
 
     public GroundCheck groundCheck;
 
@@ -23,10 +29,11 @@ public class BotMovement : MonoBehaviour {
     public float movementSpeed;
     public event System.Action Jumped;
 
-    public bool HasPath => _hasDestination && _agent.hasPath;
+    public bool HasPath => _hasDestination && (_agent.hasPath || _activePortal != null);
 
     public bool ReachedDestination =>
-        _hasDestination && !_agent.pathPending && _agent.remainingDistance <= _agent.stoppingDistance;
+        _activePortal == null && _hasDestination && !_agent.pathPending &&
+        _agent.remainingDistance <= _agent.stoppingDistance;
 
     public Vector3 LocalVelocityNormalized { get; private set; }
     public Vector3 CurrentDestination => _destination;
@@ -37,10 +44,14 @@ public class BotMovement : MonoBehaviour {
     private ParticipantIdentity _selfIdentity;
     private bool _hasDestination;
     private Vector3 _destination;
+    private Vector3 _finalDestination;
     private Vector3 _desiredVelocity;
     private float _jumpCooldownTimer;
+    private float _destinationStoppingDistance;
+    private float _portalRoutingCooldownTimer;
     private bool _hasLookDirectionOverride;
     private Vector3 _lookDirectionOverride;
+    private Portal _activePortal;
 
     private void Awake() {
         _physics = GetComponent<PlayerPhysics>();
@@ -56,14 +67,24 @@ public class BotMovement : MonoBehaviour {
         _agent.stoppingDistance = defaultStoppingDistance;
     }
 
+    private void OnEnable() {
+        Portal.Teleported += HandlePortalTeleported;
+    }
+
+    private void OnDisable() {
+        Portal.Teleported -= HandlePortalTeleported;
+    }
+
     private void Update() {
         if (_jumpCooldownTimer > 0f)
             _jumpCooldownTimer -= Time.deltaTime;
+        if (_portalRoutingCooldownTimer > 0f)
+            _portalRoutingCooldownTimer -= Time.deltaTime;
 
         _agent.nextPosition = transform.position;
 
         if (_hasDestination) {
-            if (!_agent.pathPending && _agent.remainingDistance <= _agent.stoppingDistance)
+            if (_activePortal == null && !_agent.pathPending && _agent.remainingDistance <= _agent.stoppingDistance)
                 Stop();
 
             if (_hasDestination) {
@@ -105,20 +126,18 @@ public class BotMovement : MonoBehaviour {
     }
 
     public void SetDestination(Vector3 position, float stoppingDistance = -1f) {
-        var resolvedDestination = avoidDynamicHazards ? ResolveSafeDestination(position) : position;
-        _destination = resolvedDestination;
-        _hasDestination = true;
-        _agent.stoppingDistance = stoppingDistance > 0f ? stoppingDistance : defaultStoppingDistance;
-        _agent.SetDestination(resolvedDestination);
+        _destinationStoppingDistance = stoppingDistance > 0f ? stoppingDistance : defaultStoppingDistance;
+        _finalDestination = avoidDynamicHazards ? ResolveSafeDestination(position) : position;
+        ApplyCurrentDestination();
     }
 
     public void Repath() {
         if (!_hasDestination)
             return;
+
         _agent.ResetPath();
-        var repathDestination = avoidDynamicHazards ? ResolveSafeDestination(_destination) : _destination;
-        _destination = repathDestination;
-        _agent.SetDestination(repathDestination);
+        _finalDestination = avoidDynamicHazards ? ResolveSafeDestination(_finalDestination) : _finalDestination;
+        ApplyCurrentDestination();
     }
 
     public void SetLookDirection(Vector3 worldDirection) {
@@ -136,6 +155,8 @@ public class BotMovement : MonoBehaviour {
 
     public void Stop() {
         _hasDestination = false;
+        _activePortal = null;
+        _finalDestination = Vector3.zero;
         _desiredVelocity = Vector3.zero;
         LocalVelocityNormalized = Vector3.zero;
         _agent.ResetPath();
@@ -180,6 +201,106 @@ public class BotMovement : MonoBehaviour {
 
         corner = corners[1];
         return true;
+    }
+
+    private void ApplyCurrentDestination() {
+        if (usePortals && _portalRoutingCooldownTimer <= 0f &&
+            TryGetPortalRoute(_finalDestination, out var portal, out var portalDestination)) {
+            _activePortal = portal;
+            _destination = portalDestination;
+            _hasDestination = true;
+            _agent.stoppingDistance = portalStoppingDistance;
+            _agent.SetDestination(portalDestination);
+            return;
+        }
+
+        _activePortal = null;
+        _destination = _finalDestination;
+        _hasDestination = true;
+        _agent.stoppingDistance = _destinationStoppingDistance;
+        _agent.SetDestination(_finalDestination);
+    }
+
+    private bool TryGetPortalRoute(Vector3 requestedDestination, out Portal portal, out Vector3 portalDestination) {
+        portal = null;
+        portalDestination = default;
+
+        var hasDirectPath = TryGetPathLength(transform.position, requestedDestination, out var directLength);
+        var bestScore = hasDirectPath ? directLength - portalUseMinGain : float.MaxValue;
+        var found = false;
+
+        for (var i = 0; i < Portal.Active.Count; i++) {
+            var candidate = Portal.Active[i];
+            if (candidate == null || candidate.Linked == null)
+                continue;
+
+            if (!TrySampleNavMeshPoint(candidate.EntryPosition, out var entryPoint))
+                continue;
+            if (!candidate.TryGetLinkedExitPosition(out var linkedExitPosition))
+                continue;
+            if (!TrySampleNavMeshPoint(linkedExitPosition, out var exitPoint))
+                continue;
+            if (!TryGetPathLength(transform.position, entryPoint, out var toEntryLength))
+                continue;
+            if (!TryGetPathLength(exitPoint, requestedDestination, out var fromExitLength))
+                continue;
+
+            var routeScore = toEntryLength + fromExitLength + portalTraversalPenalty;
+            if (routeScore >= bestScore)
+                continue;
+
+            bestScore = routeScore;
+            portal = candidate;
+            portalDestination = entryPoint;
+            found = true;
+        }
+
+        return found;
+    }
+
+    private bool TrySampleNavMeshPoint(Vector3 point, out Vector3 sampledPoint) {
+        sampledPoint = default;
+        if (!NavMesh.SamplePosition(point, out var hit, portalSampleRadius, NavMesh.AllAreas))
+            return false;
+
+        sampledPoint = hit.position;
+        return true;
+    }
+
+    private bool TryGetPathLength(Vector3 from, Vector3 to, out float length) {
+        length = 0f;
+        if (!TrySampleNavMeshPoint(from, out var sampledFrom))
+            return false;
+        if (!TrySampleNavMeshPoint(to, out var sampledTo))
+            return false;
+
+        var path = new NavMeshPath();
+        if (!NavMesh.CalculatePath(sampledFrom, sampledTo, NavMesh.AllAreas, path))
+            return false;
+        if (path.status != NavMeshPathStatus.PathComplete)
+            return false;
+
+        var corners = path.corners;
+        if (corners == null || corners.Length < 2)
+            return false;
+
+        for (var i = 1; i < corners.Length; i++)
+            length += Vector3.Distance(corners[i - 1], corners[i]);
+
+        return true;
+    }
+
+    private void HandlePortalTeleported(Transform target, Portal source, Portal destination) {
+        if (target != transform.root)
+            return;
+
+        _activePortal = null;
+        _portalRoutingCooldownTimer = portalRepathDelayAfterTeleport;
+        if (!_hasDestination)
+            return;
+
+        _agent.ResetPath();
+        ApplyCurrentDestination();
     }
 
     private Vector3 ResolveSafeDestination(Vector3 requestedDestination) {

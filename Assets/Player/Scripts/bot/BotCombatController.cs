@@ -87,8 +87,6 @@ public class BotCombatController : MonoBehaviour {
                 return false;
             if (!HasCombatTarget)
                 return false;
-            if (!HasCombatTarget)
-                return false;
             if (_hasPreparedSpell && _preparedSpell != null)
                 return true;
             if (_castLockTimer > 0f)

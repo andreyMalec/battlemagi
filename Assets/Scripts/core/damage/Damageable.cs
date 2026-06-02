@@ -237,7 +237,7 @@ public class Damageable : MonoBehaviour {
     ) {
         if (!_initialized) return;
         if (!IsAlive) return;
-        if (amount <= 0f) return;
+        if (!CanTakeDamage(amount)) return;
 
         if (!_bridgeTyped.IsServer) return;
         if (!_bridgeTyped.IsSpawned) return;
@@ -255,16 +255,16 @@ public class Damageable : MonoBehaviour {
         _statusable?.HandleHit(request);
     }
 
-    public bool CanTakeDamage(in DamageRequest request) {
+    public bool CanTakeDamage(float amount) {
         if (!_initialized) return false;
         if (!IsAlive) return false;
         if ((State & DamageableState.Invulnerable) != 0) return false;
-        if (request.amount <= 0f) return false;
+        if (amount <= 0f) return false;
         return true;
     }
 
     private DamageApplied ApplyDamageServer(in DamageRequest request) {
-        if (!CanTakeDamage(in request))
+        if (!CanTakeDamage(request.amount))
             return new DamageApplied(request, request.amount, 0f, 0f, 0f, Health.Health);
 
         var incoming = request.amount;

@@ -15,7 +15,7 @@ public class SpellCasterNet : NetworkBehaviour {
         );
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)] 
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void RequestSpawnServerRpc(
         ulong casterNetObjectId,
         string spellName,
@@ -58,7 +58,7 @@ public class SpellCasterNet : NetworkBehaviour {
             context.spellDamageMultiplier);
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)] 
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void RequestCastServerRpc(
         ulong casterNetObjectId,
         string spellName,
@@ -107,24 +107,32 @@ public class SpellCasterNet : NetworkBehaviour {
     }
 
     private void ServerSpawnMain(SpawnContext context) {
-        var casterNetObj = context.caster.GetComponentInParent<NetworkObject>();
+        SpellCaster caster;
+        try {
+            caster = context.caster;
+            if (caster == null) return;
+        } catch {
+            return;
+        }
+
+        var casterNetObj = caster.GetComponentInParent<NetworkObject>();
         if (!casterNetObj.IsSpawned) return;
-        EnsureCasterInitialized(casterNetObj.gameObject, context.caster);
+        EnsureCasterInitialized(casterNetObj.gameObject, caster);
         var prefab = SpellPrefab.Instance.GetPrefab(true);
         var main = Instantiate(prefab, context.position, context.rotation);
         var networkObject = main.GetComponent<NetworkObject>();
-        var ownerId = context.caster.OwnerId;
+        var ownerId = caster.OwnerId;
         var ownerClientId = ownerId.IsBot ? NetworkManager.ServerClientId : ownerId.Value;
         networkObject.SpawnWithOwnership(ownerClientId);
         var id = networkObject.NetworkObjectId;
-        var identity = context.caster.GetComponentInParent<ParticipantIdentity>();
+        var identity = caster.GetComponentInParent<ParticipantIdentity>();
         var spellIdentity = main.GetComponent<ParticipantIdentity>();
         spellIdentity.SetParticipantId(identity.Id);
         foreach (var identityUser in main.GetComponents<IdentityUser>()) {
             identityUser.Use(main);
         }
 
-        context.caster.HandleSpellLimit(context.spell, main);
+        caster.HandleSpellLimit(context.spell, main);
         var index = main.AddComponent<ArcIndex>();
         index.Index = context.index;
         index.Count = context.count;
@@ -138,7 +146,7 @@ public class SpellCasterNet : NetworkBehaviour {
         };
         var impassableForEnemies = context.spell.coreType is CoreType.Zone && context.spell.zone.impassableForEnemies;
         context.main = main;
-        context.caster.SpellSystem.CastSpell(context);
+        caster.SpellSystem.CastSpell(context);
         var excludeHost = new ClientRpcParams {
             Send = new ClientRpcSendParams
                 { TargetClientIds = NetworkManager.ConnectedClients.Keys.Filter(it => it > 0).ToArray() }
