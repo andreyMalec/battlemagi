@@ -16,11 +16,14 @@ MonoBehaviour:
   title: 
   description: 
   duration: 2
+  icon: {fileID: 0}
   color: {r: 0, g: 0, b: 0, a: 0}
   removeOnHit: 0
   onExpire: {fileID: 0}
-  dps: 10
+  dps: 15
   tickInterval: 0.8
   damageSound: 2
   ignoreDamageSoundCooldown: 0
   canSelfDamage: 1
+  percentDamage: 0
+  canKill: 1

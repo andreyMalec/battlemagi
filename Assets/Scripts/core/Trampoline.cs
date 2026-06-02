@@ -22,7 +22,7 @@ public class Trampoline : MonoBehaviour {
 
     private IEnumerator ApplyImpulse(ParticipantId owner, PlayerPhysics physics) {
         physics.ApplyImpulseWithoutSnap(new Vector3(vector.up.x * 4, vector.up.y, vector.up.z * 4) * force);
-        yield return null;
+        yield return new WaitForSeconds(0.5f);
 
         _affected.Remove(owner);
     }

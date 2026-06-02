@@ -25,13 +25,14 @@ public class StatusableNetworkBridge : NetworkBehaviour, IStatusableBridge {
 
     private NetworkList<NetDurationEffect> _synced;
     private NetworkList<NetDurationEffect>.OnListChangedDelegate _onSyncedChanged;
+    private bool _pendingRebuild;
 
     public ParticipantId OwnerId { get; set; }
     public List<Statusable.DurationEffect> DurationEffects { get; private set; } = new();
 
     private void Awake() {
         _synced = new NetworkList<NetDurationEffect>();
-        _onSyncedChanged = _ => RebuildActiveEffectsFromSynced();
+        _onSyncedChanged = _ => _pendingRebuild = true;
         _stats = GetComponent<Stats>();
     }
 
@@ -51,6 +52,12 @@ public class StatusableNetworkBridge : NetworkBehaviour, IStatusableBridge {
     private void FixedUpdate() {
         if (!_hasCore) return;
         TickFixed(_core);
+    }
+
+    private void LateUpdate() {
+        if (!_pendingRebuild) return;
+        _pendingRebuild = false;
+        RebuildActiveEffectsFromSynced();
     }
 
     public void Bind(Statusable core) {
@@ -111,7 +118,12 @@ public class StatusableNetworkBridge : NetworkBehaviour, IStatusableBridge {
     private void RebuildActiveEffectsFromSynced() {
         var list = new List<Statusable.DurationEffect>();
         var db = StatusEffectDatabase.Instance.GetMap();
-        foreach (var e in _synced) {
+        var snapshot = new NetDurationEffect[_synced.Count];
+        for (int i = 0; i < _synced.Count; i++) {
+            snapshot[i] = _synced[i];
+        }
+
+        foreach (var e in snapshot) {
             if (!db.TryGetValue(e.effectName.ToString(), out var data))
                 continue;
             if (data.icon == null) continue;

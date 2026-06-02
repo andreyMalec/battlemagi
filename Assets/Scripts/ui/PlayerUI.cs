@@ -145,12 +145,12 @@ public class PlayerUI : NetworkBehaviour {
             if (e.remains <= 0f) continue;
 
             var item = _items[idx++];
-            item.gameObject.SetActive(true);
-            item.Set(e.icon, e.remains);
+            item?.gameObject?.SetActive(true);
+            item?.Set(e.icon, e.remains);
         }
 
         for (int i = idx; i < _items.Count; i++) {
-            _items[i].gameObject.SetActive(false);
+            _items[i]?.gameObject?.SetActive(false);
         }
     }
 

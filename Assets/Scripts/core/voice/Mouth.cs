@@ -21,7 +21,7 @@ public class Mouth : MonoBehaviour {
         if (!_open) return;
         if (!_holder.IsInitialized) return;
         _manager.StopRecognition();
-        _open  = false;
+        _open = false;
     }
 
     public void Open() {
@@ -34,6 +34,7 @@ public class Mouth : MonoBehaviour {
             _manager.StartRecognition(microphoneRecord);
             _manager.OnSegmentResult += OnSegmentUpdated;
         }
+
         _open = true;
     }
 
@@ -47,7 +48,7 @@ public class Mouth : MonoBehaviour {
     public void ShutUp() {
         if (!_open) return;
         if (!_holder.IsInitialized) return;
-        _manager.Reset();
+        _manager.Reset(); //TODO
     }
 
     public void ChangeVoice() {
@@ -57,11 +58,15 @@ public class Mouth : MonoBehaviour {
         _manager.StartRecognition(microphoneRecord);
     }
 
+    private bool _lastCanSpeak = false;
+
     public void CanSpeak(bool canSpeak) {
+        if (canSpeak == _lastCanSpeak) return;
         if (!_open) return;
         if (!_holder.IsInitialized) return;
         if (_manager.Mute == canSpeak) {
             _manager.Mute = !canSpeak;
+            _lastCanSpeak = canSpeak;
             if (!canSpeak)
                 ShutUp();
         }

@@ -192,12 +192,22 @@ public class SpellCasterNet : NetworkBehaviour {
         if (caster.SpellSystem != null)
             return;
 
-        foreach (var behaviour in root.GetComponents<MonoBehaviour>()) {
+        foreach (var behaviour in root.GetComponentsInParent<MonoBehaviour>(true)) {
             if (behaviour is not SpellBootstrap bootstrap)
                 continue;
 
             bootstrap.Init(caster);
-            return;
+            if (caster.SpellSystem != null)
+                return;
+        }
+
+        foreach (var behaviour in root.GetComponentsInChildren<MonoBehaviour>(true)) {
+            if (behaviour is not SpellBootstrap bootstrap)
+                continue;
+
+            bootstrap.Init(caster);
+            if (caster.SpellSystem != null)
+                return;
         }
     }
 }

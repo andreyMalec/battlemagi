@@ -77,6 +77,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Rune
   ShowTopMostFoldoutHeaderGroup: 1
+  audioClip: {fileID: 8300000, guid: 881a7881bc5db8c47a6b2f2674f8c7fb, type: 3}
   effects:
   - {fileID: 11400000, guid: 81c4f9e444bee3b4d97bdcbc236b8062, type: 2}
   attackWeight: 0
@@ -237,6 +238,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1159873025245491600
 MeshFilter:

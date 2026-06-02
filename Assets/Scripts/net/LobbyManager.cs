@@ -344,7 +344,7 @@ public static class LobbyExt {
         }
 
         if (PlayerManager.Instance != null && NetworkManager.Singleton != null &&
-            NetworkManager.Singleton.IsConnectedClient) {
+            NetworkManager.Singleton.IsConnectedClient && PlayerManager.Instance.IsSpawned) {
             PlayerManager.Instance.SetColorServerRpc(color.hue, color.saturation);
         }
     }
@@ -355,6 +355,8 @@ public static class LobbyExt {
     }
 
     public static void SetTeam(TeamManager.Team team) {
+        if (!TeamManager.Instance.IsSpawned || !NetworkManager.Singleton.IsConnectedClient)
+            return;
         TeamManager.Instance.RequestChangeTeamServerRpc(NetworkManager.Singleton.LocalClientId, (int)team);
     }
 }

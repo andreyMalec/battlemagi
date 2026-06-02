@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(NetworkObject))]
 public class PickUp : NetworkBehaviour {
+    [SerializeField] private AudioClip audioClip;
     [SerializeField] private List<StatusEffectData> effects;
     [SerializeField] [Min(0f)] private float attackWeight = 1f;
     [SerializeField] [Min(0f)] private float defenseWeight = 1f;
@@ -54,19 +56,19 @@ public class PickUp : NetworkBehaviour {
 
     [ClientRpc]
     private void OnPickupClientRpc() {
-        GetComponentInParent<AudioSource>().Play();
+        Sound();
     }
 
     [ClientRpc]
     private void OnPickupClientRpc(ulong clientId, string effectName, string description, Color color) {
-        GetComponentInParent<AudioSource>().Play();
+        Sound();
         if (NetworkManager.LocalClientId == clientId) {
             var ui = NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerEffectUI>();
             ui.Show(effectName, description, color);
         }
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)] 
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void DestroyServerRpc() {
         DestroySelf();
     }
@@ -79,5 +81,27 @@ public class PickUp : NetworkBehaviour {
         } else {
             Destroy(gameObject);
         }
+    }
+
+    private void Sound() {
+        var go = new GameObject("One shot audio");
+        go.transform.position = transform.position;
+
+        var audioSource = GetComponentInParent<AudioSource>();
+        var source = go.AddComponent<AudioSource>();
+        source.clip = audioClip;
+        source.outputAudioMixerGroup = audioSource.outputAudioMixerGroup;
+        source.spatialBlend = audioSource.spatialBlend;
+        source.volume = audioSource.volume;
+        source.maxDistance = audioSource.maxDistance;
+        source.rolloffMode = audioSource.rolloffMode;
+        source.loop = audioSource.loop;
+        if (audioSource.rolloffMode == AudioRolloffMode.Custom)
+            source.SetCustomCurve(AudioSourceCurveType.CustomRolloff,
+                audioSource.GetCustomCurve(AudioSourceCurveType.CustomRolloff));
+        source.Play();
+
+        var comp = go.AddComponent<DestroyAfterPlay>();
+        comp._audio = source;
     }
 }

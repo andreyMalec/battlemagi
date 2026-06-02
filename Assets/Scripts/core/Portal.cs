@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Portal : MonoBehaviour {
     [SerializeField] private Portal linked;
@@ -24,11 +25,19 @@ public class Portal : MonoBehaviour {
 
     private readonly Dictionary<ParticipantId, float> _nextAllowedTime = new();
 
+    public static readonly List<Portal> Active = new();
+    public static event Action<Transform, Portal, Portal> Teleported;
+
+    public Portal Linked => linked;
+    public Vector3 EntryPosition => transform.position;
+
     private struct PendingTeleport {
         public Transform target;
         public Vector3 position;
         public Quaternion rotation;
         public FirstPersonLook look;
+        public Portal source;
+        public Portal destination;
     }
 
     private readonly List<PendingTeleport> _pendingTeleports = new();
@@ -42,11 +51,14 @@ public class Portal : MonoBehaviour {
     }
 
     private void OnEnable() {
+        if (!Active.Contains(this))
+            Active.Add(this);
         EnsureLinkedRenderTexture();
         ApplyLinkedTextureToScreen();
     }
 
     private void OnDisable() {
+        Active.Remove(this);
         ReleaseRenderTexture();
     }
 
@@ -98,7 +110,10 @@ public class Portal : MonoBehaviour {
         for (var i = 0; i < _pendingTeleports.Count; i++) {
             var tp = _pendingTeleports[i];
             tp.target.position = tp.position;
+            if (tp.target.TryGetComponent<NavMeshAgent>(out var agent))
+                agent.Warp(tp.position);
             tp.look?.ApplyInitialRotation(tp.rotation);
+            Teleported?.Invoke(tp.target, tp.source, tp.destination);
         }
 
         _pendingTeleports.Clear();
@@ -175,7 +190,9 @@ public class Portal : MonoBehaviour {
             target = player.transform.root,
             position = exitPos,
             rotation = rot,
-            look = look
+            look = look,
+            source = this,
+            destination = linked
         });
 
         audioSource.Play();
@@ -217,5 +234,18 @@ public class Portal : MonoBehaviour {
     private void OnDrawGizmosSelected() {
         Gizmos.color = Color.cyan;
         Gizmos.DrawLine(transform.position, linked.transform.position);
+    }
+
+    public Vector3 GetExitPosition() {
+        return transform.position + transform.forward * exitOffset;
+    }
+
+    public bool TryGetLinkedExitPosition(out Vector3 position) {
+        position = default;
+        if (linked == null)
+            return false;
+
+        position = linked.GetExitPosition();
+        return true;
     }
 }
