@@ -1,3 +1,5 @@
+using System.Collections;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -30,6 +32,8 @@ public class InGameMenu : MonoBehaviour {
 
     private State _state;
 
+    private bool _exiting = false;
+
     private enum State {
         Main,
         SettingsSound,
@@ -47,6 +51,7 @@ public class InGameMenu : MonoBehaviour {
         buttonSettingsGraphic.onClick.AddListener(OnSettingsGraphicClick);
         buttonSettingsSound.onClick.AddListener(OnSettingsSoundClick);
         buttonSettingsGeneral.onClick.AddListener(OnSettingsGeneralClick);
+        _exiting = false;
     }
 
     private void OnBackClick() {
@@ -70,12 +75,28 @@ public class InGameMenu : MonoBehaviour {
     }
 
     private void OnExitClick() {
+        if (_exiting) return;
+        _exiting = true;
+        StartCoroutine(ExitGame());
+    }
+
+    private IEnumerator ExitGame() {
         var lobby = LobbyManager.Instance.CurrentLobby;
         if (lobby.HasValue) {
+            if (NetworkManager.Singleton.IsHost) {
+                foreach (var singletonConnectedClient in NetworkManager.Singleton.ConnectedClients) {
+                    if (singletonConnectedClient.Key == NetworkManager.Singleton.LocalClientId) continue;
+                    NetworkManager.Singleton.DisconnectClient(singletonConnectedClient.Key, "Server closed");
+                }
+            }
+
+            yield return new WaitForSeconds(0.2f);
             TeamManager.Instance.Reset();
             LobbyManager.Instance.LeaveLobby();
             SceneLoader.LoadMenu(true);
         }
+
+        _exiting = false;
     }
 
     private bool alt = false;
@@ -89,6 +110,7 @@ public class InGameMenu : MonoBehaviour {
             if (Input.GetKeyDown(KeyCode.LeftAlt)) {
                 alt = !alt;
             }
+
             ShowCursor(alt);
         }
 

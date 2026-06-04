@@ -102,7 +102,10 @@ public class Bot : NetworkBehaviour {
         movement.jumpStrength = archetype.jumpStrength;
 
         var caster = GetComponent<SpellCasterPlayer>();
-        caster.Mana.SetDefaults(archetype.maxMana, archetype.manaRegen);
+        if (GameModeRules.IsChargedShotOnlyMode())
+            caster.Mana.SetDefaults(120, 60);
+        else
+            caster.Mana.SetDefaults(archetype.maxMana, archetype.manaRegen);
         var availableSpells = GameModeRules.FilterSpellsForMode(archetype.spells);
         caster.UpdateAvailableSpells(availableSpells);
         var combat = GetComponent<BotCombatController>();

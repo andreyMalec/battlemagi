@@ -60,7 +60,10 @@ public class Player : NetworkBehaviour {
         look.SetCameraOffset(archetype.cameraOffset);
 
         var caster = GetComponent<SpellCasterPlayer>();
-        caster.Mana.SetDefaults(archetype.maxMana, archetype.manaRegen);
+        if (GameModeRules.IsChargedShotOnlyMode())
+            caster.Mana.SetDefaults(120, 60);
+        else
+            caster.Mana.SetDefaults(archetype.maxMana, archetype.manaRegen);
         var damageable = GetComponent<Damageable>();
         damageable.Health.SetDefaults(archetype.maxHealth, archetype.healthRegen);
         var camSel = GetComponentInChildren<CameraSelector>();

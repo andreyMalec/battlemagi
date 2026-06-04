@@ -93,6 +93,7 @@ public class LobbyManager : MonoBehaviour {
             lobby.SetData(KeyMap, "0");
             lobby.SetData(KeyMode, "0");
             NetworkManager.Singleton.StartHost();
+            BotLifecycleManager.Instance?.EndMatch();
         }
     }
 

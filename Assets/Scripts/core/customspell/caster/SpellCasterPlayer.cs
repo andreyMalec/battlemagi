@@ -294,8 +294,6 @@ public class SpellCasterPlayer : SpellCaster {
 
     public bool CanStartCast(SpellDefinition spell) {
         if (spell == null) return false;
-        if (GameModeRules.IsChargedShotOnlyMode())
-            return true;
         if (spell.bloodMagic) {
             if (_echoSpell == spell && _echoRemaining > 0)
                 return true;
@@ -308,8 +306,6 @@ public class SpellCasterPlayer : SpellCaster {
 
     private bool SpendResourceServer(SpellDefinition spell, float amount) {
         if (spell == null || amount <= 0f) return true;
-        if (GameModeRules.IsChargedShotOnlyMode())
-            return true;
         if (spell.bloodMagic)
             return _bridgeTyped.TrySpendHealth(amount);
 

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 public static class GameModeRules {
-    public const string ChargedShotSpellName = "Charged Shot";
+    public const string ChargedShotSpellName = "CUSTOM Charged Shot";
 
     public static bool IsChargedShotOnlyMode() {
         return TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.ChargedShotOnly;
@@ -39,6 +39,7 @@ public static class GameModeRules {
         if (!IsChargedShotOnlyMode())
             return spells.ToList();
 
+        spells = DefaultSpells.Instance.list;
         var list = spells.ToList();
         var charged = list.FirstOrDefault(s => s != null && s.spell != null && s.spell.spellName == ChargedShotSpellName);
         if (charged == null)
