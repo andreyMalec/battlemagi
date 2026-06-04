@@ -1733,6 +1733,26 @@ PrefabInstance:
       value: max
       objectReference: {fileID: 0}
     - target: {fileID: 3219684906744401616, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      propertyPath: bundles.Array.data[0].voices.Array.size
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 3219684906744401616, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      propertyPath: bundles.Array.data[1].voices.Array.size
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 3219684906744401616, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      propertyPath: bundles.Array.data[2].voices.Array.size
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 3219684906744401616, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      propertyPath: bundles.Array.data[3].voices.Array.size
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 3219684906744401616, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      propertyPath: bundles.Array.data[4].voices.Array.size
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 3219684906744401616, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
       propertyPath: bundles.Array.data[0].voices.Array.data[0].line
       value: 
       objectReference: {fileID: 8300000, guid: 125a5033fca6b5e4ba45420ac10599e7, type: 3}
@@ -1853,6 +1873,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8300000, guid: b19b1528df0fc3c43a4595ee930d69c7, type: 3}
     - target: {fileID: 3219684906744401616, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      propertyPath: bundles.Array.data[0].voices.Array.data[20].line
+      value: 
+      objectReference: {fileID: 8300000, guid: 2602ae55cbba2ae4788c3172a30e45bd, type: 3}
+    - target: {fileID: 3219684906744401616, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
       propertyPath: bundles.Array.data[1].voices.Array.data[10].line
       value: 
       objectReference: {fileID: 8300000, guid: a726d027e74ba474e91386247d1f449e, type: 3}
@@ -1892,6 +1916,66 @@ PrefabInstance:
       propertyPath: bundles.Array.data[1].voices.Array.data[19].line
       value: 
       objectReference: {fileID: 8300000, guid: 6460aa6ce73b2c84790955d94fc4bacc, type: 3}
+    - target: {fileID: 3219684906744401616, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      propertyPath: bundles.Array.data[1].voices.Array.data[20].line
+      value: 
+      objectReference: {fileID: 8300000, guid: 3c41c5b16d415ea4fb1b07d8568b975f, type: 3}
+    - target: {fileID: 3219684906744401616, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      propertyPath: bundles.Array.data[2].voices.Array.data[20].line
+      value: 
+      objectReference: {fileID: 8300000, guid: a5673d4c4f85de045aee834ecfab908e, type: 3}
+    - target: {fileID: 3219684906744401616, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      propertyPath: bundles.Array.data[3].voices.Array.data[20].line
+      value: 
+      objectReference: {fileID: 8300000, guid: 9e446051ed5132a4ab2b852ce631b2e9, type: 3}
+    - target: {fileID: 3219684906744401616, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      propertyPath: bundles.Array.data[4].voices.Array.data[20].line
+      value: 
+      objectReference: {fileID: 8300000, guid: 7c4a84cb0bec3f54ba59a43983b4f075, type: 3}
+    - target: {fileID: 3219684906744401616, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      propertyPath: bundles.Array.data[0].voices.Array.data[20].words
+      value: CUSTOM Charged Shot
+      objectReference: {fileID: 0}
+    - target: {fileID: 3219684906744401616, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      propertyPath: bundles.Array.data[1].voices.Array.data[20].words
+      value: CUSTOM Charged Shot
+      objectReference: {fileID: 0}
+    - target: {fileID: 3219684906744401616, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      propertyPath: bundles.Array.data[2].voices.Array.data[20].words
+      value: CUSTOM Charged Shot
+      objectReference: {fileID: 0}
+    - target: {fileID: 3219684906744401616, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      propertyPath: bundles.Array.data[3].voices.Array.data[20].words
+      value: CUSTOM Charged Shot
+      objectReference: {fileID: 0}
+    - target: {fileID: 3219684906744401616, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      propertyPath: bundles.Array.data[4].voices.Array.data[20].words
+      value: CUSTOM Charged Shot
+      objectReference: {fileID: 0}
+    - target: {fileID: 4980433971152159853, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      propertyPath: weights.Array.size
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 4980433971152159853, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      propertyPath: weights.Array.data[20].spell
+      value: 
+      objectReference: {fileID: 11400000, guid: aedf69579bf5d984b87263da50acbbff, type: 2}
+    - target: {fileID: 4980433971152159853, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      propertyPath: weights.Array.data[20].mobility
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4980433971152159853, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      propertyPath: weights.Array.data[20].available
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4980433971152159853, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      propertyPath: weights.Array.data[20].defensive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4980433971152159853, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      propertyPath: weights.Array.data[20].offensive
+      value: 1.1
+      objectReference: {fileID: 0}
     - target: {fileID: 5984348537018640584, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3408496991

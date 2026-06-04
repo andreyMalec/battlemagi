@@ -16,23 +16,13 @@ public static class GameModeRules {
         if (!IsChargedShotOnlyMode())
             return spells.ToList();
 
-        var list = spells.ToList();
-        var charged = list.FirstOrDefault(s => s != null && s.spellName == ChargedShotSpellName);
-        if (charged == null) {
-            var defaults = DefaultSpells.Instance.list;
-            for (int i = 0; i < defaults.Count; i++) {
-                var spell = defaults[i].spell;
-                if (spell != null && spell.spellName == ChargedShotSpellName) {
-                    charged = spell;
-                    break;
-                }
-            }
-        }
-
+        var def = DefaultSpells.Instance.list;
+        var list = def.ToList();
+        var charged = list.FirstOrDefault(s => s != null && s.spell != null && s.spell.spellName == ChargedShotSpellName);
         if (charged == null)
             return new List<SpellDefinition>();
 
-        return new List<SpellDefinition> { charged };
+        return new List<SpellDefinition> { charged.spell };
     }
 
     public static List<DefaultSpell> FilterDefaultSpellsForMode(IEnumerable<DefaultSpell> spells) {
