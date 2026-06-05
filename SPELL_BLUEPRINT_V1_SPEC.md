@@ -1,4 +1,4 @@
-# Runtime Blueprint спецификация (без версионирования)
+# Runtime Blueprint спецификация
 
 ## Статус
 - Blueprint существует только в рантайме и не хранится как постоянный asset.
@@ -251,8 +251,6 @@ Payload формируется из блоков:
 
 Для клиентов сохраняется текущий RPC-путь `OnCastClientRpc(...)`, где уже передаются `coreType` и `prefabId`.
 
-Никаких полей `schemaVersion`, `protocolVersion`, `blueprintHash` в контракте нет.
-
 ## 8. Пример runtime blueprint JSON
 
 ```json
@@ -310,8 +308,3 @@ Payload формируется из блоков:
 | `M5` | Лексикон + многослойный `PrefabResolver` для `New` | Нет missing prefab для `New`, `Legacy` работает без изменений |
 | `M6` | Parity gate | 0 регрессий по старым заклинаниям при включенном `New` path |
 
-## 10. Что исключено из этой версии
-- Любое версионирование blueprint/протокола.
-- Постоянное хранение blueprint как контента.
-- Новые абстрактные типы, которых нет в текущем коде.
-- Миграция старых заклинаний из `DefaultSpells`/`SpellPrefabDatabase` в runtime blueprint.
