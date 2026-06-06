@@ -1,0 +1,366 @@
+{
+  "locale": "ru-RU",
+  "unknownPolicy": "warn_drop",
+  "entries": [
+    {
+      "token": "осколок",
+      "priority": 120,
+      "mapsTo": [
+        { "path": "coreType", "value": "Projectile" },
+        { "path": "common.scale", "value": "0.5" },
+        { "path": "common.lifetime", "value": "5" },
+        { "path": "damage.amount", "value": "30" },
+        { "path": "projectile.moveType", "value": "Linear" },
+        { "path": "projectile.moveSpeed", "value": "50" }
+      ],
+      "semanticTags": [{ "group": "delivery", "value": "projectile", "priority": 120 }],
+      "visualHints": []
+    },
+    {
+      "token": "шип",
+      "priority": 120,
+      "mapsTo": [
+        { "path": "coreType", "value": "Projectile" },
+        { "path": "common.scale", "value": "0.5" },
+        { "path": "common.lifetime", "value": "2" },
+        { "path": "damage.amount", "value": "20" },
+        { "path": "projectile.moveType", "value": "Accelerated" },
+        { "path": "projectile.moveSpeed", "value": "50" },
+        { "path": "projectile.enablePierce", "value": "true" },
+        { "path": "projectile.maxPierces", "value": "2" }
+      ],
+      "semanticTags": [{ "group": "delivery", "value": "projectile", "priority": 120 }],
+      "visualHints": []
+    },
+    {
+      "token": "копьё",
+      "priority": 120,
+      "mapsTo": [
+        { "path": "coreType", "value": "Projectile" },
+        { "path": "common.scale", "value": "1" },
+        { "path": "common.lifetime", "value": "5" },
+        { "path": "damage.amount", "value": "10" },
+        { "path": "projectile.enableGravity", "value": "true" },
+        { "path": "projectile.moveType", "value": "Accelerated" },
+        { "path": "projectile.moveSpeed", "value": "70" },
+        { "path": "effects.add", "value": "ForcedMovement:Enemies" }
+      ],
+      "semanticTags": [{ "group": "delivery", "value": "projectile", "priority": 120 }],
+      "visualHints": []
+    },
+    {
+      "token": "шар",
+      "priority": 120,
+      "mapsTo": [
+        { "path": "coreType", "value": "Projectile" },
+        { "path": "common.scale", "value": "1" },
+        { "path": "common.lifetime", "value": "5" },
+        { "path": "damage.amount", "value": "50" },
+        { "path": "projectile.moveType", "value": "Linear" },
+        { "path": "projectile.enableGravity", "value": "true" },
+        { "path": "projectile.moveSpeed", "value": "40" }
+      ],
+      "semanticTags": [{ "group": "delivery", "value": "projectile", "priority": 120 }],
+      "visualHints": []
+    },
+    {
+      "token": "поле",
+      "priority": 120,
+      "mapsTo": [
+        { "path": "coreType", "value": "Zone" },
+        { "path": "zone.shapeType", "value": "Plate" },
+        { "path": "zone.moveType", "value": "Static" }
+      ],
+      "semanticTags": [{ "group": "delivery", "value": "zone", "priority": 120 }],
+      "visualHints": []
+    },
+    {
+      "token": "аура",
+      "priority": 120,
+      "mapsTo": [
+        { "path": "coreType", "value": "Zone" },
+        { "path": "zone.shapeType", "value": "Sphere" },
+        { "path": "zone.moveType", "value": "FollowCaster" }
+      ],
+      "semanticTags": [{ "group": "delivery", "value": "zone", "priority": 120 }],
+      "visualHints": []
+    },
+    {
+      "token": "луч",
+      "priority": 120,
+      "mapsTo": [
+        { "path": "coreType", "value": "Beam" },
+        { "path": "beam.shapeType", "value": "Straight" },
+        { "path": "beam.moveType", "value": "FollowCaster" }
+      ],
+      "semanticTags": [{ "group": "delivery", "value": "beam", "priority": 120 }],
+      "visualHints": []
+    },
+    {
+      "token": "поток",
+      "priority": 120,
+      "mapsTo": [
+        { "path": "coreType", "value": "Beam" },
+        { "path": "beam.shapeType", "value": "Cone" },
+        { "path": "beam.moveType", "value": "FollowCaster" }
+      ],
+      "semanticTags": [{ "group": "delivery", "value": "beam", "priority": 120 }],
+      "visualHints": []
+    },
+    {
+      "token": "ловушка",
+      "priority": 120,
+      "mapsTo": [
+        { "path": "coreType", "value": "Summon" },
+        { "path": "summon.prefabId", "value": "Trap" },
+        { "path": "summon.brain", "value": "Dead" },
+        { "path": "summon.motion", "value": "Stationary" }
+      ],
+      "semanticTags": [{ "group": "delivery", "value": "summon", "priority": 120 }],
+      "visualHints": []
+    },
+    {
+      "token": "тотем",
+      "priority": 120,
+      "mapsTo": [
+        { "path": "coreType", "value": "Summon" },
+        { "path": "summon.prefabId", "value": "Totem" },
+        { "path": "summon.brain", "value": "AlwaysAttack" },
+        { "path": "summon.motion", "value": "Stationary" }
+      ],
+      "semanticTags": [{ "group": "delivery", "value": "summon", "priority": 120 }],
+      "visualHints": []
+    },
+    {
+      "token": "огненный",
+      "priority": 60,
+      "mapsTo": [
+        { "path": "projectile.prefabId", "value": "ProjectileFire" },
+        { "path": "zone.prefabId", "value": "ZoneFire" },
+        { "path": "beam.prefabId", "value": "BeamFire" }
+      ],
+      "semanticTags": [{ "group": "element", "value": "fire", "priority": 60 }],
+      "visualHints": [{ "group": "tone", "value": "heavy", "priority": 100 }]
+    },
+    {
+      "token": "пламенный",
+      "priority": 60,
+      "mapsTo": [
+        { "path": "projectile.prefabId", "value": "ProjectileFire" },
+        { "path": "zone.prefabId", "value": "ZoneFire" },
+        { "path": "beam.prefabId", "value": "BeamFire" },
+        { "path": "effects.add", "value": "DamageOverTime:Enemies" }
+      ],
+      "semanticTags": [{ "group": "element", "value": "fire", "priority": 60 }],
+      "visualHints": []
+    },
+    {
+      "token": "адский",
+      "priority": 60,
+      "mapsTo": [
+        { "path": "projectile.prefabId", "value": "ProjectileFire" },
+        { "path": "zone.prefabId", "value": "ZoneExplosionFire" },
+        { "path": "beam.prefabId", "value": "BeamFire" },
+        { "path": "damage.baseType", "value": "Percent" },
+        { "path": "damage.percent", "value": "0.12" }
+      ],
+      "semanticTags": [{ "group": "element", "value": "fire", "priority": 60 }],
+      "visualHints": [{ "group": "tone", "value": "heavy", "priority": 100 }]
+    },
+    {
+      "token": "ледяной",
+      "priority": 60,
+      "mapsTo": [
+        { "path": "projectile.prefabId", "value": "ProjectileIce" },
+        { "path": "zone.prefabId", "value": "ZoneIce" },
+        { "path": "effects.add", "value": "Freeze:Enemies" }
+      ],
+      "semanticTags": [{ "group": "element", "value": "ice", "priority": 60 }],
+      "visualHints": []
+    },
+    {
+      "token": "громовой",
+      "priority": 60,
+      "mapsTo": [
+        { "path": "projectile.prefabId", "value": "ProjectileLightning" },
+        { "path": "zone.prefabId", "value": "ZoneExplosionLightning" },
+        { "path": "knockback.mode", "value": "Impulse" }
+      ],
+      "semanticTags": [{ "group": "element", "value": "lightning", "priority": 60 }],
+      "visualHints": []
+    },
+    {
+      "token": "молниеносный",
+      "priority": 60,
+      "mapsTo": [
+        { "path": "projectile.prefabId", "value": "ProjectileSpark" },
+        { "path": "projectile.enableBounce", "value": "true" }
+      ],
+      "semanticTags": [{ "group": "element", "value": "lightning", "priority": 60 }],
+      "visualHints": []
+    },
+    {
+      "token": "ядовитый",
+      "priority": 60,
+      "mapsTo": [
+        { "path": "projectile.prefabId", "value": "ProjectileToxic" },
+        { "path": "zone.prefabId", "value": "ZoneToxic" },
+        { "path": "damage.mode", "value": "DamageOverTime" }
+      ],
+      "semanticTags": [{ "group": "element", "value": "poison", "priority": 60 }],
+      "visualHints": []
+    },
+    {
+      "token": "воздушный",
+      "priority": 60,
+      "mapsTo": [
+        { "path": "projectile.prefabId", "value": "ProjectileAir" },
+        { "path": "zone.prefabId", "value": "ZoneAir" },
+        { "path": "knockback.mode", "value": "Impulse" },
+        { "path": "knockback.vectorMode", "value": "AwayFromPoint" }
+      ],
+      "semanticTags": [{ "group": "element", "value": "air", "priority": 60 }],
+      "visualHints": []
+    },
+    {
+      "token": "эфирный",
+      "priority": 60,
+      "mapsTo": [
+        { "path": "projectile.prefabId", "value": "ProjectileAir" },
+        { "path": "projectile.enablePierce", "value": "true" }
+      ],
+      "semanticTags": [{ "group": "element", "value": "air", "priority": 60 }],
+      "visualHints": []
+    },
+    {
+      "token": "вакуумный",
+      "priority": 60,
+      "mapsTo": [],
+      "semanticTags": [
+        { "group": "element", "value": "air", "priority": 60 },
+        { "group": "unsupported", "value": "silence", "priority": 100 }
+      ],
+      "visualHints": [{ "group": "tone", "value": "ritual", "priority": 100 }]
+    },
+    {
+      "token": "земляной",
+      "priority": 60,
+      "mapsTo": [
+        { "path": "projectile.prefabId", "value": "ProjectileDirt" },
+        { "path": "zone.prefabId", "value": "ZoneDirt" }
+      ],
+      "semanticTags": [{ "group": "element", "value": "dirt", "priority": 60 }],
+      "visualHints": []
+    },
+    {
+      "token": "каменный",
+      "priority": 60,
+      "mapsTo": [
+        { "path": "projectile.prefabId", "value": "ProjectileDirt" },
+        { "path": "effects.add", "value": "Armor:Self" }
+      ],
+      "semanticTags": [{ "group": "element", "value": "dirt", "priority": 60 }],
+      "visualHints": [{ "group": "tone", "value": "heavy", "priority": 100 }]
+    },
+    {
+      "token": "теневой",
+      "priority": 60,
+      "mapsTo": [
+        { "path": "projectile.prefabId", "value": "ProjectileEmpty" },
+        { "path": "zone.prefabId", "value": "ZoneShadow" }
+      ],
+      "semanticTags": [{ "group": "element", "value": "shadow", "priority": 60 }],
+      "visualHints": []
+    },
+    {
+      "token": "кровавый",
+      "priority": 60,
+      "mapsTo": [],
+      "semanticTags": [
+        { "group": "element", "value": "shadow", "priority": 60 },
+        { "group": "unsupported", "value": "vampirism", "priority": 100 }
+      ],
+      "visualHints": []
+    },
+    {
+      "token": "световой",
+      "priority": 60,
+      "mapsTo": [],
+      "semanticTags": [
+        { "group": "element", "value": "light", "priority": 60 },
+        { "group": "unsupported", "value": "blind", "priority": 100 }
+      ],
+      "visualHints": []
+    },
+    {
+      "token": "проклятый",
+      "priority": 60,
+      "mapsTo": [],
+      "semanticTags": [
+        { "group": "element", "value": "shadow", "priority": 60 },
+        { "group": "unsupported", "value": "silence", "priority": 100 }
+      ],
+      "visualHints": [{ "group": "tone", "value": "ritual", "priority": 100 }]
+    }
+  ],
+  "implicitRules": [
+    {
+      "id": "storm_knockback",
+      "priority": 90,
+      "whenToken": "громовой",
+      "whenAllTokens": null,
+      "whenAnyTokens": null,
+      "apply": [
+        { "path": "knockback.mode", "value": "Impulse" },
+        { "path": "knockback.vectorMode", "value": "AwayFromPoint" },
+        { "path": "knockback.impulse", "value": "12" }
+      ],
+      "semanticTags": [],
+      "visualHints": []
+    },
+    {
+      "id": "explosion_prefab_upgrade",
+      "priority": 70,
+      "whenToken": "взрыв",
+      "whenAllTokens": null,
+      "whenAnyTokens": null,
+      "apply": [{ "path": "zone.prefabId", "value": "ZoneExplosionFire" }],
+      "semanticTags": [],
+      "visualHints": []
+    },
+    {
+      "id": "puddle_dot",
+      "priority": 70,
+      "whenToken": "лужа",
+      "whenAllTokens": null,
+      "whenAnyTokens": null,
+      "apply": [{ "path": "effects.add", "value": "DamageOverTime:Enemies" }],
+      "semanticTags": [],
+      "visualHints": []
+    },
+    {
+      "id": "through_targets",
+      "priority": 70,
+      "whenToken": null,
+      "whenAllTokens": ["сквозь", "проходит"],
+      "whenAnyTokens": null,
+      "apply": [
+        { "path": "projectile.enablePierce", "value": "true" },
+        { "path": "beam.enablePierce", "value": "true" }
+      ],
+      "semanticTags": [],
+      "visualHints": []
+    },
+    {
+      "id": "destroy_enemy_spells",
+      "priority": 70,
+      "whenToken": null,
+      "whenAllTokens": ["уничтожает", "заклинания"],
+      "whenAnyTokens": null,
+      "apply": [{ "path": "zone.destroyIncomingSpells", "value": "true" }],
+      "semanticTags": [],
+      "visualHints": []
+    }
+  ]
+}
+

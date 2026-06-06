@@ -148,38 +148,94 @@ Payload формируется из блоков:
 
 ## 5.1 Формат
 
+`RuntimePhraseLexicon`:
+
 ```json
 {
   "locale": "ru-RU",
+  "unknownPolicy": "warn_drop",
   "entries": [
     {
       "token": "шар",
-      "priority": 100,
-      "mapsTo": {
-        "coreType": "Projectile",
-        "projectile.moveType": "Linear"
-      }
+      "priority": 120,
+      "mapsTo": [
+        { "path": "coreType", "value": "Projectile" },
+        { "path": "projectile.moveType", "value": "Linear" },
+        { "path": "projectile.enableGravity", "value": "true" }
+      ],
+      "semanticTags": [
+        { "group": "delivery", "value": "projectile", "priority": 120 }
+      ],
+      "visualHints": [
+        { "group": "tone", "value": "heavy", "priority": 80 }
+      ]
     }
   ],
   "implicitRules": [
     {
       "id": "storm_knockback",
+      "priority": 90,
       "whenToken": "громовой",
-      "apply": {
-        "knockback.mode": "Impulse"
-      }
+      "apply": [
+        { "path": "knockback.mode", "value": "Impulse" },
+        { "path": "knockback.vectorMode", "value": "AwayFromPoint" }
+      ]
     }
   ]
 }
 ```
 
-Неизвестные токены: `warn + drop`.
+Поддерживаемые поля:
+- `entries[].token`: нормализованный токен (`ToLowerInvariant`), точное совпадение.
+- `entries[].priority`: приоритет токена в merge.
+- `entries[].mapsTo[]`: список patch-операций `path/value`.
+- `entries[].semanticTags[]`, `entries[].visualHints[]`: теги с группой и приоритетом.
+- `implicitRules[]`: условные правила после прохода по токенам.
+- `unknownPolicy`: в runtime `warn_drop`.
 
-## 5.2 Политика коллизий
-- Конфликт `coreType`: побеждает запись с большим `priority`, при равенстве - последняя по позиции токена.
-- Конфликт shape/movement: тот же принцип.
-- Конфликт визуальных признаков: в `semanticTags` и `visualHints` остаются только признаки с максимальным `priority` внутри одной группы (`element`, `tone`, `density`, `delivery`).
-- При невозможной комбинации после мерджа - ошибка валидации (`SPRB-02xx`).
+## 5.2 Patch-path для runtime
+
+- `coreType`
+- `spawn.spawnMode`, `spawn.instanceCount`, `spawn.instanceLimit`, `spawn.multiInstanceDelay`
+- `common.scale`, `common.lifetime`, `common.manaCost`, `common.bloodMagic`
+- `damage.mode`, `damage.baseType`, `damage.percentOf`, `damage.amount`, `damage.percent`, `damage.tickInterval`
+- `knockback.mode`, `knockback.vectorMode`, `knockback.impulse`, `knockback.forcePerSecond`, `knockback.duration`
+- `effects.add` (`StatusEffectType` или `StatMultiplier:<StatType>[:<EffectTarget>]`)
+- `projectile.*`: `prefabId`, `moveType`, `moveSpeed`, `returnToCaster`, `enableHoming`, `enableGravity`, `enableBounce`, `maxBounces`, `enablePierce`, `maxPierces`, `enableFork`, `forkCount`
+- `zone.*`: `prefabId`, `shapeType`, `moveType`, `moveSpeed`, `returnToCaster`, `enableHoming`, `destroyIncomingSpells`, `impassableForEnemies`, `teleportOnSpawn`
+- `beam.*`: `prefabId`, `shapeType`, `moveType`, `moveSpeed`, `returnToCaster`, `enableBounce`, `maxBounces`, `enablePierce`, `maxPierces`, `enableFork`, `forkCount`
+- `summon.*`: `prefabId`, `brain`, `targetFilter`, `motion`, `moveSpeed`
+- `self.prefabId`
+
+## 5.3 Политика коллизий
+- Конфликт patch-поля: больше `priority`; при равенстве — последний токен в фразе.
+- Конфликт `coreType`/shape/movement: та же политика.
+- Конфликт `semanticTags`/`visualHints` внутри одной `group`: максимум по `priority`, при равенстве — последний токен.
+- `implicitRules` применяются после token-entry и участвуют в тех же коллизиях.
+- Невозможная комбинация после merge — ошибка `SPRB-02xx`.
+
+## 5.4 Реализованные маппинги эффектов из `CUSTOM_SPELL_IMPL.md`
+
+Прямо поддержано (gameplay patch):
+- `взрыв` -> `Zone` + `damage.mode=Instant`
+- `лужа` -> `Zone` + `damage.mode=DamageOverTime`
+- `горение`, `яд` -> `effects.add=DamageOverTime`
+- `заморозка` -> `effects.add=Freeze`
+- `замедление` -> `effects.add=StatMultiplier:MoveSpeed:Enemies`
+- `отталкивание`/`втягивание` -> `knockback.mode=Impulse` + `vectorMode`
+- `отскок` -> `enableBounce`
+- `пробивает`/`проходит сквозь` -> `enablePierce`
+- `разветвление` -> `enableFork`
+- `автонаводка` -> `projectile.enableHoming`
+- `завеса` -> `zone.destroyIncomingSpells=true`
+- `купол` -> `zone.impassableForEnemies=true`
+
+Частично поддержано (через существующие поля/enum):
+- `повышает защиту`, `дает армор` -> `effects.add=Armor` или `StatMultiplier:DamageReduction`
+- `увеличение скорости` -> `StatMultiplier:MoveSpeed:Self`
+
+Не поддержано в gameplay (сохраняется как `semanticTags`):
+- `сайленс`, `слепота`, `вампиризм`, `инверт управления`, `замедление снарядов`
 
 ## 6. Резолв внешнего вида для новых заклинаний (`New` path)
 
