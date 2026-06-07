@@ -160,7 +160,10 @@ public class GameProgress : NetworkBehaviour {
         LobbyManager.Instance.RestartLobby();
         var spawned = NetworkManager.Singleton.SpawnManager.SpawnedObjectsList.ToList();
         foreach (var networkObject in spawned) {
-            if (networkObject.IsSceneObject == false && networkObject.DestroyWithScene)
+            if (networkObject != null
+                && networkObject.IsSpawned
+                && networkObject.IsSceneObject == false
+                && networkObject.DestroyWithScene)
                 networkObject.Despawn(true);
         }
 

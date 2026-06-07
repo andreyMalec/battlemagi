@@ -5,6 +5,7 @@ public class ArchetypeData : ScriptableObject {
     public int id;
     public string archetypeName;
     public GameObject avatarPrefab;
+    public GameObject avatarHandsPrefab;
     public Shader bodyShader;
     public Shader cloakShader;
     public SpellDefinition[] spells;
