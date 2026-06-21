@@ -10,7 +10,6 @@ public class Player : NetworkBehaviour {
     [SerializeField] private Behaviour[] scriptsToDisable;
     [SerializeField] private GameObject[] objectsToDisable;
     [SerializeField] private Camera mainCamera;
-    private string handsLayerName = "First Person Camera";
     private GameObject bodyAvatar;
     private GameObject handsAvatar;
     public MeshController meshController;
@@ -72,7 +71,6 @@ public class Player : NetworkBehaviour {
         movement.jumpStrength = archetype.jumpStrength;
 
         var look = GetComponent<FirstPersonLook>();
-        look.BindAvatar(meshController);
         look.SetCameraOffset(archetype.cameraOffset);
 
         var caster = GetComponent<SpellCasterPlayer>();
@@ -89,34 +87,19 @@ public class Player : NetworkBehaviour {
         var freeze = GetComponentInChildren<Freeze>(true);
         var footIK = bodyAvatar.GetComponent<FootControllerIK>();
         freeze.BindAvatar(animator, footIK);
-        var cam = GetComponentInChildren<FpsCameraClip>(true);
-        cam.head = meshController.head;
     }
 
     private void SpawnHandsAvatar(GameObject handsPrefab) {
-        var handsLayer = ResolveHandsLayer();
-
         handsAvatar = Instantiate(handsPrefab, mainCamera.transform);
         handsAvatar.GetComponent<MeshHands>().Bind();
-
-        Ext.SetLayerRecursively(handsAvatar.transform, handsLayer);
 
         handsAnimator = handsAvatar.GetComponent<Animator>();
         var bodyRuntimeController = animator.runtimeAnimatorController;
         if (handsAnimator != null && handsAnimator.runtimeAnimatorController == null)
             handsAnimator.runtimeAnimatorController = bodyRuntimeController;
 
-        mainCamera.cullingMask &= ~(1 << handsLayer);
-    }
-
-    private int ResolveHandsLayer() {
-        var handsLayer = LayerMask.NameToLayer(handsLayerName);
-        if (handsLayer < 0) {
-            Debug.LogWarning($"[Player] Layer '{handsLayerName}' not found, fallback to layer 31 for hands camera.");
-            handsLayer = 31;
-        }
-
-        return handsLayer;
+        var cam = GetComponentInChildren<FpsCameraClip>(true);
+        cam.BindHands(handsAvatar.transform);
     }
 
     private void HideLocalBodyAvatar() {

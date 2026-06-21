@@ -5,7 +5,6 @@ using UnityEngine;
 public class FirstPersonLook : NetworkBehaviour {
     [SerializeField] private LookSettings lookSettings;
     [SerializeField] private Transform firstPersonCamera;
-    private Transform headBone;
 
     // Сетевые переменные
     private readonly NetworkVariable<Vector2> _syncRotation = new(
@@ -20,10 +19,6 @@ public class FirstPersonLook : NetworkBehaviour {
     [SerializeField] private Vector3 offset;
 
     public Vector2 ViewRotation => _currentRotation;
-
-    public void BindAvatar(MeshController mc) {
-        headBone = mc != null ? mc.head : null;
-    }
 
     public void SetCameraOffset(Vector3 of) {
         offset = of;
@@ -89,27 +84,6 @@ public class FirstPersonLook : NetworkBehaviour {
             transform.localRotation = Quaternion.AngleAxis(_currentRotation.x, Vector3.up);
             firstPersonCamera.localRotation = Quaternion.AngleAxis(-_currentRotation.y, Vector3.right);
         }
-    }
-
-    private void LateUpdate() => UpdateCameraPosition();
-
-    private void UpdateCameraPosition() {
-        if (headBone == null) return;
-
-        Vector3 targetPosition = headBone.position + offset + headBone.TransformDirection(lookSettings.offset);
-        firstPersonCamera.position = Vector3.SmoothDamp(
-            firstPersonCamera.position,
-            targetPosition,
-            ref _positionVelocity,
-            lookSettings.positionSmoothTime
-        );
-
-        // Quaternion targetRotation = headBone.rotation * Quaternion.Euler(lookSettings.rotation);
-        // firstPersonCamera.rotation = Quaternion.Slerp(
-        //     firstPersonCamera.rotation,
-        //     targetRotation,
-        //     lookSettings.rotationSmoothTime
-        // );
     }
 
     public void ApplyInitialRotation(Quaternion worldRotation) {

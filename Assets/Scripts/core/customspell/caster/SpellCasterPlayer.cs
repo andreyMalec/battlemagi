@@ -338,6 +338,9 @@ public class SpellCasterPlayer : SpellCaster {
         if (usedEcho) {
             if (_echoRemaining <= 0) {
                 ResetEcho();
+                if (animateCast || animateHand) {
+                    _animator.CancelAnimate();
+                }
                 yield break;
             }
 
