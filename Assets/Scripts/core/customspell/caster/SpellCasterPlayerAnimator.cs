@@ -12,6 +12,7 @@ public class SpellCasterPlayerAnimator : MonoBehaviour {
 
     private MeshController _meshController;
     private Animator _animator;
+    private Animator _handsAnimator;
     private SpellDefinition _spell;
     private SpellCasterPlayer _caster;
     private Stats _stats;
@@ -45,6 +46,10 @@ public class SpellCasterPlayerAnimator : MonoBehaviour {
         }
     }
 
+    public void BindHandsAnimator(Animator handsAnimator) {
+        _handsAnimator = handsAnimator;
+    }
+
     private void OnSpellCasted(bool _) {
         if (_spell == null) return;
         _caster.Cast(_spell);
@@ -54,6 +59,7 @@ public class SpellCasterPlayerAnimator : MonoBehaviour {
     public void CancelAnimate() {
         _spell = null;
         _networkAnimator.SetTrigger(CancelChanneling);
+        _handsAnimator?.SetTrigger(CancelChanneling);
         CastWaitingAnim(false);
     }
 
@@ -68,8 +74,11 @@ public class SpellCasterPlayerAnimator : MonoBehaviour {
 
     public void CastWaitingAnim(bool waiting, int index = 0) {
         _animator.SetBool(CastWaiting, waiting);
+        _handsAnimator?.SetBool(CastWaiting, waiting);
         if (waiting)
             _animator.SetFloat(CastWaitingIndex, index);
+        if (waiting)
+            _handsAnimator?.SetFloat(CastWaitingIndex, index);
         if (index == 0) {
             _meshController.leftHand.weight = 1;
             _meshController.rightHand.weight = 0;
@@ -103,9 +112,13 @@ public class SpellCasterPlayerAnimator : MonoBehaviour {
     }
 
     private IEnumerator Animate(SpellDefinition spell) {
-        _animator.SetFloat(CastSpeed, _stats?.GetFinal(StatType.CastSpeed) ?? 1f);
+        var castSpeed = _stats?.GetFinal(StatType.CastSpeed) ?? 1f;
+        _animator.SetFloat(CastSpeed, castSpeed);
+        _handsAnimator?.SetFloat(CastSpeed, castSpeed);
         _animator.SetFloat(Invocation, spell.invocationIndex);
+        _handsAnimator?.SetFloat(Invocation, spell.invocationIndex);
         yield return new WaitForSeconds(0.1f);
         _animator.SetFloat(Invocation, 0);
+        _handsAnimator?.SetFloat(Invocation, 0);
     }
 }

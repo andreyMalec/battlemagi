@@ -408,7 +408,7 @@ Camera:
     height: 1
   near clip plane: 0.04
   far clip plane: 1000
-  field of view: 80
+  field of view: 75
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -416,7 +416,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 8400000, guid: 2ef2df97a40d37342b089fcaa61d610e, type: 2}
+  m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -954,6 +954,7 @@ MonoBehaviour:
   - {fileID: 3049812759064434572}
   - {fileID: 3561322077568356742}
   mainCamera: {fileID: 4966461228147620054}
+  meshController: {fileID: 0}
 --- !u!114 &6916625131687324290
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -972,7 +973,6 @@ MonoBehaviour:
   jumpStrength: 0
   movementSpeed: 0
   runSpeed: 0
-  maxStamina: 0
 --- !u!114 &8271153046618425552
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1018,6 +1018,7 @@ MonoBehaviour:
   ikHand: {fileID: 5596533096327910552}
   ikHandRight: {fileID: 6991023923860154135}
   animator: {fileID: 0}
+  secondaryAnimator: {fileID: 0}
   networkAnimator: {fileID: 0}
   meshController: {fileID: 0}
   acceleration: 3
@@ -1259,6 +1260,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerUI
   ShowTopMostFoldoutHeaderGroup: 1
+  barsSmoothSpeed: 10
   echoItemPrefab: {fileID: 3740721941871390414, guid: 66a0e08d4e4d2ef4fafb6f891702d045, type: 3}
   effectItemPrefab: {fileID: 4735756117888980395, guid: d6778ef7c29d49f47a90fa31074d697b, type: 3}
 --- !u!114 &2716919782836391855

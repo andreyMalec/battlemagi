@@ -40,4 +40,11 @@ public static class Ext {
         return map.Where(kv => filter(kv.Value))
             .ToDictionary(i => i.Key, i => i.Value);
     }
+
+    public static void SetLayerRecursively(Transform root, int layer) {
+        root.gameObject.layer = layer;
+        for (int i = 0; i < root.childCount; i++) {
+            SetLayerRecursively(root.GetChild(i), layer);
+        }
+    }
 }

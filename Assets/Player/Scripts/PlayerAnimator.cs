@@ -23,6 +23,7 @@ public class PlayerAnimator : NetworkBehaviour {
     public Transform ikHandRight;
 
     [HideInInspector] public Animator animator;
+    [HideInInspector] public Animator secondaryAnimator;
     [HideInInspector] public NetworkAnimator networkAnimator;
     [HideInInspector] public MeshController meshController;
     private FirstPersonMovement movement;
@@ -199,18 +200,21 @@ public class PlayerAnimator : NetworkBehaviour {
     public void AnimateBool(int key, bool value) {
         if (IsOwner) {
             animator.SetBool(key, value);
+            secondaryAnimator?.SetBool(key, value);
         }
     }
 
     public void AnimateFloat(int key, float value) {
         if (IsOwner) {
             animator.SetFloat(key, value);
+            secondaryAnimator?.SetFloat(key, value);
         }
     }
 
     public void AnimateTrigger(int key) {
         if (IsOwner) {
             networkAnimator.SetTrigger(key);
+            secondaryAnimator?.SetTrigger(key);
         }
     }
 }

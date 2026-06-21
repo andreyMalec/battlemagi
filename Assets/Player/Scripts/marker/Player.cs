@@ -1,6 +1,8 @@
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 [DefaultExecutionOrder(-100)]
 public class Player : NetworkBehaviour {
@@ -8,8 +10,12 @@ public class Player : NetworkBehaviour {
     [SerializeField] private Behaviour[] scriptsToDisable;
     [SerializeField] private GameObject[] objectsToDisable;
     [SerializeField] private Camera mainCamera;
-    private MeshController meshController;
+    private string handsLayerName = "First Person Camera";
+    private GameObject bodyAvatar;
+    private GameObject handsAvatar;
+    public MeshController meshController;
     private Animator animator;
+    private Animator handsAnimator;
     private bool _avatarSpawned;
 
     public readonly NetworkVariable<ulong> SteamIdValue = new();
@@ -25,24 +31,34 @@ public class Player : NetworkBehaviour {
             return;
 
         var archetype = ArchetypeDatabase.Instance.GetArchetype(arch);
-        var currentAvatar = Instantiate(archetype.avatarPrefab, transform); //TODO crash
+        bodyAvatar = Instantiate(archetype.avatarPrefab, transform);
         _avatarSpawned = true;
-        meshController = currentAvatar.GetComponent<MeshController>();
-        animator = currentAvatar.GetComponent<Animator>();
+        meshController = bodyAvatar.GetComponent<MeshController>();
+        animator = bodyAvatar.GetComponent<Animator>();
         var netAnim = GetComponent<NetworkAnimator>();
         netAnim.Animator = animator;
         animator.Rebind();
-        // _networkAnimatorAwake.Invoke(netAnim, null);
 
         // Bind avatar to dependent components on player
         var pa = GetComponent<PlayerAnimator>();
         if (pa != null) {
             pa.animator = animator;
+            pa.secondaryAnimator = null;
             pa.networkAnimator = netAnim;
             pa.meshController = meshController;
         }
 
         var scpa = GetComponent<SpellCasterPlayerAnimator>();
+        if (IsOwner && archetype.avatarHandsPrefab != null) {
+            SpawnHandsAvatar(archetype.avatarHandsPrefab);
+            HideLocalBodyAvatar();
+            if (pa != null)
+                pa.secondaryAnimator = handsAnimator;
+            scpa?.BindHandsAnimator(handsAnimator);
+        } else {
+            scpa?.BindHandsAnimator(null);
+        }
+
         scpa?.BindAvatar(meshController, netAnim, animator, IsOwner);
         var scpp = GetComponent<SpellCasterPlayerPreview>();
         scpp?.BindAvatar(meshController);
@@ -71,10 +87,48 @@ public class Player : NetworkBehaviour {
         var fpss = GetComponentInChildren<FirstPersonSounds>();
         fpss.BindAvatar(animator);
         var freeze = GetComponentInChildren<Freeze>(true);
-        var footIK = currentAvatar.GetComponent<FootControllerIK>();
+        var footIK = bodyAvatar.GetComponent<FootControllerIK>();
         freeze.BindAvatar(animator, footIK);
         var cam = GetComponentInChildren<FpsCameraClip>(true);
         cam.head = meshController.head;
+    }
+
+    private void SpawnHandsAvatar(GameObject handsPrefab) {
+        var handsLayer = ResolveHandsLayer();
+
+        handsAvatar = Instantiate(handsPrefab, mainCamera.transform);
+        handsAvatar.GetComponent<MeshHands>().Bind();
+
+        Ext.SetLayerRecursively(handsAvatar.transform, handsLayer);
+
+        handsAnimator = handsAvatar.GetComponent<Animator>();
+        var bodyRuntimeController = animator.runtimeAnimatorController;
+        if (handsAnimator != null && handsAnimator.runtimeAnimatorController == null)
+            handsAnimator.runtimeAnimatorController = bodyRuntimeController;
+
+        mainCamera.cullingMask &= ~(1 << handsLayer);
+    }
+
+    private int ResolveHandsLayer() {
+        var handsLayer = LayerMask.NameToLayer(handsLayerName);
+        if (handsLayer < 0) {
+            Debug.LogWarning($"[Player] Layer '{handsLayerName}' not found, fallback to layer 31 for hands camera.");
+            handsLayer = 31;
+        }
+
+        return handsLayer;
+    }
+
+    private void HideLocalBodyAvatar() {
+        var renderers = bodyAvatar.GetComponentsInChildren<Renderer>(true);
+        foreach (var avatarRenderer in renderers) {
+            if (avatarRenderer is SkinnedMeshRenderer skinned) {
+                skinned.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
+                skinned.enabled = true;
+            } else {
+                avatarRenderer.enabled = false;
+            }
+        }
     }
 
     public override void OnNetworkSpawn() {
@@ -147,12 +201,13 @@ public class Player : NetworkBehaviour {
         bodyMat.SetFloat(ColorizeMesh.Hue, hue);
         bodyMat.SetFloat(ColorizeMesh.Saturation, saturation);
         bodyMat.SetFloat(ColorizeMesh.Value, ColorizeMesh.CalculateValue());
-        GetComponentInChildren<MeshBody>().gameObject.GetComponent<SkinnedMeshRenderer>().material = bodyMat;
+        meshController.GetComponentInChildren<MeshBody>().gameObject.GetComponent<SkinnedMeshRenderer>().material =
+            bodyMat;
         if (archetype.cloakShader == null) return;
         var cloakMat = new Material(archetype.cloakShader);
         cloakMat.SetFloat(ColorizeMesh.Hue, hue);
         cloakMat.SetFloat(ColorizeMesh.Saturation, saturation);
-        var meshCloak = GetComponentInChildren<MeshCloak>();
+        var meshCloak = meshController.GetComponentInChildren<MeshCloak>();
         if (meshCloak != null)
             meshCloak.gameObject.GetComponent<SkinnedMeshRenderer>().material = cloakMat;
     }
