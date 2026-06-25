@@ -184,15 +184,14 @@ public class FirstPersonMovement : NetworkBehaviour {
     private void PerformJump() {
         _jumpCooldownTimer = movementSettings.jumpCooldown;
         JumpServerRpc(true);
-        StartCoroutine(ApplyJumpForce());
+        ApplyJumpForce();
     }
 
     [ServerRpc]
     private void JumpServerRpc(bool jumping) => _isJumpingNetwork.Value = jumping;
 
-    private IEnumerator ApplyJumpForce() {
+    private void ApplyJumpForce() {
         Jumped?.Invoke();
-        yield return new WaitForSeconds(movementSettings.jumpDelay);
         _physics.Jump(jumpStrength);
         JumpServerRpc(false);
     }

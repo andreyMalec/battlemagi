@@ -50,7 +50,7 @@ public class Player : NetworkBehaviour {
         var scpa = GetComponent<SpellCasterPlayerAnimator>();
         if (IsOwner && archetype.avatarHandsPrefab != null) {
             SpawnHandsAvatar(archetype.avatarHandsPrefab);
-            HideLocalBodyAvatar();
+            LocalBodyAvatar(false);
             if (pa != null)
                 pa.secondaryAnimator = handsAnimator;
             scpa?.BindHandsAnimator(handsAnimator);
@@ -86,7 +86,7 @@ public class Player : NetworkBehaviour {
         fpss.BindAvatar(animator);
         var freeze = GetComponentInChildren<Freeze>(true);
         var footIK = bodyAvatar.GetComponent<FootControllerIK>();
-        freeze.BindAvatar(animator, footIK);
+        freeze.BindAvatar(footIK);
     }
 
     private void SpawnHandsAvatar(GameObject handsPrefab) {
@@ -102,15 +102,10 @@ public class Player : NetworkBehaviour {
         cam.BindHands(handsAvatar.transform);
     }
 
-    private void HideLocalBodyAvatar() {
+    public void LocalBodyAvatar(bool visible) {
         var renderers = bodyAvatar.GetComponentsInChildren<Renderer>(true);
         foreach (var avatarRenderer in renderers) {
-            if (avatarRenderer is SkinnedMeshRenderer skinned) {
-                skinned.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
-                skinned.enabled = true;
-            } else {
-                avatarRenderer.enabled = false;
-            }
+            avatarRenderer.enabled = visible;
         }
     }
 
@@ -186,6 +181,8 @@ public class Player : NetworkBehaviour {
         bodyMat.SetFloat(ColorizeMesh.Value, ColorizeMesh.CalculateValue());
         meshController.GetComponentInChildren<MeshBody>().gameObject.GetComponent<SkinnedMeshRenderer>().material =
             bodyMat;
+        if (handsAvatar != null)
+            handsAvatar.GetComponentInChildren<SkinnedMeshRenderer>().material = bodyMat;
         if (archetype.cloakShader == null) return;
         var cloakMat = new Material(archetype.cloakShader);
         cloakMat.SetFloat(ColorizeMesh.Hue, hue);

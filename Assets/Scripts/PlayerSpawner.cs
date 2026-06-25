@@ -135,7 +135,9 @@ public class PlayerSpawner : NetworkBehaviour {
         if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client)) {
             var player = client.PlayerObject;
             Debug.Log($"[PlayerSpawner] Клиент: Отключаем контроль над игроком {clientId}");
+            player.GetComponent<Player>().LocalBodyAvatar(true);
             player.GetComponentInChildren<MeshController>(true).SetRagdoll(true);
+            player.GetComponentInChildren<MeshHands>()?.gameObject?.SetActive(false);
             player.GetComponentInChildren<Freeze>(true).gameObject.SetActive(false);
             player.GetComponent<CharacterController>().enabled = false;
             player.GetComponent<SpellCasterPlayer>().enabled = false;

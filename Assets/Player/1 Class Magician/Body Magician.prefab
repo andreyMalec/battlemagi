@@ -1805,6 +1805,7 @@ SkinnedMeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   serializedVersion: 2
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
@@ -1889,6 +1890,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f74c1794b5147d5a7cf69ba60f1803b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MeshBody
+  fpsTexture: {fileID: 2800000, guid: e67e476d979178a48882beb387e5b684, type: 3}
+  fullTexture: {fileID: 2800000, guid: 58952369194a5704ca8c25e3d004710c, type: 3}
 --- !u!1 &4078554245983839394
 GameObject:
   m_ObjectHideFlags: 0
@@ -2089,6 +2092,7 @@ MonoBehaviour:
   ikTargetHand: {fileID: 0}
   ikTargetHandRight: {fileID: 0}
   ikTargetSpine: {fileID: 0}
+  meshBody: {fileID: 0}
   leftHandIkConstraint: {fileID: 1840974357398841832}
   rightHandIkConstraint: {fileID: 8233484310459007252}
   headIkConstraint: {fileID: 7493289569253052297}
@@ -3881,6 +3885,7 @@ SkinnedMeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   serializedVersion: 2
   m_Quality: 0
   m_UpdateWhenOffscreen: 0

@@ -47,6 +47,11 @@ public class PlayerAnimator : NetworkBehaviour {
         _stats = GetComponent<Stats>();
     }
 
+    public void AnimatorSpeed(float speed) {
+        animator.speed = speed;
+        secondaryAnimator.speed = speed;
+    }
+
     private void Start() {
         if (!IsOwner) return;
 

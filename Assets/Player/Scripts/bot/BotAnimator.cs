@@ -53,6 +53,10 @@ public class BotAnimator : NetworkBehaviour {
         _stats = GetComponent<Stats>();
     }
 
+    public void AnimatorSpeed(float speed) {
+        animator.speed = speed;
+    }
+
     private void Start() {
         if (!CanAnimate) return;
 

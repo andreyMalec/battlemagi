@@ -2,11 +2,15 @@ using System;
 using UnityEngine;
 
 public class MeshHands : MonoBehaviour {
+    private static readonly int Scale = Shader.PropertyToID("_Scale");
     [SerializeField] private Transform invocation;
-    [SerializeField] private Transform head;
 
     public void Bind() {
         GetComponentInParent<Player>().meshController.invocation = invocation;
-        // GetComponentInParent<Player>().meshController.head = head;
+        foreach (var material in GetComponentInChildren<SkinnedMeshRenderer>().materials) {
+            if (material.HasFloat(Scale)) {
+                material.SetFloat(Scale, 0.35f);
+            }
+        }
     }
 }

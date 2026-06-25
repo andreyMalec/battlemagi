@@ -117,7 +117,7 @@ public class Bot : NetworkBehaviour {
         fpss.BindAvatar(animator);
         var freeze = GetComponentInChildren<Freeze>(true);
         var footIK = currentAvatar.GetComponent<FootControllerIK>();
-        freeze.BindAvatar(animator, footIK);
+        freeze.BindAvatar(footIK);
     }
 
     [ClientRpc]
