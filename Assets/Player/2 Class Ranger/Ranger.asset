@@ -15,6 +15,7 @@ MonoBehaviour:
   id: 2
   archetypeName: Ranger
   avatarPrefab: {fileID: 5671954668504689332, guid: 791fecd333d552a41bb2b1f89ad5e2e9, type: 3}
+  avatarHandsPrefab: {fileID: 7408776955294271091, guid: 9504c98625b0d6942ad0cf93778f00eb, type: 3}
   bodyShader: {fileID: -6465566751694194690, guid: 24b1c9e287d7f9e4096c6535a33ea25d, type: 3}
   cloakShader: {fileID: 0}
   spells:
@@ -25,7 +26,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5aff4380d2e5386449980e021fef36bc, type: 2}
   maxHealth: 50
   maxMana: 125
-  maxStamina: 3
   movementSpeed: 7.5
   runSpeed: 2.6
   healthRegen: 2

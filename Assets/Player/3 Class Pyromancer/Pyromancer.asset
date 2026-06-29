@@ -15,6 +15,7 @@ MonoBehaviour:
   id: 3
   archetypeName: Pyromancer
   avatarPrefab: {fileID: 4443252704760174378, guid: c0eb6bf00cd75974cbb424b6936a91e3, type: 3}
+  avatarHandsPrefab: {fileID: 2938463728310671018, guid: 4d01506acae8c5f419e84dce83ebb44f, type: 3}
   bodyShader: {fileID: -6465566751694194690, guid: ec7b0710a471a9541bdb65ef7402bfd9, type: 3}
   cloakShader: {fileID: 0}
   spells:
@@ -25,7 +26,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 12225e7e668b57448b840d2de4aaaa94, type: 2}
   maxHealth: 125
   maxMana: 100
-  maxStamina: 4
   movementSpeed: 7
   runSpeed: 2
   healthRegen: 3
