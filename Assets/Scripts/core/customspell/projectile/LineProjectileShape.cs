@@ -2,7 +2,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class LineProjectileShape : IShape {
+    private const int MaxHits = 16;
+
     private ISpellContext _context;
+    private readonly RaycastHit[] _hits = new RaycastHit[MaxHits];
 
     public void Init(ISpellContext context) {
         _context = context;
@@ -17,14 +20,37 @@ public class LineProjectileShape : IShape {
             if (distance <= 0.0001f)
                 yield break;
 
+            var direction = delta / distance;
             var bestDistance = float.MaxValue;
-            var hasSolidHit = Physics.Linecast(origin, newPos, out var hit, _context.Spell.defaultRaycast, QueryTriggerInteraction.Ignore);
-            if (hasSolidHit)
-                bestDistance = Vector3.Distance(origin, hit.point);
+
+            var hasSolidHit = false;
+            RaycastHit hit = default;
+            var hitCount = Physics.RaycastNonAlloc(
+                origin,
+                direction,
+                _hits,
+                distance,
+                _context.Spell.defaultRaycast,
+                QueryTriggerInteraction.Ignore
+            );
+            for (var i = 0; i < hitCount; i++) {
+                var candidate = _hits[i];
+                var collider = candidate.collider;
+                if (collider == null)
+                    continue;
+                if (IsCasterCollider(collider))
+                    continue;
+                if (candidate.distance >= bestDistance)
+                    continue;
+
+                bestDistance = candidate.distance;
+                hit = candidate;
+                hasSolidHit = true;
+            }
 
             Draggable bestDraggable = null;
             RaycastHit bestDraggableHit = default;
-            var ray = new Ray(origin, delta / distance);
+            var ray = new Ray(origin, direction);
             var draggables = Draggable.Active;
             for (var i = 0; i < draggables.Count; i++) {
                 var draggable = draggables[i];
@@ -53,5 +79,12 @@ public class LineProjectileShape : IShape {
                 yield return new ShapeHit { Target = hit.collider.gameObject, Point = hit.point, Normal = hit.normal };
             }
         }
+    }
+
+    private bool IsCasterCollider(Collider collider) {
+        if (DamageUtils.TryGetOwnerFromCollider(collider, out _, out ParticipantId owner))
+            return owner == _context.OwnerId;
+
+        return false;
     }
 }

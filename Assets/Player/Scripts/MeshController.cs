@@ -124,7 +124,7 @@ public class MeshController : MonoBehaviour {
         }
     }
 
-    public void Cast() {
+    public void OnAnimationCast() {
         OnCast?.Invoke(true);
     }
 

@@ -187,6 +187,12 @@ public class SpellCasterPlayer : SpellCaster {
             }
         }
 
+        if (_spell != null && _echoRemaining > 0) {
+            if (animateHand) {
+                _animator.CastWaitingAnim(true, _spell.castWaitingIndex);
+            }
+        }
+
         _preview?.SetSpell(_spell);
     }
 
@@ -244,7 +250,7 @@ public class SpellCasterPlayer : SpellCaster {
         }
 
         _spell = null;
-        StartCoroutine(BeginEcho(spell, usedEcho));
+        BeginEcho(spell, usedEcho);
     }
 
     /**
@@ -260,7 +266,7 @@ public class SpellCasterPlayer : SpellCaster {
         }
 
         _spell = null;
-        StartCoroutine(BeginEcho(spell, usedEcho));
+        BeginEcho(spell, usedEcho);
     }
 
     private bool ConsumeCostOrEcho(SpellDefinition spell) {
@@ -329,10 +335,10 @@ public class SpellCasterPlayer : SpellCaster {
         return true;
     }
 
-    private IEnumerator BeginEcho(SpellDefinition spell, bool usedEcho) {
+    private void BeginEcho(SpellDefinition spell, bool usedEcho) {
         if (spell == null || spell.echoCount <= 0) {
             ResetEcho();
-            yield break;
+            return;
         }
 
         if (usedEcho) {
@@ -341,20 +347,19 @@ public class SpellCasterPlayer : SpellCaster {
                 if (animateCast || animateHand) {
                     _animator.CancelAnimate();
                 }
-                yield break;
+
+                return;
             }
 
             if (animateHand) {
-                yield return new WaitForEndOfFrame(); // задержка чтобы успел обновиться Rig для руки
                 _animator.CastWaitingAnim(true, spell.castWaitingIndex);
             }
 
             _spell = spell;
-            yield break;
+            return;
         }
 
         if (animateHand) {
-            yield return new WaitForEndOfFrame();
             _animator.CastWaitingAnim(true, spell.castWaitingIndex);
         }
 

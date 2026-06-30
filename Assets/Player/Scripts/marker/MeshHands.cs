@@ -6,6 +6,8 @@ public class MeshHands : MonoBehaviour {
     [SerializeField] private Transform invocation;
     [SerializeField] private Renderer mesh;
 
+    private MeshController _meshController;
+
     private void Awake() {
         foreach (var material in mesh.materials) {
             if (material.HasFloat(Scale)) {
@@ -14,7 +16,12 @@ public class MeshHands : MonoBehaviour {
         }
     }
 
-    public void Bind() {
-        GetComponentInParent<Player>().meshController.invocation = invocation;
+    public void Bind(MeshController meshController) {
+        _meshController = meshController;
+        meshController.invocation = invocation;
+    }
+
+    public void Cast() {
+        _meshController.OnAnimationCast();
     }
 }

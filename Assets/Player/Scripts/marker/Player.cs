@@ -91,7 +91,7 @@ public class Player : NetworkBehaviour {
 
     private void SpawnHandsAvatar(GameObject handsPrefab) {
         handsAvatar = Instantiate(handsPrefab, mainCamera.transform);
-        handsAvatar.GetComponent<MeshHands>().Bind();
+        handsAvatar.GetComponent<MeshHands>().Bind(meshController);
 
         handsAnimator = handsAvatar.GetComponent<Animator>();
         var bodyRuntimeController = animator.runtimeAnimatorController;
