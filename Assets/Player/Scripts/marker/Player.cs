@@ -44,7 +44,6 @@ public class Player : NetworkBehaviour {
             pa.animator = animator;
             pa.secondaryAnimator = null;
             pa.networkAnimator = netAnim;
-            pa.meshController = meshController;
         }
 
         var scpa = GetComponent<SpellCasterPlayerAnimator>();

@@ -14,13 +14,10 @@ public class PlayerAnimator : NetworkBehaviour {
     private static readonly int FallStart = Animator.StringToHash("Fall Start");
 
     private static readonly float eps = 0.05f;
-    public Transform ikHand;
-    public Transform ikHandRight;
 
     [HideInInspector] public Animator animator;
     [HideInInspector] public Animator secondaryAnimator;
     [HideInInspector] public NetworkAnimator networkAnimator;
-    [HideInInspector] public MeshController meshController;
     private FirstPersonMovement movement;
     private Stats _stats;
 
@@ -39,9 +36,6 @@ public class PlayerAnimator : NetworkBehaviour {
     private bool fallStart = false;
     private float lastPositionY;
 
-    private Vector3 ikPos;
-    private Quaternion ikRot;
-
     public override void OnNetworkSpawn() {
         movement = GetComponent<FirstPersonMovement>();
         _stats = GetComponent<Stats>();
@@ -49,15 +43,14 @@ public class PlayerAnimator : NetworkBehaviour {
 
     public void AnimatorSpeed(float speed) {
         animator.speed = speed;
-        secondaryAnimator.speed = speed;
+        if (secondaryAnimator != null)
+            secondaryAnimator.speed = speed;
     }
 
     private void Start() {
         if (!IsOwner) return;
 
         movement.Jumped += Jumped;
-        ikPos = ikHand.localPosition;
-        ikRot = ikHand.localRotation;
     }
 
     private void Update() {

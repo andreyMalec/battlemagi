@@ -29,7 +29,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   castWaitingIndex: 0
-  invocationIndex: 8
+  invocationIndex: 14
   manaCost: 50
   bloodMagic: 0
   echoCount: 1
@@ -37,6 +37,7 @@ MonoBehaviour:
   channelDuration: 0
   charging: 0
   chargeDuration: 0
+  manaPerSecond: 0
   projectile: {fileID: 0}
   zone: {fileID: 0}
   beam: {fileID: 0}
