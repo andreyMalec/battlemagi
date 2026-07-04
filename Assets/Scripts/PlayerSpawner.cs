@@ -95,7 +95,7 @@ public class PlayerSpawner : NetworkBehaviour {
 
     private IEnumerator HandleDeath(ulong clientId) {
         Debug.Log($"[PlayerSpawner] Сервер: Ждем перед тем как удалить игрока {clientId}");
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(GameModeRules.RespawnTime());
         DestroyClient(clientId);
         yield return new WaitForEndOfFrame();
         SpawnPlayer(clientId);

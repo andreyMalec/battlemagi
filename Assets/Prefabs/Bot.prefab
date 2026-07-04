@@ -1095,6 +1095,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d15ae0ab98c94f13ae52df0c1fd5f343, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellCasterPlayerAnimator
+  preparedSpell: {fileID: 0}
   ikHand: {fileID: 5596533096327910552}
   ikHandRight: {fileID: 6991023923860154135}
 --- !u!114 &8151359896217736792
@@ -1191,6 +1192,12 @@ MonoBehaviour:
   hazardDetourPadding: 1.4
   hazardDetourSamples: 8
   hazardSampleRadius: 2.5
+  usePortals: 1
+  portalStoppingDistance: 0.1
+  portalUseMinGain: 2
+  portalTraversalPenalty: 1
+  portalSampleRadius: 2.5
+  portalRepathDelayAfterTeleport: 0.25
   groundCheck: {fileID: 6466238404988819252}
   jumpStrength: 0
   movementSpeed: 0
@@ -1336,11 +1343,10 @@ MonoBehaviour:
   noLosRepathInterval: 0.35
   noSpellChaseDistance: 5
   targetBodyHeightFactor: 0.75
-  ballisticTargetLift: 0.1
   switchSpellDelay: 2
   castPrepareDelay: 1.5
   lostTargetReacquireDelay: 2
-  echoRecastDelay: 0.2
+  echoRecastDelay: 0.4
   manaCombatRatio: 0.25
   sightMask:
     serializedVersion: 2

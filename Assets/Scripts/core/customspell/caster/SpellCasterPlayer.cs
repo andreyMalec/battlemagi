@@ -330,6 +330,15 @@ public class SpellCasterPlayer : SpellCaster {
         return true;
     }
 
+    public bool TryCastEchoBot(SpellDefinition spell, ITarget target = null) {
+        if (_echoSpell != spell) return false;
+        if (_echoRemaining <= 0) return false;
+
+        Cast(spell, target);
+
+        return true;
+    }
+
     private void BeginEcho(SpellDefinition spell, bool usedEcho) {
         if (spell == null || spell.echoCount <= 0) {
             ResetEcho();

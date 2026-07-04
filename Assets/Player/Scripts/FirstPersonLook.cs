@@ -16,13 +16,8 @@ public class FirstPersonLook : NetworkBehaviour {
     private Vector2 _currentRotation;
     private Vector2 _frameVelocity;
     private Vector3 _positionVelocity;
-    [SerializeField] private Vector3 offset;
 
     public Vector2 ViewRotation => _currentRotation;
-
-    public void SetCameraOffset(Vector3 of) {
-        offset = of;
-    }
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();

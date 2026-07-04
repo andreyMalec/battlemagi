@@ -17,6 +17,9 @@ public static class DamageResolver {
         if (target.IsStructure)
             damageMulti *= def.structureMultiplier;
 
+        if (context.Caster.IsPlayer && !((SpellCasterPlayer)context.Caster).isHuman)
+            damageMulti *= def.fromBotMultiplier;
+
         damageMulti *= context.View.Stats.GetFinal(StatType.SpellDamage);
 
         return damageMulti * def.baseType switch {

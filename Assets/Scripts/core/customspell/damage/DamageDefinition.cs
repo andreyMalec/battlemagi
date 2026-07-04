@@ -27,6 +27,7 @@ public class DamageDefinition : ScriptableObject, IValidate {
     public SpellDamageBaseType baseType;
     public bool scaleWithRange;
     public float structureMultiplier = 1f;
+    public float fromBotMultiplier = 1f;
 
     [ShowIf("_flat")] public float amount = 10f;
 

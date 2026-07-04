@@ -16,5 +16,4 @@ public class ArchetypeData : ScriptableObject {
     public float healthRegen = 3f;
     public float manaRegen = 0.5f;
     public float jumpStrength = 2f;
-    public Vector3 cameraOffset;
 }

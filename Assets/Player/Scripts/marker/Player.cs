@@ -30,6 +30,25 @@ public class Player : NetworkBehaviour {
 
     private int _cameraIndex = 0;
 
+    private float _timeScale = 1;
+
+    private void TimeScale() {
+        var sign = Input.GetKeyDown(KeyCode.DownArrow) ? -1 : 0;
+        if (sign == 0)
+            sign = Input.GetKeyDown(KeyCode.UpArrow) ? 1 : 0;
+        if (Input.GetKeyDown(KeyCode.Keypad0)) {
+            _timeScale = 1;
+            Time.timeScale = _timeScale;
+        }
+
+        if (sign != 0) {
+            _timeScale += sign * 0.1f;
+            _timeScale = Mathf.Clamp(_timeScale, 0.1f, 2f);
+            Debug.Log($" ______________ timeScale : {_timeScale}");
+            Time.timeScale = _timeScale;
+        }
+    }
+
     public void Update() {
         if (!IsOwner) return;
 
@@ -110,9 +129,6 @@ public class Player : NetworkBehaviour {
         movement.movementSpeed = archetype.movementSpeed;
         movement.runSpeed = archetype.runSpeed;
         movement.jumpStrength = archetype.jumpStrength;
-
-        var look = GetComponent<FirstPersonLook>();
-        look.SetCameraOffset(archetype.cameraOffset);
 
         var caster = GetComponent<SpellCasterPlayer>();
         if (GameModeRules.IsChargedShotOnlyMode())

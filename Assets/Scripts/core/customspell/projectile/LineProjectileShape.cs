@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class LineProjectileShape : IShape {
@@ -82,7 +83,7 @@ public class LineProjectileShape : IShape {
     }
 
     private bool IsCasterCollider(Collider collider) {
-        if (DamageUtils.TryGetOwnerFromCollider(collider, out _, out ParticipantId owner))
+        if (DamageUtils.TryGetOwnerFromCollider(collider, out var dam, out ParticipantId owner) && !dam.IsStructure)
             return owner == _context.OwnerId;
 
         return false;
