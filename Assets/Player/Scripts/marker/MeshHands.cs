@@ -11,7 +11,7 @@ public class MeshHands : MonoBehaviour {
     private void Awake() {
         foreach (var material in mesh.materials) {
             if (material.HasFloat(Scale)) {
-                material.SetFloat(Scale, 0.35f);
+                material.SetFloat(Scale, 0.00005f);
             }
         }
     }

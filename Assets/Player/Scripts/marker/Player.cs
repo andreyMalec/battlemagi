@@ -1,3 +1,4 @@
+using System.Linq;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
@@ -13,6 +14,7 @@ public class Player : NetworkBehaviour {
     private GameObject bodyAvatar;
     private GameObject handsAvatar;
     public MeshController meshController;
+    public MeshBody meshBody;
     public MeshHands meshHands;
     private Animator animator;
     private Animator handsAnimator;
@@ -33,7 +35,8 @@ public class Player : NetworkBehaviour {
 
         if (Input.GetKeyDown(KeyCode.P)) {
             var i = 0;
-            var cameras = GetComponentsInChildren<Camera>();
+            var cameras = GetComponentsInChildren<Camera>()
+                .Filter(it => it.targetTexture == null).ToArray();
             _cameraIndex = (_cameraIndex + 1) % cameras.Length;
             var isFP = _cameraIndex == 0;
             foreach (var cam in cameras) {
@@ -71,6 +74,7 @@ public class Player : NetworkBehaviour {
         bodyAvatar = Instantiate(archetype.avatarPrefab, transform);
         _avatarSpawned = true;
         meshController = bodyAvatar.GetComponent<MeshController>();
+        meshBody = bodyAvatar.GetComponentInChildren<MeshBody>();
         animator = bodyAvatar.GetComponent<Animator>();
         var netAnim = GetComponent<NetworkAnimator>();
         netAnim.Animator = animator;
@@ -91,6 +95,7 @@ public class Player : NetworkBehaviour {
             if (pa != null)
                 pa.secondaryAnimator = handsAnimator;
             scpa?.BindHandsAnimator(handsAnimator);
+            meshBody.gameObject.layer = LayerMask.NameToLayer("Mirror");
         } else {
             scpa?.BindHandsAnimator(null);
         }
@@ -142,8 +147,10 @@ public class Player : NetworkBehaviour {
     public void LocalBodyAvatar(bool visible) {
         var renderers = bodyAvatar.GetComponentsInChildren<Renderer>(true);
         foreach (var avatarRenderer in renderers) {
-            avatarRenderer.enabled = visible;
+            if (!avatarRenderer.TryGetComponent<MeshBody>(out _))
+                avatarRenderer.enabled = visible;
         }
+
         renderers = handsAvatar.GetComponentsInChildren<Renderer>(true);
         foreach (var avatarRenderer in renderers) {
             avatarRenderer.enabled = !visible;
@@ -218,8 +225,7 @@ public class Player : NetworkBehaviour {
         bodyMat.SetFloat(ColorizeMesh.Hue, hue);
         bodyMat.SetFloat(ColorizeMesh.Saturation, saturation);
         bodyMat.SetFloat(ColorizeMesh.Value, ColorizeMesh.CalculateValue());
-        meshController.GetComponentInChildren<MeshBody>().gameObject.GetComponent<SkinnedMeshRenderer>().material =
-            bodyMat;
+        meshBody.GetComponent<SkinnedMeshRenderer>().material = bodyMat;
         if (handsAvatar != null)
             handsAvatar.GetComponentInChildren<SkinnedMeshRenderer>().material = bodyMat;
         if (archetype.cloakShader == null) return;
