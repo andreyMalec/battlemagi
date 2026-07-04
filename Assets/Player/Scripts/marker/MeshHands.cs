@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class MeshHands : MonoBehaviour {
     private static readonly int Scale = Shader.PropertyToID("_Scale");
-    [SerializeField] private Transform invocation;
+    public Transform invocation;
     [SerializeField] private Renderer mesh;
 
     private MeshController _meshController;
@@ -18,7 +18,6 @@ public class MeshHands : MonoBehaviour {
 
     public void Bind(MeshController meshController) {
         _meshController = meshController;
-        meshController.invocation = invocation;
     }
 
     public void Cast() {

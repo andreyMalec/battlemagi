@@ -755,7 +755,6 @@ MonoBehaviour:
   rightHandIkConstraint: {fileID: 8756452194227605259}
   headIkConstraint: {fileID: 1768964703136911664}
   spineIkConstraint: {fileID: 4768013908766636261}
-  head: {fileID: 6124197396120726918}
   invocation: {fileID: 445553768000199812}
   cloak: {fileID: 0}
   rigidbodies:
@@ -2245,13 +2244,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4974375774137473912}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.007, y: 0.1312, z: 0.0031}
+  m_LocalRotation: {x: -0.72706527, y: -0.5204011, z: -0.05073971, w: 0.4449543}
+  m_LocalPosition: {x: -0.018, y: 0.149, z: -0.067}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2385912454975678523}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -135.587, y: 33.028, z: -84.98901}
 --- !u!1 &4996477093593550721
 GameObject:
   m_ObjectHideFlags: 0
@@ -3602,6 +3601,7 @@ SkinnedMeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   serializedVersion: 2
   m_Quality: 0
   m_UpdateWhenOffscreen: 0

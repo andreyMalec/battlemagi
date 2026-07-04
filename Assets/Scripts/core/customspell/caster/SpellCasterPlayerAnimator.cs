@@ -13,7 +13,8 @@ public class SpellCasterPlayerAnimator : MonoBehaviour {
     private MeshController _meshController;
     private Animator _animator;
     private Animator _handsAnimator;
-    private SpellDefinition _spell;
+    private SpellDefinition _castedSpell;
+    public SpellDefinition preparedSpell;
     private SpellCasterPlayer _caster;
     private Stats _stats;
 
@@ -27,6 +28,13 @@ public class SpellCasterPlayerAnimator : MonoBehaviour {
     private void Awake() {
         _caster = GetComponent<SpellCasterPlayer>();
         _stats = GetComponent<Stats>();
+    }
+
+    private void Update() {
+        if (_castedSpell != null || preparedSpell != null) {
+            CastWaitingAnim(true, _castedSpell?.castWaitingIndex ?? preparedSpell?.castWaitingIndex ?? 0);
+        } else 
+            CastWaitingAnim(false);
     }
 
     public void BindAvatar(MeshController mc, NetworkAnimator na, Animator a, bool isOwner) {
@@ -51,13 +59,13 @@ public class SpellCasterPlayerAnimator : MonoBehaviour {
     }
 
     private void OnSpellCasted(bool _) {
-        if (_spell == null) return;
-        _caster.Cast(_spell);
-        _spell = null;
+        if (_castedSpell == null) return;
+        _caster.Cast(_castedSpell);
+        _castedSpell = null;
     }
 
     public void CancelAnimate() {
-        _spell = null;
+        _castedSpell = null;
         _networkAnimator.SetTrigger(CancelChanneling);
         _handsAnimator?.SetTrigger(CancelChanneling);
         CastWaitingAnim(false);
@@ -65,7 +73,7 @@ public class SpellCasterPlayerAnimator : MonoBehaviour {
 
     public void AnimateCast(SpellDefinition spell) {
         CastWaitingAnim(false);
-        _spell = spell;
+        _castedSpell = spell;
         if (spell.invocationIndex <= 0)
             OnSpellCasted(true);
         else
@@ -79,7 +87,9 @@ public class SpellCasterPlayerAnimator : MonoBehaviour {
             _animator.SetFloat(CastWaitingIndex, index);
         if (waiting)
             _handsAnimator?.SetFloat(CastWaitingIndex, index);
-        if (index == 0) {
+        if (!waiting)
+            _castedSpell = null;
+        if (index == 0 || index == 2) {
             _meshController.leftHand.weight = 1;
             _meshController.rightHand.weight = 0;
             if (waiting) {
@@ -95,7 +105,7 @@ public class SpellCasterPlayerAnimator : MonoBehaviour {
         }
 
         if (index == 1) {
-            _meshController.leftHand.weight = 1f; //TODO
+            _meshController.leftHand.weight = 1f;
             _meshController.rightHand.weight = 1f;
             if (waiting) {
                 ikHand.localPosition = new Vector3(0.14f, -0.225f, 0.23f);

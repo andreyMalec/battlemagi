@@ -65,8 +65,6 @@ public class Bot : NetworkBehaviour {
             if (!IsOwner && meshController != null) {
                 meshController.leftHand.weight = 0f;
                 meshController.spine.weight *= 3f;
-                meshController.invocation.localRotation =
-                    Quaternion.Euler(new Vector3(320.634674f, 355.449707f, 39.6077499f));
             }
         }
     }
@@ -95,7 +93,7 @@ public class Bot : NetworkBehaviour {
         var scpa = GetComponent<SpellCasterPlayerAnimator>();
         scpa?.BindAvatar(meshController, netAnim, animator, IsOwner);
         var scpp = GetComponent<SpellCasterPlayerPreview>();
-        scpp?.BindAvatar(meshController);
+        scpp?.BindHand(meshController.invocation);
 
         var movement = GetComponent<BotMovement>();
         movement.movementSpeed = archetype.movementSpeed;

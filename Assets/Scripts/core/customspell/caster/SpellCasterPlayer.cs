@@ -187,13 +187,8 @@ public class SpellCasterPlayer : SpellCaster {
             }
         }
 
-        if (_spell != null && _echoRemaining > 0) {
-            if (animateHand) {
-                _animator.CastWaitingAnim(true, _spell.castWaitingIndex);
-            }
-        }
-
         _preview?.SetSpell(_spell);
+        _animator.preparedSpell = _spell;
     }
 
     public void SelectSpell([CanBeNull] SpellDefinition spell) {
@@ -345,7 +340,7 @@ public class SpellCasterPlayer : SpellCaster {
             if (_echoRemaining <= 0) {
                 ResetEcho();
                 if (animateCast || animateHand) {
-                    _animator.CancelAnimate();
+                    _animator.CastWaitingAnim(false);
                 }
 
                 return;

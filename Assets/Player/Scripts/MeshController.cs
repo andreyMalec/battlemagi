@@ -17,9 +17,6 @@ public class MeshController : MonoBehaviour {
     [SerializeField] TwoBoneIKConstraint headIkConstraint;
     [SerializeField] TwoBoneIKConstraint spineIkConstraint;
 
-    [Header("Refs")]
-    public Transform head = null;
-
     public Transform invocation;
     [CanBeNull] public GameObject cloak;
 

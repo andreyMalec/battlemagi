@@ -13,6 +13,7 @@ public class Player : NetworkBehaviour {
     private GameObject bodyAvatar;
     private GameObject handsAvatar;
     public MeshController meshController;
+    public MeshHands meshHands;
     private Animator animator;
     private Animator handsAnimator;
     private bool _avatarSpawned;
@@ -24,6 +25,43 @@ public class Player : NetworkBehaviour {
 
     public int ArchetypeId => ArchetypeValue.Value;
     public ulong SteamId => SteamIdValue.Value;
+
+    private int _cameraIndex = 0;
+
+    public void Update() {
+        if (!IsOwner) return;
+
+        if (Input.GetKeyDown(KeyCode.P)) {
+            var i = 0;
+            var cameras = GetComponentsInChildren<Camera>();
+            _cameraIndex = (_cameraIndex + 1) % cameras.Length;
+            var isFP = _cameraIndex == 0;
+            foreach (var cam in cameras) {
+                cam.enabled = i == _cameraIndex;
+                i++;
+            }
+
+            LocalBodyAvatar(!isFP);
+            BindHand();
+            var cloak = meshController.cloak;
+            if (cloak == null) return;
+            if (isFP) {
+                cloak.GetComponent<SkinnedMeshRenderer>().shadowCastingMode = ShadowCastingMode.Off;
+            } else {
+                cloak.GetComponent<SkinnedMeshRenderer>().shadowCastingMode = ShadowCastingMode.On;
+            }
+        }
+    }
+
+    private void BindHand() {
+        var isFP = _cameraIndex == 0;
+        var scpp = GetComponent<SpellCasterPlayerPreview>();
+        if (isFP) {
+            scpp?.BindHand(meshHands.invocation);
+        } else {
+            scpp?.BindHand(meshController.invocation);
+        }
+    }
 
     private void SpawnAvatar(int arch) {
         if (_avatarSpawned)
@@ -58,8 +96,7 @@ public class Player : NetworkBehaviour {
         }
 
         scpa?.BindAvatar(meshController, netAnim, animator, IsOwner);
-        var scpp = GetComponent<SpellCasterPlayerPreview>();
-        scpp?.BindAvatar(meshController);
+        BindHand();
 
         if (isDummy)
             return;
@@ -90,7 +127,8 @@ public class Player : NetworkBehaviour {
 
     private void SpawnHandsAvatar(GameObject handsPrefab) {
         handsAvatar = Instantiate(handsPrefab, mainCamera.transform);
-        handsAvatar.GetComponent<MeshHands>().Bind(meshController);
+        meshHands = handsAvatar.GetComponent<MeshHands>();
+        meshHands.Bind(meshController);
 
         handsAnimator = handsAvatar.GetComponent<Animator>();
         var bodyRuntimeController = animator.runtimeAnimatorController;
@@ -105,6 +143,10 @@ public class Player : NetworkBehaviour {
         var renderers = bodyAvatar.GetComponentsInChildren<Renderer>(true);
         foreach (var avatarRenderer in renderers) {
             avatarRenderer.enabled = visible;
+        }
+        renderers = handsAvatar.GetComponentsInChildren<Renderer>(true);
+        foreach (var avatarRenderer in renderers) {
+            avatarRenderer.enabled = !visible;
         }
     }
 
@@ -138,8 +180,6 @@ public class Player : NetworkBehaviour {
             if (!IsOwner && meshController != null) {
                 meshController.leftHand.weight = 0f;
                 meshController.spine.weight *= 3f;
-                meshController.invocation.localRotation =
-                    Quaternion.Euler(new Vector3(320.634674f, 355.449707f, 39.6077499f));
             }
 
             mainCamera.GetComponent<Camera>().enabled = false;
