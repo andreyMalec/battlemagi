@@ -9,6 +9,11 @@ public class SpellCasterPlayerAnimator : MonoBehaviour {
     private static readonly int CastSpeed = Animator.StringToHash("CastSpeed");
     private static readonly int CastWaitingIndex = Animator.StringToHash("CastWaitingIndex");
     private static readonly int CancelChanneling = Animator.StringToHash("CancelChanneling");
+    private static readonly int Idle = Animator.StringToHash("Idle");
+    private static readonly int IdleIndex = Animator.StringToHash("IdleIndex");
+
+    [SerializeField] private Vector2 idleTimeRange = new Vector2(15f, 30f);
+    [SerializeField] private Vector2 idleIndexRange = new Vector2(0f, 2f);
 
     private MeshController _meshController;
     private Animator _animator;
@@ -21,10 +26,13 @@ public class SpellCasterPlayerAnimator : MonoBehaviour {
     private NetworkAnimator _networkAnimator;
 
     private bool _isOwner;
+    private float _idleTimer;
+    private float _idleWait;
 
     private void Awake() {
         _caster = GetComponent<SpellCasterPlayer>();
         _stats = GetComponent<Stats>();
+        _idleWait = UnityEngine.Random.Range(idleTimeRange.x, idleTimeRange.y);
     }
 
     private void Update() {
@@ -32,8 +40,18 @@ public class SpellCasterPlayerAnimator : MonoBehaviour {
 
         if (_castedSpell != null || preparedSpell != null) {
             CastWaitingAnim(true, _castedSpell?.castWaitingIndex ?? preparedSpell?.castWaitingIndex ?? 0);
-        } else
+            _idleTimer = 0f;
+        } else {
             CastWaitingAnim(false);
+            _idleTimer += Time.deltaTime;
+            if (_idleTimer >= _idleWait) {
+                _handsAnimator?.SetInteger(IdleIndex,
+                    UnityEngine.Random.Range((int)idleIndexRange.x, (int)idleIndexRange.y + 1));
+                _handsAnimator?.SetTrigger(Idle);
+                _idleTimer = 0f;
+                _idleWait = UnityEngine.Random.Range(idleTimeRange.x, idleTimeRange.y);
+            }
+        }
     }
 
     public void BindAvatar(MeshController mc, NetworkAnimator na, Animator a, bool isOwner) {

@@ -1411,6 +1411,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d15ae0ab98c94f13ae52df0c1fd5f343, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellCasterPlayerAnimator
+  idleTimeRange: {x: 15, y: 30}
+  idleIndexRange: {x: 0, y: 2}
   preparedSpell: {fileID: 0}
 --- !u!114 &8151359896217736792
 MonoBehaviour:

@@ -164,6 +164,7 @@ public class Player : NetworkBehaviour {
                 avatarRenderer.enabled = visible;
         }
 
+        if (handsAvatar == null) return;
         renderers = handsAvatar.GetComponentsInChildren<Renderer>(true);
         foreach (var avatarRenderer in renderers) {
             avatarRenderer.enabled = !visible;

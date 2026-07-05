@@ -5,6 +5,8 @@ public class MeshHands : MonoBehaviour {
     private static readonly int Scale = Shader.PropertyToID("_Scale");
     public Transform invocation;
     [SerializeField] private Renderer mesh;
+    [SerializeField] private AudioSource clapSource;
+    [SerializeField] private AudioClip[] claps;
 
     private MeshController _meshController;
 
@@ -22,5 +24,9 @@ public class MeshHands : MonoBehaviour {
 
     public void Cast() {
         _meshController.OnAnimationCast();
+    }
+
+    public void Clap() {
+        clapSource.Play(claps);
     }
 }
