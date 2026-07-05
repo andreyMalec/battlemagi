@@ -57,6 +57,9 @@ public class LineProjectileShape : IShape {
                 var draggable = draggables[i];
                 if (draggable == null)
                     continue;
+                // check layer of object in raycast layers
+                if ((_context.Spell.defaultRaycast & (1 << draggable.gameObject.layer)) == 0)
+                    continue;
                 if (!draggable.TryRaycast(ray, distance, out var draggableHit))
                     continue;
                 if (draggableHit.distance >= bestDistance)
