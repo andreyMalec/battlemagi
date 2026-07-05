@@ -54,7 +54,15 @@ public class PlayerDamageable : NetworkBehaviour {
         var deathSource = deathInfo.source;
         if (killer.IsBot)
             deathSource += " (Bot)";
-        SendAnalytics(OwnerClientId, deathSource);
+        string killerArchetype = null;
+        try {
+            var killerData = PlayerManager.Instance.Participants.First(p => p.Id == killer);
+            killerArchetype = ArchetypeDatabase.Instance.GetArchetype(killerData.Archetype).archetypeName;
+        } catch (Exception) {
+            // ignored
+        }
+
+        SendAnalytics(OwnerClientId, deathSource, killerArchetype);
 
         var lifeDamageByAttacker = _damagedBySource
             .Where(x => x.fromId != OwnerClientId)
@@ -64,7 +72,7 @@ public class PlayerDamageable : NetworkBehaviour {
         PlayerAchievementsManager.Instance?.ReportDeathServer(OwnerClientId, deathInfo);
     }
 
-    private void SendAnalytics(ulong ownerClientId, string source) {
+    private void SendAnalytics(ulong ownerClientId, string source, string killerArchetype) {
         var sendParams = new ClientRpcParams {
             Send = new ClientRpcSendParams { TargetClientIds = new[] { ownerClientId } }
         };
@@ -77,11 +85,16 @@ public class PlayerDamageable : NetworkBehaviour {
             })
             .OrderByDescending(x => x.damage)
             .ToArray();
-        PlayerKilledClientRpc(source, damageSource, sendParams);
+        PlayerKilledClientRpc(source, killerArchetype, damageSource, sendParams);
     }
 
     [ClientRpc]
-    private void PlayerKilledClientRpc(string source, DamageInfo[] damagedBy, ClientRpcParams _ = default) {
+    private void PlayerKilledClientRpc(
+        string source,
+        string killerArchetype,
+        DamageInfo[] damagedBy,
+        ClientRpcParams _ = default
+    ) {
         foreach (var entry in damagedBy) {
             FirebaseAnalytic.Instance.SendEvent("PlayerDamaged", new Dictionary<string, object> {
                 { "source", entry.source },
@@ -90,7 +103,8 @@ public class PlayerDamageable : NetworkBehaviour {
         }
 
         FirebaseAnalytic.Instance.SendEvent("PlayerKilled", new Dictionary<string, object> {
-            { "source", source }
+            { "source", source },
+            { "killerArchetype", killerArchetype }
         });
     }
 

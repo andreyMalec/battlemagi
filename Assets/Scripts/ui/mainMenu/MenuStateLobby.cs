@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,6 +21,12 @@ public class MenuStateLobby : MonoBehaviour {
     [SerializeField] private TMP_Text lobbyName;
     [SerializeField] private TMP_InputField fieldLobbyId;
     private TMP_Text copyButtonText;
+
+    private const string PrefLobbyVisibility = "menu.lobby.dropdown.visibility";
+    private const string PrefMap = "menu.lobby.dropdown.map";
+    private const string PrefMode = "menu.lobby.dropdown.mode";
+    private const string PrefGameEnd = "menu.lobby.dropdown.gameEnd";
+    private const string PrefKeyCast = "menu.lobby.dropdown.keyCast";
 
     private int readyCount = 0;
 
@@ -73,8 +80,15 @@ public class MenuStateLobby : MonoBehaviour {
             new(R.String("lobby.keyCast.disabled")),
             new(R.String("lobby.keyCast.enabled")),
         };
+
+        StartCoroutine(LoadDropdownState());
+
         UpdateGameEndTargetText();
         PublishLobbyMeta();
+    }
+
+    private void OnDisable() {
+        TeamManager.Instance.CurrentMode.OnValueChanged -= OnGameModeChanged;
     }
 
     private List<TMP_Dropdown.OptionData> BuildMapOptions(int modeIndex) {
@@ -140,6 +154,7 @@ public class MenuStateLobby : MonoBehaviour {
 
     private void SubmitVisibility(int index) {
         LobbyManager.Instance.SetVisibility((LobbyVisibility)index);
+        SaveDropdownValue(PrefLobbyVisibility, index);
         UpdateVisibility();
     }
 
@@ -156,6 +171,7 @@ public class MenuStateLobby : MonoBehaviour {
         }
 
         GameProgress.Instance.SelectMap(index);
+        SaveDropdownValue(PrefMap, index);
         PublishLobbyMeta();
     }
 
@@ -179,16 +195,24 @@ public class MenuStateLobby : MonoBehaviour {
             }
         }
 
+        SaveDropdownValue(PrefMode, index);
         UpdateMap();
         PublishLobbyMeta();
     }
 
     private void SubmitEndChoice(int index) {
         TeamManager.Instance.SetEndChoice(index);
+        SaveDropdownValue(PrefGameEnd, index);
     }
 
     private void SubmitKeyCast(int index) {
         GameProgress.Instance.SetKeyCast(index == 1);
+        SaveDropdownValue(PrefKeyCast, index);
+    }
+
+    private void OnGameModeChanged(TeamManager.TeamMode o1, TeamManager.TeamMode o2) {
+        UpdateGameEndOptions((int)o2);
+        Debug.Log($"Client: OnGameModeChanged {o1} -> {o2}");
     }
 
     private void UpdateGameEndOptions(int modeIndex) {
@@ -202,12 +226,10 @@ public class MenuStateLobby : MonoBehaviour {
         }
 
         dropdownGameEnd.options = options;
-        dropdownGameEnd.value = 0;
     }
 
     private void UpdateGameEndTargetText() {
-        int modeIndex = dropdownMode.value;
-        gameEndTarget.text = modeIndex == (int)TeamManager.TeamMode.CaptureTheFlag
+        gameEndTarget.text = TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.CaptureTheFlag
             ? R.String("lobby.targetFlags")
             : R.String("lobby.targetKills");
     }
@@ -231,8 +253,57 @@ public class MenuStateLobby : MonoBehaviour {
     private void LeaveLobby() {
         LobbyManager.Instance.LeaveLobby();
         buttonReady.GetComponent<Image>().color = Color.white;
-        dropdownMap.value = 0;
-        dropdownMode.value = 0;
+    }
+
+    private IEnumerator LoadDropdownState() {
+        while (!NetworkManager.Singleton.IsConnectedClient) {
+            yield return null;
+        }
+
+        TeamManager.Instance.CurrentMode.OnValueChanged += OnGameModeChanged;
+        UpdateGameEndOptions((int)TeamManager.Instance.CurrentMode.Value);
+
+        if (!NetworkManager.Singleton.IsHost) yield break;
+
+        var visibilityIndex = GetSavedDropdownValue(PrefLobbyVisibility, dropdownLobbyVisibility.value,
+            dropdownLobbyVisibility.options.Count);
+        dropdownLobbyVisibility.SetValueWithoutNotify(visibilityIndex);
+        SubmitVisibility(visibilityIndex);
+
+        var keyCastIndex = GetSavedDropdownValue(PrefKeyCast, GameConfig.Instance.allowKeySpells ? 1 : 0,
+            dropdownKeyCast.options.Count);
+        dropdownKeyCast.SetValueWithoutNotify(keyCastIndex);
+        SubmitKeyCast(keyCastIndex);
+
+        var mapIndex =
+            GetSavedDropdownValue(PrefMap, GameProgress.Instance.SelectedMap.Value, dropdownMap.options.Count);
+        dropdownMap.SetValueWithoutNotify(mapIndex);
+        SubmitMap(mapIndex);
+
+        while (LobbyManager.Instance.CurrentLobby == null
+               || LobbyManager.Instance.CurrentLobby.Value.MemberCount == 0) {
+            yield return null;
+        }
+
+        yield return new WaitForEndOfFrame();
+
+        var modeIndex = GetSavedDropdownValue(PrefMode, dropdownMode.value, dropdownMode.options.Count);
+        dropdownMode.SetValueWithoutNotify(modeIndex);
+        SubmitMode(modeIndex);
+
+        var gameEndIndex = GetSavedDropdownValue(PrefGameEnd, dropdownGameEnd.value, dropdownGameEnd.options.Count);
+        dropdownGameEnd.SetValueWithoutNotify(gameEndIndex);
+        SubmitEndChoice(gameEndIndex);
+    }
+
+    private static int GetSavedDropdownValue(string key, int fallbackValue, int optionsCount) {
+        var value = PlayerPrefs.GetInt(key, fallbackValue);
+        return Mathf.Clamp(value, 0, optionsCount - 1);
+    }
+
+    private void SaveDropdownValue(string key, int value) {
+        PlayerPrefs.SetInt(key, value);
+        PlayerPrefs.Save();
     }
 
     private void PublishLobbyMeta() {

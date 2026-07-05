@@ -20,10 +20,7 @@ public class SpellCasterPlayerAnimator : MonoBehaviour {
 
     private NetworkAnimator _networkAnimator;
 
-    public Transform ikHand;
-    public Transform ikHandRight;
-    private Vector3 _ikPos;
-    private Quaternion _ikRot;
+    private bool _isOwner;
 
     private void Awake() {
         _caster = GetComponent<SpellCasterPlayer>();
@@ -31,13 +28,16 @@ public class SpellCasterPlayerAnimator : MonoBehaviour {
     }
 
     private void Update() {
+        if (!_isOwner) return;
+
         if (_castedSpell != null || preparedSpell != null) {
             CastWaitingAnim(true, _castedSpell?.castWaitingIndex ?? preparedSpell?.castWaitingIndex ?? 0);
-        } else 
+        } else
             CastWaitingAnim(false);
     }
 
     public void BindAvatar(MeshController mc, NetworkAnimator na, Animator a, bool isOwner) {
+        _isOwner = isOwner;
         if (_meshController != null && isOwner)
             _meshController.OnCast -= OnSpellCasted;
 
@@ -47,11 +47,6 @@ public class SpellCasterPlayerAnimator : MonoBehaviour {
 
         if (_meshController != null && isOwner)
             _meshController.OnCast += OnSpellCasted;
-
-        if (isOwner) {
-            _ikPos = ikHand.localPosition;
-            _ikRot = ikHand.localRotation;
-        }
     }
 
     public void BindHandsAnimator(Animator handsAnimator) {
@@ -72,6 +67,7 @@ public class SpellCasterPlayerAnimator : MonoBehaviour {
     }
 
     public void AnimateCast(SpellDefinition spell) {
+        if (!_isOwner) return;
         CastWaitingAnim(false);
         _castedSpell = spell;
         if (spell.invocationIndex <= 0)
@@ -81,47 +77,18 @@ public class SpellCasterPlayerAnimator : MonoBehaviour {
     }
 
     public void CastWaitingAnim(bool waiting, int index = 0) {
+        if (!_isOwner) return;
         _animator.SetBool(CastWaiting, waiting);
         _handsAnimator?.SetBool(CastWaiting, waiting);
-        if (waiting)
+        if (waiting) {
             _animator.SetFloat(CastWaitingIndex, index);
-        if (waiting)
             _handsAnimator?.SetFloat(CastWaitingIndex, index);
-        if (!waiting)
+        } else
             _castedSpell = null;
-        if (index == 0 || index == 2) {
-            _meshController.leftHand.weight = 1;
-            _meshController.rightHand.weight = 0;
-            if (waiting) {
-                ikHand.localPosition = new Vector3(-0.55f, -0.24f, 0.44f);
-                ikHand.localRotation = Quaternion.Euler(0, -90, 0);
-            } else {
-                ikHand.localPosition = _ikPos;
-                ikHand.localRotation = _ikRot;
-            }
-
-            ikHandRight.localPosition = ikHand.localPosition;
-            ikHandRight.localRotation = ikHand.localRotation;
-        }
-
-        if (index == 1) {
-            _meshController.leftHand.weight = 1f;
-            _meshController.rightHand.weight = 1f;
-            if (waiting) {
-                ikHand.localPosition = new Vector3(0.14f, -0.225f, 0.23f);
-                ikHand.localRotation = Quaternion.Euler(-192f, -74.6f, -108f);
-                ikHandRight.localPosition = new Vector3(0.08f, -0.178f, 0.252f);
-                ikHandRight.localRotation = Quaternion.Euler(-210f, -82f, -96f);
-            } else {
-                ikHand.localPosition = _ikPos;
-                ikHand.localRotation = _ikRot;
-                ikHandRight.localPosition = ikHand.localPosition;
-                ikHandRight.localRotation = ikHand.localRotation;
-            }
-        }
     }
 
     private IEnumerator Animate(SpellDefinition spell) {
+        if (!_isOwner) yield break;
         var castSpeed = _stats?.GetFinal(StatType.CastSpeed) ?? 1f;
         _animator.SetFloat(CastSpeed, castSpeed);
         _handsAnimator?.SetFloat(CastSpeed, castSpeed);

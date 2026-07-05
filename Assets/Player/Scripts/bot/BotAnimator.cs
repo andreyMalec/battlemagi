@@ -11,18 +11,10 @@ public class BotAnimator : NetworkBehaviour {
     private static readonly int VelocityAny = Animator.StringToHash("Velocity Any");
     private static readonly int JumpStart = Animator.StringToHash("Jump Start");
     private static readonly int FallStart = Animator.StringToHash("Fall Start");
-    private static readonly int Invocation = Animator.StringToHash("Invocation");
-    private static readonly int CastWaiting = Animator.StringToHash("Cast Waiting");
-    private static readonly int CastSpeed = Animator.StringToHash("CastSpeed");
-    private static readonly int CastWaitingIndex = Animator.StringToHash("CastWaitingIndex");
-    private static readonly int CancelChanneling = Animator.StringToHash("CancelChanneling");
 
     private static readonly float eps = 0.05f;
-    public Transform ikHand;
-    public Transform ikHandRight;
 
     [HideInInspector] public Animator animator;
-    [HideInInspector] public NetworkAnimator networkAnimator;
     [HideInInspector] public MeshController meshController;
     private BotMovement movement;
     private Stats _stats;
@@ -39,8 +31,6 @@ public class BotAnimator : NetworkBehaviour {
     private bool fallStart = false;
     private float lastPositionY;
 
-    private Vector3 ikPos;
-    private Quaternion ikRot;
     private bool CanAnimate => !IsSpawned || IsOwner;
 
     private void Awake() {
@@ -61,53 +51,11 @@ public class BotAnimator : NetworkBehaviour {
         if (!CanAnimate) return;
 
         movement.Jumped += Jumped;
-        ikPos = ikHand.localPosition;
-        ikRot = ikHand.localRotation;
     }
 
     public override void OnDestroy() {
         base.OnDestroy();
         movement.Jumped -= Jumped;
-    }
-
-    public void CastWaitingAnim(bool waiting, int index = 0) {
-        AnimateBool(CastWaiting, waiting);
-        if (waiting)
-            AnimateFloat(CastWaitingIndex, index);
-        if (index == 0) {
-            meshController.leftHand.weight = 1;
-            meshController.rightHand.weight = 0;
-            if (waiting) {
-                ikHand.localPosition = new Vector3(-0.55f, -0.24f, 0.44f);
-                ikHand.localRotation = Quaternion.Euler(0, -90, 0);
-            } else {
-                ikHand.localPosition = ikPos;
-                ikHand.localRotation = ikRot;
-            }
-
-            ikHandRight.localPosition = ikHand.localPosition;
-            ikHandRight.localRotation = ikHand.localRotation;
-        }
-
-        if (index == 1) {
-            meshController.leftHand.weight = 1f; //TODO
-            meshController.rightHand.weight = 1f;
-            if (waiting) {
-                ikHand.localPosition = new Vector3(0.14f, -0.225f, 0.23f);
-                ikHand.localRotation = Quaternion.Euler(-192f, -74.6f, -108f);
-                ikHandRight.localPosition = new Vector3(0.08f, -0.178f, 0.252f);
-                ikHandRight.localRotation = Quaternion.Euler(-210f, -82f, -96f);
-            } else {
-                ikHand.localPosition = ikPos;
-                ikHand.localRotation = ikRot;
-                ikHandRight.localPosition = ikHand.localPosition;
-                ikHandRight.localRotation = ikHand.localRotation;
-            }
-        }
-    }
-
-    public void CancelSpellChanneling() {
-        AnimateTrigger(CancelChanneling);
     }
 
     private void Update() {
@@ -217,20 +165,6 @@ public class BotAnimator : NetworkBehaviour {
     public void AnimateFloat(int key, float value) {
         if (CanAnimate) {
             animator.SetFloat(key, value);
-        }
-    }
-
-    public void AnimateTrigger(int key) {
-        if (!CanAnimate)
-            return;
-
-        if (!IsSpawned) {
-            animator.SetTrigger(key);
-            return;
-        }
-
-        if (IsOwner) {
-            networkAnimator.SetTrigger(key);
         }
     }
 }

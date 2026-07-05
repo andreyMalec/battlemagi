@@ -78,7 +78,7 @@ public class Player : NetworkBehaviour {
     private void BindHand() {
         var isFP = _cameraIndex == 0;
         var scpp = GetComponent<SpellCasterPlayerPreview>();
-        if (isFP) {
+        if (isFP && IsOwner) {
             scpp?.BindHand(meshHands.invocation);
         } else {
             scpp?.BindHand(meshController.invocation);
@@ -104,7 +104,6 @@ public class Player : NetworkBehaviour {
         if (pa != null) {
             pa.animator = animator;
             pa.secondaryAnimator = null;
-            pa.networkAnimator = netAnim;
         }
 
         var scpa = GetComponent<SpellCasterPlayerAnimator>();
@@ -137,8 +136,6 @@ public class Player : NetworkBehaviour {
             caster.Mana.SetDefaults(archetype.maxMana, archetype.manaRegen);
         var damageable = GetComponent<Damageable>();
         damageable.Health.SetDefaults(archetype.maxHealth, archetype.healthRegen);
-        var camSel = GetComponentInChildren<CameraSelector>();
-        camSel.BindAvatar(meshController);
         var fpss = GetComponentInChildren<FirstPersonSounds>();
         fpss.BindAvatar(animator);
         var freeze = GetComponentInChildren<Freeze>(true);
@@ -198,11 +195,6 @@ public class Player : NetworkBehaviour {
 
             foreach (var obj in objectsToDisable) {
                 obj.SetActive(false);
-            }
-
-            if (!IsOwner && meshController != null) {
-                meshController.leftHand.weight = 0f;
-                meshController.spine.weight *= 3f;
             }
 
             mainCamera.GetComponent<Camera>().enabled = false;

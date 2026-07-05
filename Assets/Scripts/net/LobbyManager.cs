@@ -150,7 +150,7 @@ public class LobbyManager : MonoBehaviour {
         } else if (visibility == LobbyVisibility.Private) {
             lobby.SetPrivate();
         }
-
+        Debug.Log($"[LobbyManager] Set lobby visibility to {visibility}");
         GameProgress.Instance.LobbyVisibility.Value = (int)visibility;
     }
 

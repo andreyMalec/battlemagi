@@ -76,10 +76,8 @@ public class TeamManager : NetworkBehaviour {
 
     public void Reset() {
         if (!IsServer) return;
-        CurrentMode.Value = TeamMode.FreeForAll;
         RedScore.Value = 0;
         BlueScore.Value = 0;
-        EndChoice.Value = 0;
         _botTeams.Clear();
         RedistributePlayers();
         RefreshBotColorsForCurrentMode();
@@ -177,6 +175,7 @@ public class TeamManager : NetworkBehaviour {
         CurrentMode.Value = mode;
         RedScore.Value = 0;
         BlueScore.Value = 0;
+        Debug.Log($"[TeamManager] Mode changed to {mode}");
         RedistributePlayers();
         RefreshBotColorsForCurrentMode();
     }

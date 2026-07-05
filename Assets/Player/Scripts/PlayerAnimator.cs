@@ -17,7 +17,6 @@ public class PlayerAnimator : NetworkBehaviour {
 
     [HideInInspector] public Animator animator;
     [HideInInspector] public Animator secondaryAnimator;
-    [HideInInspector] public NetworkAnimator networkAnimator;
     private FirstPersonMovement movement;
     private Stats _stats;
 
@@ -161,13 +160,6 @@ public class PlayerAnimator : NetworkBehaviour {
         if (IsOwner) {
             animator.SetFloat(key, value);
             secondaryAnimator?.SetFloat(key, value);
-        }
-    }
-
-    public void AnimateTrigger(int key) {
-        if (IsOwner) {
-            networkAnimator.SetTrigger(key);
-            secondaryAnimator?.SetTrigger(key);
         }
     }
 }

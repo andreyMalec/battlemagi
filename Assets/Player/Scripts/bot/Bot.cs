@@ -59,14 +59,6 @@ public class Bot : NetworkBehaviour {
         ApplyMaterial(arch, HueValue.Value, SaturationValue.Value);
 
         gameObject.name = $"Bot_{BotId}";
-
-        if (IsOwner) {
-        } else {
-            if (!IsOwner && meshController != null) {
-                meshController.leftHand.weight = 0f;
-                meshController.spine.weight *= 3f;
-            }
-        }
     }
 
     private void SpawnAvatar(int arch) {
@@ -86,7 +78,6 @@ public class Bot : NetworkBehaviour {
         var ba = GetComponent<BotAnimator>();
         if (ba != null) {
             ba.animator = animator;
-            ba.networkAnimator = netAnim;
             ba.meshController = meshController;
         }
 

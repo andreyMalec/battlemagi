@@ -55,11 +55,28 @@ public class GameProgress : NetworkBehaviour {
         LobbyManager.Instance.GameStarted();
         started = true;
 
-        FirebaseAnalytic.Instance.SendEvent("MatchStarted", new Dictionary<string, object> {
+        var lobby = LobbyManager.Instance.CurrentLobby!.Value;
+        var param = new Dictionary<string, object> {
             { "map", SceneName },
             { "mode", TeamManager.Instance.CurrentMode.Value.ToString() },
-            { "playerCount", LobbyManager.Instance.CurrentLobby!.Value.MemberCount }
-        });
+            { "playerCount", lobby.MemberCount }
+        };
+        foreach (var player in PlayerManager.Instance.Participants) {
+            var arch = ArchetypeDatabase.Instance.GetArchetype(player.Archetype).archetypeName;
+            if (player.Id.IsHuman) {
+                var prev = (int)(param.GetValueOrDefault($"playerArchetype_{arch}", 0));
+                param[$"playerArchetype_{arch}"] = prev + 1;
+            }
+        }
+
+        var bots = LobbyBotRosterData.LoadFromLobby(lobby);
+        foreach (var bot in bots) {
+            var arch = ArchetypeDatabase.Instance.GetArchetype(bot.archetype).archetypeName;
+            var prev = (int)(param.GetValueOrDefault($"botArchetype_{arch}", 0));
+            param[$"botArchetype_{arch}"] = prev + 1;
+        }
+
+        FirebaseAnalytic.Instance.SendEvent("MatchStarted", param);
     }
 
     public override void OnNetworkSpawn() {
@@ -87,12 +104,14 @@ public class GameProgress : NetworkBehaviour {
         if (red >= target) {
             GameAnnouncer.Instance.TeamWin(TeamManager.Team.Red);
             PlayerAchievementsManager.Instance?.ReportTeamWinnerServer(TeamManager.Team.Red);
+            SendEndMatchEvent();
             StartCoroutine(EndMatch());
         }
 
         if (blue >= target) {
             GameAnnouncer.Instance.TeamWin(TeamManager.Team.Blue);
             PlayerAchievementsManager.Instance?.ReportTeamWinnerServer(TeamManager.Team.Blue);
+            SendEndMatchEvent();
             StartCoroutine(EndMatch());
         }
     }
@@ -123,6 +142,7 @@ public class GameProgress : NetworkBehaviour {
             if (redKills >= target) {
                 GameAnnouncer.Instance.TeamWin(TeamManager.Team.Red);
                 PlayerAchievementsManager.Instance?.ReportTeamWinnerServer(TeamManager.Team.Red);
+                SendEndMatchEvent();
                 StartCoroutine(EndMatch());
                 return;
             }
@@ -130,6 +150,7 @@ public class GameProgress : NetworkBehaviour {
             if (blueKills >= target) {
                 GameAnnouncer.Instance.TeamWin(TeamManager.Team.Blue);
                 PlayerAchievementsManager.Instance?.ReportTeamWinnerServer(TeamManager.Team.Blue);
+                SendEndMatchEvent();
                 StartCoroutine(EndMatch());
             }
         } else {
@@ -140,11 +161,34 @@ public class GameProgress : NetworkBehaviour {
                     }
 
                     GameAnnouncer.Instance.PlayerWin(ParticipantIdentityCodec.Encode(p.Id));
-
+                    SendEndMatchEvent(p.Id);
                     StartCoroutine(EndMatch());
                     return;
                 }
             }
+        }
+    }
+
+    private void SendEndMatchEvent(ParticipantId? playerWinner = null) {
+        if (playerWinner == null) {
+            FirebaseAnalytic.Instance.SendEvent("MatchEnded", new Dictionary<string, object> {
+                { "map", SceneName },
+                { "mode", TeamManager.Instance.CurrentMode.Value.ToString() },
+                { "playerCount", LobbyManager.Instance.CurrentLobby!.Value.MemberCount }
+            });
+        } else {
+            var winner = PlayerManager.Instance.Participants.First(p => p.Id == playerWinner);
+            var winnerArchetype = ArchetypeDatabase.Instance.GetArchetype(winner.Archetype).archetypeName;
+            if (playerWinner.Value.IsBot) {
+                winnerArchetype += " (Bot)";
+            }
+
+            FirebaseAnalytic.Instance.SendEvent("MatchEnded", new Dictionary<string, object> {
+                { "map", SceneName },
+                { "mode", TeamManager.Instance.CurrentMode.Value.ToString() },
+                { "playerCount", LobbyManager.Instance.CurrentLobby!.Value.MemberCount },
+                { "winnerArchetype", winnerArchetype }
+            });
         }
     }
 

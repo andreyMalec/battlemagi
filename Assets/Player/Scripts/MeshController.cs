@@ -4,17 +4,8 @@ using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
 public class MeshController : MonoBehaviour {
-    [Header("IK")]
-    public Rig leftHand;
+    [HideInInspector] public Transform ikTargetHand;
 
-    public Rig rightHand;
-    public Rig spine;
-    public Transform ikTargetHand;
-    public Transform ikTargetHandRight;
-    public Transform ikTargetSpine;
-    [SerializeField] TwoBoneIKConstraint leftHandIkConstraint;
-    [SerializeField] TwoBoneIKConstraint rightHandIkConstraint;
-    [SerializeField] TwoBoneIKConstraint headIkConstraint;
     [SerializeField] TwoBoneIKConstraint spineIkConstraint;
 
     public Transform invocation;
@@ -54,35 +45,16 @@ public class MeshController : MonoBehaviour {
             if (ikTargetHand == null) {
                 ikTargetHand = player.GetComponentInChildren<HandIKTarget>().transform;
             }
-
-            if (ikTargetHandRight == null) {
-                ikTargetHandRight = player.GetComponentInChildren<HandIKTargetRight>().transform;
-            }
-
-            if (ikTargetSpine == null) {
-                ikTargetSpine = player.GetComponentInChildren<HandIKTargetSpine>().transform;
-            }
         } else {
             var bot = GetComponentInParent<Bot>();
             if (bot != null) {
                 if (ikTargetHand == null) {
                     ikTargetHand = bot.GetComponentInChildren<HandIKTarget>().transform;
                 }
-
-                if (ikTargetHandRight == null) {
-                    ikTargetHandRight = bot.GetComponentInChildren<HandIKTargetRight>().transform;
-                }
-
-                if (ikTargetSpine == null) {
-                    ikTargetSpine = bot.GetComponentInChildren<HandIKTargetSpine>().transform;
-                }
             }
         }
 
-        leftHandIkConstraint.data.target = ikTargetHand;
-        rightHandIkConstraint.data.target = ikTargetHandRight;
-        headIkConstraint.data.target = ikTargetSpine;
-        spineIkConstraint.data.target = ikTargetSpine;
+        spineIkConstraint.data.target = ikTargetHand;
 
         animator = GetComponent<Animator>();
         animator.enabled = false;
