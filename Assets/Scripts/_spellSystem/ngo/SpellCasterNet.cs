@@ -174,10 +174,17 @@ public class SpellCasterNet : NetworkBehaviour {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(casterNetObjectId, out var casterNetObj))
             return;
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(spellNetObjectId, out var main)) return;
+        SpellCaster caster;
+        try {
+            caster = casterNetObj.GetComponentInChildren<SpellCaster>();
+            if (caster == null) return;
+            if (!casterNetObj.IsSpawned) return;
+        } catch {
+            return;
+        }
 
         SpellLog.Log(
             $"[NetworkSpellSystemEvent] OnCastClientRpc: netObjectId={spellNetObjectId}, caster={casterNetObj.gameObject.name}");
-        var caster = casterNetObj.GetComponentInChildren<SpellCaster>();
         EnsureCasterInitialized(casterNetObj.gameObject, caster);
         var bridge = caster.GetComponentInParent<ISpellCasterBridge>();
         bridge?.BindChannelingSpell(spellNetObjectId, spellName);

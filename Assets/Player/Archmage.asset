@@ -15,6 +15,7 @@ MonoBehaviour:
   id: 0
   archetypeName: Archmage
   avatarPrefab: {fileID: 4078554245983839394, guid: 140f34d414a550040b4e2eeb46cce691, type: 3}
+  avatarHandsPrefab: {fileID: 6276692514684627330, guid: d31cd41733638c344be7aacd50db1b09, type: 3}
   bodyShader: {fileID: -6465566751694194690, guid: e9425a49c350d4c48a7954d5dd8c73de, type: 3}
   cloakShader: {fileID: -6465566751694194690, guid: b9c368965073f7e47a6645487b26379e, type: 3}
   spells:
@@ -40,10 +41,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5aff4380d2e5386449980e021fef36bc, type: 2}
   maxHealth: 100
   maxMana: 125
-  maxStamina: 3
   movementSpeed: 6
   runSpeed: 2
   healthRegen: 1
-  manaRegen: 3
+  manaRegen: 6
   jumpStrength: 2
-  cameraOffset: {x: 0, y: 0, z: 0}

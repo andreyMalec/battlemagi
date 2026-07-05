@@ -12,13 +12,18 @@ public static class GameModeRules {
         return spell != null && spell.spellName == ChargedShotSpellName;
     }
 
+    public static float RespawnTime() {
+        return IsChargedShotOnlyMode() ? 2f : 5f;
+    }
+
     public static List<SpellDefinition> FilterSpellsForMode(IEnumerable<SpellDefinition> spells) {
         if (!IsChargedShotOnlyMode())
             return spells.ToList();
 
         var def = DefaultSpells.Instance.list;
         var list = def.ToList();
-        var charged = list.FirstOrDefault(s => s != null && s.spell != null && s.spell.spellName == ChargedShotSpellName);
+        var charged =
+            list.FirstOrDefault(s => s != null && s.spell != null && s.spell.spellName == ChargedShotSpellName);
         if (charged == null)
             return new List<SpellDefinition>();
 
@@ -31,11 +36,11 @@ public static class GameModeRules {
 
         spells = DefaultSpells.Instance.list;
         var list = spells.ToList();
-        var charged = list.FirstOrDefault(s => s != null && s.spell != null && s.spell.spellName == ChargedShotSpellName);
+        var charged =
+            list.FirstOrDefault(s => s != null && s.spell != null && s.spell.spellName == ChargedShotSpellName);
         if (charged == null)
             return new List<DefaultSpell>();
 
         return new List<DefaultSpell> { charged };
     }
 }
-

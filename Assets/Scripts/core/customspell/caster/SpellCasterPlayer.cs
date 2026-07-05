@@ -188,6 +188,7 @@ public class SpellCasterPlayer : SpellCaster {
         }
 
         _preview?.SetSpell(_spell);
+        _animator.preparedSpell = _spell;
     }
 
     public void SelectSpell([CanBeNull] SpellDefinition spell) {
@@ -244,7 +245,7 @@ public class SpellCasterPlayer : SpellCaster {
         }
 
         _spell = null;
-        StartCoroutine(BeginEcho(spell, usedEcho));
+        BeginEcho(spell, usedEcho);
     }
 
     /**
@@ -260,7 +261,7 @@ public class SpellCasterPlayer : SpellCaster {
         }
 
         _spell = null;
-        StartCoroutine(BeginEcho(spell, usedEcho));
+        BeginEcho(spell, usedEcho);
     }
 
     private bool ConsumeCostOrEcho(SpellDefinition spell) {
@@ -329,29 +330,40 @@ public class SpellCasterPlayer : SpellCaster {
         return true;
     }
 
-    private IEnumerator BeginEcho(SpellDefinition spell, bool usedEcho) {
+    public bool TryCastEchoBot(SpellDefinition spell, ITarget target = null) {
+        if (_echoSpell != spell) return false;
+        if (_echoRemaining <= 0) return false;
+
+        Cast(spell, target);
+
+        return true;
+    }
+
+    private void BeginEcho(SpellDefinition spell, bool usedEcho) {
         if (spell == null || spell.echoCount <= 0) {
             ResetEcho();
-            yield break;
+            return;
         }
 
         if (usedEcho) {
             if (_echoRemaining <= 0) {
                 ResetEcho();
-                yield break;
+                if (animateCast || animateHand) {
+                    _animator.CastWaitingAnim(false);
+                }
+
+                return;
             }
 
             if (animateHand) {
-                yield return new WaitForEndOfFrame(); // задержка чтобы успел обновиться Rig для руки
                 _animator.CastWaitingAnim(true, spell.castWaitingIndex);
             }
 
             _spell = spell;
-            yield break;
+            return;
         }
 
         if (animateHand) {
-            yield return new WaitForEndOfFrame();
             _animator.CastWaitingAnim(true, spell.castWaitingIndex);
         }
 

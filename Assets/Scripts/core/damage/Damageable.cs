@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NaughtyAttributes;
 using UnityEngine;
 
@@ -318,6 +319,13 @@ public class Damageable : MonoBehaviour {
         if (State != prev) OnStateChanged?.Invoke(State);
         Active.Remove(this);
         OnDeath?.Invoke(info);
+        try {
+            var killerData = PlayerManager.Instance.Participants.First(p => p.Id == info.fromId);
+            var killerArchetype = ArchetypeDatabase.Instance.GetArchetype(killerData.Archetype).archetypeName;
+            Debug.Log($"Damageable {name} died. KillerArchetype: {killerArchetype}, Source: {info.source}");
+        } catch (Exception) {
+            Debug.Log($"Damageable {name} died. Source: {info.source}");
+        }
 
         if (despawnOnDeath)
             _bridgeTyped.DespawnOnDeath();

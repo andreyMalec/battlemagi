@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 
 public class BotLifecycleManager : MonoBehaviour {
     [SerializeField] private int initialBotCount;
-    [SerializeField] private float respawnDelay = 5f;
     [SerializeField] private bool autoSpawnOffline = true;
 
     public static BotLifecycleManager Instance { get; private set; }
@@ -204,7 +203,7 @@ public class BotLifecycleManager : MonoBehaviour {
     }
 
     private IEnumerator RespawnBot(ulong botId, GameObject oldBotObject) {
-        yield return new WaitForSeconds(respawnDelay);
+        yield return new WaitForSeconds(GameModeRules.RespawnTime());
         DespawnBotObject(oldBotObject);
         yield return new WaitForEndOfFrame();
         _pendingRespawn.Remove(botId);

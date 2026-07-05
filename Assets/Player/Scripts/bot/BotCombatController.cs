@@ -27,7 +27,6 @@ public class BotCombatController : MonoBehaviour {
     [SerializeField] private float noLosRepathInterval = 0.35f;
     [SerializeField] private float noSpellChaseDistance = 5f;
     [SerializeField] [Range(0.1f, 1f)] private float targetBodyHeightFactor = 0.75f;
-    [SerializeField] private float ballisticTargetLift = 1f;
     [SerializeField] private float switchSpellDelay = 2f;
     [SerializeField] private float castPrepareDelay = 0.5f;
     [SerializeField] private float lostTargetReacquireDelay = 2f;
@@ -65,6 +64,7 @@ public class BotCombatController : MonoBehaviour {
     private float _thinkTimer;
     private float _repathTimer;
     private float _castLockTimer;
+    private float _echoTimer;
     private float _strafeTimer;
     private float _targetOutOfSightTimer;
     private float _suppressedTargetTimer;
@@ -151,6 +151,7 @@ public class BotCombatController : MonoBehaviour {
         _thinkTimer += Time.deltaTime;
         _repathTimer += Time.deltaTime;
         _castLockTimer -= Time.deltaTime;
+        _echoTimer -= Time.deltaTime;
         _strafeTimer -= Time.deltaTime;
         _preparedCastTimer -= Time.deltaTime;
         _spellSwitchTimer -= Time.deltaTime;
@@ -284,6 +285,9 @@ public class BotCombatController : MonoBehaviour {
             return;
         }
 
+        if (_echoTimer > 0f)
+            return;
+
         var preparedTargetPosition = BallisticCastTargetBuilder.GetAimPoint(_preparedTarget, targetBodyHeightFactor);
         var preparedHasLos = HasLineOfSight(_caster.Origin, preparedTargetPosition, _preparedTarget.Get.transform.root);
         var preparedCastAngle = GetPlanarAngleTo(transform.forward, preparedTargetPosition - transform.position);
@@ -294,16 +298,19 @@ public class BotCombatController : MonoBehaviour {
         }
 
         var castTarget = BuildCastTarget(_preparedSpell, _preparedTarget);
-        if (_caster.TryCastEcho(_preparedSpell, castTarget)) {
+        if (_caster.TryCastEchoBot(_preparedSpell, castTarget)) {
             _echoCounter++;
             var castedSpell = _preparedSpell;
             _lastSpellDecision = _currentDecision;
             _lastCastSpell = castedSpell;
-            _castLockTimer = echoRecastDelay;
+            _echoTimer = echoRecastDelay;
 
-            if (_caster.EchoCount <= 1) {
+            if (_caster.EchoCount <= 0) {
                 _castLockTimer = GetCastCooldown(castedSpell);
                 ClearPreparedSpell();
+                _state = IsTargetValid(_target) ? BotCombatState.PrepareSpell : BotCombatState.SearchTarget;
+            } else {
+                _state = IsTargetValid(_target) ? BotCombatState.Shoot : BotCombatState.SearchTarget;
             }
         } else {
             var cast = _caster.TryCastBot(_preparedSpell, castTarget);
@@ -316,17 +323,18 @@ public class BotCombatController : MonoBehaviour {
             _lastSpellDecision = _currentDecision;
             _lastCastSpell = castedSpell;
             if (cast == SpellCasterPlayer.BotCastResult.StartEcho && _echoCounter == 0) {
-                _castLockTimer = echoRecastDelay;
+                _echoTimer = echoRecastDelay;
+                _state = IsTargetValid(_target) ? BotCombatState.Shoot : BotCombatState.SearchTarget;
             } else {
                 _castLockTimer = GetCastCooldown(castedSpell);
                 ClearPreparedSpell();
+                _state = IsTargetValid(_target) ? BotCombatState.PrepareSpell : BotCombatState.SearchTarget;
             }
 
             _echoCounter = 0;
         }
 
         _debugLostReason = "";
-        _state = IsTargetValid(_target) ? BotCombatState.PrepareSpell : BotCombatState.SearchTarget;
     }
 
     private void TickTargetLostState() {
@@ -420,7 +428,7 @@ public class BotCombatController : MonoBehaviour {
             _movement.Repath();
             return;
         }
-        
+
         var toTarget = _currentTargetPosition - transform.position;
         var planar = new Vector3(toTarget.x, 0f, toTarget.z);
         if (planar.sqrMagnitude < 0.01f)
@@ -523,7 +531,7 @@ public class BotCombatController : MonoBehaviour {
     }
 
     private ITarget BuildCastTarget(SpellDefinition spell, ITarget target) {
-        return BallisticCastTargetBuilder.Build(_caster, target, spell, ballisticTargetLift, targetBodyHeightFactor);
+        return BallisticCastTargetBuilder.Build(_caster, target, spell, targetBodyHeightFactor);
     }
 
     private bool TryChooseSpell(

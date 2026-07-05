@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &5018617467678129579
 Transform:
   m_ObjectHideFlags: 0
@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 297618408995827025}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 1.52, z: 2.337}
+  m_LocalPosition: {x: 0, y: 1.52, z: 5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -91,12 +91,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 297618408995827025}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
-  m_RenderShadows: 0
+  m_RenderShadows: 1
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
@@ -107,7 +107,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -128,50 +128,6 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
---- !u!1 &1932244337744165737
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6991023923860154135}
-  - component: {fileID: 9180866248403736370}
-  m_Layer: 9
-  m_Name: Hand IK Target Right
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6991023923860154135
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1932244337744165737}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0.4482454, y: -0.34231827, z: -0.45334727, w: 0.69019604}
-  m_LocalPosition: {x: -0.09000015, y: 0.049999952, z: 0.24}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 1
-  m_Children: []
-  m_Father: {fileID: 2934301547977243489}
-  m_LocalEulerAnglesHint: {x: -68.3, y: -10.3, z: -59.6}
---- !u!114 &9180866248403736370
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1932244337744165737}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 831ca2aed8c0412eb5c88a9a7e7f9931, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HandIKTargetRight
 --- !u!1 &2671032359567761218
 GameObject:
   m_ObjectHideFlags: 0
@@ -326,7 +282,7 @@ Transform:
   m_GameObject: {fileID: 3014462947862952609}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.4}
+  m_LocalPosition: {x: 0, y: 0, z: 0.55}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -364,13 +320,12 @@ Transform:
   m_GameObject: {fileID: 3561322077568356742}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.751, z: 0.132}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3077521524520137575}
   - {fileID: 5596533096327910552}
-  - {fileID: 6991023923860154135}
   - {fileID: 2929352888958925704}
   - {fileID: 2005655860911336328}
   m_Father: {fileID: 3580683726391601925}
@@ -408,15 +363,15 @@ Camera:
     height: 1
   near clip plane: 0.04
   far clip plane: 1000
-  field of view: 80
+  field of view: 75
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 2047
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 8400000, guid: 2ef2df97a40d37342b089fcaa61d610e, type: 2}
+  m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -502,11 +457,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67ae19e700ea45538d9b25ab850b76cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FpsCameraClip
-  head: {fileID: 0}
-  radius: 0.1
+  radius: 0.4
+  def: 0.3
+  min: 0.2
   wallMask:
     serializedVersion: 2
     m_Bits: 192
+  smoothSpeed: 5
 --- !u!114 &4877747391406112529
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -545,14 +502,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3592863415251667902}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.4482454, y: -0.34231827, z: -0.45334727, w: 0.69019604}
-  m_LocalPosition: {x: -0.09000015, y: 0.049999952, z: 0.24}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
-  m_Children:
-  - {fileID: 6404953993623198568}
+  m_Children: []
   m_Father: {fileID: 2934301547977243489}
-  m_LocalEulerAnglesHint: {x: -68.3, y: -10.3, z: -59.6}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3562400442783663379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -844,7 +800,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2196398029
+  GlobalObjectIdHash: 1910923140
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -948,12 +904,14 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   isDummy: 0
   scriptsToDisable:
-  - {fileID: 2352745554653042792}
   - {fileID: 3269581595495701639}
   objectsToDisable:
   - {fileID: 3049812759064434572}
   - {fileID: 3561322077568356742}
   mainCamera: {fileID: 4966461228147620054}
+  meshController: {fileID: 0}
+  meshBody: {fileID: 0}
+  meshHands: {fileID: 0}
 --- !u!114 &6916625131687324290
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -972,7 +930,6 @@ MonoBehaviour:
   jumpStrength: 0
   movementSpeed: 0
   runSpeed: 0
-  maxStamina: 0
 --- !u!114 &8271153046618425552
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -988,7 +945,6 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   lookSettings: {fileID: 11400000, guid: 5e09a9892218f1a49acfc9e000c99915, type: 2}
   firstPersonCamera: {fileID: 2934301547977243489}
-  offset: {x: 0, y: 0, z: 0}
 --- !u!114 &3269581595495701639
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1015,11 +971,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimator
   ShowTopMostFoldoutHeaderGroup: 1
-  ikHand: {fileID: 5596533096327910552}
-  ikHandRight: {fileID: 6991023923860154135}
   animator: {fileID: 0}
-  networkAnimator: {fileID: 0}
-  meshController: {fileID: 0}
+  secondaryAnimator: {fileID: 0}
   acceleration: 3
   decelerationCurve:
     serializedVersion: 2
@@ -1027,29 +980,29 @@ MonoBehaviour:
     - serializedVersion: 3
       time: -0.0083351135
       value: 0.5011902
-      inSlope: 0.22122225
-      outSlope: 0.22122225
+      inSlope: 0.18725954
+      outSlope: 0.18725954
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.68768847
+      outWeight: 0.29463643
     - serializedVersion: 3
-      time: 0.92935574
-      value: 2.0338786
-      inSlope: 2.4210124
-      outSlope: 2.4210124
+      time: 0.12641287
+      value: 0.63867855
+      inSlope: 1.3279979
+      outSlope: 1.3279979
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
+      inWeight: 0.15104769
       outWeight: 0.23042634
     - serializedVersion: 3
-      time: 1.4995363
-      value: 3.7096725
-      inSlope: 2
-      outSlope: 2
+      time: 0.5269725
+      value: 3.5874133
+      inSlope: -0.41579634
+      outSlope: -0.41579634
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.33198893
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -1259,6 +1212,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerUI
   ShowTopMostFoldoutHeaderGroup: 1
+  barsSmoothSpeed: 10
   echoItemPrefab: {fileID: 3740721941871390414, guid: 66a0e08d4e4d2ef4fafb6f891702d045, type: 3}
   effectItemPrefab: {fileID: 4735756117888980395, guid: d6778ef7c29d49f47a90fa31074d697b, type: 3}
 --- !u!114 &2716919782836391855
@@ -1457,8 +1411,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d15ae0ab98c94f13ae52df0c1fd5f343, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellCasterPlayerAnimator
-  ikHand: {fileID: 5596533096327910552}
-  ikHandRight: {fileID: 6991023923860154135}
+  idleTimeRange: {x: 15, y: 30}
+  idleIndexRange: {x: 0, y: 2}
+  preparedSpell: {fileID: 0}
 --- !u!114 &8151359896217736792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1598,11 +1553,11 @@ MonoBehaviour:
       ParameterType: 1
     - name: Footstep
       NameHash: 1612968623
-      Synchronize: 1
+      Synchronize: 0
       ParameterType: 1
     - name: Jump
       NameHash: 125937960
-      Synchronize: 1
+      Synchronize: 0
       ParameterType: 1
     - name: Cast Waiting
       NameHash: -566341681
@@ -1646,7 +1601,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2019376321681842677
 Transform:
   m_ObjectHideFlags: 0
@@ -1656,7 +1611,7 @@ Transform:
   m_GameObject: {fileID: 5894542900604772476}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.941, z: -5.018}
+  m_LocalPosition: {x: 0, y: 1.941, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1669,7 +1624,7 @@ Camera:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5894542900604772476}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
@@ -2091,50 +2046,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!1 &6811864505331164601
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6404953993623198568}
-  - component: {fileID: 7112777465546181935}
-  m_Layer: 9
-  m_Name: Hand Ik Target Spine
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6404953993623198568
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6811864505331164601}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0.5, y: 0.5, z: 0.5, w: 0.5}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5596533096327910552}
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 90}
---- !u!114 &7112777465546181935
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6811864505331164601}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3defbe24a494ba0849601e7aee025a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HandIKTargetSpine
 --- !u!1 &7116197001015052952
 GameObject:
   m_ObjectHideFlags: 0
@@ -2193,7 +2104,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8715957163245037916}
-  - component: {fileID: 2352745554653042792}
   - component: {fileID: 1516827778010977096}
   - component: {fileID: 5658292801286515235}
   - component: {fileID: 7562000388329866392}
@@ -2219,20 +2129,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3580683726391601925}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2352745554653042792
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7477955511304325520}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45d3243764fb4780b488a7b439ea3650, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HideCloak
-  firstPersonCamera: {fileID: 3561322077568356742}
-  thirdPersonCamera: {fileID: 5894542900604772476}
 --- !u!114 &1516827778010977096
 MonoBehaviour:
   m_ObjectHideFlags: 0

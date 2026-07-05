@@ -5,6 +5,7 @@ public class ArchetypeData : ScriptableObject {
     public int id;
     public string archetypeName;
     public GameObject avatarPrefab;
+    public GameObject avatarHandsPrefab;
     public Shader bodyShader;
     public Shader cloakShader;
     public SpellDefinition[] spells;
@@ -15,5 +16,4 @@ public class ArchetypeData : ScriptableObject {
     public float healthRegen = 3f;
     public float manaRegen = 0.5f;
     public float jumpStrength = 2f;
-    public Vector3 cameraOffset;
 }

@@ -118,16 +118,23 @@ public class StatusableNetworkBridge : NetworkBehaviour, IStatusableBridge {
     private void RebuildActiveEffectsFromSynced() {
         var list = new List<Statusable.DurationEffect>();
         var db = StatusEffectDatabase.Instance.GetMap();
-        var snapshot = new NetDurationEffect[_synced.Count];
-        for (int i = 0; i < _synced.Count; i++) {
-            snapshot[i] = _synced[i];
-        }
+        try {
+            int count = _synced.Count;
+            var snapshot = new NetDurationEffect[count];
+            for (int i = 0; i < count; i++) {
+                snapshot[i] = _synced[i];
+            }
 
-        foreach (var e in snapshot) {
-            if (!db.TryGetValue(e.effectName.ToString(), out var data))
-                continue;
-            if (data.icon == null) continue;
-            list.Add(new Statusable.DurationEffect { icon = data.icon, remains = e.remains });
+            foreach (var e in snapshot) {
+                if (!db.TryGetValue(e.effectName.ToString(), out var data))
+                    continue;
+                if (data.icon == null) continue;
+                list.Add(new Statusable.DurationEffect { icon = data.icon, remains = e.remains });
+            }
+        } catch (Exception ex) {
+            Debug.LogError($"Exception while rebuilding synced effects: {ex}");
+            DurationEffects = new List<Statusable.DurationEffect>();
+            return;
         }
 
         DurationEffects = list;

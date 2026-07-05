@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b298147d4414e67bd1d9c7a8f47ca72, type: 3}
   m_Name: Forced Movement Ice Spear
   m_EditorClassIdentifier: Assembly-CSharp::ForcedMovementEffect
-  effectName: Forced Movement Ice Spear
+  effectName: Forced Move Ice Spear
   title: 
   description: 
   duration: 0
@@ -22,6 +22,7 @@ MonoBehaviour:
   onExpire: {fileID: 0}
   targetPointMode: 1
   movementSpeed: 10
+  offset: {x: 0, y: 0, z: 0}
   inheritInitialProjectileSpeed: 1
   maxDistance: 25
   wallBackOffset: 0.3

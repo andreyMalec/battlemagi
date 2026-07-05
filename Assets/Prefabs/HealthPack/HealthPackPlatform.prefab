@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 561189962538401740}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Container
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 8570435428822963942}
   - component: {fileID: 6281978978173954527}
   - component: {fileID: 7833503863762410395}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: HealthPackPlatform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -274,6 +274,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: d785a9cb8174a2c488adfafa8432977a, type: 3}
       propertyPath: m_Name
       value: WoodenStool_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d785a9cb8174a2c488adfafa8432977a, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

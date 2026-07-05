@@ -5,8 +5,8 @@ public class Freeze : MonoBehaviour {
     private PlayerTester _tester;
     private SpellCasterPlayer _caster;
     private FirstPersonLook _look;
-    private Animator _animator;
     private PlayerAnimator _playerAnimator;
+    private BotAnimator _botAnimator;
     private FootControllerIK _footControllerIK;
     private BotMovement _botMovement;
     private BotMovementController _botMovementController;
@@ -18,12 +18,12 @@ public class Freeze : MonoBehaviour {
         _caster = parent.GetComponent<SpellCasterPlayer>();
         _look = parent.GetComponent<FirstPersonLook>();
         _playerAnimator = parent.GetComponent<PlayerAnimator>();
+        _botAnimator = parent.GetComponent<BotAnimator>();
         _botMovement = parent.GetComponent<BotMovement>();
         _botMovementController = parent.GetComponent<BotMovementController>();
     }
 
-    public void BindAvatar(Animator a, FootControllerIK footControllerIK) {
-        _animator = a;
+    public void BindAvatar(FootControllerIK footControllerIK) {
         _footControllerIK = footControllerIK;
     }
 
@@ -32,8 +32,16 @@ public class Freeze : MonoBehaviour {
         if (_stateController != null) _stateController.RefreshMovementState();
         if (_caster != null) _caster.enabled = false;
         if (_look != null) _look.enabled = false;
-        if (_playerAnimator != null) _playerAnimator.enabled = false;
-        if (_animator != null) _animator.speed = 0f;
+        if (_playerAnimator != null) {
+            _playerAnimator.enabled = false;
+            _playerAnimator.AnimatorSpeed(0f);
+        }
+
+        if (_botAnimator != null) {
+            _botAnimator.enabled = false;
+            _botAnimator.AnimatorSpeed(0f);
+        }
+
         if (_footControllerIK != null) _footControllerIK.enabled = false;
         if (_tester != null) _tester.enabled = false;
         if (_botMovement != null) _botMovement.enabled = false;
@@ -45,8 +53,16 @@ public class Freeze : MonoBehaviour {
         if (_stateController != null) _stateController.RefreshMovementState();
         if (_caster != null) _caster.enabled = true;
         if (_look != null) _look.enabled = true;
-        if (_playerAnimator != null) _playerAnimator.enabled = true;
-        if (_animator != null) _animator.speed = 1f;
+        if (_playerAnimator != null) {
+            _playerAnimator.enabled = true;
+            _playerAnimator.AnimatorSpeed(1f);
+        }
+
+        if (_botAnimator != null) {
+            _botAnimator.enabled = true;
+            _botAnimator.AnimatorSpeed(1f);
+        }
+
         if (_footControllerIK != null) _footControllerIK.enabled = true;
         if (_tester != null) _tester.enabled = true;
         if (_botMovement != null) _botMovement.enabled = true;

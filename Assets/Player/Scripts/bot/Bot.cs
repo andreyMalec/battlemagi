@@ -59,16 +59,6 @@ public class Bot : NetworkBehaviour {
         ApplyMaterial(arch, HueValue.Value, SaturationValue.Value);
 
         gameObject.name = $"Bot_{BotId}";
-
-        if (IsOwner) {
-        } else {
-            if (!IsOwner && meshController != null) {
-                meshController.leftHand.weight = 0f;
-                meshController.spine.weight *= 3f;
-                meshController.invocation.localRotation =
-                    Quaternion.Euler(new Vector3(320.634674f, 355.449707f, 39.6077499f));
-            }
-        }
     }
 
     private void SpawnAvatar(int arch) {
@@ -88,14 +78,13 @@ public class Bot : NetworkBehaviour {
         var ba = GetComponent<BotAnimator>();
         if (ba != null) {
             ba.animator = animator;
-            ba.networkAnimator = netAnim;
             ba.meshController = meshController;
         }
 
         var scpa = GetComponent<SpellCasterPlayerAnimator>();
         scpa?.BindAvatar(meshController, netAnim, animator, IsOwner);
         var scpp = GetComponent<SpellCasterPlayerPreview>();
-        scpp?.BindAvatar(meshController);
+        scpp?.BindHand(meshController.invocation);
 
         var movement = GetComponent<BotMovement>();
         movement.movementSpeed = archetype.movementSpeed;
@@ -117,7 +106,7 @@ public class Bot : NetworkBehaviour {
         fpss.BindAvatar(animator);
         var freeze = GetComponentInChildren<Freeze>(true);
         var footIK = currentAvatar.GetComponent<FootControllerIK>();
-        freeze.BindAvatar(animator, footIK);
+        freeze.BindAvatar(footIK);
     }
 
     [ClientRpc]

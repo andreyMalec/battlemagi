@@ -150,7 +150,7 @@ public static class BallisticCastTargetBuilder {
     }
 
     public static ITarget Build(
-        SpellCaster caster, ITarget target, SpellDefinition spell, float targetLift = 0.1f,
+        SpellCaster caster, ITarget target, SpellDefinition spell, 
         float targetBodyHeightFactor = 0.75f
     ) {
         if (caster == null || target == null || spell == null)
@@ -159,19 +159,20 @@ public static class BallisticCastTargetBuilder {
             return target;
 
         var projectile = spell.projectile;
-        if (!projectile.enableGravity)
-            return target;
-
         var gravityY = Mathf.Abs(projectile.gravity.y);
-        if (gravityY <= 0.01f)
-            return target;
+        if (!projectile.enableGravity || gravityY <= 0.1f) {
+            // если спавним зону из снаряда то целимся под ноги, иначе в центр
+            if (projectile.onHitSpawn != null && projectile.onHitSpawn.coreType == CoreType.Zone)
+                return target;
+            return new BallisticCastTarget(target, GetAimPoint(target, targetBodyHeightFactor));
+        }
 
         var stats = caster.GetComponent<Stats>();
         var speed = projectile.moveSpeed * (stats?.GetFinal(StatType.ProjectileSpeed) ?? 1f);
         speed = Mathf.Max(0.1f, speed);
 
         var origin = caster.Origin;
-        var targetPos = GetAimPoint(target, targetBodyHeightFactor) + Vector3.up * targetLift;
+        var targetPos = GetAimPoint(target, 0);
         var delta = targetPos - origin;
         var planar = new Vector3(delta.x, 0f, delta.z);
         var x = planar.magnitude;

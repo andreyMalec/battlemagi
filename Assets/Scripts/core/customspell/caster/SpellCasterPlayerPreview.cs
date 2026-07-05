@@ -15,10 +15,6 @@ public class SpellCasterPlayerPreview : MonoBehaviour {
         _bridgeTyped = GetComponentInParent<ISpellPreviewBridge>();
     }
 
-    public void BindAvatar(MeshController mc) {
-        BindHand(mc.invocation);
-    }
-
     public void BindHand(Transform hand) {
         _bridgeTyped.BindHand(hand);
     }

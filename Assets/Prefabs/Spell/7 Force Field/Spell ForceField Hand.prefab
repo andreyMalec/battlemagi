@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 3229967252547811850}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.606, y: 0.352, z: -0.482}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -81,6 +81,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &5500641975873561290
 MeshFilter:
@@ -138,6 +139,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c304752c58742efb7da623a6b0fee76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellInHand
+  chargingAudio: {fileID: 0}
 --- !u!167 &219553269421139138
 AudioReverbZone:
   m_ObjectHideFlags: 0

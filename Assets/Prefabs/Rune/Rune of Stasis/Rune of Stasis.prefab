@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 8850000000000000002}
   - component: {fileID: 8850000000000000003}
   - component: {fileID: -2815977233204209582}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Rune of Stasis
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -169,7 +169,7 @@ GameObject:
   - component: {fileID: 6688347181596542758}
   - component: {fileID: 2875570836581565804}
   - component: {fileID: 1159873025245491600}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -260,6 +260,10 @@ PrefabInstance:
     - target: {fileID: 1581911556082600, guid: 74ae338682c60ab4cb3bbd884ace03af, type: 3}
       propertyPath: m_Name
       value: Blizzard
+      objectReference: {fileID: 0}
+    - target: {fileID: 1581911556082600, guid: 74ae338682c60ab4cb3bbd884ace03af, type: 3}
+      propertyPath: m_Layer
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1876543172458782, guid: 74ae338682c60ab4cb3bbd884ace03af, type: 3}
       propertyPath: m_IsActive
