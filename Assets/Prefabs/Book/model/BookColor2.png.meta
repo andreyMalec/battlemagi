@@ -1,18 +1,11 @@
 fileFormatVersion: 2
-guid: 95b2eae109f1ae04f94f774b6774edcf
-AssetOrigin:
-  serializedVersion: 1
-  productId: 69542
-  packageName: Realtime CSG
-  packageVersion: 1.558
-  assetPath: Assets/Plugins/RealtimeCSG/Editor/Resources/Textures/invisible.png
-  uploadId: 383425
+guid: 9d7307fe2d7dc7e41b5ba8e5a250cf7a
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
-    mipMapMode: 1
+    mipMapMode: 0
     enableMipMap: 1
     sRGBTexture: 1
     linearTexture: 0
@@ -37,12 +30,12 @@ TextureImporter:
   generateCubemap: 6
   cubemapConvolution: 0
   seamlessCubemap: 0
-  textureFormat: -1
+  textureFormat: 1
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
-    aniso: 2
+    filterMode: 1
+    aniso: 1
     mipBias: 0
     wrapU: 0
     wrapV: 0
@@ -70,9 +63,9 @@ TextureImporter:
   compressionQualitySet: 0
   textureFormatSet: 0
   ignorePngGamma: 0
-  applyGammaDecoding: 1
+  applyGammaDecoding: 0
   swizzle: 50462976
-  cookieLightType: 1
+  cookieLightType: 0
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
