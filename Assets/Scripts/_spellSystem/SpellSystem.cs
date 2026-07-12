@@ -487,7 +487,8 @@ public class SpellSystem {
         if (def.spawnAtStep) {
             move = new StepDistanceTransform(
                 move,
-                def.spawnStep
+                def.spawnStep,
+                def.spawnStepAxes
             );
         }
 
@@ -542,7 +543,8 @@ public class SpellSystem {
         if (def.spawnAtStep) {
             move = new StepDistanceTransform(
                 move,
-                def.spawnStep
+                def.spawnStep,
+                def.spawnStepAxes
             );
         }
 
@@ -579,7 +581,8 @@ public class SpellSystem {
         if (def.spawnAtStep) {
             move = new StepDistanceTransform(
                 move,
-                def.spawnStep
+                def.spawnStep,
+                def.spawnStepAxes
             );
         }
 

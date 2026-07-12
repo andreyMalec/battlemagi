@@ -12,6 +12,7 @@ public class PlayerAnimator : NetworkBehaviour {
     private static readonly int VelocityAny = Animator.StringToHash("Velocity Any");
     private static readonly int JumpStart = Animator.StringToHash("Jump Start");
     private static readonly int FallStart = Animator.StringToHash("Fall Start");
+    private static readonly int Climb = Animator.StringToHash("Climb");
 
     private static readonly float eps = 0.05f;
 
@@ -50,6 +51,7 @@ public class PlayerAnimator : NetworkBehaviour {
         if (!IsOwner) return;
 
         movement.Jumped += Jumped;
+        movement.Climbing += Climbing;
     }
 
     private void Update() {
@@ -97,6 +99,13 @@ public class PlayerAnimator : NetworkBehaviour {
 
     private void Jumped() {
         jumpStart = true;
+    }
+
+    private void Climbing() {
+        if (IsOwner) {
+            animator.SetTrigger(Climb);
+            secondaryAnimator?.SetTrigger(Climb);
+        }
     }
 
     private float decelerate(float value) {

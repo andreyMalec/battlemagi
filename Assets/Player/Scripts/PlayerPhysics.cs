@@ -143,6 +143,11 @@ public class PlayerPhysics : MonoBehaviour {
         _noSnapTimer = NoSnapDuration;
     }
 
+    public void ClearJump() {
+        _velocityY = 0;
+        _noSnapTimer = 0;
+    }
+
     private bool ApplyPointForces(float dt) {
         if (_pointForces.Count == 0) return false;
 

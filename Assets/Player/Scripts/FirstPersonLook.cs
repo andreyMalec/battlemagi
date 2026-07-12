@@ -16,6 +16,7 @@ public class FirstPersonLook : NetworkBehaviour {
     private Vector2 _currentRotation;
     private Vector2 _frameVelocity;
     private Vector3 _positionVelocity;
+    private bool _inputLocked;
 
     public Vector2 ViewRotation => _currentRotation;
 
@@ -49,7 +50,7 @@ public class FirstPersonLook : NetworkBehaviour {
     }
 
     private void HandleOwnerInput() {
-        if (Cursor.lockState != CursorLockMode.Locked) return;
+        if (_inputLocked || Cursor.lockState != CursorLockMode.Locked) return;
         ProcessMouseInput();
         ApplyLocalRotation();
         SyncRotation();
@@ -79,6 +80,12 @@ public class FirstPersonLook : NetworkBehaviour {
             transform.localRotation = Quaternion.AngleAxis(_currentRotation.x, Vector3.up);
             firstPersonCamera.localRotation = Quaternion.AngleAxis(-_currentRotation.y, Vector3.right);
         }
+    }
+
+    public void SetInputLocked(bool locked) {
+        _inputLocked = locked;
+        if (locked)
+            _frameVelocity = Vector2.zero;
     }
 
     public void ApplyInitialRotation(Quaternion worldRotation) {

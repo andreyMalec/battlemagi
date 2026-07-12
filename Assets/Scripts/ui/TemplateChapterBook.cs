@@ -70,16 +70,12 @@ public class TemplateChapterBook : MonoBehaviour {
             }
 
             if (isOpened && !isPaging) {
-                if (Input.GetKeyDown(nextKey)) {
+                if (Input.GetKey(nextKey)) {
                     Next();
-                } else if (Input.GetKeyDown(prevKey)) {
+                } else if (Input.GetKey(prevKey)) {
                     Prev();
                 }
             }
-        }
-
-        if (!isOpened || isPaging) {
-            return;
         }
     }
 
@@ -122,7 +118,6 @@ public class TemplateChapterBook : MonoBehaviour {
     }
 
     public void Flip() {
-        isPaging = false;
         if (pendingSpreadStartIndex < 0) {
             return;
         }
@@ -135,6 +130,10 @@ public class TemplateChapterBook : MonoBehaviour {
         } else {
             rightStaticRenderer.Render(BuildPageRenderData(spreadStartIndex + 1));
         }
+    }
+
+    public void EndFlip() {
+        isPaging = false;
     }
 
     public void StartFlip() {
@@ -182,8 +181,6 @@ public class TemplateChapterBook : MonoBehaviour {
     }
 
     private void PrepareMovingSpread(int fromSpread, int toSpread, int direction) {
-        Debug.Log(
-            $"_________ PrepareMovingSpread fromSpread: {fromSpread}, toSpread: {toSpread}, direction: {direction}");
         if (direction == DirectionForward) {
             flipFrontRenderer.Render(BuildPageRenderData(fromSpread + 1));
             flipBackRenderer.Render(BuildPageRenderData(toSpread));

@@ -23,7 +23,7 @@ public class BounceOnHitAction : ISpellAction {
 
         var reflected = Vector3.Reflect(v, hit.ShapeHit.Normal.normalized) * _speedMultiplier;
         context.Movement.Motion = new SpellMotion { Velocity = reflected };
-        context.Movement.Transform.position = hit.ShapeHit.Point + hit.ShapeHit.Normal.normalized * 0.2f;
+        context.Movement.Transform.position = hit.ShapeHit.Point + hit.ShapeHit.Normal.normalized * 0.05f;
         if (reflected.sqrMagnitude > 0f)
             context.Movement.Transform.rotation = Quaternion.LookRotation(reflected.normalized, Vector3.up);
         _bounces++;

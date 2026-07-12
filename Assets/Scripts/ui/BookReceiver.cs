@@ -14,4 +14,8 @@ public class BookReceiver : MonoBehaviour {
     public void StartFlip() {
         _chapterBook.StartFlip();
     }
+
+    public void EndFlip() {
+        _chapterBook.EndFlip();
+    }
 }

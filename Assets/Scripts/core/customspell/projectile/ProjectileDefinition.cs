@@ -73,6 +73,7 @@ public class ProjectileDefinition : ScriptableObject, IValidate {
     [ShowIf("enableMaxDistance")] public SpellDefinition atMaxDistanceSpawn;
     public SpellDefinition atStepDistanceSpawn;
     [ShowIf("spawnAtStep")] public float spawnStep = 10f;
+    [ShowIf("spawnAtStep")] public StepDistanceAxes spawnStepAxes = StepDistanceAxes.All;
     public SpellDefinition onLifetimeEndSpawn;
     public SpellDefinition onLifetimeHalfSpawn;
 

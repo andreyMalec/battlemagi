@@ -61,6 +61,7 @@ public class ZoneDefinition : ScriptableObject, IValidate {
     [ShowIf("destroyIncomingSpells")] public SpellDefinition onEnemySpellDestroyedSpawn;
 
     [ShowIf("spawnAtStep")] public float spawnStep = 10f;
+    [ShowIf("spawnAtStep")] public StepDistanceAxes spawnStepAxes = StepDistanceAxes.All;
     public SpellDefinition onLifetimeEndSpawn;
     public SpellDefinition onLifetimeHalfSpawn;
 

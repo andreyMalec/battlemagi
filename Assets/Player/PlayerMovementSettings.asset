@@ -17,9 +17,20 @@ MonoBehaviour:
   canRun: 1
   runningKey: 304
   flySpeedMultiplier: 1
-  jumpStrength: 1.2
   jumpDelay: 0.2
   jumpCooldown: 1
   jumpKey: 32
+  canClimb: 1
+  climbMaxHeight: 3
+  climbMaxDistance: 1
+  climbDuration: 0.5
+  climbSurfaceForwardOffsetMin: -0.2
+  climbSurfaceForwardOffsetMax: 0.1
+  climbSurfaceForwardOffsetStep: 0.05
+  climbSurfaceUpOffset: 0.05
+  climbCeilingCheckExtra: 0.025
+  climbCollisionMask:
+    serializedVersion: 2
+    m_Bits: 193
   gravity: -9.81
   fallGravityMultiplier: 2.5

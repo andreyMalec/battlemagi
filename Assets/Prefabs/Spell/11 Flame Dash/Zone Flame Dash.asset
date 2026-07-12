@@ -13,10 +13,14 @@ MonoBehaviour:
   m_Name: Zone Flame Dash
   m_EditorClassIdentifier: Assembly-CSharp::ZoneDefinition
   prefabId: 14
+  shapeType: 0
   moveType: 3
   moveSpeed: 0
+  moveAlongGround: 0
+  groundOffset: 0.1
   enableMaxDistance: 0
   maxDistance: 20
+  returnToCaster: 0
   lookAtMaxDistance: 50
   lookAtRayMask:
     serializedVersion: 2
@@ -44,6 +48,7 @@ MonoBehaviour:
   atMaxDistanceSpawn: {fileID: 0}
   onEnemySpellDestroyedSpawn: {fileID: 0}
   spawnStep: 2
+  spawnStepAxes: 5
   onLifetimeEndSpawn: {fileID: 0}
   onLifetimeHalfSpawn: {fileID: 0}
   spawnAtStep: 1
