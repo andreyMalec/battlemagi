@@ -549,21 +549,6 @@ MonoBehaviour:
   flipFrontRenderer: {fileID: 2170506690467220372}
   flipBackRenderer: {fileID: 7795281046077854662}
   rightStaticRenderer: {fileID: 774235781854986523}
-  worldCamera: {fileID: 0}
-  bookCollider: {fileID: 0}
-  leftStaticUvRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 0.5
-    height: 1
-  rightStaticUvRect:
-    serializedVersion: 2
-    x: 0.5
-    y: 0
-    width: 0.5
-    height: 1
-  linkColor: {r: 0.24, g: 0.69, b: 1, a: 1}
   forwardTrigger: Forward
   backwardTrigger: Backward
   pageAnimationLockDuration: 0.6
@@ -573,46 +558,37 @@ MonoBehaviour:
   prevKey: 113
   document:
     chapters:
-    - chapterId: 1
-      title: tit
+    - icon: {fileID: 0}
+      iconTint: {r: 0, g: 0, b: 0, a: 0}
       pages:
-      - pageId: 1
-        template: 4
-        data:
-          heading: 
-          paragraph: 
-          paragraph2: 
-          listItems: []
-          image: {fileID: 2800000, guid: 7564f4823bd3ccd49a0fcf4ca0490cec, type: 3}
-          imageCaption: 12
-      - pageId: 2
-        template: 1
-        data:
-          heading: Tem
-          paragraph: dawdwad
-          paragraph2: 
-          listItems: []
-          image: {fileID: 0}
-          imageCaption: 
-      - pageId: 3
-        template: 4
-        data:
-          heading: 
-          paragraph: 
-          paragraph2: 
-          listItems: []
-          image: {fileID: 2800000, guid: e839b1b2c39b322419e1c2e161878f39, type: 3}
-          imageCaption: 55
-      - pageId: 4
-        template: 1
-        data:
-          heading: shad
-          paragraph: awdwadawdawgesg
-          paragraph2: 
-          listItems: []
-          image: {fileID: 0}
-          imageCaption: 
-  startPageId: 
+      - template: 4
+        heading: 
+        paragraph: 
+        paragraph2: 
+        listItems: []
+        image: {fileID: 0}
+        imageCaption: 
+      - template: 1
+        heading: 
+        paragraph: 
+        paragraph2: 
+        listItems: []
+        image: {fileID: 0}
+        imageCaption: 
+      - template: 4
+        heading: 
+        paragraph: 
+        paragraph2: 
+        listItems: []
+        image: {fileID: 0}
+        imageCaption: 
+      - template: 1
+        heading: 
+        paragraph: 
+        paragraph2: 
+        listItems: []
+        image: {fileID: 0}
+        imageCaption: 
 --- !u!1 &7685455976979718207
 GameObject:
   m_ObjectHideFlags: 0
@@ -958,6 +934,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 04d97fb53162f9d40861795ac1a26943, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2595006485209592455}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 04d97fb53162f9d40861795ac1a26943, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7098961172090262526}
   m_SourcePrefab: {fileID: 100100000, guid: 04d97fb53162f9d40861795ac1a26943, type: 3}
 --- !u!1 &1190883273139395315 stripped
 GameObject:
@@ -986,6 +965,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7098961172090262526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1190883273139395315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ce19a5ef32e493988a6f817ae378a48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BookReceiver
 --- !u!4 &2003273539450159177 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 04d97fb53162f9d40861795ac1a26943, type: 3}

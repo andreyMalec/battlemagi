@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileDefinition
   prefabId: 8
   moveType: 2
-  moveSpeed: 7
+  moveSpeed: 14
   moveAlongGround: 0
   groundOffset: 0.1
   enableMaxDistance: 0
@@ -46,6 +46,7 @@ MonoBehaviour:
   bounceSpeedMultiplier: 0.9
   enablePierce: 0
   maxPierces: 1
+  pierceTargetMode: 0
   enableFork: 0
   forkCount: 3
   forkSpreadAngle: 35

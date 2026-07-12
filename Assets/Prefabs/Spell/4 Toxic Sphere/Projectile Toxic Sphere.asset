@@ -14,9 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileDefinition
   prefabId: 2
   moveType: 1
-  moveSpeed: 50
+  moveSpeed: 100
+  moveAlongGround: 0
+  groundOffset: 0.1
   enableMaxDistance: 0
   maxDistance: 20
+  returnToCaster: 0
   enableGravity: 0
   gravity: {x: 0, y: -10, z: 0}
   lookAtMaxDistance: 50
@@ -26,6 +29,7 @@ MonoBehaviour:
   angularSpeed: 0
   spiralRadius: 0.5
   spiralAxis: 0
+  acceleration: 0
   enableHoming: 0
   obstacleMask:
     serializedVersion: 2
@@ -42,10 +46,12 @@ MonoBehaviour:
   bounceSpeedMultiplier: 0.7
   enablePierce: 0
   maxPierces: 2
+  pierceTargetMode: 0
   enableFork: 0
   forkCount: 2
   forkSpreadAngle: 35
   echoOnHit: 0
+  spawnInHit: 0
   onHitSpawn: {fileID: 11400000, guid: cebb7b072539c44498a8ed112620e53a, type: 2}
   atMaxDistanceSpawn: {fileID: 0}
   atStepDistanceSpawn: {fileID: 0}

@@ -188,7 +188,8 @@ public class SpellCasterPlayer : SpellCaster {
         }
 
         _preview?.SetSpell(_spell);
-        _animator.preparedSpell = _spell;
+        if (animateHand)
+            _animator.preparedSpell = _spell;
     }
 
     public void SelectSpell([CanBeNull] SpellDefinition spell) {

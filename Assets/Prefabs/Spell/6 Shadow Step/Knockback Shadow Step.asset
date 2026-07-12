@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: Knockback Shadow Step
   m_EditorClassIdentifier: Assembly-CSharp::KnockbackDefinition
   mode: 1
-  canHitAllies: 1
+  canHitAllies: 0
   vectorMode: 1
   impulse: 8
   forcePerSecond: 20
   duration: 0.5
+  beamSelfImpulse: 0.75
+  beamSelfImpulseAngle: 60
   upBias: 1
