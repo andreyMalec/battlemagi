@@ -42,8 +42,9 @@ GameObject:
   - component: {fileID: 8829864031521416944}
   - component: {fileID: 8570435428822963942}
   - component: {fileID: 6180065054090120759}
-  - component: {fileID: 7833503863762410395}
   - component: {fileID: -7210879817951032444}
+  - component: {fileID: 7833503863762410395}
+  - component: {fileID: -6375657459666487212}
   m_Layer: 2
   m_Name: RunePlatform
   m_TagString: Untagged
@@ -120,6 +121,18 @@ MonoBehaviour:
   restoreTime: 40
   duration: 39
   spawnPoint: {fileID: 561189962538401740}
+--- !u!114 &-7210879817951032444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8888296576667898284}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36ee60ac812149fba8eff2d5e8cd56e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RespawnRune
 --- !u!82 &7833503863762410395
 AudioSource:
   m_ObjectHideFlags: 0
@@ -142,7 +155,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 20
+  MaxDistance: 40
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -217,7 +230,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &-7210879817951032444
+--- !u!114 &-6375657459666487212
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -226,9 +239,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8888296576667898284}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36ee60ac812149fba8eff2d5e8cd56e7, type: 3}
+  m_Script: {fileID: 11500000, guid: ce46153a5565448892f672b613902a09, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RespawnRune
+  m_EditorClassIdentifier: Assembly-CSharp::Distance2DAudio
 --- !u!1001 &7110693826426269332
 PrefabInstance:
   m_ObjectHideFlags: 0

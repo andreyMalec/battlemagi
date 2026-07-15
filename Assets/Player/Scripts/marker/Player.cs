@@ -7,6 +7,8 @@ using UnityEngine.Rendering.Universal;
 
 [DefaultExecutionOrder(-100)]
 public class Player : NetworkBehaviour {
+    public static Player local;
+
     [SerializeField] private bool isDummy = false;
     [SerializeField] private Behaviour[] scriptsToDisable;
     [SerializeField] private GameObject[] objectsToDisable;
@@ -173,6 +175,8 @@ public class Player : NetworkBehaviour {
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
+        if (IsOwner)
+            local = this;
 
         var clientId = OwnerClientId;
         var arch = ArchetypeValue.Value;
@@ -244,5 +248,12 @@ public class Player : NetworkBehaviour {
         var meshCloak = meshController.GetComponentInChildren<MeshCloak>();
         if (meshCloak != null)
             meshCloak.gameObject.GetComponent<SkinnedMeshRenderer>().material = cloakMat;
+    }
+
+    public override void OnNetworkDespawn() {
+        base.OnNetworkDespawn();
+        if (IsOwner && local == this) {
+            local = null;
+        }
     }
 }

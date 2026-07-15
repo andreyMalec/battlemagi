@@ -4,6 +4,7 @@ using UnityEngine;
 public class GameConfig : ScriptableObject {
     public bool useAnalytic = false;
     public bool spellDebugLogs = false;
+    public bool botSpellDecisionLogs = false;
     public bool spellMetricsEnabled = false;
     public bool spellMetricsSummaryLogs = false;
     public float spellMetricsSummaryInterval = 5f;

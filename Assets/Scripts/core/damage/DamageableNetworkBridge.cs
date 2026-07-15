@@ -128,6 +128,15 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
 
     public void HandlePostApplyDamage(in DamageApplied applied, ref DamageRequest request, bool ignoreSoundCooldown) {
         if (!IsServer) return;
+        
+        if (request.fromId.IsHuman && TeamManager.Instance.AreEnemies(request.fromId, OwnerId)) {
+            var healthRatio = Mathf.Clamp01(_core.Health.Health / Mathf.Max(_core.Health.maxHealth, 0.0001f));
+            var isKill = !_core.IsAlive;
+            var sendParams = new ClientRpcParams {
+                Send = new ClientRpcSendParams { TargetClientIds = new[] { request.fromId.Value } }
+            };
+            ShowHitMarkerClientRpc(isKill, healthRatio, sendParams);
+        }
 
         if (_core.IsAlive) {
             if (request.source != "Pain Mirror" && request.fromId != OwnerId) {
@@ -143,6 +152,11 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
         }
 
         PlayDamageSound((DamageKind)request.kind, ignoreSoundCooldown);
+    }
+
+    [ClientRpc]
+    private void ShowHitMarkerClientRpc(bool isKill, float victimHealthRatio, ClientRpcParams _ = default) {
+        PlayerUI.NotifyHitMarker(isKill, victimHealthRatio);
     }
 
     public void DespawnOnDeath() {

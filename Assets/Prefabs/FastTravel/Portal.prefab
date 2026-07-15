@@ -90,6 +90,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!198 &1273476493889771852
 ParticleSystem:
@@ -4825,7 +4826,7 @@ ParticleSystem:
     vectorLabel1_3: W
 --- !u!199 &2605155428113166911
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -4872,6 +4873,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -4903,7 +4905,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!1 &3642064698231223044
 GameObject:
   m_ObjectHideFlags: 0
@@ -4956,6 +4957,7 @@ MonoBehaviour:
   linked: {fileID: 0}
   reactivationTimeout: 1
   exitOffset: 1.2
+  exitSampleRadius: 2
   audioSource: {fileID: 5930608811691687246}
   portalCamera: {fileID: 3683433411964021993}
   screenRenderer: {fileID: 6003800419159446133}
@@ -5171,6 +5173,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &7056178332202240716
 GameObject:

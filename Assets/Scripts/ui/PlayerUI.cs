@@ -5,6 +5,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerUI : NetworkBehaviour {
+    private static PlayerUI _localOwner;
+    private static readonly int TintColor = Shader.PropertyToID("_TintColor");
+
     private PlayerUIRenderer _renderer;
     private Damageable _damageable;
     private SpellCasterPlayer _caster;
@@ -12,6 +15,7 @@ public class PlayerUI : NetworkBehaviour {
 
     private float _armorBarWidth;
 
+    [SerializeField] private AudioSource hitmarkerAudio;
     [SerializeField] private float barsSmoothSpeed = 10f;
 
     private float _displayHp = 1f;
@@ -23,11 +27,27 @@ public class PlayerUI : NetworkBehaviour {
 
     [SerializeField] private RectTransform echoItemPrefab;
     [SerializeField] private PlayerEffectUIItem effectItemPrefab;
+    [SerializeField] private float hitMarkerFadeOutTime = 0.2f;
+    [SerializeField] private float hitMarkerMaxAlpha = 0.95f;
+    [SerializeField] private float hitMarkerScaleBoost = 0.1f;
+    [SerializeField] private float hitMarkerScaleDecay = 8f;
+    [SerializeField] private float hitMarkerShakePixels = 2f;
+    [SerializeField] private float hitMarkerShakeDecay = 10f;
+    [SerializeField] private float chainedHitWindow = 0.3f;
     private readonly List<PlayerEffectUIItem> _items = new();
+
+    private Color _hitMarkerColor = Color.white;
+    private Vector2 _hitMarkerBasePosition;
+    private Vector3 _hitMarkerBaseScale;
+    private float _hitMarkerAlpha;
+    private float _hitMarkerScalePulse;
+    private float _hitMarkerShake;
+    private float _lastHitMarkerTime;
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
         if (!IsOwner) return;
+        _localOwner = this;
         _renderer = FindFirstObjectByType<PlayerUIRenderer>();
         _damageable = GetComponent<Damageable>();
         _statusable = GetComponent<Statusable>();
@@ -55,13 +75,33 @@ public class PlayerUI : NetworkBehaviour {
             var child = _renderer.echoContainer.GetChild(i);
             DestroyImmediate(child.gameObject);
         }
+
+        _hitMarkerColor = Color.white;
+        _hitMarkerBasePosition = _renderer.hitMarkerRoot.anchoredPosition;
+        _hitMarkerBaseScale = _renderer.hitMarkerRoot.localScale;
+        _hitMarkerAlpha = 0f;
+        _hitMarkerScalePulse = 0f;
+        _hitMarkerShake = 0f;
+        _lastHitMarkerTime = -10f;
+        for (var i = 0; i < _renderer.hitMarkerParts.Length; i++) {
+            var color = _renderer.hitMarkerParts[i].color;
+            color.a = 0f;
+            _renderer.hitMarkerParts[i].color = color;
+        }
     }
 
     public override void OnNetworkDespawn() {
         base.OnNetworkDespawn();
         if (!IsOwner) return;
+        if (_localOwner == this)
+            _localOwner = null;
         if (_renderer != null && _renderer.armor != null)
             _renderer.armor.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _armorBarWidth);
+    }
+
+    public static void NotifyHitMarker(bool isKill, float victimHealthRatio) {
+        if (_localOwner == null) return;
+        _localOwner.ShowHitMarker(isKill, victimHealthRatio);
     }
 
     private void Update() {
@@ -127,6 +167,36 @@ public class PlayerUI : NetworkBehaviour {
                 }
             }
         }
+
+        UpdateHitMarker();
+    }
+
+    private void ShowHitMarker(bool isKill, float victimHealthRatio) {
+        _hitMarkerColor = isKill ? Color.red : victimHealthRatio > 0.5f ? Color.white : Color.yellow;
+        var chained = Time.unscaledTime - _lastHitMarkerTime <= chainedHitWindow;
+        _lastHitMarkerTime = Time.unscaledTime;
+        _hitMarkerAlpha = 1f;
+        _hitMarkerScalePulse = Mathf.Clamp01(_hitMarkerScalePulse + (chained ? 0.55f : 0.35f));
+        _hitMarkerShake = Mathf.Clamp01(_hitMarkerShake + (chained ? 0.6f : 0.3f));
+        hitmarkerAudio.Play();
+    }
+
+    private void UpdateHitMarker() {
+        _hitMarkerAlpha = Mathf.MoveTowards(_hitMarkerAlpha, 0f, Time.unscaledDeltaTime / Mathf.Max(hitMarkerFadeOutTime, 0.0001f));
+        _hitMarkerScalePulse = Mathf.MoveTowards(_hitMarkerScalePulse, 0f, hitMarkerScaleDecay * Time.unscaledDeltaTime);
+        _hitMarkerShake = Mathf.MoveTowards(_hitMarkerShake, 0f, hitMarkerShakeDecay * Time.unscaledDeltaTime);
+
+        var color =  Color.white;
+        color.a = _hitMarkerAlpha * hitMarkerMaxAlpha;
+        for (var i = 0; i < _renderer.hitMarkerParts.Length; i++) {
+            _renderer.hitMarkerParts[i].color = color;
+            _renderer.hitMarkerParts[i].material.SetColor(TintColor, _hitMarkerColor);
+        }
+
+        var scale = 1f + _hitMarkerScalePulse * hitMarkerScaleBoost;
+        _renderer.hitMarkerRoot.localScale = _hitMarkerBaseScale * scale;
+        var offset = UnityEngine.Random.insideUnitCircle * (_hitMarkerShake * hitMarkerShakePixels);
+        _renderer.hitMarkerRoot.anchoredPosition = _hitMarkerBasePosition + offset;
     }
 
     private void Show(List<Statusable.DurationEffect> effects) {

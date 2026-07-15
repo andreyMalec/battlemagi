@@ -17,4 +17,6 @@ public class PlayerUIRenderer : MonoBehaviour {
     public RectTransform effectsContainer;
     public RectTransform echoContainer;
     public RectTransform alternativeSpawn;
+    public RectTransform hitMarkerRoot;
+    public Image[] hitMarkerParts;
 }

@@ -353,7 +353,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BotLifecycleManager
   initialBotCount: 0
-  respawnDelay: 5
   autoSpawnOffline: 1
 --- !u!114 &4980433971152159853
 MonoBehaviour:
@@ -390,8 +389,8 @@ MonoBehaviour:
     mobility: 1
   - available: 1
     spell: {fileID: 11400000, guid: 88ae3a7b24de22243a3f8eeb5e7797ca, type: 2}
-    offensive: 2.5
-    defensive: 2.7
+    offensive: 1.8
+    defensive: 1.5
     mobility: 1
   - available: 1
     spell: {fileID: 11400000, guid: b86df27e043dcf140a7e00735b82fe0f, type: 2}

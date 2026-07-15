@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8570435428822963942}
   - component: {fileID: 6281978978173954527}
   - component: {fileID: 7833503863762410395}
+  - component: {fileID: 947667688320450748}
   m_Layer: 2
   m_Name: ArmorSpawn
   m_TagString: Untagged
@@ -174,3 +175,15 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &947667688320450748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8888296576667898284}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce46153a5565448892f672b613902a09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Distance2DAudio
