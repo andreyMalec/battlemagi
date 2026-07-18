@@ -11,6 +11,7 @@ public class Distance2DAudio : MonoBehaviour {
     }
 
     private void Update() {
+        if (Player.local == null) return;
         float distance = Vector3.Distance(Player.local.transform.position, transform.position);
 
         float t = Mathf.InverseLerp(_audioSource.minDistance, _audioSource.maxDistance, distance);

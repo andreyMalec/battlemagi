@@ -8,6 +8,7 @@ public class DamageOverTimeEffect : StatusEffectData {
     public bool ignoreDamageSoundCooldown = false;
     public bool canSelfDamage = true;
     public bool percentDamage = false;
+    public bool percentOfSourceDamage = false;
     public bool canKill = true;
 
     public override StatusEffectRuntime CreateRuntime() {
@@ -42,6 +43,9 @@ public class DamageOverTimeEffect : StatusEffectData {
                     var damage = _data.dps;
                     if (_data.percentDamage) {
                         damage *= damageable.Health.maxHealth;
+                    }
+                    if (_data.percentOfSourceDamage && _ctx.damageApplied.HasValue) {
+                        damage *= _ctx.damageApplied.Value.final;
                     }
 
                     if (!_data.canKill) {

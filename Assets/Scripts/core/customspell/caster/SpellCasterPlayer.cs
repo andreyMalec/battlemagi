@@ -52,6 +52,7 @@ public class SpellCasterPlayer : SpellCaster {
     private SpellDefinition _echoSpell;
 
     private List<SpellDefinition> _availableSpells;
+    public event Action<SpellDefinition, float, bool> OnResourceSpentServer;
 
     public ManaModule Mana => mana;
 
@@ -308,10 +309,12 @@ public class SpellCasterPlayer : SpellCaster {
 
     private bool SpendResourceServer(SpellDefinition spell, float amount) {
         if (spell == null || amount <= 0f) return true;
-        if (spell.bloodMagic)
-            return _bridgeTyped.TrySpendHealth(amount);
-
-        return _bridgeTyped.TrySpendMana(amount);
+        var spent = spell.bloodMagic
+            ? _bridgeTyped.TrySpendHealth(amount)
+            : _bridgeTyped.TrySpendMana(amount);
+        if (spent)
+            OnResourceSpentServer?.Invoke(spell, amount, spell.bloodMagic);
+        return spent;
     }
 
     internal void StopChannelingFromBridge() {

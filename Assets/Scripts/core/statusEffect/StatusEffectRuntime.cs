@@ -4,6 +4,7 @@ public abstract class StatusEffectRuntime {
     public StatusEffectData data;
     public ParticipantId OwnerId;
     public float _timeRemaining;
+    public StatusEffectApplyContext _ctx;
 
     public StatusEffectRuntime(StatusEffectData data) {
         this.data = data;
@@ -15,6 +16,7 @@ public abstract class StatusEffectRuntime {
     }
 
     public virtual void OnApply(StatusEffectApplyContext applyContext, GameObject target) {
+        _ctx = applyContext;
         OnApply(applyContext.ownerId, target);
     }
 

@@ -138,6 +138,8 @@ public class Player : NetworkBehaviour {
             caster.Mana.SetDefaults(archetype.maxMana, archetype.manaRegen);
         var damageable = GetComponent<Damageable>();
         damageable.Health.SetDefaults(archetype.maxHealth, archetype.healthRegen);
+        var passiveRuntime = GetComponent<ArchetypePassiveRuntime>();
+        passiveRuntime.Configure(archetype.passive);
         var fpss = GetComponentInChildren<FirstPersonSounds>();
         fpss.BindAvatar(animator);
         var freeze = GetComponentInChildren<Freeze>(true);

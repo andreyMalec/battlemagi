@@ -6,12 +6,29 @@ public readonly struct StatusEffectApplyContext {
     public readonly GameObject sourceObject;
     public readonly ulong sourceNetworkObjectId;
     public readonly float sourceProjectileInitialSpeed;
+    public readonly DamageApplied? damageApplied;
 
-    public StatusEffectApplyContext(ParticipantId ownerId, GameObject sourceObject = null, ulong sourceNetworkObjectId = ulong.MaxValue, float sourceProjectileInitialSpeed = 0f) {
+    public StatusEffectApplyContext(
+        ParticipantId ownerId,
+        GameObject sourceObject = null,
+        ulong sourceNetworkObjectId = ulong.MaxValue,
+        float sourceProjectileInitialSpeed = 0f
+    ) {
         this.ownerId = ownerId;
         this.sourceObject = sourceObject;
         this.sourceNetworkObjectId = sourceNetworkObjectId;
         this.sourceProjectileInitialSpeed = sourceProjectileInitialSpeed;
+        this.damageApplied = null;
+    }
+
+    public StatusEffectApplyContext(
+        ParticipantId ownerId,
+        DamageApplied damageApplied
+    ) {
+        this.ownerId = ownerId;
+        this.sourceObject = null;
+        this.sourceNetworkObjectId = 0;
+        this.sourceProjectileInitialSpeed = 0;
+        this.damageApplied = damageApplied;
     }
 }
-

@@ -20,6 +20,8 @@ public struct DamageableCollider {
 
 public class Damageable : MonoBehaviour {
     public static readonly List<Damageable> Active = new();
+    public static event Func<ParticipantId, Damageable, DamageRequest, float, float> OnModifyOutgoingDamage;
+    public static event Action<ParticipantId, Damageable, DamageApplied> OnDamageDealt;
 
     [Header("Sound")]
     [SerializeField] public AudioSource damageAudio;
@@ -243,8 +245,18 @@ public class Damageable : MonoBehaviour {
         if (!_bridgeTyped.IsServer) return;
         if (!_bridgeTyped.IsSpawned) return;
 
-        var beforeHp = _health.Health;
         var request = new DamageRequest(source, fromId, amount, (DamageKind)sound);
+        if (OnModifyOutgoingDamage != null) {
+            var currentAmount = request.amount;
+            foreach (var handler in OnModifyOutgoingDamage.GetInvocationList()) {
+                if (handler is Func<ParticipantId, Damageable, DamageRequest, float, float> modifier)
+                    currentAmount = modifier.Invoke(fromId, this, request, currentAmount);
+            }
+
+            request = new DamageRequest(request.source, request.fromId, Mathf.Max(0f, currentAmount), request.kind);
+        }
+
+        var beforeHp = _health.Health;
 
         if (!_bridgeTyped.HandlePreApplyDamage(ref request, beforeHp))
             return;
@@ -283,6 +295,7 @@ public class Damageable : MonoBehaviour {
 
         var applied = new DamageApplied(request, incoming, final, armorApplied, healthApplied, overkill);
         OnDamageApplied?.Invoke(applied);
+        OnDamageDealt?.Invoke(request.fromId, this, applied);
 
         if (_health.Health <= 0f)
             TryDie(new DeathInfo(_bridgeTyped.OwnerId, request.fromId, request.source));
@@ -295,6 +308,9 @@ public class Damageable : MonoBehaviour {
         if (!IsAlive) return;
         _health.ApplyHeal(amount);
         OnHealed?.Invoke(amount);
+        if (GameConfig.SpellDebugLogsEnabled) {
+            Debug.Log($"Damageable {name} apply heal. amount: {amount}, source: {source}");
+        }
     }
 
     private void TakeArmorServer(float amount) {
