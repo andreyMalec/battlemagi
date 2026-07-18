@@ -15,12 +15,17 @@ public class DamageOverTimeEffect : StatusEffectData {
         return new DamageOverTimeRuntime(this);
     }
 
-    public override int CompareTo(StatusEffectData other) {
-        if (other is DamageOverTimeEffect effect) {
-            return dps.CompareTo(effect.dps);
+    public override EffectCompare CompareTo(StatusEffectData other) {
+        if (compare == EffectCompare.Replace &&
+            (this == other || onStack == other || onStack?.onStack == other)) {
+            return EffectCompare.Replace;
         }
 
-        return RESET_TIME;
+        if (other is DamageOverTimeEffect effect) {
+            return dps.Compare(effect.dps);
+        }
+
+        return EffectCompare.ResetTime;
     }
 
     private class DamageOverTimeRuntime : StatusEffectRuntime {
@@ -44,6 +49,7 @@ public class DamageOverTimeEffect : StatusEffectData {
                     if (_data.percentDamage) {
                         damage *= damageable.Health.maxHealth;
                     }
+
                     if (_data.percentOfSourceDamage && _ctx.damageApplied.HasValue) {
                         damage *= _ctx.damageApplied.Value.final;
                     }

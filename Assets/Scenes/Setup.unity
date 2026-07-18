@@ -1680,6 +1680,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 910188372047049241, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      propertyPath: 'effects.Array.data[9]'
+      value: 
+      objectReference: {fileID: 11400000, guid: b365fceaec6b8d74ba5ac0b3a9002d92, type: 2}
+    - target: {fileID: 910188372047049241, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      propertyPath: 'effects.Array.data[10]'
+      value: 
+      objectReference: {fileID: 11400000, guid: fbf323d173c99f947b2dd64633905b22, type: 2}
+    - target: {fileID: 910188372047049241, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      propertyPath: 'effects.Array.data[11]'
+      value: 
+      objectReference: {fileID: 11400000, guid: fbf323d173c99f947b2dd64633905b22, type: 2}
     - target: {fileID: 1639143551227860678, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
       propertyPath: m_Name
       value: PlayerManager

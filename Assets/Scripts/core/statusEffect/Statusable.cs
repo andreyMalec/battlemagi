@@ -41,16 +41,16 @@ public class Statusable : MonoBehaviour {
         if (!_bridgeTyped.IsSpawned) return;
 
         SpellLog.Log($"Adding effect {data.effectName} to {gameObject.name} from client {applyContext.ownerId}");
-        if (_active.TryGetValue(data.effectName, out var previous)) {
+        if (FindPreviousEffect(data, out var previous)) {
             switch (data.CompareTo(previous.data)) {
-                case StatusEffectData.RESET_TIME:
+                case EffectCompare.ResetTime:
                     previous.ResetTime();
                     break;
-                case StatusEffectData.REPLACE:
-                    RemoveEffect(data.effectName);
-                    Apply(applyContext, data);
+                case EffectCompare.Replace:
+                    RemoveEffect(previous.data.effectName);
+                    Apply(applyContext, data.onStack != null ? previous.data.onStack : data);
                     break;
-                case StatusEffectData.ADD:
+                case EffectCompare.Add:
                     Apply(applyContext, data);
                     break;
             }
@@ -59,6 +59,22 @@ public class Statusable : MonoBehaviour {
         }
 
         _bridgeTyped?.SyncFromCore(this);
+    }
+
+    private bool FindPreviousEffect(StatusEffectData data, out StatusEffectRuntime previous) {
+        if (data.onStack == null) {
+            return _active.TryGetValue(data.effectName, out previous);
+        }
+
+        foreach (var v in _active.Values) {
+            if (v.data == data || v.data == data.onStack || v.data == data.onStack.onStack) {
+                previous = v;
+                return true;
+            }
+        }
+
+        previous = null;
+        return false;
     }
 
     private void Apply(StatusEffectApplyContext applyContext, StatusEffectData data) {

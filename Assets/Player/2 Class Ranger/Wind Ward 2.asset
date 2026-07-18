@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 491f02c2cdec4921aa5618ae8d3aadff, type: 3}
+  m_Name: Wind Ward 2
+  m_EditorClassIdentifier: Assembly-CSharp::ResistMultiplierEffect
+  effectName: Ranger Wind Ward 2
+  title: Wind Ward 2
+  description: 
+  duration: 10
+  icon: {fileID: 0}
+  color: {r: 0, g: 0, b: 0, a: 0}
+  removeOnHit: 0
+  onExpire: {fileID: 0}
+  onStack: {fileID: 11400000, guid: d9a45b99fc0b1534ebbcf2a53b716357, type: 2}
+  compare: 1
+  multiplier: 0.86

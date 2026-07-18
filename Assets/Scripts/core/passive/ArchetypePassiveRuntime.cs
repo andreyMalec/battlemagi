@@ -20,6 +20,8 @@ public class ArchetypePassiveRuntime : MonoBehaviour {
     private float _activeSpellDamageModifier = 1f;
     private bool _activeSpellDamageModifierApplied;
 
+    private List<float> _afterTakeDamageEffectsTimer = new();
+
     private void Awake() {
         _stats = GetComponent<Stats>();
         _statusable = GetComponent<Statusable>();
@@ -39,6 +41,7 @@ public class ArchetypePassiveRuntime : MonoBehaviour {
 
         ApplyBaseModifiers();
         ApplySpawnEffects();
+        SetupTakeDamageEffects();
         Subscribe();
     }
 
@@ -47,6 +50,7 @@ public class ArchetypePassiveRuntime : MonoBehaviour {
             return;
 
         UpdateActiveSpellDamageModifier();
+        UpdateTakeDamageEffects();
     }
 
     private void Subscribe() {
@@ -99,6 +103,43 @@ public class ArchetypePassiveRuntime : MonoBehaviour {
         }
     }
 
+    private void SetupTakeDamageEffects() {
+        if (_config.afterTakeDamageEffects == null)
+            return;
+
+        _afterTakeDamageEffectsTimer = new();
+        for (var i = 0; i < _config.afterTakeDamageEffects.Length; i++) {
+            _afterTakeDamageEffectsTimer.Add(_config.afterTakeDamageEffects[i].duration);
+        }
+    }
+
+    private void UpdateTakeDamageEffects() {
+        if (_config.afterTakeDamageEffects == null)
+            return;
+
+        for (var i = 0; i < _config.afterTakeDamageEffects.Length; i++) {
+            var timer = _afterTakeDamageEffectsTimer[i];
+            var remains = Mathf.Max(0f, timer - Time.fixedDeltaTime);
+            if (remains > 0.2) {
+                _afterTakeDamageEffectsTimer[i] = remains;
+            } else {
+                var effect = _config.afterTakeDamageEffects[i];
+                _statusable.AddEffect(_damageable.OwnerId, effect);
+                _afterTakeDamageEffectsTimer[i] = effect.duration;
+            }
+        }
+    }
+
+    private void ResetTakeDamageEffects() {
+        if (_config.afterTakeDamageEffects == null)
+            return;
+
+        for (var i = 0; i < _config.afterTakeDamageEffects.Length; i++) {
+            var effect = _config.afterTakeDamageEffects[i];
+            _afterTakeDamageEffectsTimer[i] = effect.duration;
+        }
+    }
+
     private float ModifyOutgoingDamage(ParticipantId fromId, Damageable target, DamageRequest request, float amount) {
         if (fromId != _damageable.OwnerId)
             return amount;
@@ -116,6 +157,7 @@ public class ArchetypePassiveRuntime : MonoBehaviour {
     }
 
     private void HandleDamageDealt(ParticipantId fromId, Damageable target, DamageApplied applied) {
+        HandleDamageTaken(fromId, target, applied);
         if (fromId != _damageable.OwnerId)
             return;
 
@@ -135,6 +177,13 @@ public class ArchetypePassiveRuntime : MonoBehaviour {
                 _config.onDealDamageEffects[i]
             );
         }
+    }
+
+    private void HandleDamageTaken(ParticipantId fromId, Damageable target, DamageApplied applied) {
+        if (target.OwnerId != _damageable.OwnerId)
+            return;
+
+        ResetTakeDamageEffects();
     }
 
     private void HandleResourceSpent(SpellDefinition _, float amount, bool isBloodMagic) {

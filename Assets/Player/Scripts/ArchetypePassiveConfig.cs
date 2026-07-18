@@ -11,6 +11,7 @@ public struct PassiveStatModifier {
 public class ArchetypePassiveConfig {
     public PassiveStatModifier[] baseStatModifiers;
     public StatusEffectData[] onSpawnEffects;
+    public StatusEffectData[] afterTakeDamageEffects;
     public StatusEffectData[] onDealDamageEffects;
     [Range(0f, 1f)] public float lifeStealFraction;
     public float outgoingDamageMultiplier = 1f;

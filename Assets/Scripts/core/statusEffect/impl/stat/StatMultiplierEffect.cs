@@ -9,12 +9,17 @@ public abstract class StatMultiplierEffect : StatusEffectData {
         return new StatMultiplierRuntime(this);
     }
 
-    public override int CompareTo(StatusEffectData other) {
-        if (other is StatMultiplierEffect effect && statType() == effect.statType()) {
-            return REPLACE;
+    public override EffectCompare CompareTo(StatusEffectData other) {
+        if (compare == EffectCompare.Replace &&
+            (this == other || onStack == other || onStack?.onStack == other)) {
+            return EffectCompare.Replace;
         }
 
-        return RESET_TIME;
+        if (other is StatMultiplierEffect effect && statType() == effect.statType()) {
+            return EffectCompare.Replace;
+        }
+
+        return EffectCompare.ResetTime;
     }
 
     private class StatMultiplierRuntime : StatusEffectRuntime {
