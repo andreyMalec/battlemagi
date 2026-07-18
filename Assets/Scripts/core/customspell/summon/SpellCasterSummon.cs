@@ -18,6 +18,7 @@ public class SpellCasterSummon : SpellCaster {
 
     private bool _canCast = false;
     public override bool CanCast => _canCast;
+    public override bool IsDead => !_instance.IsAlive;
     public override Vector3 Origin => spawnPos.position;
     public override Vector3 Direction => spawnPos.forward;
 

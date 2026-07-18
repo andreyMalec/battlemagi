@@ -11,6 +11,7 @@ public struct PassiveStatModifier {
 public class ArchetypePassiveConfig {
     public PassiveStatModifier[] baseStatModifiers;
     public StatusEffectData[] onSpawnEffects;
+    public SpellDefinition onSpawnSpell;
     public StatusEffectData[] afterTakeDamageEffects;
     public StatusEffectData[] onDealDamageEffects;
     [Range(0f, 1f)] public float lifeStealFraction;
@@ -27,4 +28,3 @@ public struct DistanceDamageModifier {
     public float maxDistance;
     public float multiplierPerMeter;
 }
-

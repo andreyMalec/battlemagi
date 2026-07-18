@@ -34,12 +34,16 @@ MonoBehaviour:
   passive:
     baseStatModifiers: []
     onSpawnEffects: []
+    onSpawnSpell: {fileID: 0}
+    afterTakeDamageEffects: []
     onDealDamageEffects:
     - {fileID: 11400000, guid: b8f420258d7ecc3419adac27fef9966d, type: 2}
-    lifeStealFraction: 1
+    lifeStealFraction: 0.2
     outgoingDamageMultiplier: 1
-    distanceDamageBonusPerMeter: 0
-    maxDistanceDamageBonus: 0
+    distanceDamageBonus:
+      maxMultiplier: 0
+      maxDistance: 0
+      multiplierPerMeter: 0
     armorPerManaSpent: 0
     spellDamagePerActiveOwnedSpell: 0
     spellDamageCountCap: 0

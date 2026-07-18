@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Stats : MonoBehaviour {
@@ -17,6 +19,19 @@ public class Stats : MonoBehaviour {
 
         System.OnChanged += OnChangedServer;
     }
+
+#if UNITY_EDITOR
+    [Serializable]
+    public struct Mod {
+        public StatType statType;
+        public float value;
+    }
+
+    public List<Mod> modifiers = new();
+    private void FixedUpdate() {
+        modifiers = System.GetAllFinals().Map((kv => new Mod { statType = kv.Key, value = kv.Value })).ToList();
+    }
+#endif
 
     private void OnDestroy() {
         System.OnChanged -= OnChangedServer;

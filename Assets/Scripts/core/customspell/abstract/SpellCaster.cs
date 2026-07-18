@@ -7,6 +7,7 @@ public abstract class SpellCaster : MonoBehaviour, ITarget, IdentityUser {
     public static readonly List<SpellCaster> Active = new();
 
     public abstract bool CanCast { get; }
+    public abstract bool IsDead { get; }
 
     public abstract Vector3 Origin { get; }
     public abstract Vector3 Direction { get; }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,7 +19,6 @@ public class ArchetypePassiveRuntime : MonoBehaviour {
 
     private readonly List<PassiveStatModifier> _baseModifiers = new();
     private float _activeSpellDamageModifier = 1f;
-    private bool _activeSpellDamageModifierApplied;
 
     private List<float> _afterTakeDamageEffectsTimer = new();
 
@@ -31,7 +31,6 @@ public class ArchetypePassiveRuntime : MonoBehaviour {
 
     private void OnDestroy() {
         Unsubscribe();
-        ClearDynamicSpellDamageModifier();
         RemoveBaseModifiers();
     }
 
@@ -41,6 +40,7 @@ public class ArchetypePassiveRuntime : MonoBehaviour {
 
         ApplyBaseModifiers();
         ApplySpawnEffects();
+        StartCoroutine(ApplySpawnSpells());
         SetupTakeDamageEffects();
         Subscribe();
     }
@@ -103,6 +103,14 @@ public class ArchetypePassiveRuntime : MonoBehaviour {
         }
     }
 
+    private IEnumerator ApplySpawnSpells() {
+        if (_config.onSpawnSpell == null)
+            yield break;
+
+        yield return new WaitForEndOfFrame();
+        _caster.Cast(_config.onSpawnSpell);
+    }
+
     private void SetupTakeDamageEffects() {
         if (_config.afterTakeDamageEffects == null)
             return;
@@ -151,6 +159,8 @@ public class ArchetypePassiveRuntime : MonoBehaviour {
             var bonus = distance * _config.distanceDamageBonus.multiplierPerMeter;
             multiplier += bonus;
         }
+
+        amount *= _activeSpellDamageModifier;
 
         return amount * multiplier;
     }
@@ -203,9 +213,11 @@ public class ArchetypePassiveRuntime : MonoBehaviour {
             var instance = SpellInstance.Active[i];
             if (instance == null)
                 continue;
+            if (instance.Bind.Context.Spell == _config.onSpawnSpell)
+                continue;
             if (!instance.IsAlive)
                 continue;
-            if (!instance.CanGet)
+            if (instance.Bind.Context.Caster.IsPlayer)
                 continue;
             if (instance.OwnerId != _damageable.OwnerId)
                 continue;
@@ -220,22 +232,6 @@ public class ArchetypePassiveRuntime : MonoBehaviour {
         if (Mathf.Approximately(nextModifier, _activeSpellDamageModifier))
             return;
 
-        ClearDynamicSpellDamageModifier();
         _activeSpellDamageModifier = nextModifier;
-
-        if (Mathf.Approximately(_activeSpellDamageModifier, 1f))
-            return;
-
-        _stats.AddModifier(StatType.SpellDamage, _activeSpellDamageModifier);
-        _activeSpellDamageModifierApplied = true;
-    }
-
-    private void ClearDynamicSpellDamageModifier() {
-        if (!_activeSpellDamageModifierApplied)
-            return;
-
-        _stats.RemoveModifier(StatType.SpellDamage, _activeSpellDamageModifier);
-        _activeSpellDamageModifierApplied = false;
-        _activeSpellDamageModifier = 1f;
     }
 }

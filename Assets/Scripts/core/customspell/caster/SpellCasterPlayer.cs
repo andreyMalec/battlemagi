@@ -84,6 +84,8 @@ public class SpellCasterPlayer : SpellCaster {
 
     public override bool CanCast => Authority != null && Authority.IsOwner;
 
+    public override bool IsDead => _damageable.IsDead;
+
     public void RestoreEcho(SpellDefinition spell, int amount = 1) {
         _bridgeTyped.RestoreEcho(spell, amount);
     }

@@ -38,6 +38,12 @@ public class SpellInstance : MonoBehaviour, ITarget {
         Bind = bind;
         _authorityService = authorityService;
         _view = bind.Context.View;
+        var stats = bind.Context.Caster.GetComponentInParent<Stats>();
+        if (stats != null) {
+            var spellDmg = stats.GetFinal(StatType.SpellDamage);
+            if (!Mathf.Approximately(spellDmg, 1f))
+                _view.Stats.AddModifier(StatType.SpellDamage, spellDmg);
+        }
         _initialized = true;
         RegisterActive();
 
@@ -53,6 +59,9 @@ public class SpellInstance : MonoBehaviour, ITarget {
         using var _ = SpellMetrics.Measure(SpellMetricSection.InstanceTick);
         if (!_initialized) return;
         if (IsAlive) {
+            if (Bind.Context.Spell.dieWithCaster && Bind.Context.Caster.IsDead)
+                Bind.Context.View.Kill(Bind.Context);
+
             if (_authorityService.IsServer)
                 Bind.Tick(deltaTime);
             return;

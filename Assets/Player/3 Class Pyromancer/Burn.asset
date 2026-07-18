@@ -20,7 +20,9 @@ MonoBehaviour:
   color: {r: 0, g: 0, b: 0, a: 0}
   removeOnHit: 0
   onExpire: {fileID: 0}
-  dps: 0.1
+  onStack: {fileID: 0}
+  compare: 0
+  dps: 0.05
   tickInterval: 0.3
   damageSound: 1
   ignoreDamageSoundCooldown: 0

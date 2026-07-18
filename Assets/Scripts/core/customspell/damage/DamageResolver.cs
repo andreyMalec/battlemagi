@@ -20,7 +20,7 @@ public static class DamageResolver {
         if (context.Caster.IsPlayer && !((SpellCasterPlayer)context.Caster).isHuman)
             damageMulti *= def.fromBotMultiplier;
 
-        damageMulti *= context.View.Stats.GetFinal(StatType.SpellDamage);
+        damageMulti *= context.Stats.GetFinal(StatType.SpellDamage);
 
         return damageMulti * def.baseType switch {
             SpellDamageBaseType.Flat => def.amount,

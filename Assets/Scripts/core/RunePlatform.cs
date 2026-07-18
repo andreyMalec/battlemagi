@@ -45,8 +45,8 @@ public class RunePlatform : NetworkBehaviour {
         }
     }
 
-    [Button("Respawn Rune")]
-    public void RespawnRune() {
+#if UNITY_EDITOR
+    public void RandomRune() {
         NetworkObject activeNetObj = GetActiveRune();
         bool hasActive = activeNetObj != null && activeNetObj.IsSpawned;
 
@@ -56,6 +56,87 @@ public class RunePlatform : NetworkBehaviour {
             SpawnRune();
         }
     }
+
+    public void QuadRune() {
+        NetworkObject activeNetObj = GetActiveRune();
+        bool hasActive = activeNetObj != null && activeNetObj.IsSpawned;
+
+        if (hasActive) {
+            DespawnRune(activeNetObj);
+        }
+
+        SpawnRune(0);
+    }
+
+    public void HasteRune() {
+        NetworkObject activeNetObj = GetActiveRune();
+        bool hasActive = activeNetObj != null && activeNetObj.IsSpawned;
+
+        if (hasActive) {
+            DespawnRune(activeNetObj);
+        }
+
+        SpawnRune(1);
+    }
+
+    public void ProjRune() {
+        NetworkObject activeNetObj = GetActiveRune();
+        bool hasActive = activeNetObj != null && activeNetObj.IsSpawned;
+
+        if (hasActive) {
+            DespawnRune(activeNetObj);
+        }
+
+        SpawnRune(2);
+    }
+
+    public void RegenRune() {
+        NetworkObject activeNetObj = GetActiveRune();
+        bool hasActive = activeNetObj != null && activeNetObj.IsSpawned;
+
+        if (hasActive) {
+            DespawnRune(activeNetObj);
+        }
+
+        SpawnRune(3);
+    }
+
+    public void ResistRune() {
+        NetworkObject activeNetObj = GetActiveRune();
+        bool hasActive = activeNetObj != null && activeNetObj.IsSpawned;
+
+        if (hasActive) {
+            DespawnRune(activeNetObj);
+        }
+
+        SpawnRune(4);
+    }
+
+    public void StasisRune() {
+        NetworkObject activeNetObj = GetActiveRune();
+        bool hasActive = activeNetObj != null && activeNetObj.IsSpawned;
+
+        if (hasActive) {
+            DespawnRune(activeNetObj);
+        }
+
+        SpawnRune(5);
+    }
+
+    private void SpawnRune(int index) {
+        if (GetActiveRune() != null) return;
+        var prefab = runes[index];
+        var runeObj = Instantiate(prefab, spawnPoint.position, spawnPoint.rotation);
+        var netObj = runeObj.GetComponent<NetworkObject>();
+        netObj.Spawn(true);
+        var parentNetObj = GetComponent<NetworkObject>();
+        if (parentNetObj != null && parentNetObj.IsSpawned) {
+            netObj.TrySetParent(parentNetObj, worldPositionStays: true);
+        }
+
+        _durationTimer = 0f;
+    }
+#endif
 
     private void SpawnRune() {
         if (GetActiveRune() != null) return;

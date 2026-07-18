@@ -455,7 +455,8 @@ public class SpellSystem {
 
     private static ISpellTransform Move(ProjectileDefinition def, Vector3 direction) {
         ISpellTransform move = def.moveType switch {
-            SpellMovement.Linear => new LinearMoveTransform(direction, def.moveSpeed, def.moveAlongGround, def.groundOffset),
+            SpellMovement.Linear => new LinearMoveTransform(direction, def.moveSpeed, def.moveAlongGround,
+                def.groundOffset),
             SpellMovement.Accelerated => new AcceleratedMoveTransform(direction, def.moveSpeed, def.acceleration),
             SpellMovement.LookAtPoint => new LookAtPointTransform(def.moveSpeed, def.lookAtMaxDistance,
                 def.lookAtRayMask),
@@ -514,7 +515,8 @@ public class SpellSystem {
 
     private static ISpellTransform Move(ZoneDefinition def, Vector3 direction) {
         ISpellTransform move = def.moveType switch {
-            SpellMovement.Linear => new LinearMoveTransform(direction, def.moveSpeed, def.moveAlongGround, def.groundOffset),
+            SpellMovement.Linear => new LinearMoveTransform(direction, def.moveSpeed, def.moveAlongGround,
+                def.groundOffset),
             SpellMovement.Accelerated => new AcceleratedMoveTransform(direction, def.moveSpeed, def.acceleration),
             SpellMovement.LookAtPoint => new LookAtPointTransform(def.moveSpeed, def.lookAtMaxDistance,
                 def.lookAtRayMask),
@@ -570,7 +572,8 @@ public class SpellSystem {
 
     private static ISpellTransform Move(BeamDefinition def, Vector3 direction) {
         ISpellTransform move = def.moveType switch {
-            SpellMovement.Linear => new LinearMoveTransform(direction, def.moveSpeed, def.moveAlongGround, def.groundOffset),
+            SpellMovement.Linear => new LinearMoveTransform(direction, def.moveSpeed, def.moveAlongGround,
+                def.groundOffset),
             SpellMovement.Accelerated => new AcceleratedMoveTransform(direction, def.moveSpeed, def.acceleration),
             SpellMovement.LookAtPoint => new LookAtPointTransform(def.moveSpeed, def.lookAtMaxDistance,
                 def.lookAtRayMask),

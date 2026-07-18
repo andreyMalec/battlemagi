@@ -421,24 +421,40 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2288459728434322602, guid: 82cbf6eff1aaf964094dfaf0f6aebae2, type: 3}
       propertyPath: items.Array.size
-      value: 21
+      value: 22
       objectReference: {fileID: 0}
     - target: {fileID: 2288459728434322602, guid: 82cbf6eff1aaf964094dfaf0f6aebae2, type: 3}
       propertyPath: items.Array.data[20].name
       value: CUSTOM Charged Shot
       objectReference: {fileID: 0}
     - target: {fileID: 2288459728434322602, guid: 82cbf6eff1aaf964094dfaf0f6aebae2, type: 3}
+      propertyPath: items.Array.data[21].name
+      value: Degen Aura
+      objectReference: {fileID: 0}
+    - target: {fileID: 2288459728434322602, guid: 82cbf6eff1aaf964094dfaf0f6aebae2, type: 3}
       propertyPath: items.Array.data[20].spell
       value: 
       objectReference: {fileID: 11400000, guid: aedf69579bf5d984b87263da50acbbff, type: 2}
+    - target: {fileID: 2288459728434322602, guid: 82cbf6eff1aaf964094dfaf0f6aebae2, type: 3}
+      propertyPath: items.Array.data[21].spell
+      value: 
+      objectReference: {fileID: 11400000, guid: 0d0f28ae8131f18489bddb42761389d8, type: 2}
     - target: {fileID: 2288459728434322602, guid: 82cbf6eff1aaf964094dfaf0f6aebae2, type: 3}
       propertyPath: items.Array.data[20].bookImage
       value: 
       objectReference: {fileID: 2800000, guid: 0d883a0ffad308546a35fe766203e77a, type: 3}
     - target: {fileID: 2288459728434322602, guid: 82cbf6eff1aaf964094dfaf0f6aebae2, type: 3}
+      propertyPath: items.Array.data[21].bookImage
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2288459728434322602, guid: 82cbf6eff1aaf964094dfaf0f6aebae2, type: 3}
       propertyPath: items.Array.data[20].inHandPrefab
       value: 
       objectReference: {fileID: 7389778017922607859, guid: 74dbe7c43ae8ffa4da07ca385b7288df, type: 3}
+    - target: {fileID: 2288459728434322602, guid: 82cbf6eff1aaf964094dfaf0f6aebae2, type: 3}
+      propertyPath: items.Array.data[21].inHandPrefab
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2543264403459149607, guid: 82cbf6eff1aaf964094dfaf0f6aebae2, type: 3}
       propertyPath: m_Name
       value: DefaultSpells

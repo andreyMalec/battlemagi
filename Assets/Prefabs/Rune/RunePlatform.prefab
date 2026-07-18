@@ -108,8 +108,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RuneController
   ShowTopMostFoldoutHeaderGroup: 1
   runes:
-  - {fileID: 5573621734820598480, guid: f3aa9e457471f2a4cac37720b4e4b096, type: 3}
   - {fileID: 5573621734820598480, guid: 399cebceeb80df84ab3fd9164b927bac, type: 3}
+  - {fileID: 5573621734820598480, guid: f3aa9e457471f2a4cac37720b4e4b096, type: 3}
   - {fileID: 5573621734820598480, guid: d92064a6875a23149837204dcfa28519, type: 3}
   - {fileID: 5573621734820598480, guid: 30341a9d8936a6a49968c97d0073f73e, type: 3}
   - {fileID: 5573621734820598480, guid: 2e59fc9193bfd3c4ca24c7ce8106cccd, type: 3}
@@ -242,6 +242,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce46153a5565448892f672b613902a09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Distance2DAudio
+  audioSource: {fileID: 0}
 --- !u!1001 &7110693826426269332
 PrefabInstance:
   m_ObjectHideFlags: 0

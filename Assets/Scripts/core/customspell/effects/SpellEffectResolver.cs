@@ -1,7 +1,12 @@
 using UnityEngine;
 
 public static class SpellEffectResolver {
-    public static bool CanAffect(EffectDefinition def, ISpellContext context, GameObject targetGo, ParticipantId targetOwner) {
+    public static bool CanAffect(
+        EffectDefinition def,
+        ISpellContext context,
+        GameObject targetGo,
+        ParticipantId targetOwner
+    ) {
         if (def == null) return false;
         if (context == null) return false;
 
@@ -9,7 +14,7 @@ public static class SpellEffectResolver {
             return def.target.HasFlag(EffectTarget.Draggable);
 
         if (DamageRelationship.IsSelf(context, targetOwner))
-            return def.target.HasFlag(EffectTarget.Self);
+            return def.target == EffectTarget.Self;
 
         if (DamageRelationship.AreEnemies(context, targetOwner))
             return def.target.HasFlag(EffectTarget.Enemies);
@@ -32,9 +37,7 @@ public static class SpellEffectResolver {
 
         if (statusable == null) return false;
 
-        var damageable = statusable.GetComponent<Damageable>();
-        if (damageable != null)
-            ownerId = damageable.OwnerId;
+        ownerId = statusable.OwnerId;
 
         return true;
     }
