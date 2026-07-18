@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Archetype", menuName = "Game/Archetype")]
@@ -17,4 +18,12 @@ public class ArchetypeData : ScriptableObject {
     public float manaRegen = 0.5f;
     public float jumpStrength = 2f;
     public ArchetypePassiveConfig passive = new();
+
+    private void OnValidate() {
+        var ddb = passive.distanceDamageBonus;
+        if (ddb.maxDistance == 0)
+            ddb.multiplierPerMeter = 0;
+        else
+            passive.distanceDamageBonus.multiplierPerMeter = ddb.maxMultiplier / ddb.maxDistance;
+    }
 }

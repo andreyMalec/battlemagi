@@ -1,5 +1,7 @@
+using NaughtyAttributes;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AI;
 
 [RequireComponent(typeof(Bot))]
 public class BotStateOverheadView : MonoBehaviour {
@@ -82,6 +84,17 @@ public class BotStateOverheadView : MonoBehaviour {
         return false;
 #endif
     }
+
+    [Button("Make Dumb", EButtonEnableMode.Playmode)]
+    public void MakeDumb() {
+        GetComponent<Bot>().enabled = false;
+        GetComponent<BotMovement>().enabled = false;
+        GetComponent<BotAnimator>().enabled = false;
+        GetComponent<BotDamageable>().enabled = false;
+        GetComponent<BotMovementController>().enabled = false;
+        GetComponent<BotCombatController>().enabled = false;
+        GetComponent<NavMeshAgent>().enabled = false;
+
+        GetComponent<Damageable>().ToggleImmortal();
+    }
 }
-
-

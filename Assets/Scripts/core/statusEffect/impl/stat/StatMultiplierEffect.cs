@@ -11,7 +11,7 @@ public abstract class StatMultiplierEffect : StatusEffectData {
 
     public override EffectCompare CompareTo(StatusEffectData other) {
         if (compare == EffectCompare.Replace &&
-            (this == other || onStack == other || onStack?.onStack == other)) {
+            (this == other || onStack == other || onStack?.onStack == other || onStack?.onStack?.onStack == other || onStack?.onStack?.onStack?.onStack == other)) {
             return EffectCompare.Replace;
         }
 

@@ -67,7 +67,8 @@ public class Statusable : MonoBehaviour {
         }
 
         foreach (var v in _active.Values) {
-            if (v.data == data || v.data == data.onStack || v.data == data.onStack.onStack) {
+            if (v.data == data || v.data == data.onStack || v.data == data.onStack.onStack ||
+                v.data == data.onStack.onStack.onStack || v.data == data.onStack.onStack.onStack.onStack) {
                 previous = v;
                 return true;
             }

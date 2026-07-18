@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 491f02c2cdec4921aa5618ae8d3aadff, type: 3}
-  m_Name: Wind Ward 2
+  m_Name: Decay 5
   m_EditorClassIdentifier: Assembly-CSharp::ResistMultiplierEffect
-  effectName: Ranger Wind Ward 2
-  title: Wind Ward 2
-  description: 
-  duration: 5
+  effectName: Magician Decay 5
+  title: Decay 5
+  description: 1
+  duration: 1
   icon: {fileID: 0}
-  color: {r: 0, g: 0, b: 0, a: 0}
-  removeOnHit: 1
-  onExpire: {fileID: 0}
-  onStack: {fileID: 11400000, guid: d9a45b99fc0b1534ebbcf2a53b716357, type: 2}
+  color: {r: 0, g: 0, b: 0, a: 1}
+  removeOnHit: 0
+  onExpire: {fileID: 11400000, guid: 2e11add81c9b97f4baf118fe9fb2596f, type: 2}
+  onStack: {fileID: 11400000}
   compare: 1
-  multiplier: 0.86
+  multiplier: 1.4

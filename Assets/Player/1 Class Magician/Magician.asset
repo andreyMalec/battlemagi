@@ -31,3 +31,18 @@ MonoBehaviour:
   healthRegen: 1
   manaRegen: 7
   jumpStrength: 2
+  passive:
+    baseStatModifiers: []
+    onSpawnEffects: []
+    afterTakeDamageEffects: []
+    onDealDamageEffects:
+    - {fileID: 11400000, guid: 8d2adbf37126e024ea0de1697794b54e, type: 2}
+    lifeStealFraction: 0
+    outgoingDamageMultiplier: 1
+    distanceDamageBonus:
+      maxMultiplier: 0
+      maxDistance: 0
+      multiplierPerMeter: 0
+    armorPerManaSpent: 0.3
+    spellDamagePerActiveOwnedSpell: 0
+    spellDamageCountCap: 0

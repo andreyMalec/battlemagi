@@ -40,8 +40,10 @@ MonoBehaviour:
     onDealDamageEffects: []
     lifeStealFraction: 0
     outgoingDamageMultiplier: 1
-    distanceDamageBonusPerMeter: 0
-    maxDistanceDamageBonus: 0
+    distanceDamageBonus:
+      maxMultiplier: 0.4
+      maxDistance: 75
+      multiplierPerMeter: 0.0053333333
     armorPerManaSpent: 0
     spellDamagePerActiveOwnedSpell: 0
     spellDamageCountCap: 0

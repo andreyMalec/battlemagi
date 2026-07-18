@@ -15,9 +15,16 @@ public class ArchetypePassiveConfig {
     public StatusEffectData[] onDealDamageEffects;
     [Range(0f, 1f)] public float lifeStealFraction;
     public float outgoingDamageMultiplier = 1f;
-    public float distanceDamageBonusPerMeter;
-    public float maxDistanceDamageBonus;
+    public DistanceDamageModifier distanceDamageBonus;
     public float armorPerManaSpent;
     public float spellDamagePerActiveOwnedSpell;
     public int spellDamageCountCap;
 }
+
+[Serializable]
+public struct DistanceDamageModifier {
+    public float maxMultiplier;
+    public float maxDistance;
+    public float multiplierPerMeter;
+}
+

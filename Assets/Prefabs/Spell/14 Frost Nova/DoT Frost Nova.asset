@@ -20,10 +20,13 @@ MonoBehaviour:
   color: {r: 0, g: 0, b: 0, a: 0}
   removeOnHit: 0
   onExpire: {fileID: 0}
+  onStack: {fileID: 0}
+  compare: 0
   dps: 10
   tickInterval: 0.8
   damageSound: 2
   ignoreDamageSoundCooldown: 0
   canSelfDamage: 0
   percentDamage: 0
+  percentOfSourceDamage: 0
   canKill: 1

@@ -145,11 +145,10 @@ public class ArchetypePassiveRuntime : MonoBehaviour {
             return amount;
 
         var multiplier = _config.outgoingDamageMultiplier;
-        if (_config.distanceDamageBonusPerMeter > 0f) {
+        if (_config.distanceDamageBonus.maxDistance > 0f) {
             var distance = Vector3.Distance(transform.position, target.transform.position);
-            var bonus = distance * _config.distanceDamageBonusPerMeter;
-            if (_config.maxDistanceDamageBonus > 0f)
-                bonus = Mathf.Min(bonus, _config.maxDistanceDamageBonus);
+            distance = Mathf.Min(distance, _config.distanceDamageBonus.maxDistance);
+            var bonus = distance * _config.distanceDamageBonus.multiplierPerMeter;
             multiplier += bonus;
         }
 
