@@ -24,11 +24,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 83206fb4c991e634db2ce69e23af98f6, type: 2}
   - {fileID: 11400000, guid: 168fdab00aaae2240a7ea58cdabc7f9d, type: 2}
   - {fileID: 11400000, guid: f086498726ec0464d98d8e367ff3594f, type: 2}
-  maxHealth: 175
+  maxHealth: 160
   maxMana: 125
   movementSpeed: 5.5
   runSpeed: 1.5
-  healthRegen: 3
+  healthRegen: 1
   manaRegen: 5
   jumpStrength: 3
   passive:
@@ -44,5 +44,5 @@ MonoBehaviour:
       maxDistance: 0
       multiplierPerMeter: 0
     armorPerManaSpent: 0
-    spellDamagePerActiveOwnedSpell: 0.1
-    spellDamageCountCap: 5
+    spellDamagePerActiveOwnedSpell: 0.05
+    spellDamageCountCap: 4

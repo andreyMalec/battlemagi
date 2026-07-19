@@ -14,7 +14,7 @@ public static class SpellEffectResolver {
             return def.target.HasFlag(EffectTarget.Draggable);
 
         if (DamageRelationship.IsSelf(context, targetOwner))
-            return def.target == EffectTarget.Self;
+            return def.target.HasFlag(EffectTarget.Self);
 
         if (DamageRelationship.AreEnemies(context, targetOwner))
             return def.target.HasFlag(EffectTarget.Enemies);

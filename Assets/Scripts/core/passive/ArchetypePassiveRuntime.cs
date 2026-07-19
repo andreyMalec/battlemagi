@@ -167,10 +167,10 @@ public class ArchetypePassiveRuntime : MonoBehaviour {
 
     private void HandleDamageDealt(ParticipantId fromId, Damageable target, DamageApplied applied) {
         HandleDamageTaken(fromId, target, applied);
-        if (fromId != _damageable.OwnerId)
+        if (fromId != _damageable.OwnerId || fromId == target.OwnerId)
             return;
 
-        if (_config.lifeStealFraction > 0f && applied.healthApplied > 0f && fromId != target.OwnerId) {
+        if (_config.lifeStealFraction > 0f && applied.healthApplied > 0f) {
             _damageable.TakeHeal("Archetype Lifesteal", applied.healthApplied * _config.lifeStealFraction);
         }
 

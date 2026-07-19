@@ -56,13 +56,16 @@ public class StepDistanceTransform : ISpellTransform {
 
         if (_stepDistance <= 0f) return;
 
+        var sent = false;
         while (_distance >= _nextStep) {
-            _ctx.SendEvent(new OnStepDistanceEvent {
-                stepDistance = _stepDistance,
-                totalDistance = _nextStep,
-                point = pos,
-                forward = Motion.Velocity.normalized
-            });
+            if (!sent)
+                _ctx.SendEvent(new OnStepDistanceEvent {
+                    stepDistance = _stepDistance,
+                    totalDistance = _nextStep,
+                    point = pos,
+                    forward = Motion.Velocity.normalized
+                });
+            sent = true;
             _nextStep += _stepDistance;
         }
     }

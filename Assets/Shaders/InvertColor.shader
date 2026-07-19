@@ -2,6 +2,7 @@ Shader "Custom/InvertColor"
 {
     Properties {
         _TintColor ("Tint Color", Color) = (1,1,1,1)
+        _MainTex ("Main Texture", 2D) = "white" {}
     }
     SubShader
     {

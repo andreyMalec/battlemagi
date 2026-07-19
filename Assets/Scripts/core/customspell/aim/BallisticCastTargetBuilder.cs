@@ -150,7 +150,7 @@ public static class BallisticCastTargetBuilder {
     }
 
     public static ITarget Build(
-        SpellCaster caster, ITarget target, SpellDefinition spell, 
+        SpellCaster caster, ITarget target, SpellDefinition spell,
         float targetBodyHeightFactor = 0.75f
     ) {
         if (caster == null || target == null || spell == null)
@@ -201,25 +201,33 @@ public static class BallisticCastTargetBuilder {
     public static Vector3 GetAimPoint(ITarget target, float targetBodyHeightFactor = 0.75f) {
         var targetPos = target.Position;
         if (!target.CanGet)
-            return targetPos;
+            return targetPos + Vector3Random();
 
         var targetGo = target.Get;
         if (targetGo.TryGetComponent<CharacterController>(out var characterController)) {
             var worldCenter = targetGo.transform.TransformPoint(characterController.center);
-            return worldCenter + characterController.height * (targetBodyHeightFactor - 0.5f) * Vector3.up;
+            return worldCenter + characterController.height * (targetBodyHeightFactor - 0.5f) * Vector3.up + Vector3Random();
         }
 
         if (targetGo.TryGetComponent<CapsuleCollider>(out var capsule)) {
             var worldCenter = targetGo.transform.TransformPoint(capsule.center);
-            return worldCenter + capsule.height * (targetBodyHeightFactor - 0.5f) * Vector3.up;
+            return worldCenter + capsule.height * (targetBodyHeightFactor - 0.5f) * Vector3.up + Vector3Random();
         }
 
         if (targetGo.TryGetComponent<Renderer>(out var targetRenderer)) {
             var bounds = targetRenderer.bounds;
-            return bounds.min + bounds.size.y * targetBodyHeightFactor * Vector3.up;
+            return bounds.min + bounds.size.y * targetBodyHeightFactor * Vector3.up + Vector3Random();
         }
 
-        return targetPos + Vector3.up;
+        return targetPos + Vector3.up + Vector3Random();
+    }
+
+    public static Vector3 Vector3Random(float min = -1.2f, float max = 1.2f) {
+        return new Vector3(
+            Random.Range(-1f, 1f),
+            Random.Range(-1f, 1f),
+            Random.Range(-1f, 1f)
+        ).normalized * Random.Range(min, max);
     }
 }
 

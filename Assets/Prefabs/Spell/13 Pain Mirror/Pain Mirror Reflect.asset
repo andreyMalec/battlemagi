@@ -13,9 +13,13 @@ MonoBehaviour:
   m_Name: Pain Mirror Reflect
   m_EditorClassIdentifier: Assembly-CSharp::ReflectMultiplierEffect
   effectName: Pain Mirror
+  title: 
   description: 
   duration: 10
+  icon: {fileID: 0}
   color: {r: 0.6792453, g: 0.6792453, b: 0.6792453, a: 1}
   removeOnHit: 0
   onExpire: {fileID: 0}
-  multiplier: 0.75
+  onStack: {fileID: 0}
+  compare: 0
+  multiplier: 0.3

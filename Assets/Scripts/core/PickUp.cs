@@ -99,6 +99,7 @@ public class PickUp : NetworkBehaviour {
         if (audioSource.rolloffMode == AudioRolloffMode.Custom)
             source.SetCustomCurve(AudioSourceCurveType.CustomRolloff,
                 audioSource.GetCustomCurve(AudioSourceCurveType.CustomRolloff));
+        go.AddComponent<Distance2DAudio>();
         source.Play();
 
         var comp = go.AddComponent<DestroyAfterPlay>();

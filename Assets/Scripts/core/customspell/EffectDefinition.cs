@@ -4,10 +4,10 @@ using UnityEngine;
 
 [Flags]
 public enum EffectTarget {
-    Self = 0,
-    Allies = 1 << 0,
-    Enemies = 1 << 1,
-    Draggable = 1 << 2,
+    Self = 1 << 0,
+    Allies = 1 << 1,
+    Enemies = 1 << 2,
+    Draggable = 1 << 3,
 }
 
 public enum StatusEffectType {
