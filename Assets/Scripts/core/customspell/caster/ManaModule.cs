@@ -74,8 +74,12 @@ public class ManaModule {
         Mana -= spend;
 
         var missing = amount - spend;
-        if (missing > 0f)
-            PrimalMana += missing;
+        if (missing > 0f) {
+            var primalBudget = Mathf.Max(0f, maxMana - PrimalMana);
+            var primalSpend = Mathf.Min(primalBudget, missing);
+            PrimalMana += primalSpend;
+            missing -= primalSpend;
+        }
 
         return missing <= 0f;
     }

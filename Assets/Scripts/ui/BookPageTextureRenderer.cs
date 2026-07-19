@@ -1,21 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class BookPageTextureRenderer : MonoBehaviour {
-    private static readonly Regex LinkRegex =
-        new Regex("\\[\\[([^\\]|]+)\\|([^\\]]+)\\]\\]", RegexOptions.Compiled);
-
-    private static readonly Regex ColorStartRegex =
-        new Regex("\\[color=([^\\]]+)\\]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-    private static readonly Regex ColorEndRegex =
-        new Regex("\\[/color\\]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
     [SerializeField] private TMP_Text heading;
     [SerializeField] private TMP_Text pageText;
     [SerializeField] private RawImage fullPageImage;
@@ -67,7 +57,7 @@ public class BookPageTextureRenderer : MonoBehaviour {
             AppendParagraph(page.heading, richBuilder);
             AppendParagraph(page.paragraph, richBuilder);
             data.image = page.image;
-            data.caption = ConvertColorTags(page.imageCaption);
+            data.caption = page.imageCaption;
             return FinalizeData(data, richBuilder);
         }
 
@@ -76,7 +66,7 @@ public class BookPageTextureRenderer : MonoBehaviour {
             AppendParagraph(page.paragraph, richBuilder);
             AppendList(page.listItems, richBuilder);
             data.image = page.image;
-            data.caption = ConvertColorTags(page.imageCaption);
+            data.caption = page.imageCaption;
             return FinalizeData(data, richBuilder);
         }
 
@@ -84,13 +74,13 @@ public class BookPageTextureRenderer : MonoBehaviour {
             AppendParagraph(page.paragraph, richBuilder);
             AppendList(page.listItems, richBuilder);
             data.image = page.image;
-            data.caption = ConvertColorTags(page.imageCaption);
+            data.caption = page.imageCaption;
             return FinalizeData(data, richBuilder);
         }
 
         if (page.template == TemplateChapterBook.PageTemplateType.FullImageCaption) {
             data.image = page.image;
-            data.caption = ConvertColorTags(page.imageCaption);
+            data.caption = page.imageCaption;
             return FinalizeData(data, richBuilder);
         }
 
@@ -99,7 +89,7 @@ public class BookPageTextureRenderer : MonoBehaviour {
         AppendParagraph(page.paragraph2, richBuilder);
         AppendList(page.listItems, richBuilder);
         data.image = page.image;
-        data.caption = ConvertColorTags(page.imageCaption);
+        data.caption = page.imageCaption;
         return FinalizeData(data, richBuilder);
     }
 
@@ -139,47 +129,6 @@ public class BookPageTextureRenderer : MonoBehaviour {
         }
 
         richBuilder.AppendLine();
-    }
-
-    private void AppendInline(
-        string source,
-        StringBuilder richBuilder
-    ) {
-        if (string.IsNullOrEmpty(source)) {
-            return;
-        }
-
-        int cursor = 0;
-        MatchCollection matches = LinkRegex.Matches(source);
-        for (int i = 0; i < matches.Count; i++) {
-            Match match = matches[i];
-            if (match.Index > cursor) {
-                string chunk = source.Substring(cursor, match.Index - cursor);
-                richBuilder.Append(ConvertColorTags(chunk));
-            }
-
-            string label = match.Groups[2].Value.Trim();
-
-            richBuilder.Append("<link-color>");
-            richBuilder.Append(label);
-            richBuilder.Append("</link-color>");
-
-            cursor = match.Index + match.Length;
-        }
-
-        if (cursor < source.Length) {
-            string tail = source.Substring(cursor);
-            richBuilder.Append(ConvertColorTags(tail));
-        }
-    }
-
-    private string ConvertColorTags(string source) {
-        if (string.IsNullOrEmpty(source)) {
-            return string.Empty;
-        }
-
-        string withColors = ColorStartRegex.Replace(source, "<color=$1>");
-        return ColorEndRegex.Replace(withColors, "</color>");
     }
 
     [Serializable]
