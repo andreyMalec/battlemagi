@@ -30,7 +30,7 @@ public class CTFFlagBase : NetworkBehaviour {
         var no = other.GetComponentInParent<NetworkObject>();
         if (no == null || !no.IsPlayerObject) return;
         var clientId = no.OwnerClientId;
-        var playerTeam = TeamManager.Instance.GetTeam(clientId);
+        var playerTeam = Ctx.GetTeam(clientId);
         if (playerTeam != team) return; // Only allies can capture at their base
 
         // Check enemy flags being carried by this player
@@ -39,9 +39,9 @@ public class CTFFlagBase : NetworkBehaviour {
             if (flag.team == team) continue; // only enemy flags captured here
             if (flag.IsCarriedBy(clientId)) {
                 flag.ReturnToBase();
-                PlayerManager.Instance.AddFlag(clientId);
-                TeamManager.Instance.AddScore(team, 1);
-                CTFAnnouncer.Instance?.CaptureFlag(team);
+                Ctx.Players.AddFlag(clientId);
+                Ctx.Teams.AddScore(team, 1);
+                Ctx.CtfAnnouncer?.CaptureFlag(team);
             }
         }
     }

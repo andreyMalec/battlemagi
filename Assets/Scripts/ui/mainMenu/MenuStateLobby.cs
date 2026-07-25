@@ -60,7 +60,7 @@ public class MenuStateLobby : MonoBehaviour {
     }
 
     private void OnEnable() {
-        UpdateReadyButton(LobbyManager.Instance.Me.IsReady());
+        UpdateReadyButton(Ctx.Lobby.Me.IsReady());
 
         dropdownMode.ClearOptions();
         var freeForAll = R.String("gameMode.freeForAll");
@@ -74,7 +74,7 @@ public class MenuStateLobby : MonoBehaviour {
             new(R.String("menuLobby.friends")),
             new(R.String("menuLobby.private")),
         };
-        dropdownLobbyVisibility.value = (int)LobbyManager.Instance.GetVisibility();
+        dropdownLobbyVisibility.value = (int)Ctx.GetLobbyVisibility();
         dropdownMap.options = BuildMapOptions(dropdownMode.value);
         dropdownKeyCast.options = new List<TMP_Dropdown.OptionData>() {
             new(R.String("lobby.keyCast.disabled")),
@@ -88,12 +88,12 @@ public class MenuStateLobby : MonoBehaviour {
     }
 
     private void OnDisable() {
-        TeamManager.Instance.CurrentMode.OnValueChanged -= OnGameModeChanged;
+        Ctx.Teams.CurrentMode.OnValueChanged -= OnGameModeChanged;
     }
 
     private List<TMP_Dropdown.OptionData> BuildMapOptions(int modeIndex) {
         var isCtf = modeIndex == (int)TeamManager.TeamMode.CaptureTheFlag;
-        return GameMapDatabase.instance.gameMaps
+        return Ctx.GameMaps.gameMaps
             .Map(it => {
                 var text = R.String($"map.{it.mapName}");
                 var option = new TMP_Dropdown.OptionData(text);
@@ -106,23 +106,23 @@ public class MenuStateLobby : MonoBehaviour {
 
     private void UpdateVisibility() {
         dropdownLobbyVisibility.captionText.text =
-            dropdownLobbyVisibility.options[GameProgress.Instance.LobbyVisibility.Value].text;
+            dropdownLobbyVisibility.options[Ctx.GameProgress.LobbyVisibility.Value].text;
     }
 
     private void UpdateMap() {
-        dropdownMap.captionText.text = dropdownMap.options[GameProgress.Instance.SelectedMap.Value].text;
+        dropdownMap.captionText.text = dropdownMap.options[Ctx.GameProgress.SelectedMap.Value].text;
     }
 
     private void UpdateTeamMode() {
-        dropdownMode.captionText.text = dropdownMode.options[(int)TeamManager.Instance.CurrentMode.Value].text;
+        dropdownMode.captionText.text = dropdownMode.options[(int)Ctx.Teams.CurrentMode.Value].text;
     }
 
     private void UpdateGameEnd() {
-        dropdownGameEnd.captionText.text = dropdownGameEnd.options[TeamManager.Instance.EndChoice.Value].text;
+        dropdownGameEnd.captionText.text = dropdownGameEnd.options[Ctx.Teams.EndChoice.Value].text;
     }
 
     private void FixedUpdate() {
-        var lobby = LobbyManager.Instance.CurrentLobby;
+        var lobby = Ctx.CurrentLobby;
         if (!lobby.HasValue) return;
 
         fieldLobbyId.text = lobby?.Id.ToString();
@@ -133,9 +133,9 @@ public class MenuStateLobby : MonoBehaviour {
             StartGame();
         }
 
-        dropdownKeyCast.value = GameConfig.Instance.allowKeySpells ? 1 : 0;
+        dropdownKeyCast.value = Ctx.GameConfig.allowKeySpells ? 1 : 0;
 
-        var showControls = LobbyManager.Instance.IsHost();
+        var showControls = Ctx.IsHost();
         _dropdownLobbyVisibilityHelper.SetInteractable(showControls);
         _dropdownMapHelper.SetInteractable(showControls);
         _dropdownModeHelper.SetInteractable(showControls);
@@ -149,11 +149,11 @@ public class MenuStateLobby : MonoBehaviour {
     }
 
     private void StartGame() {
-        GameProgress.Instance.StartMatch();
+        Ctx.GameProgress.StartMatch();
     }
 
     private void SubmitVisibility(int index) {
-        LobbyManager.Instance.SetVisibility((LobbyVisibility)index);
+        Ctx.SetLobbyVisibility((LobbyVisibility)index);
         SaveDropdownValue(PrefLobbyVisibility, index);
         UpdateVisibility();
     }
@@ -162,32 +162,32 @@ public class MenuStateLobby : MonoBehaviour {
         if (_ignoreMapChange) return;
 
         if (dropdownMode.value == (int)TeamManager.TeamMode.CaptureTheFlag) {
-            if (!GameMapDatabase.instance.gameMaps[index].activeCTF) {
+            if (!Ctx.GameMaps.gameMaps[index].activeCTF) {
                 _ignoreMapChange = true;
-                dropdownMap.value = GameProgress.Instance.SelectedMap.Value;
+                dropdownMap.value = Ctx.GameProgress.SelectedMap.Value;
                 _ignoreMapChange = false;
                 return;
             }
         }
 
-        GameProgress.Instance.SelectMap(index);
+        Ctx.GameProgress.SelectMap(index);
         SaveDropdownValue(PrefMap, index);
         PublishLobbyMeta();
     }
 
     private void SubmitMode(int index) {
-        TeamManager.Instance.SetMode((TeamManager.TeamMode)index);
+        Ctx.Teams.SetMode((TeamManager.TeamMode)index);
         UpdateGameEndOptions(index);
 
         dropdownMap.options = BuildMapOptions(index);
 
         if (index == (int)TeamManager.TeamMode.CaptureTheFlag) {
-            var current = GameProgress.Instance.SelectedMap.Value;
-            var maps = GameMapDatabase.instance.gameMaps;
+            var current = Ctx.GameProgress.SelectedMap.Value;
+            var maps = Ctx.GameMaps.gameMaps;
             if (!maps[current].activeCTF) {
                 var next = Array.FindIndex(maps, m => m.activeCTF);
                 if (next >= 0) {
-                    GameProgress.Instance.SelectMap(next);
+                    Ctx.GameProgress.SelectMap(next);
                     _ignoreMapChange = true;
                     dropdownMap.value = next;
                     _ignoreMapChange = false;
@@ -201,12 +201,12 @@ public class MenuStateLobby : MonoBehaviour {
     }
 
     private void SubmitEndChoice(int index) {
-        TeamManager.Instance.SetEndChoice(index);
+        Ctx.Teams.SetEndChoice(index);
         SaveDropdownValue(PrefGameEnd, index);
     }
 
     private void SubmitKeyCast(int index) {
-        GameProgress.Instance.SetKeyCast(index == 1);
+        Ctx.GameProgress.SetKeyCast(index == 1);
         SaveDropdownValue(PrefKeyCast, index);
     }
 
@@ -229,13 +229,13 @@ public class MenuStateLobby : MonoBehaviour {
     }
 
     private void UpdateGameEndTargetText() {
-        gameEndTarget.text = TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.CaptureTheFlag
+        gameEndTarget.text = Ctx.Teams.CurrentMode.Value == TeamManager.TeamMode.CaptureTheFlag
             ? R.String("lobby.targetFlags")
             : R.String("lobby.targetKills");
     }
 
     private void ToggleReady() {
-        UpdateReadyButton(LobbyManager.Instance.ToggleReady());
+        UpdateReadyButton(Ctx.ToggleReady());
     }
 
     private void UpdateReadyButton(bool ready) {
@@ -247,41 +247,41 @@ public class MenuStateLobby : MonoBehaviour {
     }
 
     private void InviteFriends() {
-        LobbyManager.Instance.InviteFriends();
+        Ctx.InviteFriends();
     }
 
     private void LeaveLobby() {
-        LobbyManager.Instance.LeaveLobby();
+        Ctx.LeaveLobby();
         buttonReady.GetComponent<Image>().color = Color.white;
     }
 
     private IEnumerator LoadDropdownState() {
-        while (!NetworkManager.Singleton.IsConnectedClient) {
+        while (!Ctx.NetManager.IsConnectedClient) {
             yield return null;
         }
 
-        TeamManager.Instance.CurrentMode.OnValueChanged += OnGameModeChanged;
-        UpdateGameEndOptions((int)TeamManager.Instance.CurrentMode.Value);
+        Ctx.Teams.CurrentMode.OnValueChanged += OnGameModeChanged;
+        UpdateGameEndOptions((int)Ctx.Teams.CurrentMode.Value);
 
-        if (!NetworkManager.Singleton.IsHost) yield break;
+        if (!Ctx.NetManager.IsHost) yield break;
 
         var visibilityIndex = GetSavedDropdownValue(PrefLobbyVisibility, dropdownLobbyVisibility.value,
             dropdownLobbyVisibility.options.Count);
         dropdownLobbyVisibility.SetValueWithoutNotify(visibilityIndex);
         SubmitVisibility(visibilityIndex);
 
-        var keyCastIndex = GetSavedDropdownValue(PrefKeyCast, GameConfig.Instance.allowKeySpells ? 1 : 0,
+        var keyCastIndex = GetSavedDropdownValue(PrefKeyCast, Ctx.GameConfig.allowKeySpells ? 1 : 0,
             dropdownKeyCast.options.Count);
         dropdownKeyCast.SetValueWithoutNotify(keyCastIndex);
         SubmitKeyCast(keyCastIndex);
 
         var mapIndex =
-            GetSavedDropdownValue(PrefMap, GameProgress.Instance.SelectedMap.Value, dropdownMap.options.Count);
+            GetSavedDropdownValue(PrefMap, Ctx.GameProgress.SelectedMap.Value, dropdownMap.options.Count);
         dropdownMap.SetValueWithoutNotify(mapIndex);
         SubmitMap(mapIndex);
 
-        while (LobbyManager.Instance.CurrentLobby == null
-               || LobbyManager.Instance.CurrentLobby.Value.MemberCount == 0) {
+        while (Ctx.CurrentLobby == null
+               || Ctx.CurrentLobby.Value.MemberCount == 0) {
             yield return null;
         }
 
@@ -307,12 +307,12 @@ public class MenuStateLobby : MonoBehaviour {
     }
 
     private void PublishLobbyMeta() {
-        LobbyManager.Instance.UpdateLobbyMeta(GameProgress.Instance.SelectedMap.Value,
-            TeamManager.Instance.CurrentMode.Value);
+        Ctx.UpdateLobbyMeta(Ctx.GameProgress.SelectedMap.Value,
+            Ctx.Teams.CurrentMode.Value);
     }
 
     private IEnumerator CopyId() {
-        GUIUtility.systemCopyBuffer = LobbyManager.Instance.CurrentLobby?.Id.ToString();
+        GUIUtility.systemCopyBuffer = Ctx.CurrentLobby?.Id.ToString();
         copyButtonText.text = "OK";
         yield return new WaitForSeconds(1);
         copyButtonText.text = "Copy";

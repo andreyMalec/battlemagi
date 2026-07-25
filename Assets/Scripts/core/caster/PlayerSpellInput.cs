@@ -20,7 +20,7 @@ public class PlayerSpellInput {
     }
 
     public int GetSpellIndexPressedThisFrame() {
-        if (!GameConfig.Instance.allowKeySpells) return -1;
+        if (!Ctx.GameConfig.allowKeySpells) return -1;
 
         var index = -1;
         for (int i = (int)KeyCode.Alpha0; i <= (int)KeyCode.Alpha9; i++) {

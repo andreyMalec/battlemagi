@@ -116,15 +116,15 @@ public class ColorizeMesh : MonoBehaviour {
     }
 
     private void OnEnable() {
-        TeamManager.Instance.MyTeam += MyTeam;
+        Ctx.Teams.MyTeam += MyTeam;
     }
 
     private void OnDisable() {
-        TeamManager.Instance.MyTeam -= MyTeam;
+        Ctx.Teams.MyTeam -= MyTeam;
     }
 
     private void MyTeam(TeamManager.Team team) {
-        if (!TeamManager.Instance.isTeamMode) {
+        if (!Ctx.IsTeamMode) {
             colorPicker.gameObject.SetActive(true);
         } else {
             colorPicker.gameObject.SetActive(false);

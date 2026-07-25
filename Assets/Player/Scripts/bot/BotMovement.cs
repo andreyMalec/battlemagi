@@ -464,10 +464,10 @@ public class BotMovement : MonoBehaviour {
                 ? participant
                 : ParticipantIdentityCodec.Decode(hazardOwnerId);
 
-        if (TeamManager.Instance == null)
+        if (Ctx.Teams == null)
             return hazardParticipant != _selfIdentity.Id;
 
-        return TeamManager.Instance.AreEnemies(_selfIdentity.Id, hazardParticipant);
+        return Ctx.AreEnemies(_selfIdentity.Id, hazardParticipant);
     }
 
     private static float GetZoneHazardRadius(SpellDefinition spell) {

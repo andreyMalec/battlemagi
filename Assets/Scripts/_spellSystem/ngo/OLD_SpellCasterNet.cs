@@ -72,7 +72,7 @@ public class OLD_SpellCasterNet : NetworkBehaviour {
         Vector3 position, Vector3 forward, Quaternion rotation,
         float damageMultiplier
     ) {
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(casterNetObjectId, out var casterNetObj))
+        if (!Ctx.TryGetSpawnedObject(casterNetObjectId, out var casterNetObj))
             return;
         if (!SpellNetworkCache.TryGet(spellId, out var json))
             return;
@@ -103,12 +103,12 @@ public class OLD_SpellCasterNet : NetworkBehaviour {
         ulong targetNetObjectId = ulong.MaxValue,
         float damageMultiplier = 1f
     ) {
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(casterNetObjectId, out var casterNetObj))
+        if (!Ctx.TryGetSpawnedObject(casterNetObjectId, out var casterNetObj))
             return;
         if (!SpellNetworkCache.TryGet(spellId, out var json))
             return;
 
-        NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetNetObjectId, out var targetNetObj);
+        Ctx.TryGetSpawnedObject(targetNetObjectId, out var targetNetObj);
         ITarget target = null;
         if (targetNetObj != null && targetNetObj.IsSpawned) {
             target = targetNetObj.GetComponentInChildren<ITarget>();
@@ -129,7 +129,7 @@ public class OLD_SpellCasterNet : NetworkBehaviour {
     private void ServerSpawnMain(SpawnContext context) {
         var casterNetObj = context.caster.GetComponentInParent<NetworkObject>();
         if (!casterNetObj.IsSpawned) return;
-        var prefab = SpellPrefab.Instance.GetPrefab(true);
+        var prefab = Ctx.GetSpellPrefab(true);
         var main = Instantiate(prefab, context.position, context.rotation);
         var networkObject = main.GetComponent<NetworkObject>();
         var ownerId = context.caster.OwnerId;
@@ -167,9 +167,9 @@ public class OLD_SpellCasterNet : NetworkBehaviour {
         bool impassableForEnemies,
         ClientRpcParams rpcParams = default
     ) {
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(casterNetObjectId, out var casterNetObj))
+        if (!Ctx.TryGetSpawnedObject(casterNetObjectId, out var casterNetObj))
             return;
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(spellNetObjectId, out var main)) return;
+        if (!Ctx.TryGetSpawnedObject(spellNetObjectId, out var main)) return;
 
         Debug.Log(
             $"[NetworkSpellSystemEvent] OnCastClientRpc: netObjectId={spellNetObjectId}, caster={casterNetObj.gameObject.name}");

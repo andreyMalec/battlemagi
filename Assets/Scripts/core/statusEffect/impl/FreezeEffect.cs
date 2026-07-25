@@ -20,7 +20,7 @@ public class FreezeEffect : StatusEffectData {
             base.OnApply(ownerId, target);
             if (target.TryGetComponent<StateController>(out var player) &&
                 player.TryGetComponent<ParticipantIdentity>(out var identity)) {
-                if (!_data.canSelfFreeze && TeamManager.Instance.AreAllies(ownerId, identity.Id))
+                if (!_data.canSelfFreeze && Ctx.AreAllies(ownerId, identity.Id))
                     return;
                 player.SetFreeze(true);
                 return;

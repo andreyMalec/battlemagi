@@ -47,9 +47,9 @@ public class GeneralSettings : MonoBehaviour {
         }
 
         var values = Enum.GetValues(typeof(Language)).Cast<Language>().ToList();
-        LocalizationSettings.Instance.SetSelectedLocale(
+        Ctx.Localization.SetSelectedLocale(
             Locale.CreateLocale(values[languageIndex].ToString().ToLower()));
-        SpeechToTextHolder.Instance.Language = (Language)languageIndex;
-        StartCoroutine(SpeechToTextHolder.Instance.Init());
+        Ctx.SpeechToText.Language = (Language)languageIndex;
+        StartCoroutine(Ctx.SpeechToText.Init());
     }
 }

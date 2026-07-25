@@ -84,16 +84,16 @@ public class TeamManager : NetworkBehaviour {
     }
 
     private void Start() {
-        if (NetworkManager.Singleton != null) {
-            NetworkManager.Singleton.OnConnectionEvent += OnConnectionEvent;
+        if (Ctx.NetManager != null) {
+            Ctx.NetManager.OnConnectionEvent += OnConnectionEvent;
         }
     }
 
     public override void OnDestroy() {
         base.OnDestroy();
 
-        if (NetworkManager.Singleton != null) {
-            NetworkManager.Singleton.OnConnectionEvent -= OnConnectionEvent;
+        if (Ctx.NetManager != null) {
+            Ctx.NetManager.OnConnectionEvent -= OnConnectionEvent;
         }
     }
 
@@ -110,8 +110,8 @@ public class TeamManager : NetworkBehaviour {
     }
 
     private bool IsMatchInProgress() {
-        return IsServer && LobbyManager.Instance != null &&
-               LobbyManager.Instance.State == LobbyManager.PlayerState.InGame;
+        return IsServer && Ctx.Lobby != null &&
+               Ctx.LobbyState == LobbyManager.PlayerState.InGame;
     }
 
     private int FindIndexByClientId(ulong clientId) {
@@ -208,9 +208,9 @@ public class TeamManager : NetworkBehaviour {
         }
 
         List<LobbyBotRosterData.Entry> lobbyBots = null;
-        var useLobbyBots = _botTeams.Count == 0 && LobbyManager.Instance != null && LobbyManager.Instance.CurrentLobby.HasValue;
+        var useLobbyBots = _botTeams.Count == 0 && Ctx.Lobby != null && Ctx.CurrentLobby.HasValue;
         if (useLobbyBots)
-            lobbyBots = LobbyBotRosterData.LoadFromLobby(LobbyManager.Instance.CurrentLobby.Value);
+            lobbyBots = LobbyBotRosterData.LoadFromLobby(Ctx.CurrentLobby.Value);
 
         var participants = BuildRebalanceParticipants(lobbyBots);
         var red = 0;
@@ -235,7 +235,7 @@ public class TeamManager : NetworkBehaviour {
         }
 
         if (useLobbyBots)
-            LobbyBotRosterData.SaveToLobby(LobbyManager.Instance.CurrentLobby.Value, lobbyBots);
+            LobbyBotRosterData.SaveToLobby(Ctx.CurrentLobby.Value, lobbyBots);
 
         Debug.Log($"[TeamManager] Rebalanced into {CurrentMode.Value}");
     }
@@ -294,10 +294,10 @@ public class TeamManager : NetworkBehaviour {
         if (IsMatchInProgress())
             return;
 
-        if (LobbyManager.Instance == null || !LobbyManager.Instance.CurrentLobby.HasValue)
+        if (Ctx.Lobby == null || !Ctx.CurrentLobby.HasValue)
             return;
 
-        var bots = LobbyBotRosterData.LoadFromLobby(LobbyManager.Instance.CurrentLobby.Value);
+        var bots = LobbyBotRosterData.LoadFromLobby(Ctx.CurrentLobby.Value);
         for (int i = 0; i < bots.Count; i++) {
             IncrementCount(bots[i].team, ref red, ref blue);
         }
@@ -317,8 +317,8 @@ public class TeamManager : NetworkBehaviour {
 
         var botColors = new Dictionary<ulong, BotColor>();
 
-        if (LobbyManager.Instance != null && LobbyManager.Instance.CurrentLobby.HasValue) {
-            var lobby = LobbyManager.Instance.CurrentLobby.Value;
+        if (Ctx.Lobby != null && Ctx.CurrentLobby.HasValue) {
+            var lobby = Ctx.CurrentLobby.Value;
             var lobbyBots = LobbyBotRosterData.LoadFromLobby(lobby);
             var lobbyChanged = false;
 
@@ -447,12 +447,12 @@ public class TeamManager : NetworkBehaviour {
     }
 
     public bool TryGetLocalTeam(out Team team) {
-        if (NetworkManager.Singleton == null) {
+        if (Ctx.NetManager == null) {
             team = Team.None;
             return false;
         }
 
-        return TryGetTeam(NetworkManager.Singleton.LocalClientId, out team);
+        return TryGetTeam(Ctx.NetManager.LocalClientId, out team);
     }
 
     public Team GetTeam(ulong? clientId) {

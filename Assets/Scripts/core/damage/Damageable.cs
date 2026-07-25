@@ -336,8 +336,8 @@ public class Damageable : MonoBehaviour {
         Active.Remove(this);
         OnDeath?.Invoke(info);
         try {
-            var killerData = PlayerManager.Instance.Participants.First(p => p.Id == info.fromId);
-            var killerArchetype = ArchetypeDatabase.Instance.GetArchetype(killerData.Archetype).archetypeName;
+            var killerData = Ctx.Players.Participants.First(p => p.Id == info.fromId);
+            var killerArchetype = Ctx.GetArchetype(killerData.Archetype).archetypeName;
             Debug.Log($"Damageable {name} died. KillerArchetype: {killerArchetype}, Source: {info.source}");
         } catch (Exception) {
             Debug.Log($"Damageable {name} died. Source: {info.source}");

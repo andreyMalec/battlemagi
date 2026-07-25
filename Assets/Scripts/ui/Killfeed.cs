@@ -38,7 +38,7 @@ public class Killfeed : NetworkBehaviour {
         if (id == ParticipantId.EnvironmentId) return "";
 
         if (id.IsHuman) {
-            var player = PlayerManager.Instance.FindByClientId(id.Value);
+            var player = Ctx.FindPlayerByClientId(id.Value);
             if (!player.HasValue)
                 return "";
             return Trim(player.Value.Name());

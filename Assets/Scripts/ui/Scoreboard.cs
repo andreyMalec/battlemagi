@@ -16,9 +16,9 @@ public class Scoreboard : MonoBehaviour {
     private int _refreshFrame;
 
     private void OnEnable() {
-        if (TeamManager.Instance == null) return;
+        if (Ctx.Teams == null) return;
 
-        if (TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.CaptureTheFlag) {
+        if (Ctx.Teams.CurrentMode.Value == TeamManager.TeamMode.CaptureTheFlag) {
             flagText.gameObject.SetActive(true);
             nameText.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 380f);
         } else {
@@ -27,26 +27,26 @@ public class Scoreboard : MonoBehaviour {
         }
 
         ClearItems();
-        RefreshItems(PlayerManager.Instance.Participants);
+        RefreshItems(Ctx.Players.Participants);
 
-        PlayerManager.Instance.OnListChanged += OnPlayersChanged;
+        Ctx.Players.OnListChanged += OnPlayersChanged;
     }
 
     private void OnDisable() {
-        if (PlayerManager.Instance != null) {
-            PlayerManager.Instance.OnListChanged -= OnPlayersChanged;
+        if (Ctx.Players != null) {
+            Ctx.Players.OnListChanged -= OnPlayersChanged;
         }
         ClearItems();
     }
 
     private void OnPlayersChanged(NetworkList<MatchParticipantData> participants) {
         _ = participants;
-        RefreshItems(PlayerManager.Instance.Participants);
+        RefreshItems(Ctx.Players.Participants);
     }
 
     private void RefreshItems(IReadOnlyList<MatchParticipantData> participants) {
         var alive = new HashSet<ParticipantId>();
-        var sorted = participants.OrderBy(it => TeamManager.Instance.GetTeam(it.Id));
+        var sorted = participants.OrderBy(it => Ctx.GetTeam(it.Id));
         foreach (var participant in sorted) {
             alive.Add(participant.Id);
             if (!_items.TryGetValue(participant.Id, out var scoreboardItem)) {
@@ -70,7 +70,7 @@ public class Scoreboard : MonoBehaviour {
         if (participant.Id.IsBot)
             return BotNameCatalog.Resolve(participant.Id.Value);
 
-        var lobby = LobbyManager.Instance.CurrentLobby;
+        var lobby = Ctx.CurrentLobby;
         if (lobby.HasValue) {
             foreach (var member in lobby.Value.Members) {
                 if (member.Id.Value == participant.SteamId)
@@ -96,7 +96,7 @@ public class Scoreboard : MonoBehaviour {
     private void Update() {
         _canvas.alpha = Input.GetKey(key) ? 1 : 0;
         _refreshFrame++;
-        if (_refreshFrame % 5 == 0 && PlayerManager.Instance != null)
-            RefreshItems(PlayerManager.Instance.Participants);
+        if (_refreshFrame % 5 == 0 && Ctx.Players != null)
+            RefreshItems(Ctx.Players.Participants);
     }
 }

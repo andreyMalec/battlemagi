@@ -135,7 +135,7 @@ public class HomingTransform : ISpellTransform {
     private IEnumerable<ITarget> FilterTargets(IEnumerable<ITarget> targets) {
         return targets.Filter(it => {
             if (it == (ITarget)_ctx.Caster) return false;
-            if (TeamManager.Instance == null)
+            if (Ctx.Teams == null)
                 return it.OwnerId != _ctx.Caster.OwnerId;
             if (!it.CanGet) return false;
             if (DamageRelationship.AreAllies(_ctx, it.OwnerId)) return false;

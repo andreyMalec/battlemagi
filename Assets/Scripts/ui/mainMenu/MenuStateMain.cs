@@ -31,7 +31,7 @@ public class MenuStateMain : MonoBehaviour {
     }
 
     private void CreateLobby() {
-        LobbyManager.Instance.CreateLobby(lobbySize);
+        Ctx.CreateLobby(lobbySize);
     }
 
     private void JoinLobby() {
@@ -40,7 +40,7 @@ public class MenuStateMain : MonoBehaviour {
             return;
         }
 
-        LobbyManager.Instance.JoinLobby(lobbyId);
+        Ctx.JoinLobby(lobbyId);
     }
 
     private void OpenFindLobby() {

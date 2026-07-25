@@ -27,13 +27,13 @@ public class LexiconOfPower : NetworkBehaviour {
 
         if (IsOwner) {
             _mouth.Open();
-            Initialize(SpeechToTextHolder.Instance.Language);
+            Initialize(Ctx.SpeechToText.Language);
             _mouth.OnMouthClose += OnMouthClose;
         }
     }
 
     private void Initialize(Language language) {
-        var archetype = ArchetypeDatabase.Instance.GetArchetype(_player.ArchetypeId);
+        var archetype = Ctx.GetArchetype(_player.ArchetypeId);
         var spells = GameModeRules.FilterSpellsForMode(archetype.spells);
         _recognizer = new SpellRecognizer(spells, language);
         _mouth.RestrictWords(_recognizer.SpellWords());
@@ -51,7 +51,7 @@ public class LexiconOfPower : NetworkBehaviour {
 
         var result = _recognizer.Recognize(lastWords);
 
-        if (result.similarity < GameConfig.Instance.recognitionThreshold)
+        if (result.similarity < Ctx.GameConfig.recognitionThreshold)
             return;
 
         NotifyVoiceRecognizedServerRpc();
@@ -62,6 +62,6 @@ public class LexiconOfPower : NetworkBehaviour {
 
     [ServerRpc]
     private void NotifyVoiceRecognizedServerRpc(ServerRpcParams rpcParams = default) {
-        PlayerAchievementsManager.Instance?.ReportVoiceRecognizedServer(rpcParams.Receive.SenderClientId);
+        Ctx.PlayerAchievements?.ReportVoiceRecognizedServer(rpcParams.Receive.SenderClientId);
     }
 }

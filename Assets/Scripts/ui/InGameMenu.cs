@@ -81,18 +81,18 @@ public class InGameMenu : MonoBehaviour {
     }
 
     private IEnumerator ExitGame() {
-        var lobby = LobbyManager.Instance.CurrentLobby;
+        var lobby = Ctx.CurrentLobby;
         if (lobby.HasValue) {
-            if (NetworkManager.Singleton.IsHost) {
-                foreach (var singletonConnectedClient in NetworkManager.Singleton.ConnectedClients) {
-                    if (singletonConnectedClient.Key == NetworkManager.Singleton.LocalClientId) continue;
-                    NetworkManager.Singleton.DisconnectClient(singletonConnectedClient.Key, "Server closed");
+            if (Ctx.NetManager.IsHost) {
+                foreach (var singletonConnectedClient in Ctx.NetManager.ConnectedClients) {
+                    if (singletonConnectedClient.Key == Ctx.NetManager.LocalClientId) continue;
+                    Ctx.NetManager.DisconnectClient(singletonConnectedClient.Key, "Server closed");
                 }
             }
 
             yield return new WaitForSeconds(0.2f);
-            TeamManager.Instance.Reset();
-            LobbyManager.Instance.LeaveLobby();
+            Ctx.Teams.Reset();
+            Ctx.LeaveLobby();
             SceneLoader.LoadMenu(true);
         }
 

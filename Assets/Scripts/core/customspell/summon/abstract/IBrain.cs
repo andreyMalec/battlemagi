@@ -8,9 +8,9 @@ public interface IBrain {
         return ctx.Targets.Filter(it => {
             if (it == (ITarget)ctx.Caster) return false;
             if (!ctx.CanTargetAllies) {
-                if (TeamManager.Instance == null)
+                if (Ctx.Teams == null)
                     return it.OwnerId != ctx.Caster.OwnerId;
-                if (TeamManager.Instance.AreAllies(it.OwnerId, ctx.OwnerId))
+                if (Ctx.AreAllies(it.OwnerId, ctx.OwnerId))
                     return false;
             }
 

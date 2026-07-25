@@ -15,6 +15,6 @@ public class ProjectileInstantDamageAction : ISpellAction {
 
         base.Apply(context, evt);
         damageable.TakeDamage(context.Spell.spellName, context.OwnerId, amount,
-            SpellPrefabDatabase.Instance.Sound(context.Spell), context.SpellDamage.ignoreSoundCooldown);
+            Ctx.GetSpellSound(context.Spell), context.SpellDamage.ignoreSoundCooldown);
     }
 }

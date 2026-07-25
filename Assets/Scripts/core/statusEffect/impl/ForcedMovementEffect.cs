@@ -33,11 +33,11 @@ public class ForcedMovementEffect : StatusEffectData {
 
         if (target.TryGetComponent<StateController>(out var player) &&
             player.TryGetComponent<ParticipantIdentity>(out var identity)) {
-            if (TeamManager.Instance.AreAllies(applyContext.OwnerId, identity.Id))
+            if (Ctx.AreAllies(applyContext.OwnerId, identity.Id))
                 return false;
 
             player.StartForcedMovement(targetPoint, resolvedDuration);
-            PlayerAchievementsManager.Instance.ReportEnemyLaunchedServer(applyContext.OwnerId, identity.Id);
+            Ctx.PlayerAchievements.ReportEnemyLaunchedServer(applyContext.OwnerId, identity.Id);
             return true;
         }
 

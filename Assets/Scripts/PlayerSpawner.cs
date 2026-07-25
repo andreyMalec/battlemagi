@@ -29,8 +29,8 @@ public class PlayerSpawner : NetworkBehaviour {
         instance = this;
         DontDestroyOnLoad(gameObject);
 
-        if (NetworkManager.Singleton != null)
-            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+        if (Ctx.NetManager != null)
+            Ctx.NetManager.OnClientConnectedCallback += OnClientConnected;
     }
 
     private void FixedUpdate() {
@@ -44,8 +44,8 @@ public class PlayerSpawner : NetworkBehaviour {
     }
 
     private bool IsMatchInProgress() {
-        return IsServer && LobbyManager.Instance != null &&
-               LobbyManager.Instance.State == LobbyManager.PlayerState.InGame;
+        return IsServer && Ctx.Lobby != null &&
+               Ctx.LobbyState == LobbyManager.PlayerState.InGame;
     }
 
     private void OnClientConnected(ulong clientId) {
@@ -60,8 +60,8 @@ public class PlayerSpawner : NetworkBehaviour {
     public override void OnDestroy() {
         base.OnDestroy();
 
-        if (NetworkManager.Singleton != null) {
-            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+        if (Ctx.NetManager != null) {
+            Ctx.NetManager.OnClientConnectedCallback -= OnClientConnected;
         }
     }
 
@@ -70,7 +70,7 @@ public class PlayerSpawner : NetworkBehaviour {
         var elapsed = 0f;
 
         while (!IsPlayerSpawnDataReady(clientId)) {
-            if (!NetworkManager.Singleton.ConnectedClients.ContainsKey(clientId))
+            if (!Ctx.NetManager.ConnectedClients.ContainsKey(clientId))
                 yield break;
 
             if (elapsed >= timeout) {
@@ -87,10 +87,10 @@ public class PlayerSpawner : NetworkBehaviour {
     }
 
     private bool IsPlayerSpawnDataReady(ulong clientId) {
-        return PlayerManager.Instance != null &&
-               TeamManager.Instance != null &&
-               PlayerManager.Instance.TryGetPlayerData(clientId, out _) &&
-               TeamManager.Instance.HasTeam(clientId);
+        return Ctx.Players != null &&
+               Ctx.Teams != null &&
+               Ctx.TryGetPlayerData(clientId, out _) &&
+               Ctx.HasTeam(clientId);
     }
 
     private IEnumerator HandleDeath(ulong clientId) {
@@ -102,7 +102,7 @@ public class PlayerSpawner : NetworkBehaviour {
     }
 
     private bool DestroyClient(ulong clientId) {
-        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client)) {
+        if (Ctx.NetManager.ConnectedClients.TryGetValue(clientId, out var client)) {
             var playerObj = client.PlayerObject;
             if (playerObj != null && playerObj.TryGetComponent<Player>(out _)) {
                 playerObj.Despawn(true);
@@ -114,7 +114,7 @@ public class PlayerSpawner : NetworkBehaviour {
     }
 
     public void HandleDeathServer(ulong clientId) {
-        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client)) {
+        if (Ctx.NetManager.ConnectedClients.TryGetValue(clientId, out var client)) {
             var player = client.PlayerObject;
             if (player != null && player.IsSpawned) {
                 Debug.Log($"[PlayerSpawner] Сервер: Игрок {clientId} умирает");
@@ -132,7 +132,7 @@ public class PlayerSpawner : NetworkBehaviour {
 
     [ClientRpc]
     private void HandleDeathClientRpc(ulong clientId) {
-        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client)) {
+        if (Ctx.NetManager.ConnectedClients.TryGetValue(clientId, out var client)) {
             var player = client.PlayerObject;
             Debug.Log($"[PlayerSpawner] Клиент: Отключаем контроль над игроком {clientId}");
             player.GetComponent<Player>().LocalBodyAvatar(true);
@@ -144,7 +144,7 @@ public class PlayerSpawner : NetworkBehaviour {
             player.GetComponent<FirstPersonMovement>().enabled = false;
             player.GetComponent<FirstPersonLook>().enabled = false;
             player.GetComponent<Mouth>().enabled = false;
-            if (NetworkManager.Singleton.LocalClientId == clientId) {
+            if (Ctx.NetManager.LocalClientId == clientId) {
                 player.GetComponentInChildren<Observer>(true).gameObject.SetActive(true);
                 player.GetComponent<SteamVoiceChat>().DisableMicrophone();
             }
@@ -152,8 +152,8 @@ public class PlayerSpawner : NetworkBehaviour {
     }
 
     public override void OnNetworkSpawn() {
-        if (NetworkManager.Singleton != null)
-            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneLoaded;
+        if (Ctx.NetManager != null)
+            Ctx.NetManager.SceneManager.OnLoadEventCompleted += SceneLoaded;
     }
 
     private void SceneLoaded(
@@ -163,7 +163,7 @@ public class PlayerSpawner : NetworkBehaviour {
         List<ulong> clientsTimedOut
     ) {
         if (!IsServer) return;
-        if (sceneName == GameProgress.Instance.SceneName) {
+        if (sceneName == Ctx.GameProgress.SceneName) {
             foreach (var id in clientsCompleted) {
                 StartCoroutine(RespawnPlayer(id));
             }
@@ -177,7 +177,7 @@ public class PlayerSpawner : NetworkBehaviour {
     }
 
     private void SpawnPlayer(ulong clientId) {
-        if (!PlayerManager.Instance.TryGetPlayerData(clientId, out var playerData)) {
+        if (!Ctx.TryGetPlayerData(clientId, out var playerData)) {
             Debug.LogWarning($"[PlayerSpawner] Сервер: Не найдены данные PlayerManager для игрока {clientId}");
             return;
         }
@@ -188,14 +188,14 @@ public class PlayerSpawner : NetworkBehaviour {
             Archetype = playerData.Archetype,
             Hue = playerData.Hue,
             Saturation = playerData.Saturation,
-            Team = TeamManager.Instance.GetTeam(clientId)
+            Team = Ctx.GetTeam(clientId)
         };
 
         SpawnParticipant(descriptor, clientId);
     }
 
     public GameObject SpawnBotObject(ulong botId) {
-        if (!PlayerManager.Instance.TryGetBotData(botId, out var botData)) {
+        if (!Ctx.Players.TryGetBotData(botId, out var botData)) {
             Debug.LogWarning($"[PlayerSpawner] Bot {botId} is not registered in PlayerManager");
             return null;
         }
@@ -206,7 +206,7 @@ public class PlayerSpawner : NetworkBehaviour {
             Archetype = botData.Archetype,
             Hue = botData.Hue,
             Saturation = botData.Saturation,
-            Team = TeamManager.Instance.GetTeam(botData.Id)
+            Team = Ctx.GetTeam(botData.Id)
         };
 
         return SpawnParticipant(descriptor, NetworkManager.ServerClientId);

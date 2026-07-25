@@ -5,7 +5,7 @@ public static class GameModeRules {
     public const string ChargedShotSpellName = "CUSTOM Charged Shot";
 
     public static bool IsChargedShotOnlyMode() {
-        return TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.ChargedShotOnly;
+        return Ctx.Teams.CurrentMode.Value == TeamManager.TeamMode.ChargedShotOnly;
     }
 
     public static bool IsChargedShotSpell(SpellDefinition spell) {
@@ -20,7 +20,7 @@ public static class GameModeRules {
         if (!IsChargedShotOnlyMode())
             return spells.ToList();
 
-        var def = DefaultSpells.Instance.list;
+        var def = Ctx.DefaultSpells.list;
         var list = def.ToList();
         var charged =
             list.FirstOrDefault(s => s != null && s.spell != null && s.spell.spellName == ChargedShotSpellName);
@@ -34,7 +34,7 @@ public static class GameModeRules {
         if (!IsChargedShotOnlyMode())
             return spells.ToList();
 
-        spells = DefaultSpells.Instance.list;
+        spells = Ctx.DefaultSpells.list;
         var list = spells.ToList();
         var charged =
             list.FirstOrDefault(s => s != null && s.spell != null && s.spell.spellName == ChargedShotSpellName);

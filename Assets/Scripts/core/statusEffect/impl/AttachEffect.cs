@@ -17,7 +17,7 @@ public class AttachEffect : StatusEffectData {
         public override void OnApply(ParticipantId ownerId, GameObject target) {
             base.OnApply(ownerId, target);
             if (target.TryGetComponent<StateController>(out var player)) {
-                if (TeamManager.Instance.AreAllies(ownerId, player.GetComponent<ParticipantIdentity>().Id))
+                if (Ctx.AreAllies(ownerId, player.GetComponent<ParticipantIdentity>().Id))
                     return;
                 player.Attach(ownerId, true);
             }

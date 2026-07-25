@@ -35,7 +35,7 @@ public class MeshSpawnPreview : ISpellSpawnPreview {
     public void Show(SpawnContext context, ISpellSpawn spawnMode) {
         _spawnMode = spawnMode;
         _spell = context.spell;
-        var prefab = SpellPrefabDatabase.Instance.Get(_spell);
+        var prefab = Ctx.GetSpellPrefab(_spell);
         var (m, c) = GetMeshAndComponent(prefab);
         mesh = m;
         _wireMesh = BuildWireMesh(mesh);

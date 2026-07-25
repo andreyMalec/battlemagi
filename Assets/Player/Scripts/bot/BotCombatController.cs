@@ -121,7 +121,7 @@ public class BotCombatController : MonoBehaviour {
         _selfIdentity = GetComponent<ParticipantIdentity>();
         _damageable = GetComponent<Damageable>();
         _decisionEngine = new BotSpellDecisionEngine(decisionWeights);
-        isServer = NetworkManager.Singleton.IsServer;
+        isServer = Ctx.NetManager.IsServer;
     }
 
     public void Init() {
@@ -133,7 +133,7 @@ public class BotCombatController : MonoBehaviour {
         if (spells == null)
             return;
 
-        _spells.AddRange(BotSpellWeights.Instance.weights.Filter(it => spells.Contains(it.spell)));
+        _spells.AddRange(Ctx.BotSpellWeights.weights.Filter(it => spells.Contains(it.spell)));
     }
 
     private Vector3 _lastTargetPosition;
@@ -661,10 +661,10 @@ public class BotCombatController : MonoBehaviour {
         if (targetIdentity == null)
             return false;
 
-        if (TeamManager.Instance == null)
+        if (Ctx.Teams == null)
             return targetIdentity.Id != _selfIdentity.Id;
 
-        return TeamManager.Instance.AreEnemies(_selfIdentity.Id, targetIdentity.Id);
+        return Ctx.AreEnemies(_selfIdentity.Id, targetIdentity.Id);
     }
 
     private bool HasLineOfSight(Vector3 from, Vector3 to, Transform targetRoot) {
@@ -740,7 +740,7 @@ public class BotCombatController : MonoBehaviour {
         if (_hasVoiceParticipantId)
             return;
 
-        var bundle = BotSpellVoice.Instance.GetBundleByParticipantId(participantId);
+        var bundle = Ctx.BotSpellVoice.GetBundleByParticipantId(participantId);
 
         voiceBundle = bundle;
         _hasVoiceParticipantId = true;

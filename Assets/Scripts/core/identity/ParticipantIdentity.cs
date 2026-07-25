@@ -16,7 +16,7 @@ public class ParticipantIdentity : MonoBehaviour {
     public static bool TryFind(ParticipantId id, out ParticipantIdentity identity) {
         identity = null;
         if (id.Kind == ParticipantKind.Human) {
-            if (NetworkManager.Singleton.ConnectedClients.TryGetValue(id.Value, out var client) && client != null) {
+            if (Ctx.NetManager.ConnectedClients.TryGetValue(id.Value, out var client) && client != null) {
                 identity = client.PlayerObject.GetComponent<ParticipantIdentity>();
                 return true;
             }

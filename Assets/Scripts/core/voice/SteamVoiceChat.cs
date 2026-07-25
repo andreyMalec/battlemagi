@@ -36,8 +36,8 @@ public class SteamVoiceChat : NetworkBehaviour {
         sampleRate = (int)SteamUser.OptimalSampleRate;
         clipLengthSamples = Mathf.Max(1, Mathf.RoundToInt(sampleRate * bufferSeconds));
 
-        PlayerManager.Instance.OnPlayerAdded += HandlePlayerAdded;
-        PlayerManager.Instance.OnPlayerRemoved += HandlePlayerRemoved;
+        Ctx.Players.OnPlayerAdded += HandlePlayerAdded;
+        Ctx.Players.OnPlayerRemoved += HandlePlayerRemoved;
 
         SteamUser.VoiceRecord = true;
         if (LOG) Debug.Log("[SteamVoiceChat] Local voice recording enabled");
@@ -47,9 +47,9 @@ public class SteamVoiceChat : NetworkBehaviour {
         base.OnNetworkDespawn();
         if (!IsOwner) return;
 
-        if (PlayerManager.Instance != null) {
-            PlayerManager.Instance.OnPlayerAdded -= HandlePlayerAdded;
-            PlayerManager.Instance.OnPlayerRemoved -= HandlePlayerRemoved;
+        if (Ctx.Players != null) {
+            Ctx.Players.OnPlayerAdded -= HandlePlayerAdded;
+            Ctx.Players.OnPlayerRemoved -= HandlePlayerRemoved;
         }
 
         foreach (var vs in streams.Values) {
@@ -76,7 +76,7 @@ public class SteamVoiceChat : NetworkBehaviour {
                     SteamId me = SteamClient.SteamId;
 
                     var i = new List<ulong>();
-                    var lobby = LobbyManager.Instance.CurrentLobby;
+                    var lobby = Ctx.CurrentLobby;
                     if (lobby == null) return;
                     foreach (var member in lobby.Value.Members) {
                         if (member.Id == me) continue;
@@ -166,7 +166,7 @@ public class SteamVoiceChat : NetworkBehaviour {
         if (!streams.TryGetValue(steamId, out vs) || vs.source == null || vs.source.gameObject == null) {
             // Ещё не создан источник (новичок?) — просто игнорируем пакет или можно накопить в temp-буфере
             if (LOG) Debug.LogWarning($"[SteamVoiceChat] Voice from {steamId} but stream not ready yet");
-            var data = PlayerManager.Instance.FindBySteamId(steamId);
+            var data = Ctx.FindPlayerBySteamId(steamId);
             if (data.HasValue) {
                 HandlePlayerAdded(data.Value);
             }

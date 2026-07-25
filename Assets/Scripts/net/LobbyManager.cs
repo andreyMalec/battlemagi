@@ -92,8 +92,8 @@ public class LobbyManager : MonoBehaviour {
             lobby.SetJoinable(true);
             lobby.SetData(KeyMap, "0");
             lobby.SetData(KeyMode, "0");
-            NetworkManager.Singleton.StartHost();
-            BotLifecycleManager.Instance?.EndMatch();
+            Ctx.NetManager.StartHost();
+            Ctx.BotLifecycle?.EndMatch();
         }
     }
 
@@ -109,8 +109,8 @@ public class LobbyManager : MonoBehaviour {
 
         if (isHost)
             return;
-        NetworkManager.Singleton.gameObject.GetComponent<FacepunchTransport>().targetSteamId = lobby.Owner.Id;
-        NetworkManager.Singleton.StartClient();
+        Ctx.NetManager.gameObject.GetComponent<FacepunchTransport>().targetSteamId = lobby.Owner.Id;
+        Ctx.NetManager.StartClient();
     }
 
     private void OnLobbyMemberJoined(Lobby lobby, Friend member) {
@@ -151,11 +151,11 @@ public class LobbyManager : MonoBehaviour {
             lobby.SetPrivate();
         }
         Debug.Log($"[LobbyManager] Set lobby visibility to {visibility}");
-        GameProgress.Instance.LobbyVisibility.Value = (int)visibility;
+        Ctx.GameProgress.LobbyVisibility.Value = (int)visibility;
     }
 
     public LobbyVisibility GetVisibility() {
-        return (LobbyVisibility)GameProgress.Instance.LobbyVisibility.Value;
+        return (LobbyVisibility)Ctx.GameProgress.LobbyVisibility.Value;
     }
 
     public bool IsHost() {
@@ -248,7 +248,7 @@ public class LobbyManager : MonoBehaviour {
 
         isHost = false;
         State = PlayerState.Disconnected;
-        NetworkManager.Singleton.Shutdown();
+        Ctx.NetManager.Shutdown();
     }
 
     public void RestartLobby() {
@@ -264,16 +264,16 @@ public class LobbyManager : MonoBehaviour {
     #endregion
 
     public void KickPlayer(ulong steamId) {
-        if (!NetworkManager.Singleton.IsServer) return;
-        var playerData = PlayerManager.Instance.FindBySteamId(steamId);
+        if (!Ctx.NetManager.IsServer) return;
+        var playerData = Ctx.FindPlayerBySteamId(steamId);
         if (playerData == null) return;
-        NetworkManager.Singleton.DisconnectClient(playerData.Value.ClientId, "Kicked");
+        Ctx.NetManager.DisconnectClient(playerData.Value.ClientId, "Kicked");
     }
 }
 
 public static class LobbyExt {
     public static string Name(this PlayerManager.PlayerData player) {
-        var lobby = LobbyManager.Instance.CurrentLobby;
+        var lobby = Ctx.CurrentLobby;
         if (lobby == null) return null;
 
         foreach (var member in lobby.Value.Members) {
@@ -299,8 +299,8 @@ public static class LobbyExt {
     }
 
     public static bool IsReady(this Friend member) {
-        if (LobbyManager.Instance.CurrentLobby != null) {
-            var lobby = LobbyManager.Instance.CurrentLobby;
+        if (Ctx.CurrentLobby != null) {
+            var lobby = Ctx.CurrentLobby;
             if (lobby.HasValue) {
                 var ready = lobby.Value.GetMemberData(member, LobbyManager.KeyReady);
                 return ready == "1";
@@ -311,14 +311,14 @@ public static class LobbyExt {
     }
 
     public static PlayerColor GetColor(this Friend member) {
-        if (PlayerManager.Instance != null) {
-            var networkColor = PlayerManager.Instance.GetColor(member.Id.Value);
+        if (Ctx.Players != null) {
+            var networkColor = Ctx.GetPlayerColor(member.Id.Value);
             if (networkColor.HasValue)
                 return networkColor.Value;
         }
 
-        if (LobbyManager.Instance.CurrentLobby != null) {
-            var lobby = LobbyManager.Instance.CurrentLobby;
+        if (Ctx.CurrentLobby != null) {
+            var lobby = Ctx.CurrentLobby;
             if (lobby.HasValue) {
                 var color = lobby.Value.GetMemberData(member, LobbyManager.KeyColor);
                 if (string.IsNullOrEmpty(color))
@@ -334,8 +334,8 @@ public static class LobbyExt {
     }
 
     public static void SetColor(PlayerColor color) {
-        if (LobbyManager.Instance.CurrentLobby != null) {
-            var lobby = LobbyManager.Instance.CurrentLobby;
+        if (Ctx.CurrentLobby != null) {
+            var lobby = Ctx.CurrentLobby;
             if (lobby.HasValue) {
                 var h = color.hue.ToString(CultureInfo.InvariantCulture);
                 var s = color.saturation.ToString(CultureInfo.InvariantCulture);
@@ -344,21 +344,21 @@ public static class LobbyExt {
             }
         }
 
-        if (PlayerManager.Instance != null && NetworkManager.Singleton != null &&
-            NetworkManager.Singleton.IsConnectedClient && PlayerManager.Instance.IsSpawned) {
-            PlayerManager.Instance.SetColorServerRpc(color.hue, color.saturation);
+        if (Ctx.Players != null && Ctx.NetManager != null &&
+            Ctx.NetManager.IsConnectedClient && Ctx.Players.IsSpawned) {
+            Ctx.Players.SetColorServerRpc(color.hue, color.saturation);
         }
     }
 
     public static TeamManager.Team GetTeam(this Friend member) {
-        var player = PlayerManager.Instance.FindBySteamId(member.Id);
-        return TeamManager.Instance.GetTeam(player?.ClientId);
+        var player = Ctx.FindPlayerBySteamId(member.Id);
+        return Ctx.GetTeam(player?.ClientId);
     }
 
     public static void SetTeam(TeamManager.Team team) {
-        if (!TeamManager.Instance.IsSpawned || !NetworkManager.Singleton.IsConnectedClient)
+        if (!Ctx.Teams.IsSpawned || !Ctx.NetManager.IsConnectedClient)
             return;
-        TeamManager.Instance.RequestChangeTeamServerRpc(NetworkManager.Singleton.LocalClientId, (int)team);
+        Ctx.Teams.RequestChangeTeamServerRpc(Ctx.NetManager.LocalClientId, (int)team);
     }
 }
 

@@ -7,20 +7,20 @@ public class CTFScoreUI : MonoBehaviour {
     [SerializeField] private CanvasGroup canvasGroup;
 
     private void OnEnable() {
-        if (TeamManager.Instance == null) return;
+        if (Ctx.Teams == null) return;
 
-        if (TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.CaptureTheFlag) {
+        if (Ctx.Teams.CurrentMode.Value == TeamManager.TeamMode.CaptureTheFlag) {
             canvasGroup.alpha = 1;
-            TeamManager.Instance.OnScoreChanged += OnScoreChanged;
-            OnScoreChanged(TeamManager.Instance.RedScore.Value, TeamManager.Instance.BlueScore.Value);
+            Ctx.Teams.OnScoreChanged += OnScoreChanged;
+            OnScoreChanged(Ctx.Teams.RedScore.Value, Ctx.Teams.BlueScore.Value);
         } else {
             canvasGroup.alpha = 0;
         }
     }
 
     private void OnDisable() {
-        if (TeamManager.Instance != null)
-            TeamManager.Instance.OnScoreChanged -= OnScoreChanged;
+        if (Ctx.Teams != null)
+            Ctx.Teams.OnScoreChanged -= OnScoreChanged;
     }
 
     private void OnScoreChanged(int red, int blue) {

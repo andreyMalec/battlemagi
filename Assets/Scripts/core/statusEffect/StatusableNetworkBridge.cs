@@ -117,7 +117,7 @@ public class StatusableNetworkBridge : NetworkBehaviour, IStatusableBridge {
 
     private void RebuildActiveEffectsFromSynced() {
         var list = new List<Statusable.DurationEffect>();
-        var db = StatusEffectDatabase.Instance.GetMap();
+        var db = Ctx.StatusEffects.GetMap();
         try {
             int count = _synced.Count;
             var snapshot = new NetDurationEffect[count];

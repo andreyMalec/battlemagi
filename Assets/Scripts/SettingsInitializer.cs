@@ -45,7 +45,7 @@ public class SettingsInitializer : MonoBehaviour {
         var languageIndex = PlayerPrefs.GetInt("Language", 0);
 
         var values = Enum.GetValues(typeof(Language)).Cast<Language>().ToList();
-        LocalizationSettings.Instance.SetSelectedLocale(
+        Ctx.Localization.SetSelectedLocale(
             Locale.CreateLocale(values[languageIndex].ToString().ToLower()));
 
         Debug.Log(

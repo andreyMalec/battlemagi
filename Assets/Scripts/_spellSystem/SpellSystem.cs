@@ -38,10 +38,10 @@ public class SpellSystem {
         int prefabId
     ) {
         var prefab = coreType switch {
-            CoreType.Projectile => SpellPrefabDatabase.Instance.Get((SpellProjectilePrefabId)prefabId),
-            CoreType.Zone => SpellPrefabDatabase.Instance.Get((SpellZonePrefabId)prefabId),
-            CoreType.Beam => SpellPrefabDatabase.Instance.Get((SpellBeamPrefabId)prefabId),
-            CoreType.Summon => SpellPrefabDatabase.Instance.Get((SpellSummonPrefabId)prefabId),
+            CoreType.Projectile => Ctx.GetSpellPrefab((SpellProjectilePrefabId)prefabId),
+            CoreType.Zone => Ctx.GetSpellPrefab((SpellZonePrefabId)prefabId),
+            CoreType.Beam => Ctx.GetSpellPrefab((SpellBeamPrefabId)prefabId),
+            CoreType.Summon => Ctx.GetSpellPrefab((SpellSummonPrefabId)prefabId),
             _ => null
         };
         if (prefab == null) return;
@@ -54,7 +54,7 @@ public class SpellSystem {
         bool spawned = false
     ) {
         SpellDefinition def = spawnContext.spell;
-        var prefab = SpellPrefabDatabase.Instance.Get(def.projectile.prefabId);
+        var prefab = Ctx.GetSpellPrefab(def.projectile.prefabId);
         spawnContext.main.name = "Spell " + def.name;
         var viewGo = Object.Instantiate(prefab, spawnContext.main.transform);
         var view = viewGo.GetComponent<SpellView>();
@@ -134,7 +134,7 @@ public class SpellSystem {
         bool spawned = false
     ) {
         SpellDefinition def = spawnContext.spell;
-        var prefab = SpellPrefabDatabase.Instance.Get(def.zone.prefabId);
+        var prefab = Ctx.GetSpellPrefab(def.zone.prefabId);
         spawnContext.main.name = "Spell " + def.name;
         var viewGo = Object.Instantiate(prefab, spawnContext.main.transform);
         var view = viewGo.GetComponent<SpellView>();
@@ -253,7 +253,7 @@ public class SpellSystem {
         bool spawned = false
     ) {
         SpellDefinition def = spawnContext.spell;
-        var prefab = SpellPrefabDatabase.Instance.Get(def.beam.prefabId);
+        var prefab = Ctx.GetSpellPrefab(def.beam.prefabId);
         spawnContext.main.name = "Spell " + def.name;
         var viewGo = Object.Instantiate(prefab, spawnContext.main.transform);
         var view = viewGo.GetComponent<SpellView>();
@@ -344,7 +344,7 @@ public class SpellSystem {
         bool spawned = false
     ) {
         SpellDefinition def = spawnContext.spell;
-        var prefab = SpellPrefabDatabase.Instance.Get(def.summon.prefabId);
+        var prefab = Ctx.GetSpellPrefab(def.summon.prefabId);
         spawnContext.main.name = "Spell " + def.name;
         var viewGo = Object.Instantiate(prefab, spawnContext.main.transform);
         var view = viewGo.GetComponent<SpellView>();
@@ -420,7 +420,7 @@ public class SpellSystem {
         bool spawned = false
     ) {
         SpellDefinition def = spawnContext.spell;
-        var prefab = SpellPrefabDatabase.Instance.Get(def.self.prefabId);
+        var prefab = Ctx.GetSpellPrefab(def.self.prefabId);
         spawnContext.main.name = "Spell " + def.name;
         var viewGo = Object.Instantiate(prefab, spawnContext.main.transform);
         var view = viewGo.GetComponent<SpellView>();

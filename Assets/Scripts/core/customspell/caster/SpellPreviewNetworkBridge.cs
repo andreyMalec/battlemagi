@@ -67,7 +67,7 @@ public class SpellPreviewNetworkBridge : NetworkBehaviour, ISpellPreviewBridge {
 
     private static bool TryResolveBridge(ulong previewObjectId, out SpellPreviewNetworkBridge bridge) {
         bridge = null;
-        var networkManager = NetworkManager.Singleton;
+        var networkManager = Ctx.NetManager;
         if (networkManager == null || networkManager.SpawnManager == null)
             return false;
         if (!networkManager.SpawnManager.SpawnedObjects.TryGetValue(previewObjectId, out var networkObject))

@@ -24,7 +24,7 @@ public class ScoreboardItem : MonoBehaviour {
         if (data.Id.IsBot) {
             pingText.text = "-";
         } else {
-            if (PlayerManager.Instance.TryGetPlayerData(data.Id.Value, out var playerData)) {
+            if (Ctx.TryGetPlayerData(data.Id.Value, out var playerData)) {
                 pingText.text = playerData.PacketLossPercent > PacketLossWarningThreshold
                     ? $"{playerData.PingMs} ms <color=#FFB54A><b>!</b></color>"
                     : $"{playerData.PingMs} ms";
@@ -46,7 +46,7 @@ public class ScoreboardItem : MonoBehaviour {
         colorImage.material.SetFloat(ColorizeMesh.Hue, hue);
         colorImage.material.SetFloat(ColorizeMesh.Saturation, saturation);
 
-        if (TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.CaptureTheFlag) {
+        if (Ctx.Teams.CurrentMode.Value == TeamManager.TeamMode.CaptureTheFlag) {
             flagsText.gameObject.SetActive(true);
             nameText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 310f);
         } else {

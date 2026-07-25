@@ -23,7 +23,7 @@ public class ArchetypeAvatar : MonoBehaviour {
 
     // Выбрать архетип по id через базу
     public void SetArchetypeById(int id) {
-        var db = ArchetypeDatabase.Instance;
+        var db = Ctx.Archetypes;
         if (db == null) {
             Debug.LogWarning("ArchetypeAvatar: ArchetypeDatabase.Instance == null");
             return;
@@ -36,7 +36,7 @@ public class ArchetypeAvatar : MonoBehaviour {
 
     // Выбрать архетип по индексу списка в базе (для простых кнопок Next/Prev)
     public void SetArchetypeByIndex(int index) {
-        var db = ArchetypeDatabase.Instance;
+        var db = Ctx.Archetypes;
         if (db == null) {
             Debug.LogWarning("ArchetypeAvatar: ArchetypeDatabase.Instance == null");
             return;
@@ -96,7 +96,7 @@ public class ArchetypeAvatar : MonoBehaviour {
     }
 
     private (List<ArchetypeData> list, int currentIndex) GetCurrentIndexInDb() {
-        var db = ArchetypeDatabase.Instance;
+        var db = Ctx.Archetypes;
         if (db == null || db.archetypes == null || db.archetypes.Count == 0)
             return (null, -1);
         var list = db.archetypes;

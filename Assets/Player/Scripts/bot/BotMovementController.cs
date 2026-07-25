@@ -57,7 +57,7 @@ public class BotMovementController : MonoBehaviour {
         _caster = GetComponent<SpellCasterPlayer>();
         _damageable = GetComponent<Damageable>();
         _combat = GetComponent<BotCombatController>();
-        isServer = NetworkManager.Singleton.IsServer;
+        isServer = Ctx.NetManager.IsServer;
     }
 
     private void Start() {

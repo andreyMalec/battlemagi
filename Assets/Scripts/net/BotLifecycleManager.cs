@@ -44,7 +44,7 @@ public class BotLifecycleManager : MonoBehaviour {
 
     private IEnumerator SubscribeNetworkSceneEventsWhenReady() {
         while (!_networkSceneSubscribed) {
-            var networkManager = NetworkManager.Singleton;
+            var networkManager = Ctx.NetManager;
             if (networkManager != null && networkManager.SceneManager != null) {
                 networkManager.SceneManager.OnLoadEventCompleted += OnNetworkSceneLoaded;
                 _subscribedNetworkManager = networkManager;
@@ -68,14 +68,14 @@ public class BotLifecycleManager : MonoBehaviour {
     }
 
     public void SpawnInitialBotsNow() {
-        if (PlayerSpawner.instance == null || PlayerManager.Instance == null || TeamManager.Instance == null) {
+        if (Ctx.PlayerSpawner == null || Ctx.Players == null || Ctx.Teams == null) {
             QueueSpawnWhenReady();
             return;
         }
 
-        var hasNetcodeSession = NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening;
-        if (hasNetcodeSession && LobbyManager.Instance != null && LobbyManager.Instance.CurrentLobby.HasValue) {
-            var lobbyBots = LobbyBotRosterData.LoadFromLobby(LobbyManager.Instance.CurrentLobby.Value);
+        var hasNetcodeSession = Ctx.NetManager != null && Ctx.NetManager.IsListening;
+        if (hasNetcodeSession && Ctx.Lobby != null && Ctx.CurrentLobby.HasValue) {
+            var lobbyBots = LobbyBotRosterData.LoadFromLobby(Ctx.CurrentLobby.Value);
             for (int i = 0; i < lobbyBots.Count; i++) {
                 var bot = lobbyBots[i];
                 SpawnNewBot(bot.archetype, bot.hue, bot.saturation, bot.team, bot.name);
@@ -103,9 +103,9 @@ public class BotLifecycleManager : MonoBehaviour {
         if (string.IsNullOrEmpty(botName))
             botName = BotNameCatalog.Resolve(botId);
 
-        TeamManager.Instance.RegisterBot(botId, requestedTeam);
-        var assignedTeam = TeamManager.Instance.GetTeam(participantId);
-        if (TeamManager.Instance.isTeamMode) {
+        Ctx.Teams.RegisterBot(botId, requestedTeam);
+        var assignedTeam = Ctx.GetTeam(participantId);
+        if (Ctx.IsTeamMode) {
             if (assignedTeam == TeamManager.Team.Blue) {
                 hue = 228f;
                 saturation = 0.85f;
@@ -121,9 +121,9 @@ public class BotLifecycleManager : MonoBehaviour {
             Saturation = saturation
         };
 
-        PlayerManager.Instance.RegisterParticipant(participantData);
+        Ctx.Players.RegisterParticipant(participantData);
 
-        var bot = PlayerSpawner.instance.SpawnBotObject(botId);
+        var bot = Ctx.PlayerSpawner.SpawnBotObject(botId);
         if (bot != null)
             _activeBots[botId] = bot;
 
@@ -172,8 +172,8 @@ public class BotLifecycleManager : MonoBehaviour {
 
         if (removeFromRegistry) {
             var participantId = ParticipantId.Bot(botId);
-            PlayerManager.Instance.RemoveParticipant(participantId);
-            TeamManager.Instance.RemoveBot(botId);
+            Ctx.Players.RemoveParticipant(participantId);
+            Ctx.Teams.RemoveBot(botId);
         }
 
         return despawned;
@@ -195,10 +195,10 @@ public class BotLifecycleManager : MonoBehaviour {
 
         _activeBots.Clear();
 
-        foreach (var participant in PlayerManager.Instance.Participants.ToList()) {
+        foreach (var participant in Ctx.Players.Participants.ToList()) {
             if (!participant.Id.IsBot) continue;
-            PlayerManager.Instance.RemoveParticipant(participant.Id);
-            TeamManager.Instance.RemoveBot(participant.Id.Value);
+            Ctx.Players.RemoveParticipant(participant.Id);
+            Ctx.Teams.RemoveBot(participant.Id.Value);
         }
     }
 
@@ -212,10 +212,10 @@ public class BotLifecycleManager : MonoBehaviour {
         if (!_matchBotsEnabled)
             yield break;
 
-        if (!PlayerManager.Instance.TryGetBotData(botId, out _))
+        if (!Ctx.Players.TryGetBotData(botId, out _))
             yield break;
 
-        var bot = PlayerSpawner.instance.SpawnBotObject(botId);
+        var bot = Ctx.PlayerSpawner.SpawnBotObject(botId);
         if (bot != null)
             _activeBots[botId] = bot;
     }
@@ -223,7 +223,7 @@ public class BotLifecycleManager : MonoBehaviour {
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
         if (!autoSpawnOffline) return;
 
-        var hasNetcodeSession = NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening;
+        var hasNetcodeSession = Ctx.NetManager != null && Ctx.NetManager.IsListening;
         if (hasNetcodeSession)
             return;
 
@@ -253,7 +253,7 @@ public class BotLifecycleManager : MonoBehaviour {
             return;
         }
 
-        if (GameProgress.Instance != null && sceneName != GameProgress.Instance.SceneName)
+        if (Ctx.GameProgress != null && sceneName != Ctx.GameProgress.SceneName)
             return;
 
         if (_activeBots.Count > 0)
@@ -270,8 +270,8 @@ public class BotLifecycleManager : MonoBehaviour {
     }
 
     private IEnumerator WaitForSpawnDependencies() {
-        while (_matchBotsEnabled && (PlayerSpawner.instance == null || PlayerManager.Instance == null ||
-                                     TeamManager.Instance == null)) {
+        while (_matchBotsEnabled && (Ctx.PlayerSpawner == null || Ctx.Players == null ||
+                                     Ctx.Teams == null)) {
             yield return null;
         }
 

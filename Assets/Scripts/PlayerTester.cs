@@ -32,7 +32,7 @@ public class PlayerTester : MonoBehaviour {
 
     private void Start() {
         var caster = GetComponent<SpellCasterPlayer>();
-        caster.UpdateAvailableSpells(DefaultSpells.Instance.list.Map(s => s.spell).ToList());
+        caster.UpdateAvailableSpells(Ctx.DefaultSpells.list.Map(s => s.spell).ToList());
     }
 
     private void Update() {

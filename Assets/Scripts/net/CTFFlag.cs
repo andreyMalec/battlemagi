@@ -53,35 +53,35 @@ public class CTFFlag : NetworkBehaviour {
 
     private void Update() {
         if (!IsServer) return;
-        if (TeamManager.Instance.CurrentMode.Value != TeamManager.TeamMode.CaptureTheFlag) return;
+        if (Ctx.Teams.CurrentMode.Value != TeamManager.TeamMode.CaptureTheFlag) return;
 
         // Защита от падения вниз
         if (transform.position.y < -1f) {
             ReturnToBase();
-            CTFAnnouncer.Instance?.ReturnFlag(team);
+            Ctx.CtfAnnouncer?.ReturnFlag(team);
             return;
         }
 
         // Авто-возврат по таймеру, когда флаг лежит
         if (carrierId.Value == ulong.MaxValue && !atBase.Value && _autoReturnAt > 0f && Time.time >= _autoReturnAt) {
             ReturnToBase();
-            CTFAnnouncer.Instance?.ReturnFlag(team);
+            Ctx.CtfAnnouncer?.ReturnFlag(team);
         }
     }
 
     private void OnTriggerEnter(Collider other) {
         if (!IsServer) return;
-        if (TeamManager.Instance.CurrentMode.Value != TeamManager.TeamMode.CaptureTheFlag) return;
+        if (Ctx.Teams.CurrentMode.Value != TeamManager.TeamMode.CaptureTheFlag) return;
         var no = other.GetComponentInParent<NetworkObject>();
         if (no == null || !no.IsPlayerObject) return;
         var clientId = no.OwnerClientId;
-        var playerTeam = TeamManager.Instance.GetTeam(clientId);
+        var playerTeam = Ctx.GetTeam(clientId);
 
         if (playerTeam == team) {
             // Ally touches their own flag
             if (!atBase.Value && carrierId.Value == ulong.MaxValue) {
                 ReturnToBase();
-                CTFAnnouncer.Instance?.ReturnFlag(team);
+                Ctx.CtfAnnouncer?.ReturnFlag(team);
             }
 
             return;
@@ -93,21 +93,21 @@ public class CTFFlag : NetworkBehaviour {
             if (clientId == _lastCarrierBlocked && Time.time < _pickupUnblockTime) return;
 
             PickUp(clientId, no.transform);
-            CTFAnnouncer.Instance?.TakeFlag(playerTeam, team);
+            Ctx.CtfAnnouncer?.TakeFlag(playerTeam, team);
         }
     }
 
     private void OnPlayerDied(ulong deadClientId, Vector3 pos) {
         Debug.Log($" [CTFFlag] Server: Checking if dead player {deadClientId} is carrying the flag of team {team}");
         if (!IsServer) return;
-        if (TeamManager.Instance.CurrentMode.Value != TeamManager.TeamMode.CaptureTheFlag) return;
+        if (Ctx.Teams.CurrentMode.Value != TeamManager.TeamMode.CaptureTheFlag) return;
         if (carrierId.Value == deadClientId) {
             DropAt(pos);
             // установить блок для последнего владельца
             _lastCarrierBlocked = deadClientId;
             _pickupUnblockTime = Time.time + pickupBlockSeconds;
 
-            CTFAnnouncer.Instance?.DropFlag(team);
+            Ctx.CtfAnnouncer?.DropFlag(team);
         }
     }
 

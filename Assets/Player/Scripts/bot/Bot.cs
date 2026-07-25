@@ -65,7 +65,7 @@ public class Bot : NetworkBehaviour {
         if (_avatarSpawned)
             return;
 
-        var archetype = ArchetypeDatabase.Instance.GetArchetype(arch);
+        var archetype = Ctx.GetArchetype(arch);
         var currentAvatar = Instantiate(archetype.avatarPrefab, transform); //TODO crash
         _avatarSpawned = true;
         meshController = currentAvatar.GetComponent<MeshController>();
@@ -165,7 +165,7 @@ public class Bot : NetworkBehaviour {
     }
 
     private void ApplyMaterial(int arch, float hue, float saturation) {
-        var archetype = ArchetypeDatabase.Instance.GetArchetype(arch);
+        var archetype = Ctx.GetArchetype(arch);
         var bodyMat = new Material(archetype.bodyShader);
         bodyMat.SetFloat(ColorizeMesh.Hue, hue);
         bodyMat.SetFloat(ColorizeMesh.Saturation, saturation);

@@ -89,7 +89,7 @@ public class LobbyMemberItem : MonoBehaviour, IPointerEnterHandler, IPointerExit
         sliderContainer.SetActive(isHover && _mode == Mode.Player);
         if (_mode == Mode.AddBot) return;
 
-        var isHost = NetworkManager.Singleton.IsServer;
+        var isHost = Ctx.NetManager.IsServer;
         if (!isHost)
             nameText.gameObject.SetActive(true);
         botArchetypeNextButton.gameObject.SetActive(isHost && isHover && _mode == Mode.Bot);
@@ -99,7 +99,7 @@ public class LobbyMemberItem : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     private void OnEnable() {
         volumeSlider.onValueChanged.AddListener(VolumeChanged);
-        kickButton.onClick.AddListener(() => LobbyManager.Instance.KickPlayer(_steamId));
+        kickButton.onClick.AddListener(() => Ctx.KickPlayer(_steamId));
     }
 
     private void OnDisable() {
@@ -121,14 +121,14 @@ public class LobbyMemberItem : MonoBehaviour, IPointerEnterHandler, IPointerExit
         readyImage.overrideSprite = image;
         var color = member.GetColor();
         ApplyColor(color.hue, color.saturation);
-        var d = PlayerManager.Instance.FindBySteamId(member.Id.Value);
+        var d = Ctx.FindPlayerBySteamId(member.Id.Value);
         if (d.HasValue && d.Value.Archetype >= 0)
-            archetypeImage.overrideSprite = ArchetypeDatabase.Instance.GetArchetypeIcon(d.Value.Archetype);
+            archetypeImage.overrideSprite = Ctx.GetArchetypeIcon(d.Value.Archetype);
         else
             archetypeImage.overrideSprite = null;
 
         kickButton.onClick.RemoveAllListeners();
-        kickButton.onClick.AddListener(() => LobbyManager.Instance.KickPlayer(_steamId));
+        kickButton.onClick.AddListener(() => Ctx.KickPlayer(_steamId));
         UpdateState();
     }
 
@@ -152,7 +152,7 @@ public class LobbyMemberItem : MonoBehaviour, IPointerEnterHandler, IPointerExit
         nameText.text = string.IsNullOrEmpty(bot.name) ? BotNameCatalog.Resolve(bot.id) : bot.name;
         readyImage.gameObject.SetActive(false);
         if (bot.archetype >= 0)
-            archetypeImage.overrideSprite = ArchetypeDatabase.Instance.GetArchetypeIcon(bot.archetype);
+            archetypeImage.overrideSprite = Ctx.GetArchetypeIcon(bot.archetype);
         else
             archetypeImage.overrideSprite = null;
 
@@ -162,7 +162,7 @@ public class LobbyMemberItem : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
         kickButton.onClick.RemoveAllListeners();
         kickButton.onClick.AddListener(() => onRemove(_botId));
-        var archCount = ArchetypeDatabase.Instance.archetypes.Count;
+        var archCount = Ctx.ArchetypeCount;
         var prev = (bot.archetype - 1 + archCount) % archCount;
         botArchetypePrevButton.onClick.RemoveAllListeners();
         botArchetypePrevButton.onClick.AddListener(() => onSetArchetype(_botId, prev));

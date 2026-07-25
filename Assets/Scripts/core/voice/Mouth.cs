@@ -26,7 +26,7 @@ public class Mouth : MonoBehaviour {
 
     public void Open() {
         if (_open) return;
-        _holder = SpeechToTextHolder.Instance;
+        _holder = Ctx.SpeechToText;
         if (!_holder.IsInitialized) return;
         _manager = _holder.Manager;
 

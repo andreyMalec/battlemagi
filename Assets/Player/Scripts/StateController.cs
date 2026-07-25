@@ -39,7 +39,7 @@ public class StateController : NetworkBehaviour {
 
     [ClientRpc]
     private void FreezeClientRpc(ulong targetNetObj, bool active) {
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetNetObj, out var netObj)) return;
+        if (!Ctx.TryGetSpawnedObject(targetNetObj, out var netObj)) return;
         Debug.Log($"FreezeClientRpc targetNetObj={netObj}, active={active}");
         var freeze = netObj.GetComponentInChildren<Freeze>(true);
         if (freeze != null) freeze.gameObject.SetActive(active);
@@ -80,7 +80,7 @@ public class StateController : NetworkBehaviour {
 
     [ClientRpc]
     private void AttachClientRpc(ulong originClientId, ulong targetNetObj, bool active) {
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetNetObj, out var netObj)) return;
+        if (!Ctx.TryGetSpawnedObject(targetNetObj, out var netObj)) return;
         Debug.Log($"AttachClientRpc originClientId={originClientId}, targetNetObj={netObj}, active={active}");
         var fpMovement = netObj.GetComponent<FirstPersonMovement>();
         if (fpMovement != null)
@@ -102,8 +102,8 @@ public class StateController : NetworkBehaviour {
 
     private static NetworkObject TryResolveTarget(ulong ownerId) {
         var participantId = ParticipantIdentityCodec.Decode(ownerId);
-        if (participantId.IsHuman && NetworkManager.Singleton != null &&
-            NetworkManager.Singleton.ConnectedClients.TryGetValue(participantId.Value, out var client) &&
+        if (participantId.IsHuman && Ctx.NetManager != null &&
+            Ctx.NetManager.ConnectedClients.TryGetValue(participantId.Value, out var client) &&
             client.PlayerObject != null)
             return client.PlayerObject;
 

@@ -17,11 +17,7 @@ public static class DamageRelationship {
 
     public static bool AreEnemies(ISpellContext context, ParticipantId targetOwner) {
         var attackerId = context.OwnerId;
-
-        if (TeamManager.Instance == null)
-            return attackerId != targetOwner;
-
-        return TeamManager.Instance.AreEnemies(attackerId, targetOwner);
+        return Ctx.AreEnemies(attackerId, targetOwner);
     }
 
     public static bool AreAllies(ISpellContext context, ParticipantId targetOwner) {

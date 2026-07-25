@@ -39,17 +39,17 @@ public class BotDamageable : NetworkBehaviour {
         Debug.Log($"BotKilled {killer} -> {victim} with {deathInfo.source}");
         NetworkObject.TryRemoveParent();
         var enemies = _damagedBy.Where(damager =>
-            TeamManager.Instance.AreEnemies(victim, damager));
+            Ctx.AreEnemies(victim, damager));
         foreach (var enemy in enemies) {
             if (enemy == deathInfo.fromId)
-                PlayerManager.Instance.AddKill(killer);
+                Ctx.Players.AddKill(killer);
             else
-                PlayerManager.Instance.AddAssist(enemy);
+                Ctx.Players.AddAssist(enemy);
         }
 
-        PlayerManager.Instance.AddDeath(victim);
-        BotLifecycleManager.Instance?.HandleBotDeath(victim, gameObject);
-        Killfeed.Instance?.HandleClientRpc(ParticipantIdentityCodec.Encode(deathInfo.fromId),
+        Ctx.Players.AddDeath(victim);
+        Ctx.BotLifecycle?.HandleBotDeath(victim, gameObject);
+        Ctx.Killfeed?.HandleClientRpc(ParticipantIdentityCodec.Encode(deathInfo.fromId),
             ParticipantIdentityCodec.Encode(victim));
     }
 }

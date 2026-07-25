@@ -33,12 +33,12 @@ public class MenuStateFindLobby : MonoBehaviour {
     private void OnEnable() {
         SetupMapFilterOptions();
         SetupModeFilterOptions();
-        LobbyManager.Instance.OnLobbyListUpdated += HandleLobbyListUpdated;
+        Ctx.Lobby.OnLobbyListUpdated += HandleLobbyListUpdated;
         Refresh();
     }
 
     private void OnDisable() {
-        LobbyManager.Instance.OnLobbyListUpdated -= HandleLobbyListUpdated;
+        Ctx.Lobby.OnLobbyListUpdated -= HandleLobbyListUpdated;
     }
 
     private void Refresh() {
@@ -48,7 +48,7 @@ public class MenuStateFindLobby : MonoBehaviour {
     }
 
     private IEnumerator RefreshCoroutine() {
-        LobbyManager.Instance.RefreshLobbyList();
+        Ctx.RefreshLobbyList();
         buttonRefresh.interactable = false;
         buttonRefresh.GetComponentInChildren<TMP_Text>().text = R.String("menuFind.refreshing");
         yield return new WaitForSeconds(3f);
@@ -108,13 +108,13 @@ public class MenuStateFindLobby : MonoBehaviour {
     }
 
     private void JoinLobby(ulong lobbyId) {
-        LobbyManager.Instance.JoinLobby(lobbyId);
+        Ctx.JoinLobby(lobbyId);
     }
 
     private void SetupMapFilterOptions() {
         dropdownMap.ClearOptions();
         var options = new List<string> { R.String("map.all") };
-        foreach (var gameMap in GameMapDatabase.instance.gameMaps) {
+        foreach (var gameMap in Ctx.GameMaps.gameMaps) {
             options.Add(R.String($"map.{gameMap.mapName}"));
         }
 
@@ -135,7 +135,7 @@ public class MenuStateFindLobby : MonoBehaviour {
     }
 
     private string GetMapName(int mapIndex) {
-        var maps = GameMapDatabase.instance.gameMaps;
+        var maps = Ctx.GameMaps.gameMaps;
         if (mapIndex < 0 || mapIndex >= maps.Length)
             return "Unknown";
 

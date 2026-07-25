@@ -104,8 +104,7 @@ public class SpellCasterNetworkBridge : NetworkBehaviour, ISpellCasterBridge {
         }
 
         if (_channelingSpellObjectId == ulong.MaxValue) return false;
-        return NetworkManager.Singleton == null ||
-               !NetworkManager.Singleton.SpawnManager.SpawnedObjects.ContainsKey(_channelingSpellObjectId);
+        return Ctx.NetManager == null || !Ctx.SpawnedObjects.ContainsKey(_channelingSpellObjectId);
     }
 
     public void BindChannelingSpell(ulong spellObjectId, string spellName) {

@@ -73,19 +73,15 @@ public class SpellBook : MonoBehaviour {
 
     private List<DefaultSpell> GetSpells() {
         List<DefaultSpell> list;
-        if (NetworkManager.Singleton.IsClient) {
-            var arch = PlayerManager.Instance.FindByClientId(NetworkManager.Singleton.LocalClientId);
-            if (arch != null) {
-                var all = DefaultSpells.Instance.list.ToList();
-                var typed = ArchetypeDatabase.Instance.GetArchetype(arch.Value.Archetype).spells;
-                list = typed.Map(s => all.Find(sp => sp.spell.spellName == s.spellName)).ToList();
+        if (Ctx.IsClient) {
+            if (Ctx.TryGetLocalArchetypeSpells(out list)) {
                 list = GameModeRules.FilterDefaultSpellsForMode(list);
                 currentIndex = Math.Clamp(currentIndex, 0, list.Count - 1);
                 return list;
             }
         }
 
-        list = DefaultSpells.Instance.list.ToList();
+        list = Ctx.GetAllDefaultSpells();
         list = GameModeRules.FilterDefaultSpellsForMode(list);
         currentIndex = Math.Clamp(currentIndex, 0, list.Count - 1);
         return list;

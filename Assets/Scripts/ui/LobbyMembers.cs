@@ -43,7 +43,7 @@ public class LobbyMembers : MonoBehaviour {
 
         ClearBotItems();
         lobbyMembers.Clear();
-        var lobby = LobbyManager.Instance.CurrentLobby;
+        var lobby = Ctx.CurrentLobby;
         if (lobby.HasValue) {
             foreach (var member in lobby.Value.Members) {
                 lobbyMembers[member.Id.Value] = Create(member);
@@ -54,15 +54,15 @@ public class LobbyMembers : MonoBehaviour {
 
         EnsureAddBotItem(true);
         KeepAddBotItemsAtEnd();
-        _lastIsTeamMode = TeamManager.Instance.isTeamMode;
+        _lastIsTeamMode = Ctx.IsTeamMode;
     }
 
     private void Update() {
         frame++;
-        var lobby = LobbyManager.Instance.CurrentLobby;
+        var lobby = Ctx.CurrentLobby;
         if (!lobby.HasValue) return;
 
-        var showTeams = TeamManager.Instance.isTeamMode;
+        var showTeams = Ctx.IsTeamMode;
         var modeChanged = _lastIsTeamMode.HasValue && _lastIsTeamMode.Value != showTeams;
         if (modeChanged) {
             SyncBots(lobby.Value, true);
@@ -114,14 +114,14 @@ public class LobbyMembers : MonoBehaviour {
     }
 
     private void EnsureAddBotItem(bool forceRemove) {
-        var isHost = LobbyManager.Instance.IsHost();
-        var isTeamMode = TeamManager.Instance.isTeamMode;
+        var isHost = Ctx.IsHost();
+        var isTeamMode = Ctx.IsTeamMode;
         if (!isHost) {
             DestroyAddBotItems();
             return;
         }
 
-        var maxMembers = LobbyManager.Instance.CurrentLobby?.MaxMembers ?? 0;
+        var maxMembers = Ctx.CurrentLobby?.MaxMembers ?? 0;
         if (forceRemove || lobbyMembers.Count + botMembers.Count >= maxMembers) {
             DestroyAddBotItems();
             if (!forceRemove)
@@ -172,10 +172,10 @@ public class LobbyMembers : MonoBehaviour {
     }
 
     private void AddBot(TeamManager.Team team) {
-        if (!LobbyManager.Instance.IsHost())
+        if (!Ctx.IsHost())
             return;
 
-        var lobby = LobbyManager.Instance.CurrentLobby;
+        var lobby = Ctx.CurrentLobby;
         if (!lobby.HasValue)
             return;
 
@@ -183,7 +183,7 @@ public class LobbyMembers : MonoBehaviour {
 
         var hue = Random.Range(0f, 360f);
         var saturation = Random.Range(0.4f, 1f);
-        if (TeamManager.Instance.isTeamMode) {
+        if (Ctx.IsTeamMode) {
             if (team == TeamManager.Team.Blue) {
                 hue = 228f;
                 saturation = 0.85f;
@@ -209,10 +209,10 @@ public class LobbyMembers : MonoBehaviour {
     }
 
     private void RemoveBot(ulong botId) {
-        if (!LobbyManager.Instance.IsHost())
+        if (!Ctx.IsHost())
             return;
 
-        var lobby = LobbyManager.Instance.CurrentLobby;
+        var lobby = Ctx.CurrentLobby;
         if (!lobby.HasValue)
             return;
 
@@ -228,10 +228,10 @@ public class LobbyMembers : MonoBehaviour {
     }
 
     private void SetBotArchetype(ulong botId, int archetype) {
-        if (!LobbyManager.Instance.IsHost())
+        if (!Ctx.IsHost())
             return;
 
-        var lobby = LobbyManager.Instance.CurrentLobby;
+        var lobby = Ctx.CurrentLobby;
         if (!lobby.HasValue)
             return;
 
@@ -262,7 +262,7 @@ public class LobbyMembers : MonoBehaviour {
             hasMissingNames = true;
         }
 
-        if (hasMissingNames && LobbyManager.Instance.IsHost())
+        if (hasMissingNames && Ctx.IsHost())
             LobbyBotRosterData.SaveToLobby(lobby, bots);
 
         var keep = new HashSet<ulong>();
@@ -310,13 +310,13 @@ public class LobbyMembers : MonoBehaviour {
     private void UpdateTeam(Friend friend, Transform item) {
         var team = friend.GetTeam();
         var container = containerTeamRed.transform;
-        if (TeamManager.Instance.isTeamMode && team == TeamManager.Team.Blue)
+        if (Ctx.IsTeamMode && team == TeamManager.Team.Blue)
             container = containerTeamBlue.transform;
         item.SetParent(container, false);
     }
 
     private Transform GetBotContainer(TeamManager.Team team) {
-        if (TeamManager.Instance.isTeamMode && team == TeamManager.Team.Blue)
+        if (Ctx.IsTeamMode && team == TeamManager.Team.Blue)
             return containerTeamBlue.transform;
         return containerTeamRed.transform;
     }

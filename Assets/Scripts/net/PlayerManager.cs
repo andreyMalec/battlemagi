@@ -60,7 +60,7 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
         }
 
         public GameObject PlayerObject() {
-            if (NetworkManager.Singleton.ConnectedClients.TryGetValue(ClientId, out var client))
+            if (Ctx.NetManager.ConnectedClients.TryGetValue(ClientId, out var client))
                 return client.PlayerObject.gameObject;
             return null;
         }
@@ -105,8 +105,8 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
     }
 
     private void Start() {
-        if (NetworkManager.Singleton != null)
-            NetworkManager.Singleton.OnConnectionEvent += OnConnectionEvent;
+        if (Ctx.NetManager != null)
+            Ctx.NetManager.OnConnectionEvent += OnConnectionEvent;
     }
 
     private void Update() {
@@ -132,8 +132,8 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
         if (participants != null)
             participants.OnListChanged -= OnParticipantsListChanged;
 
-        if (NetworkManager.Singleton != null) {
-            NetworkManager.Singleton.OnConnectionEvent -= OnConnectionEvent;
+        if (Ctx.NetManager != null) {
+            Ctx.NetManager.OnConnectionEvent -= OnConnectionEvent;
         }
     }
 
@@ -148,7 +148,7 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
     }
 
     private void OnClientConnected(ulong clientId) {
-        if (clientId == NetworkManager.Singleton.LocalClientId) {
+        if (clientId == Ctx.NetManager.LocalClientId) {
             ulong steamId = SteamClient.SteamId;
             RegisterPlayerServerRpc(steamId);
         }
@@ -164,7 +164,7 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
     }
 
     private Netcode.Transports.Facepunch.FacepunchTransport GetFacepunchTransport() {
-        return NetworkManager.Singleton.NetworkConfig.NetworkTransport as
+        return Ctx.NetManager.NetworkConfig.NetworkTransport as
             Netcode.Transports.Facepunch.FacepunchTransport;
     }
 
@@ -255,8 +255,8 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
     }
 
     private bool IsMatchInProgress() {
-        return IsServer && LobbyManager.Instance != null &&
-               LobbyManager.Instance.State == LobbyManager.PlayerState.InGame;
+        return IsServer && Ctx.Lobby != null &&
+               Ctx.LobbyState == LobbyManager.PlayerState.InGame;
     }
 
     private int FindIndexBySteamId(ulong steamId) {
@@ -288,7 +288,7 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
                 existing.ClientId = clientId;
                 players[existingIndex] = existing;
                 if (IsMatchInProgress())
-                    TeamManager.Instance.ReplaceClientId(previousClientId, clientId);
+                    Ctx.Teams.ReplaceClientId(previousClientId, clientId);
                 Debug.Log($"[Server] Reconnected player SteamId={steamId}: ClientId {previousClientId} -> {clientId}");
             }
 
@@ -298,7 +298,7 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
 
         if (IsMatchInProgress()) {
             Debug.LogWarning($"[Server] Rejecting mid-game join ClientId={clientId}, SteamId={steamId}");
-            NetworkManager.Singleton.DisconnectClient(clientId);
+            Ctx.NetManager.DisconnectClient(clientId);
             return;
         }
 
@@ -317,8 +317,8 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
     }
 
     private void OnClientDisconnected(ulong clientId) {
-        if (!IsServer && (clientId == 0 || clientId == NetworkManager.Singleton.LocalClientId)) {
-            LobbyManager.Instance.LeaveLobby();
+        if (!IsServer && (clientId == 0 || clientId == Ctx.NetManager.LocalClientId)) {
+            Ctx.LeaveLobby();
             SceneLoader.LoadMenu(true);
             return;
         }

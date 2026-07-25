@@ -55,7 +55,7 @@ public class Spawn : MonoBehaviour {
     }
 
     public Transform Get(TeamManager.Team team) {
-        var checkTeam = TeamManager.Instance.isTeamMode;
+        var checkTeam = Ctx.IsTeamMode;
         var active = _spawnPoints.Where(it => {
                 return it.gameObject.activeSelf && (!checkTeam || it.team == team || it.team == TeamManager.Team.None);
             }

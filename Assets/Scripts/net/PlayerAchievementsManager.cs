@@ -39,8 +39,8 @@ public class PlayerAchievementsManager : NetworkBehaviour {
     }
 
     private void Start() {
-        if (NetworkManager.Singleton != null)
-            NetworkManager.Singleton.OnConnectionEvent += OnConnectionEvent;
+        if (Ctx.NetManager != null)
+            Ctx.NetManager.OnConnectionEvent += OnConnectionEvent;
     }
 
     private void Update() {
@@ -51,8 +51,8 @@ public class PlayerAchievementsManager : NetworkBehaviour {
 
     public override void OnDestroy() {
         base.OnDestroy();
-        if (NetworkManager.Singleton != null)
-            NetworkManager.Singleton.OnConnectionEvent -= OnConnectionEvent;
+        if (Ctx.NetManager != null)
+            Ctx.NetManager.OnConnectionEvent -= OnConnectionEvent;
     }
 
     private void OnConnectionEvent(NetworkManager _, ConnectionEventData eventData) {
@@ -86,7 +86,7 @@ public class PlayerAchievementsManager : NetworkBehaviour {
     }
 
     private void TrackAirTimeServer(float dt) {
-        foreach (var pair in NetworkManager.Singleton.ConnectedClients) {
+        foreach (var pair in Ctx.NetManager.ConnectedClients) {
             var clientId = pair.Key;
             var playerObject = pair.Value.PlayerObject;
             if (playerObject == null) continue;
@@ -108,7 +108,7 @@ public class PlayerAchievementsManager : NetworkBehaviour {
     public void ReportEnemyLaunchedServer(ParticipantId attackerId, ParticipantId victimId) {
         if (!IsServer) return;
         if (attackerId == victimId) return;
-        if (!TeamManager.Instance.AreEnemies(attackerId, victimId)) return;
+        if (!Ctx.AreEnemies(attackerId, victimId)) return;
 
         var victimState = GetAchievementState(victimId.Value);
         victimState.lastLaunchBy = attackerId.Value;
@@ -221,7 +221,7 @@ public class PlayerAchievementsManager : NetworkBehaviour {
             if (Mathf.Abs(killerState.lastDeathAt - now) <= 1.2f)
                 UnlockServer(victimId, SteamAchievementsCatalog.ClownFiesta);
 
-            if (NetworkManager.Singleton.ConnectedClients.TryGetValue(deathInfo.fromId.Value, out var killerClient)) {
+            if (Ctx.NetManager.ConnectedClients.TryGetValue(deathInfo.fromId.Value, out var killerClient)) {
                 var killerDamageable = killerClient.PlayerObject.GetComponent<Damageable>();
                 if (killerDamageable.IsAlive && killerDamageable.CurrentHealth <= 3f)
                     UnlockServer(victimId, SteamAchievementsCatalog.NotLikeThis);
@@ -261,7 +261,7 @@ public class PlayerAchievementsManager : NetworkBehaviour {
         if (!IsServer) return;
         _matchStarted = true;
         _matchStartedAt = Time.time;
-        foreach (var player in PlayerManager.Instance.Players()) {
+        foreach (var player in Ctx.GetPlayersList()) {
             var state = GetAchievementState(player.ClientId);
             state.roundDamageDealt = 0f;
             state.tookDamageThisLife = false;
@@ -279,8 +279,8 @@ public class PlayerAchievementsManager : NetworkBehaviour {
 
     public void ReportTeamWinnerServer(TeamManager.Team winnerTeam) {
         if (!IsServer) return;
-        foreach (var player in PlayerManager.Instance.Players()) {
-            if (TeamManager.Instance.GetTeam(player.ClientId) != winnerTeam)
+        foreach (var player in Ctx.GetPlayersList()) {
+            if (Ctx.GetTeam(player.ClientId) != winnerTeam)
                 continue;
             AwardWinnerAchievements(player.ClientId);
         }
@@ -289,7 +289,7 @@ public class PlayerAchievementsManager : NetworkBehaviour {
     }
 
     private void AwardWinnerAchievements(ulong clientId) {
-        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var winnerClient))
+        if (!Ctx.NetManager.ConnectedClients.TryGetValue(clientId, out var winnerClient))
             return;
 
         var playerObject = winnerClient.PlayerObject;

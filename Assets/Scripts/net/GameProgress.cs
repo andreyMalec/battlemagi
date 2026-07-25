@@ -36,33 +36,33 @@ public class GameProgress : NetworkBehaviour {
 
     [ClientRpc]
     private void SetKeyCastClientRpc(bool allowed) {
-        GameConfig.Instance.allowKeySpells = allowed;
+        Ctx.GameConfig.allowKeySpells = allowed;
     }
 
     public void SelectMap(int mapIndex) {
         if (!IsServer) return;
         started = false;
-        SceneName = GameMapDatabase.instance.gameMaps[mapIndex].sceneName;
+        SceneName = Ctx.GameMaps.gameMaps[mapIndex].sceneName;
         SelectedMap.Value = mapIndex;
         Debug.Log($"[GameProgress] Selected map: {SceneName} mapIndex={mapIndex}");
     }
 
     public void StartMatch() {
         if (!IsServer || started) return;
-        PlayerAchievementsManager.Instance?.ReportMatchStartedServer();
-        BotLifecycleManager.Instance?.BeginMatch();
-        NetworkManager.Singleton.SceneManager.LoadScene(SceneName, LoadSceneMode.Single);
-        LobbyManager.Instance.GameStarted();
+        Ctx.PlayerAchievements?.ReportMatchStartedServer();
+        Ctx.BotLifecycle?.BeginMatch();
+        Ctx.NetManager.SceneManager.LoadScene(SceneName, LoadSceneMode.Single);
+        Ctx.GameStarted();
         started = true;
 
-        var lobby = LobbyManager.Instance.CurrentLobby!.Value;
+        var lobby = Ctx.CurrentLobby!.Value;
         var param = new Dictionary<string, object> {
             { "map", SceneName },
-            { "mode", TeamManager.Instance.CurrentMode.Value.ToString() },
+            { "mode", Ctx.Teams.CurrentMode.Value.ToString() },
             { "playerCount", lobby.MemberCount }
         };
-        foreach (var player in PlayerManager.Instance.Participants) {
-            var arch = ArchetypeDatabase.Instance.GetArchetype(player.Archetype).archetypeName;
+        foreach (var player in Ctx.Players.Participants) {
+            var arch = Ctx.GetArchetype(player.Archetype).archetypeName;
             if (player.Id.IsHuman) {
                 var prev = (int)(param.GetValueOrDefault($"playerArchetype_{arch}", 0));
                 param[$"playerArchetype_{arch}"] = prev + 1;
@@ -71,46 +71,46 @@ public class GameProgress : NetworkBehaviour {
 
         var bots = LobbyBotRosterData.LoadFromLobby(lobby);
         foreach (var bot in bots) {
-            var arch = ArchetypeDatabase.Instance.GetArchetype(bot.archetype).archetypeName;
+            var arch = Ctx.GetArchetype(bot.archetype).archetypeName;
             var prev = (int)(param.GetValueOrDefault($"botArchetype_{arch}", 0));
             param[$"botArchetype_{arch}"] = prev + 1;
         }
 
-        FirebaseAnalytic.Instance.SendEvent("MatchStarted", param);
+        Ctx.Analytics.SendEvent("MatchStarted", param);
     }
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
         if (!IsServer) return;
         SelectMap(0);
-        TeamManager.Instance.OnScoreChanged += HandleCTFScoreChanged;
-        PlayerManager.Instance.OnListChanged += HandlePlayersListChanged;
+        Ctx.Teams.OnScoreChanged += HandleCTFScoreChanged;
+        Ctx.Players.OnListChanged += HandlePlayersListChanged;
     }
 
     public override void OnDestroy() {
         base.OnDestroy();
         if (!IsServer) return;
-        if (TeamManager.Instance != null) TeamManager.Instance.OnScoreChanged -= HandleCTFScoreChanged;
-        if (PlayerManager.Instance != null) PlayerManager.Instance.OnListChanged -= HandlePlayersListChanged;
+        if (Ctx.Teams != null) Ctx.Teams.OnScoreChanged -= HandleCTFScoreChanged;
+        if (Ctx.Players != null) Ctx.Players.OnListChanged -= HandlePlayersListChanged;
     }
 
     private void HandleCTFScoreChanged(int red, int blue) {
         if (!IsServer) return;
-        if (TeamManager.Instance.CurrentMode.Value != TeamManager.TeamMode.CaptureTheFlag) return;
+        if (Ctx.Teams.CurrentMode.Value != TeamManager.TeamMode.CaptureTheFlag) return;
 
-        int endChoice = TeamManager.Instance.EndChoice.Value;
+        int endChoice = Ctx.Teams.EndChoice.Value;
         int target = endChoice >= 0 && endChoice < ctfTargets.Length ? ctfTargets[endChoice] : ctfTargets[0];
 
         if (red >= target) {
-            GameAnnouncer.Instance.TeamWin(TeamManager.Team.Red);
-            PlayerAchievementsManager.Instance?.ReportTeamWinnerServer(TeamManager.Team.Red);
+            Ctx.GameAnnouncer.TeamWin(TeamManager.Team.Red);
+            Ctx.PlayerAchievements?.ReportTeamWinnerServer(TeamManager.Team.Red);
             SendEndMatchEvent();
             StartCoroutine(EndMatch());
         }
 
         if (blue >= target) {
-            GameAnnouncer.Instance.TeamWin(TeamManager.Team.Blue);
-            PlayerAchievementsManager.Instance?.ReportTeamWinnerServer(TeamManager.Team.Blue);
+            Ctx.GameAnnouncer.TeamWin(TeamManager.Team.Blue);
+            Ctx.PlayerAchievements?.ReportTeamWinnerServer(TeamManager.Team.Blue);
             SendEndMatchEvent();
             StartCoroutine(EndMatch());
         }
@@ -120,36 +120,36 @@ public class GameProgress : NetworkBehaviour {
         _ = participantsList;
         if (!IsServer) return;
         if (ended) return;
-        if (TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.CaptureTheFlag) {
+        if (Ctx.Teams.CurrentMode.Value == TeamManager.TeamMode.CaptureTheFlag) {
             // in CTF we rely on team scores, not individual kills
             return;
         }
 
-        int endChoice = TeamManager.Instance.EndChoice.Value;
+        int endChoice = Ctx.Teams.EndChoice.Value;
         int target = endChoice >= 0 && endChoice < killsTargets.Length ? killsTargets[endChoice] : killsTargets[0];
-        var participants = PlayerManager.Instance.Participants;
+        var participants = Ctx.Players.Participants;
 
-        if (TeamManager.Instance.CurrentMode.Value == TeamManager.TeamMode.TwoTeams) {
+        if (Ctx.Teams.CurrentMode.Value == TeamManager.TeamMode.TwoTeams) {
             var redKills = 0;
             var blueKills = 0;
             foreach (var p in participants) {
-                if (TeamManager.Instance.GetTeam(p.Id) == TeamManager.Team.Red)
+                if (Ctx.GetTeam(p.Id) == TeamManager.Team.Red)
                     redKills += p.Kills;
-                else if (TeamManager.Instance.GetTeam(p.Id) == TeamManager.Team.Blue)
+                else if (Ctx.GetTeam(p.Id) == TeamManager.Team.Blue)
                     blueKills += p.Kills;
             }
 
             if (redKills >= target) {
-                GameAnnouncer.Instance.TeamWin(TeamManager.Team.Red);
-                PlayerAchievementsManager.Instance?.ReportTeamWinnerServer(TeamManager.Team.Red);
+                Ctx.GameAnnouncer.TeamWin(TeamManager.Team.Red);
+                Ctx.PlayerAchievements?.ReportTeamWinnerServer(TeamManager.Team.Red);
                 SendEndMatchEvent();
                 StartCoroutine(EndMatch());
                 return;
             }
 
             if (blueKills >= target) {
-                GameAnnouncer.Instance.TeamWin(TeamManager.Team.Blue);
-                PlayerAchievementsManager.Instance?.ReportTeamWinnerServer(TeamManager.Team.Blue);
+                Ctx.GameAnnouncer.TeamWin(TeamManager.Team.Blue);
+                Ctx.PlayerAchievements?.ReportTeamWinnerServer(TeamManager.Team.Blue);
                 SendEndMatchEvent();
                 StartCoroutine(EndMatch());
             }
@@ -157,10 +157,10 @@ public class GameProgress : NetworkBehaviour {
             foreach (var p in participants) {
                 if (p.Kills >= target) {
                     if (p.Id.IsHuman) {
-                        PlayerAchievementsManager.Instance?.ReportMatchWinnerServer(p.Id.Value);
+                        Ctx.PlayerAchievements?.ReportMatchWinnerServer(p.Id.Value);
                     }
 
-                    GameAnnouncer.Instance.PlayerWin(ParticipantIdentityCodec.Encode(p.Id));
+                    Ctx.GameAnnouncer.PlayerWin(ParticipantIdentityCodec.Encode(p.Id));
                     SendEndMatchEvent(p.Id);
                     StartCoroutine(EndMatch());
                     return;
@@ -171,22 +171,22 @@ public class GameProgress : NetworkBehaviour {
 
     private void SendEndMatchEvent(ParticipantId? playerWinner = null) {
         if (playerWinner == null) {
-            FirebaseAnalytic.Instance.SendEvent("MatchEnded", new Dictionary<string, object> {
+            Ctx.Analytics.SendEvent("MatchEnded", new Dictionary<string, object> {
                 { "map", SceneName },
-                { "mode", TeamManager.Instance.CurrentMode.Value.ToString() },
-                { "playerCount", LobbyManager.Instance.CurrentLobby!.Value.MemberCount }
+                { "mode", Ctx.Teams.CurrentMode.Value.ToString() },
+                { "playerCount", Ctx.CurrentLobby!.Value.MemberCount }
             });
         } else {
-            var winner = PlayerManager.Instance.Participants.First(p => p.Id == playerWinner);
-            var winnerArchetype = ArchetypeDatabase.Instance.GetArchetype(winner.Archetype).archetypeName;
+            var winner = Ctx.Players.Participants.First(p => p.Id == playerWinner);
+            var winnerArchetype = Ctx.GetArchetype(winner.Archetype).archetypeName;
             if (playerWinner.Value.IsBot) {
                 winnerArchetype += " (Bot)";
             }
 
-            FirebaseAnalytic.Instance.SendEvent("MatchEnded", new Dictionary<string, object> {
+            Ctx.Analytics.SendEvent("MatchEnded", new Dictionary<string, object> {
                 { "map", SceneName },
-                { "mode", TeamManager.Instance.CurrentMode.Value.ToString() },
-                { "playerCount", LobbyManager.Instance.CurrentLobby!.Value.MemberCount },
+                { "mode", Ctx.Teams.CurrentMode.Value.ToString() },
+                { "playerCount", Ctx.CurrentLobby!.Value.MemberCount },
                 { "winnerArchetype", winnerArchetype }
             });
         }
@@ -199,10 +199,10 @@ public class GameProgress : NetworkBehaviour {
         Debug.Log("[GameProgressTracker] Match ended by reaching target");
 
         yield return new WaitForSeconds(7f);
-        BotLifecycleManager.Instance?.EndMatch();
-        LobbyManager.Instance.CurrentLobby?.SetJoinable(true);
-        LobbyManager.Instance.RestartLobby();
-        var spawned = NetworkManager.Singleton.SpawnManager.SpawnedObjectsList.ToList();
+        Ctx.BotLifecycle?.EndMatch();
+        Ctx.CurrentLobby?.SetJoinable(true);
+        Ctx.RestartLobby();
+        var spawned = Ctx.SpawnedObjectsList.ToList();
         foreach (var networkObject in spawned) {
             if (networkObject != null
                 && networkObject.IsSpawned
@@ -212,13 +212,13 @@ public class GameProgress : NetworkBehaviour {
         }
 
         yield return new WaitForSeconds(0.2f);
-        foreach (var player in PlayerManager.Instance.Players()) {
-            PlayerManager.Instance.ResetScore(player.ClientId);
+        foreach (var player in Ctx.GetPlayersList()) {
+            Ctx.Players.ResetScore(player.ClientId);
         }
 
         SpellInstanceLimiter.Clear();
         SceneLoader.LoadMenu();
-        TeamManager.Instance.Reset();
+        Ctx.Teams.Reset();
         ended = false;
     }
 }

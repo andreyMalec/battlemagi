@@ -91,7 +91,7 @@ public class BotSpellDecisionEngine {
         var manaNorm = EstimateManaCost(input.SpellWeights.spell) / Mathf.Max(1f, input.MaxMana * 0.45f);
         score -= Mathf.Clamp(manaNorm, 0f, 3f) * _weights.manaCostWeight * (1f - input.ManaRatio);
 
-        if (GameConfig.Instance.botSpellDecisionLogs) {
+        if (Ctx.GameConfig.botSpellDecisionLogs) {
             Debug.Log(
                 $"Spell: {input.SpellWeights.spell.name}, Base Score: {tactical.BaseScore:F2}, Damage: {profile.DamagePotential:F2}, " +
                 $"Offensive Effects: {profile.OffensiveEffectPotential:F2}, Defensive Effects: {profile.DefensiveEffectPotential:F2}, " +

@@ -6,7 +6,7 @@ public class PainMirrorVisual : MonoBehaviour {
 
     private void Awake() {
         var player = GetComponentInParent<Player>();
-        if (player != null && player.OwnerClientId == NetworkManager.Singleton.LocalClientId) {
+        if (player != null && player.OwnerClientId == Ctx.NetManager.LocalClientId) {
             _mirror = player.meshController.GetComponentInChildren<Camera>();
             _mirror.enabled = true;
         }

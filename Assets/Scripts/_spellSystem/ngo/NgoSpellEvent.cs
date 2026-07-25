@@ -117,7 +117,7 @@ public class NgoSpellSystemEvent : NetworkBehaviour, SpellSystemEvent {
 
 internal static class NetworkSpellSystemEventExt {
     public static NetworkObject Get(this ulong netObjectId) {
-        return NetworkManager.Singleton.SpawnManager.SpawnedObjects[netObjectId];
+        return Ctx.GetSpawnedObject(netObjectId);
     }
 
     public static ulong Id(this Component view) {

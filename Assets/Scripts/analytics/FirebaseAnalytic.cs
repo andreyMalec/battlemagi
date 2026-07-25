@@ -29,7 +29,7 @@ public class FirebaseAnalytic : MonoBehaviour {
             Destroy(gameObject);
             return;
         }
-        if (!GameConfig.Instance.useAnalytic) return;
+        if (!Ctx.GameConfig.useAnalytic) return;
 
         SendEvent("session_start", new Dictionary<string, object> {
             { "session_number", 1 },
@@ -40,7 +40,7 @@ public class FirebaseAnalytic : MonoBehaviour {
     }
 
     public void SendEvent(string eventName, Dictionary<string, object> parameters = null) {
-        if (!GameConfig.Instance.useAnalytic) return;
+        if (!Ctx.GameConfig.useAnalytic) return;
         StartCoroutine(SendEventCoroutine(eventName, parameters ?? new Dictionary<string, object>()));
     }
 

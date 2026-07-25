@@ -129,7 +129,7 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
     public void HandlePostApplyDamage(in DamageApplied applied, ref DamageRequest request, bool ignoreSoundCooldown) {
         if (!IsServer) return;
         
-        if (request.fromId.IsHuman && TeamManager.Instance.AreEnemies(request.fromId, OwnerId)) {
+        if (request.fromId.IsHuman && Ctx.AreEnemies(request.fromId, OwnerId)) {
             var healthRatio = Mathf.Clamp01(_core.Health.Health / Mathf.Max(_core.Health.maxHealth, 0.0001f));
             var isKill = !_core.IsAlive;
             var sendParams = new ClientRpcParams {
@@ -191,7 +191,7 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
     private void PlayDamageSoundClientRpc(int DamageKind) {
         if (_core.damageAudio == null) return;
         var type = (DamageKind)DamageKind;
-        var clip = AudioManager.Instance.GetDamageSound(type);
+        var clip = Ctx.Audio.GetDamageSound(type);
         if (clip != null)
             _core.damageAudio.PlayOneShot(clip);
     }

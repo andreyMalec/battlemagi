@@ -43,7 +43,7 @@ public class DamageOverTimeEffect : StatusEffectData {
                 _tickTimer = 0f;
                 var damageable = target.GetComponent<Damageable>();
                 if (damageable != null) {
-                    if (!_data.canSelfDamage && TeamManager.Instance.AreAllies(OwnerId, damageable.OwnerId))
+                    if (!_data.canSelfDamage && Ctx.AreAllies(OwnerId, damageable.OwnerId))
                         return;
                     var damage = _data.dps;
                     if (_data.percentDamage) {

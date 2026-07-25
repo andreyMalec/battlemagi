@@ -64,14 +64,14 @@ public class Menu : MonoBehaviour {
     }
 
     private void OnEnable() {
-        if (LobbyManager.Instance == null) return;
-        LobbyManager.Instance.OnStateChanged += OnStateChanged;
-        OnStateChanged(LobbyManager.Instance.State);
+        if (Ctx.Lobby == null) return;
+        Ctx.Lobby.OnStateChanged += OnStateChanged;
+        OnStateChanged(Ctx.LobbyState);
     }
 
     private void OnDisable() {
-        if (LobbyManager.Instance != null)
-            LobbyManager.Instance.OnStateChanged -= OnStateChanged;
+        if (Ctx.Lobby != null)
+            Ctx.Lobby.OnStateChanged -= OnStateChanged;
     }
 
     private void OnStateChanged(LobbyManager.PlayerState state) {

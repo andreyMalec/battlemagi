@@ -14,18 +14,18 @@ public class SceneLoader : MonoBehaviour {
 
     private IEnumerator LoadMainMenu() {
         yield return new WaitUntil(() =>
-            NetworkManager.Singleton != null &&
-            (SpeechToTextHolder.Instance.IsInitialized || SpeechToTextHolder.RunningOnVM()));
+            Ctx.NetManager != null &&
+            (Ctx.SpeechToText.IsInitialized || SpeechToTextHolder.RunningOnVM()));
         LoadMenu();
     }
 
     public static void LoadMenu(bool hostDisconnected = false) {
         if (hostDisconnected
-            || NetworkManager.Singleton == null
-            || !NetworkManager.Singleton.IsListening
-            || NetworkManager.Singleton.SceneManager == null)
+            || Ctx.NetManager == null
+            || !Ctx.NetManager.IsListening
+            || Ctx.NetManager.SceneManager == null)
             SceneManager.LoadScene("MainMenu");
         else
-            NetworkManager.Singleton.SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
+            Ctx.NetManager.SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
     }
 }

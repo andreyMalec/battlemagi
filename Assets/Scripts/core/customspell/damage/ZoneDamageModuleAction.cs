@@ -76,6 +76,6 @@ public class ZoneDamageModuleAction : ISpellAction {
         if (amount <= 0f) return;
         SpellLog.Log($"SpellAction {GetType().Name} applied to {damageable.name}. Event: {evt.GetType().Name}");
         damageable.TakeDamage(context.Spell.spellName, context.OwnerId, amount,
-            SpellPrefabDatabase.Instance.Sound(context.Spell), context.SpellDamage.ignoreSoundCooldown);
+            Ctx.GetSpellSound(context.Spell), context.SpellDamage.ignoreSoundCooldown);
     }
 }

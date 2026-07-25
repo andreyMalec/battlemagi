@@ -19,8 +19,8 @@ public class PlayersVoiceSettings : MonoBehaviour {
         }
 
         lobbyMembers.Clear();
-        if (LobbyManager.Instance == null) return;
-        var lobby = LobbyManager.Instance.CurrentLobby;
+        if (Ctx.Lobby == null) return;
+        var lobby = Ctx.CurrentLobby;
         if (lobby.HasValue) {
             foreach (var member in lobby.Value.Members) {
                 if (member.IsMe) continue;

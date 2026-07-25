@@ -16,19 +16,19 @@ public class AnnouncerUI : MonoBehaviour {
     private Coroutine fadeCoroutine;
 
     private void Awake() {
-        if (CTFAnnouncer.Instance == null) return;
-        CTFAnnouncer.Instance.OnFlagTaken += TakeFlag;
-        CTFAnnouncer.Instance.OnFlagDropped += DropFlag;
-        CTFAnnouncer.Instance.OnFlagReturned += ReturnFlag;
-        CTFAnnouncer.Instance.OnFlagCaptured += CaptureFlag;
-        GameAnnouncer.Instance.OnTeamWin += TeamWin;
-        GameAnnouncer.Instance.OnPlayerWin += PlayerWin;
+        if (Ctx.CtfAnnouncer == null) return;
+        Ctx.CtfAnnouncer.OnFlagTaken += TakeFlag;
+        Ctx.CtfAnnouncer.OnFlagDropped += DropFlag;
+        Ctx.CtfAnnouncer.OnFlagReturned += ReturnFlag;
+        Ctx.CtfAnnouncer.OnFlagCaptured += CaptureFlag;
+        Ctx.GameAnnouncer.OnTeamWin += TeamWin;
+        Ctx.GameAnnouncer.OnPlayerWin += PlayerWin;
         group.alpha = 0;
     }
 
     private void PlayerWin(ulong clientId) {
         var winnerId = ParticipantIdentityCodec.Decode(clientId);
-        if (!PlayerManager.Instance.TryGetParticipant(winnerId, out var data)) return;
+        if (!Ctx.TryGetParticipant(winnerId, out var data)) return;
         coloredText.color = Color.HSVToRGB(data.Hue / 360f, data.Saturation, 0.8f);
         coloredText.text = winnerId.IsBot
             ? BotNameCatalog.Resolve(winnerId.Value)
@@ -38,7 +38,7 @@ public class AnnouncerUI : MonoBehaviour {
     }
 
     private static string ResolveHumanWinnerName(MatchParticipantData data) {
-        var lobby = LobbyManager.Instance.CurrentLobby;
+        var lobby = Ctx.CurrentLobby;
         if (lobby.HasValue) {
             foreach (var member in lobby.Value.Members) {
                 if (member.Id.Value == data.SteamId)
@@ -122,13 +122,13 @@ public class AnnouncerUI : MonoBehaviour {
     }
 
     private void OnDestroy() {
-        if (CTFAnnouncer.Instance == null) return;
+        if (Ctx.CtfAnnouncer == null) return;
 
-        CTFAnnouncer.Instance.OnFlagTaken -= TakeFlag;
-        CTFAnnouncer.Instance.OnFlagDropped -= DropFlag;
-        CTFAnnouncer.Instance.OnFlagReturned -= ReturnFlag;
-        CTFAnnouncer.Instance.OnFlagCaptured -= CaptureFlag;
-        GameAnnouncer.Instance.OnTeamWin -= TeamWin;
-        GameAnnouncer.Instance.OnPlayerWin -= PlayerWin;
+        Ctx.CtfAnnouncer.OnFlagTaken -= TakeFlag;
+        Ctx.CtfAnnouncer.OnFlagDropped -= DropFlag;
+        Ctx.CtfAnnouncer.OnFlagReturned -= ReturnFlag;
+        Ctx.CtfAnnouncer.OnFlagCaptured -= CaptureFlag;
+        Ctx.GameAnnouncer.OnTeamWin -= TeamWin;
+        Ctx.GameAnnouncer.OnPlayerWin -= PlayerWin;
     }
 }

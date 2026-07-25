@@ -91,7 +91,7 @@ public class Player : NetworkBehaviour {
         if (_avatarSpawned)
             return;
 
-        var archetype = ArchetypeDatabase.Instance.GetArchetype(arch);
+        var archetype = Ctx.GetArchetype(arch);
         bodyAvatar = Instantiate(archetype.avatarPrefab, transform);
         _avatarSpawned = true;
         meshController = bodyAvatar.GetComponent<MeshController>();
@@ -235,7 +235,7 @@ public class Player : NetworkBehaviour {
     }
 
     private void ApplyMaterial(int arch, float hue, float saturation) {
-        var archetype = ArchetypeDatabase.Instance.GetArchetype(arch);
+        var archetype = Ctx.GetArchetype(arch);
         var bodyMat = new Material(archetype.bodyShader);
         bodyMat.SetFloat(ColorizeMesh.Hue, hue);
         bodyMat.SetFloat(ColorizeMesh.Saturation, saturation);

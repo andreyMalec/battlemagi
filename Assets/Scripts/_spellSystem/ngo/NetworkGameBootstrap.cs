@@ -19,7 +19,7 @@ public class NetworkGameBootstrap : NetworkBehaviour, IAuthorityService, SpellBo
     }
 
     private (SpellSystem, IAuthorityService) InitializeSpellSystem() {
-        IEntityManager manager = SpellPrefab.Instance;
+        IEntityManager manager = Ctx.SpellPrefab;
         IAuthorityService authority = this;
 
         var spellSystem = new SpellSystem(authority);

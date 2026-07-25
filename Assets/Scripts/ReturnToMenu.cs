@@ -6,15 +6,15 @@ public class ReturnToMenu : MonoBehaviour {
 
     private void Update() {
         if (Input.GetKeyDown(key)) {
-            var lobby = LobbyManager.Instance.CurrentLobby;
+            var lobby = Ctx.CurrentLobby;
             if (lobby.HasValue)
                 Leave();
         }
     }
 
     private void Leave() {
-        TeamManager.Instance.Reset();
-        LobbyManager.Instance.LeaveLobby();
+        Ctx.Teams.Reset();
+        Ctx.LeaveLobby();
         SceneLoader.LoadMenu();
     }
 }

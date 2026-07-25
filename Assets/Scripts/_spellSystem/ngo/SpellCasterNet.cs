@@ -23,7 +23,7 @@ public class SpellCasterNet : NetworkBehaviour {
         bool alternativeSpawn,
         float damageMultiplier
     ) {
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(casterNetObjectId, out var casterNetObj))
+        if (!Ctx.TryGetSpawnedObject(casterNetObjectId, out var casterNetObj))
             return;
 
         SpellLog.Log(
@@ -68,10 +68,10 @@ public class SpellCasterNet : NetworkBehaviour {
         float damageMultiplier = 1f,
         RpcParams rpcParams = default
     ) {
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(casterNetObjectId, out var casterNetObj))
+        if (!Ctx.TryGetSpawnedObject(casterNetObjectId, out var casterNetObj))
             return;
 
-        NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetNetObjectId, out var targetNetObj);
+        Ctx.TryGetSpawnedObject(targetNetObjectId, out var targetNetObj);
         ITarget target = null;
         if (targetNetObj != null && targetNetObj.IsSpawned) {
             var baseTarget = targetNetObj.GetComponentInChildren<ITarget>();
@@ -79,7 +79,7 @@ public class SpellCasterNet : NetworkBehaviour {
                 target = new BallisticCastTarget(baseTarget, targetPosition);
         }
 
-        FirebaseAnalytic.Instance.SendEvent("SpellCasted", new Dictionary<string, object> {
+        Ctx.Analytics.SendEvent("SpellCasted", new Dictionary<string, object> {
             { "name", spellName }
         });
 
@@ -90,10 +90,10 @@ public class SpellCasterNet : NetworkBehaviour {
             return;
         var caster = casterNetObj.GetComponentInChildren<SpellCaster>();
 
-        var damageKind = SpellPrefabDatabase.Instance.Sound(spell);
-        if (PlayerAchievementsManager.Instance != null) {
+        var damageKind = Ctx.GetSpellSound(spell);
+        if (Ctx.PlayerAchievements != null) {
             if (!caster.TryGetComponent<ParticipantIdentity>(out _))
-                PlayerAchievementsManager.Instance.ReportSpellCastServer(rpcParams.Receive.SenderClientId, damageKind);
+                Ctx.PlayerAchievements.ReportSpellCastServer(rpcParams.Receive.SenderClientId, damageKind);
         }
 
         var context = caster.CastContext(spell);
@@ -118,7 +118,7 @@ public class SpellCasterNet : NetworkBehaviour {
         var casterNetObj = caster.GetComponentInParent<NetworkObject>();
         if (!casterNetObj.IsSpawned) return;
         EnsureCasterInitialized(casterNetObj.gameObject, caster);
-        var prefab = SpellPrefab.Instance.GetPrefab(true);
+        var prefab = Ctx.GetSpellPrefab(true);
         var main = Instantiate(prefab, context.position, context.rotation);
         var networkObject = main.GetComponent<NetworkObject>();
         var ownerId = caster.OwnerId;
@@ -171,9 +171,9 @@ public class SpellCasterNet : NetworkBehaviour {
         ClientRpcParams rpcParams = default
     ) {
         _ = rpcParams;
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(casterNetObjectId, out var casterNetObj))
+        if (!Ctx.TryGetSpawnedObject(casterNetObjectId, out var casterNetObj))
             return;
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(spellNetObjectId, out var main)) return;
+        if (!Ctx.TryGetSpawnedObject(spellNetObjectId, out var main)) return;
         SpellCaster caster;
         try {
             caster = casterNetObj.GetComponentInChildren<SpellCaster>();

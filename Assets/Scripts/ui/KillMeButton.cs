@@ -10,7 +10,7 @@ public class KillMeButton : MonoBehaviour {
     }
 
     private void OnButtonClicked() {
-        var player = NetworkManager.Singleton.LocalClient.PlayerObject;
+        var player = Ctx.NetManager.LocalClient.PlayerObject;
         if (player != null && player.IsSpawned && player.TryGetComponent<Damageable>(out var damageable)) {
             damageable.Suicide();
         }

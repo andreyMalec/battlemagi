@@ -52,7 +52,7 @@ public class DamageableLocalBridge : MonoBehaviour, IDamageableBridge {
             return;
 
         _lastDamageSoundTime = Time.time;
-        var clip = AudioManager.Instance.GetDamageSound(sound);
+        var clip = Ctx.Audio.GetDamageSound(sound);
         if (clip != null)
             _core.damageAudio.PlayOneShot(clip);
     }

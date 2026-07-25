@@ -31,33 +31,33 @@ public class PlayerDamageable : NetworkBehaviour {
             fromId = ParticipantIdentityCodec.Encode(damageApplied.request.fromId)
         });
 
-        PlayerAchievementsManager.Instance?.ReportDamageAppliedServer(OwnerClientId, damageApplied);
+        Ctx.PlayerAchievements?.ReportDamageAppliedServer(OwnerClientId, damageApplied);
     }
 
     private void OnDeath(DeathInfo deathInfo) {
         var killer = deathInfo.fromId;
         NetworkObject.TryRemoveParent();
         var enemies = _damagedBy.Where(damager =>
-            TeamManager.Instance.AreEnemies(_identity.Id, damager));
+            Ctx.AreEnemies(_identity.Id, damager));
         foreach (var enemy in enemies) {
             if (enemy == deathInfo.fromId)
-                PlayerManager.Instance.AddKill(killer);
+                Ctx.Players.AddKill(killer);
             else
-                PlayerManager.Instance.AddAssist(enemy);
+                Ctx.Players.AddAssist(enemy);
         }
 
-        PlayerManager.Instance.AddDeath(OwnerClientId);
-        PlayerSpawner.instance.HandleDeathServer(OwnerClientId);
+        Ctx.Players.AddDeath(OwnerClientId);
+        Ctx.PlayerSpawner.HandleDeathServer(OwnerClientId);
 
-        Killfeed.Instance?.HandleClientRpc(ParticipantIdentityCodec.Encode(killer),
+        Ctx.Killfeed?.HandleClientRpc(ParticipantIdentityCodec.Encode(killer),
             ParticipantIdentityCodec.Encode(_identity.Id));
         var deathSource = deathInfo.source;
         if (killer.IsBot)
             deathSource += " (Bot)";
         string killerArchetype = null;
         try {
-            var killerData = PlayerManager.Instance.Participants.First(p => p.Id == killer);
-            killerArchetype = ArchetypeDatabase.Instance.GetArchetype(killerData.Archetype).archetypeName;
+            var killerData = Ctx.Players.Participants.First(p => p.Id == killer);
+            killerArchetype = Ctx.GetArchetype(killerData.Archetype).archetypeName;
         } catch (Exception) {
             // ignored
         }
@@ -68,8 +68,8 @@ public class PlayerDamageable : NetworkBehaviour {
             .Where(x => x.fromId != OwnerClientId)
             .GroupBy(x => x.fromId)
             .ToDictionary(g => g.Key, g => g.Sum(x => x.damage));
-        PlayerAchievementsManager.Instance?.ReportLifeDamageServer(lifeDamageByAttacker);
-        PlayerAchievementsManager.Instance?.ReportDeathServer(OwnerClientId, deathInfo);
+        Ctx.PlayerAchievements?.ReportLifeDamageServer(lifeDamageByAttacker);
+        Ctx.PlayerAchievements?.ReportDeathServer(OwnerClientId, deathInfo);
     }
 
     private void SendAnalytics(ulong ownerClientId, string source, string killerArchetype) {
@@ -96,13 +96,13 @@ public class PlayerDamageable : NetworkBehaviour {
         ClientRpcParams _ = default
     ) {
         foreach (var entry in damagedBy) {
-            FirebaseAnalytic.Instance.SendEvent("PlayerDamaged", new Dictionary<string, object> {
+            Ctx.Analytics.SendEvent("PlayerDamaged", new Dictionary<string, object> {
                 { "source", entry.source },
                 { "damage", $"{entry.damage:0}" }
             });
         }
 
-        FirebaseAnalytic.Instance.SendEvent("PlayerKilled", new Dictionary<string, object> {
+        Ctx.Analytics.SendEvent("PlayerKilled", new Dictionary<string, object> {
             { "source", source },
             { "killerArchetype", killerArchetype }
         });
