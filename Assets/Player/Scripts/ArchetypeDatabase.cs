@@ -7,6 +7,7 @@ public class ArchetypeDatabase : MonoBehaviour {
     public List<ArchetypeData> archetypes = new List<ArchetypeData>();
 
     private Dictionary<int, ArchetypeData> map;
+    [SerializeField] private Sprite[] icons;
 
     private void Awake() {
         if (Instance != null && Instance != this) {
@@ -29,6 +30,12 @@ public class ArchetypeDatabase : MonoBehaviour {
     public ArchetypeData GetArchetype(int id) {
         if (map != null && map.TryGetValue(id, out var a)) return a;
         Debug.LogWarning($"ArchetypeDatabase: archetype id {id} not found");
+        return null;
+    }
+
+    public Sprite GetArchetypeIcon(int id) {
+        if (icons != null && id >= 0 && id < icons.Length) return icons[id];
+        Debug.LogWarning($"ArchetypeDatabase: archetype icon id {id} not found");
         return null;
     }
 }

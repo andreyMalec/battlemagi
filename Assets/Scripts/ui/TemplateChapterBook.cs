@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
+using TMPro;
 using UnityEngine;
 
 public class TemplateChapterBook : MonoBehaviour {
@@ -29,15 +27,26 @@ public class TemplateChapterBook : MonoBehaviour {
     [SerializeField] private string backwardTrigger = "Backward";
     [SerializeField] private float pageAnimationLockDuration = 0.6f;
 
-    [Header("Keys (optional)")]
-    [SerializeField] private bool useKeyboardInput = true;
-
     [SerializeField] private KeyCode openKey = KeyCode.B;
     [SerializeField] private KeyCode nextKey = KeyCode.E;
     [SerializeField] private KeyCode prevKey = KeyCode.Q;
 
+    [Header("Tooltip")]
+    [SerializeField] private Camera worldCamera;
+
+    [SerializeField] private Collider leftPageCollider;
+    [SerializeField] private Collider rightPageCollider;
+    [SerializeField] private Rect leftPageUvRect = new Rect(0f, 0f, 0.5f, 1f);
+    [SerializeField] private Rect rightPageUvRect = new Rect(0.5f, 0f, 0.5f, 1f);
+    [SerializeField] private Renderer leftPageMeshRenderer;
+    [SerializeField] private Renderer rightPageMeshRenderer;
+    [SerializeField] private int pageSurfaceMaterialIndex = 1;
+    [SerializeField] private RectTransform tooltipRoot;
+    [SerializeField] private TMP_Text tooltipText;
+    [SerializeField] private Vector2 tooltipOffset = new Vector2(18f, -18f);
+
     [Header("Content")]
-    [SerializeField] private BookDocument document = new BookDocument();
+    [SerializeField] BookDocument document = new BookDocument();
 
     private int spreadStartIndex;
     private int targetSpreadStartIndex = -1;
@@ -55,27 +64,29 @@ public class TemplateChapterBook : MonoBehaviour {
         SetUIVisibility(false);
         helperUI.SetActive(false);
         book.SetActive(false);
-        RenderStaticSpread(spreadStartIndex);
+        tooltipRoot.gameObject.SetActive(false);
         ClearMovingSpread();
     }
 
     private void Update() {
-        if (useKeyboardInput) {
-            if (Input.GetKeyDown(openKey)) {
-                if (isOpened) {
-                    Close();
-                } else {
-                    Open();
-                }
+        if (Input.GetKeyDown(openKey)) {
+            if (isOpened) {
+                Close();
+            } else {
+                Open();
+            }
+        }
+
+        if (isOpened && !isPaging) {
+            if (Input.GetKey(nextKey)) {
+                Next();
+            } else if (Input.GetKey(prevKey)) {
+                Prev();
             }
 
-            if (isOpened && !isPaging) {
-                if (Input.GetKey(nextKey)) {
-                    Next();
-                } else if (Input.GetKey(prevKey)) {
-                    Prev();
-                }
-            }
+            UpdateTooltipHover();
+        } else {
+            HideTooltip();
         }
     }
 
@@ -84,13 +95,14 @@ public class TemplateChapterBook : MonoBehaviour {
             return;
         }
 
-        RenderStaticSpread(spreadStartIndex);
-        ClearMovingSpread();
+        worldCamera = Camera.main;
 
         isOpened = true;
         book.SetActive(true);
         helperUI.SetActive(true);
         SetUIVisibility(true);
+        RenderStaticSpread(spreadStartIndex);
+        ClearMovingSpread();
     }
 
     public void Close() {
@@ -103,6 +115,7 @@ public class TemplateChapterBook : MonoBehaviour {
         targetSpreadStartIndex = -1;
         pendingSpreadStartIndex = -1;
 
+        HideTooltip();
         ClearMovingSpread();
         SetUIVisibility(false);
         book.SetActive(false);
@@ -196,6 +209,86 @@ public class TemplateChapterBook : MonoBehaviour {
         flipBackRenderer.Clear();
     }
 
+    private void UpdateTooltipHover() {
+        Ray ray = worldCamera.ScreenPointToRay(Input.mousePosition);
+        if (leftPageCollider.Raycast(ray, out RaycastHit hit, 1000f)) {
+            Vector2 bookUv = hit.textureCoord;
+            if (TryResolveTooltip(bookUv, leftPageUvRect, leftStaticRenderer, leftPageMeshRenderer,
+                    out string leftTooltip)) {
+                ShowTooltip(leftTooltip);
+                return;
+            }
+        }
+
+        if (rightPageCollider.Raycast(ray, out hit, 1000f)) {
+            Vector2 bookUv = hit.textureCoord;
+            if (TryResolveTooltip(bookUv, rightPageUvRect, rightStaticRenderer, rightPageMeshRenderer,
+                    out string rightTooltip)) {
+                ShowTooltip(rightTooltip);
+                return;
+            }
+        }
+
+        HideTooltip();
+    }
+
+    private bool TryResolveTooltip(
+        Vector2 bookUv,
+        Rect pageUvRect,
+        BookPageTextureRenderer pageRenderer,
+        Renderer pageMeshRenderer,
+        out string value
+    ) {
+        if (!pageUvRect.Contains(bookUv)) {
+            value = string.Empty;
+            return false;
+        }
+
+        Vector2 localUv = new Vector2(
+            Mathf.InverseLerp(pageUvRect.xMin, pageUvRect.xMax, bookUv.x),
+            Mathf.InverseLerp(pageUvRect.yMin, pageUvRect.yMax, bookUv.y)
+        );
+
+        localUv = ApplyPageMaterialUv(localUv, pageMeshRenderer);
+
+        return pageRenderer.TryResolveTooltip(localUv, out value);
+    }
+
+    private Vector2 ApplyPageMaterialUv(Vector2 localUv, Renderer pageMeshRenderer) {
+        Material[] materials = pageMeshRenderer.sharedMaterials;
+        if (materials.Length <= pageSurfaceMaterialIndex) {
+            return localUv;
+        }
+
+        Material pageMaterial = materials[pageSurfaceMaterialIndex];
+        if (pageMaterial.HasProperty("_Tiling") && pageMaterial.HasProperty("_Offset")) {
+            Vector4 tiling = pageMaterial.GetVector("_Tiling");
+            Vector4 offset = pageMaterial.GetVector("_Offset");
+            return new Vector2(localUv.x * tiling.x + offset.x, localUv.y * tiling.y + offset.y);
+        }
+
+        if (pageMaterial.HasProperty("_MainTex_ST")) {
+            Vector4 st = pageMaterial.GetVector("_MainTex_ST");
+            return new Vector2(localUv.x * st.x + st.z, localUv.y * st.y + st.w);
+        }
+
+        Vector2 tilingFallback = pageMaterial.mainTextureScale;
+        Vector2 offsetFallback = pageMaterial.mainTextureOffset;
+        return new Vector2(localUv.x * tilingFallback.x + offsetFallback.x,
+            localUv.y * tilingFallback.y + offsetFallback.y);
+    }
+
+    private void ShowTooltip(string value) {
+        tooltipText.text = value;
+        tooltipRoot.gameObject.SetActive(true);
+        tooltipRoot.position = (Vector2)Input.mousePosition + tooltipOffset;
+    }
+
+    private void HideTooltip() {
+        tooltipText.text = string.Empty;
+        tooltipRoot.gameObject.SetActive(false);
+    }
+
     private BookPage BuildPageRenderData(int globalPageIndex) {
         if (globalPageIndex < 0 || globalPageIndex >= pageCount) {
             return new BookPage();
@@ -242,8 +335,15 @@ public class TemplateChapterBook : MonoBehaviour {
         [TextArea(3, 10)] public string paragraph;
         [TextArea(3, 10)] public string paragraph2;
         public List<string> listItems = new List<string>();
+        public List<BookTooltip> tooltips = new List<BookTooltip>();
         public Texture2D image;
         public string imageCaption;
+    }
+
+    [Serializable]
+    public class BookTooltip {
+        public string id;
+        [TextArea(2, 6)] public string text;
     }
 
     public enum PageTemplateType {

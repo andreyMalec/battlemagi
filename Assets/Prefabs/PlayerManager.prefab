@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2195418003259651560}
   - component: {fileID: 9158473900852941310}
   - component: {fileID: 2948923506679104460}
+  - component: {fileID: -2000822208799848827}
   - component: {fileID: 7727610113561254624}
   - component: {fileID: 7519760964809049637}
   - component: {fileID: 833260370552209836}
@@ -137,6 +138,124 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fb11ad2a951401e4f96ffdd6a6b1dcb1, type: 2}
   - {fileID: 11400000, guid: d9dc263a602a06049871b177e692f0d0, type: 2}
   - {fileID: 11400000, guid: 11154ddb1d389bd4fbc8fc8baed480ba, type: 2}
+  icons:
+  - {fileID: 21300000, guid: 39cca6b5b25580343bca7f2820088fae, type: 3}
+  - {fileID: -2124407593, guid: 22971eee59e296246b8cabdf7c9810b6, type: 3}
+  - {fileID: -1941014954, guid: 22971eee59e296246b8cabdf7c9810b6, type: 3}
+  - {fileID: -1485062009, guid: 22971eee59e296246b8cabdf7c9810b6, type: 3}
+  - {fileID: 689190777, guid: 22971eee59e296246b8cabdf7c9810b6, type: 3}
+--- !u!114 &-2000822208799848827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1639143551227860678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69beb381e244f92449b8c4cf954630e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.PropertyVariants.GameObjectLocalizer
+  m_TrackedObjects:
+  - rid: 40530768926867545
+  references:
+    version: 2
+    RefIds:
+    - rid: 40530768926867545
+      type: {class: TrackedMonoBehaviourObject, ns: UnityEngine.Localization.PropertyVariants.TrackedObjects, asm: Unity.Localization}
+      data:
+        m_Target: {fileID: 2948923506679104460}
+        m_TrackedProperties:
+          items:
+          - rid: 40530768926867546
+          - rid: 40530768926867556
+          - rid: 40530768926867558
+          - rid: 40530768926867560
+          - rid: 40530768926867562
+        m_UpdateType: 1
+        m_Changed:
+          m_PersistentCalls:
+            m_Calls: []
+    - rid: 40530768926867546
+      type: {class: LocalizedAssetProperty, ns: UnityEngine.Localization.PropertyVariants.TrackedProperties, asm: Unity.Localization}
+      data:
+        m_Localized:
+          rid: 40530768926867547
+        m_PropertyPath: 'icons.Array.data[0]'
+    - rid: 40530768926867547
+      type: {class: LocalizedSprite, ns: UnityEngine.Localization, asm: Unity.Localization}
+      data:
+        m_TableReference:
+          m_TableCollectionName: GUID:aebff15877df01745a951adf44792a9e
+        m_TableEntryReference:
+          m_KeyId: 75653072905437184
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+    - rid: 40530768926867556
+      type: {class: LocalizedAssetProperty, ns: UnityEngine.Localization.PropertyVariants.TrackedProperties, asm: Unity.Localization}
+      data:
+        m_Localized:
+          rid: 40530768926867557
+        m_PropertyPath: 'icons.Array.data[1]'
+    - rid: 40530768926867557
+      type: {class: LocalizedSprite, ns: UnityEngine.Localization, asm: Unity.Localization}
+      data:
+        m_TableReference:
+          m_TableCollectionName: GUID:aebff15877df01745a951adf44792a9e
+        m_TableEntryReference:
+          m_KeyId: 75653275037335552
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+    - rid: 40530768926867558
+      type: {class: LocalizedAssetProperty, ns: UnityEngine.Localization.PropertyVariants.TrackedProperties, asm: Unity.Localization}
+      data:
+        m_Localized:
+          rid: 40530768926867559
+        m_PropertyPath: 'icons.Array.data[2]'
+    - rid: 40530768926867559
+      type: {class: LocalizedSprite, ns: UnityEngine.Localization, asm: Unity.Localization}
+      data:
+        m_TableReference:
+          m_TableCollectionName: GUID:aebff15877df01745a951adf44792a9e
+        m_TableEntryReference:
+          m_KeyId: 75653357023395840
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+    - rid: 40530768926867560
+      type: {class: LocalizedAssetProperty, ns: UnityEngine.Localization.PropertyVariants.TrackedProperties, asm: Unity.Localization}
+      data:
+        m_Localized:
+          rid: 40530768926867561
+        m_PropertyPath: 'icons.Array.data[3]'
+    - rid: 40530768926867561
+      type: {class: LocalizedSprite, ns: UnityEngine.Localization, asm: Unity.Localization}
+      data:
+        m_TableReference:
+          m_TableCollectionName: GUID:aebff15877df01745a951adf44792a9e
+        m_TableEntryReference:
+          m_KeyId: 75653474900115456
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+    - rid: 40530768926867562
+      type: {class: LocalizedAssetProperty, ns: UnityEngine.Localization.PropertyVariants.TrackedProperties, asm: Unity.Localization}
+      data:
+        m_Localized:
+          rid: 40530768926867563
+        m_PropertyPath: 'icons.Array.data[4]'
+    - rid: 40530768926867563
+      type: {class: LocalizedSprite, ns: UnityEngine.Localization, asm: Unity.Localization}
+      data:
+        m_TableReference:
+          m_TableCollectionName: GUID:aebff15877df01745a951adf44792a9e
+        m_TableEntryReference:
+          m_KeyId: 75653585038344192
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
 --- !u!114 &7727610113561254624
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -29,7 +29,6 @@ public class LobbyMemberItem : MonoBehaviour, IPointerEnterHandler, IPointerExit
     [SerializeField] private Sprite spriteReady;
 
     [SerializeField] private Sprite spriteNotReady;
-    [SerializeField] private Sprite[] spriteArchetypes;
     [SerializeField] private Shader colorShader;
     private ulong _steamId;
     private ulong _botId;
@@ -124,7 +123,7 @@ public class LobbyMemberItem : MonoBehaviour, IPointerEnterHandler, IPointerExit
         ApplyColor(color.hue, color.saturation);
         var d = PlayerManager.Instance.FindBySteamId(member.Id.Value);
         if (d.HasValue && d.Value.Archetype >= 0)
-            archetypeImage.overrideSprite = spriteArchetypes[d.Value.Archetype];
+            archetypeImage.overrideSprite = ArchetypeDatabase.Instance.GetArchetypeIcon(d.Value.Archetype);
         else
             archetypeImage.overrideSprite = null;
 
@@ -152,8 +151,8 @@ public class LobbyMemberItem : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
         nameText.text = string.IsNullOrEmpty(bot.name) ? BotNameCatalog.Resolve(bot.id) : bot.name;
         readyImage.gameObject.SetActive(false);
-        if (bot.archetype >= 0 && bot.archetype < spriteArchetypes.Length)
-            archetypeImage.overrideSprite = spriteArchetypes[bot.archetype];
+        if (bot.archetype >= 0)
+            archetypeImage.overrideSprite = ArchetypeDatabase.Instance.GetArchetypeIcon(bot.archetype);
         else
             archetypeImage.overrideSprite = null;
 
@@ -163,10 +162,11 @@ public class LobbyMemberItem : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
         kickButton.onClick.RemoveAllListeners();
         kickButton.onClick.AddListener(() => onRemove(_botId));
-        var prev = (bot.archetype - 1 + spriteArchetypes.Length) % spriteArchetypes.Length;
+        var archCount = ArchetypeDatabase.Instance.archetypes.Count;
+        var prev = (bot.archetype - 1 + archCount) % archCount;
         botArchetypePrevButton.onClick.RemoveAllListeners();
         botArchetypePrevButton.onClick.AddListener(() => onSetArchetype(_botId, prev));
-        var next = (bot.archetype + 1) % spriteArchetypes.Length;
+        var next = (bot.archetype + 1) % archCount;
         botArchetypeNextButton.onClick.RemoveAllListeners();
         botArchetypeNextButton.onClick.AddListener(() => onSetArchetype(_botId, next));
         UpdateState();
