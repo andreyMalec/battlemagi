@@ -26,9 +26,19 @@ public class StatusableNetworkBridge : NetworkBehaviour, IStatusableBridge {
     private NetworkList<NetDurationEffect> _synced;
     private NetworkList<NetDurationEffect>.OnListChangedDelegate _onSyncedChanged;
     private bool _pendingRebuild;
+    private bool _syncRequested;
+    private int _lastSyncedFrame = -1;
+    private readonly List<NetDurationEffect> _snapshot = new();
+    private readonly Dictionary<FixedString64Bytes, NetDurationEffect> _snapshotByName = new();
+    private readonly Dictionary<FixedString64Bytes, int> _syncedIndexByName = new();
+    private readonly List<Statusable.DurationEffect> _durationEffects = new();
+    private float _nextTimeSyncAt;
 
     public ParticipantId OwnerId { get; set; }
-    public List<Statusable.DurationEffect> DurationEffects { get; private set; } = new();
+    public List<Statusable.DurationEffect> DurationEffects => _durationEffects;
+
+    private const float TimeSyncInterval = 0.2f;
+    private const float RemainsSyncEpsilon = 0.05f;
 
     private void Awake() {
         _synced = new NetworkList<NetDurationEffect>();
@@ -81,13 +91,87 @@ public class StatusableNetworkBridge : NetworkBehaviour, IStatusableBridge {
         if (!IsServer) return;
         if (!IsSpawned) return;
 
-        _synced.Clear();
+        _syncRequested = true;
+        TryFlushSync(core);
+    }
+
+    private void TryFlushSync(Statusable core) {
+        if (!_syncRequested) return;
+        if (_lastSyncedFrame == Time.frameCount) return;
+
+        BuildSnapshot(core);
+        var topologyChanged = IsTopologyChanged();
+        if (!topologyChanged && Time.realtimeSinceStartup < _nextTimeSyncAt)
+            return;
+
+        _syncRequested = false;
+        _lastSyncedFrame = Time.frameCount;
+        _nextTimeSyncAt = Time.realtimeSinceStartup + TimeSyncInterval;
+
+        ApplyDiff();
+    }
+
+    private void BuildSnapshot(Statusable core) {
+        _snapshot.Clear();
+        _snapshotByName.Clear();
+
         foreach (var effect in core.ActiveEffects) {
             if (effect.IsExpired) continue;
-            _synced.Add(new NetDurationEffect {
+            var netEffect = new NetDurationEffect {
                 effectName = effect.data.effectName,
                 remains = effect._timeRemaining
-            });
+            };
+            _snapshot.Add(netEffect);
+            _snapshotByName[netEffect.effectName] = netEffect;
+        }
+    }
+
+    private bool IsTopologyChanged() {
+        if (_synced.Count != _snapshot.Count)
+            return true;
+
+        for (var i = 0; i < _synced.Count; i++) {
+            var existing = _synced[i];
+            if (!_snapshotByName.ContainsKey(existing.effectName))
+                return true;
+        }
+
+        return false;
+    }
+
+    private void ApplyDiff() {
+        _syncedIndexByName.Clear();
+        for (var i = 0; i < _synced.Count; i++) {
+            var existing = _synced[i];
+            _syncedIndexByName[existing.effectName] = i;
+        }
+
+        for (var i = _synced.Count - 1; i >= 0; i--) {
+            var existing = _synced[i];
+            if (_snapshotByName.ContainsKey(existing.effectName))
+                continue;
+
+            _synced.RemoveAt(i);
+        }
+
+        _syncedIndexByName.Clear();
+        for (var i = 0; i < _synced.Count; i++) {
+            var existing = _synced[i];
+            _syncedIndexByName[existing.effectName] = i;
+        }
+
+        for (var i = 0; i < _snapshot.Count; i++) {
+            var desired = _snapshot[i];
+            if (!_syncedIndexByName.TryGetValue(desired.effectName, out var index)) {
+                _synced.Add(desired);
+                continue;
+            }
+
+            var current = _synced[index];
+            if (Mathf.Abs(current.remains - desired.remains) < RemainsSyncEpsilon)
+                continue;
+
+            _synced[index] = desired;
         }
     }
 
@@ -116,27 +200,20 @@ public class StatusableNetworkBridge : NetworkBehaviour, IStatusableBridge {
     }
 
     private void RebuildActiveEffectsFromSynced() {
-        var list = new List<Statusable.DurationEffect>();
+        _durationEffects.Clear();
         var db = Ctx.StatusEffects.GetMap();
         try {
-            int count = _synced.Count;
-            var snapshot = new NetDurationEffect[count];
-            for (int i = 0; i < count; i++) {
-                snapshot[i] = _synced[i];
-            }
-
-            foreach (var e in snapshot) {
+            for (var i = 0; i < _synced.Count; i++) {
+                var e = _synced[i];
                 if (!db.TryGetValue(e.effectName.ToString(), out var data))
                     continue;
                 if (data.icon == null) continue;
-                list.Add(new Statusable.DurationEffect { icon = data.icon, remains = e.remains });
+                _durationEffects.Add(new Statusable.DurationEffect { icon = data.icon, remains = e.remains });
             }
         } catch (Exception ex) {
             Debug.LogError($"Exception while rebuilding synced effects: {ex}");
-            DurationEffects = new List<Statusable.DurationEffect>();
+            _durationEffects.Clear();
             return;
         }
-
-        DurationEffects = list;
     }
 }

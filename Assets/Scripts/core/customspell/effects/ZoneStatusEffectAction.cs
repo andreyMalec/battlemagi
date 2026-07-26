@@ -10,21 +10,24 @@ public class ZoneStatusEffectAction : ISpellAction {
         if (effects == null || effects.Count == 0) return;
 
         var applyContext = SpellStatusEffectContext.Create(context);
+        var shouldLog = GameConfig.SpellDebugLogsEnabled;
+        var actionName = shouldLog ? GetType().Name : string.Empty;
+        var eventName = shouldLog ? evt.GetType().Name : string.Empty;
 
         for (var i = 0; i < effects.Count; i++) {
             var def = effects[i];
             if (def == null || def.effect == null) continue;
 
-            Apply(context, applyContext, def, stay, evt);
+            Apply(context, applyContext, def, stay, shouldLog, actionName, eventName);
         }
     }
 
-    private void Apply(ISpellContext context, StatusEffectApplyContext applyContext, EffectDefinition def, OnZoneStayEvent stay, SpellEvent evt) {
+    private void Apply(ISpellContext context, StatusEffectApplyContext applyContext, EffectDefinition def, OnZoneStayEvent stay, bool shouldLog, string actionName, string eventName) {
         foreach (var hit in stay.Targets) {
-            if (!SpellEffectResolver.TryGetStatusable(hit.Target, out var statusable, out var ownerId))
+            if (!stay.TryGetStatusable(hit.Target, out var statusableTarget, out var ownerId))
                 continue;
 
-            if (!SpellEffectResolver.CanAffect(def, context, statusable.gameObject, ownerId))
+            if (!SpellEffectResolver.CanAffect(def, context, statusableTarget.gameObject, ownerId))
                 continue;
 
             if (def.oneShot) {
@@ -33,14 +36,14 @@ public class ZoneStatusEffectAction : ISpellAction {
                     _onceApplied.Add(def, set);
                 }
 
-                if (set.Contains(statusable))
+                if (!set.Add(statusableTarget))
                     continue;
-
-                set.Add(statusable);
             }
 
-            SpellLog.Log($"SpellAction {GetType().Name} applied to {statusable.name}. Event: {evt.GetType().Name}");
-            statusable.AddEffect(applyContext, def.effect);
+            if (shouldLog)
+                SpellLog.Log($"SpellAction {actionName} applied to {statusableTarget.name}. Event: {eventName}");
+
+            statusableTarget.AddEffect(applyContext, def.effect);
         }
     }
 }

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 public class ZoneCore : ISpellCore<ZoneContext> {
     private readonly IShape _shape;
@@ -18,11 +17,15 @@ public class ZoneCore : ISpellCore<ZoneContext> {
         using var _ = SpellMetrics.Measure(SpellMetricSection.ZoneCoreTick);
         context.Lifetime -= delta;
         _targets.Clear();
-        foreach (var hit in _shape.Query()) {
-            if (hit.Target == null)
-                continue;
+        if (_shape is TriggerZoneShapeBase triggerShape) {
+            triggerShape.Query(_targets);
+        } else {
+            foreach (var hit in _shape.Query()) {
+                if (hit.Target == null)
+                    continue;
 
-            _targets.Add(hit);
+                _targets.Add(hit);
+            }
         }
 
         HandleEvent(new OnZoneStayEvent(_targets, delta, _isInitialTick));

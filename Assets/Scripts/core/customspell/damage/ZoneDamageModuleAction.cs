@@ -10,45 +10,49 @@ public class ZoneDamageModuleAction : ISpellAction {
         if (evt is not OnZoneStayEvent stay) return;
         if (context.SpellDamage == null) return;
 
+        var shouldLog = GameConfig.SpellDebugLogsEnabled;
+        var actionName = shouldLog ? GetType().Name : string.Empty;
+        var eventName = shouldLog ? evt.GetType().Name : string.Empty;
+
         switch (context.SpellDamage.mode) {
             case SpellDamageMode.Instant:
                 if (_instantDamaged) return;
                 _instantDamaged = true;
-                ApplyInstant(context, stay, evt);
+                ApplyInstant(context, stay, shouldLog, actionName, eventName);
                 break;
             case SpellDamageMode.DamageOverTime:
-                ApplyDot(context, stay, evt);
+                ApplyDot(context, stay, shouldLog, actionName, eventName);
                 break;
             case SpellDamageMode.OncePerLifetime:
-                ApplyOncePerTarget(context, stay, evt);
+                ApplyOncePerTarget(context, stay, shouldLog, actionName, eventName);
                 break;
         }
     }
 
-    private void ApplyInstant(ISpellContext context, OnZoneStayEvent stay, SpellEvent evt) {
+    private void ApplyInstant(ISpellContext context, OnZoneStayEvent stay, bool shouldLog, string actionName, string eventName) {
         foreach (var t in stay.Targets) {
-            if (!DamageUtils.TryGetOwnerFromCollider(t.Target.gameObject, out var damageable, out var owner))
+            if (!stay.TryGetDamageable(t.Target, out var damageable, out var owner))
                 continue;
 
             if (damageable.IsDead) continue;
             if (!DamageRelationship.CanDamage(context, damageable, owner)) continue;
 
-            DealResolved(context, damageable, evt, t.Point);
+            DealResolved(context, damageable, t.Point, shouldLog, actionName, eventName);
         }
     }
 
-    private void ApplyDot(ISpellContext context, OnZoneStayEvent stay, SpellEvent evt) {
+    private void ApplyDot(ISpellContext context, OnZoneStayEvent stay, bool shouldLog, string actionName, string eventName) {
         _accumulator += stay.DeltaTime;
         if (_accumulator < context.SpellDamage.tickInterval) return;
         _accumulator = 0f;
 
         foreach (var t in stay.Targets)
-            Deal(context, t, evt);
+            Deal(context, stay, t, shouldLog, actionName, eventName);
     }
 
-    private void ApplyOncePerTarget(ISpellContext context, OnZoneStayEvent stay, SpellEvent evt) {
+    private void ApplyOncePerTarget(ISpellContext context, OnZoneStayEvent stay, bool shouldLog, string actionName, string eventName) {
         foreach (var t in stay.Targets) {
-            if (!DamageUtils.TryGetOwnerFromCollider(t.Target.gameObject, out var damageable, out var owner))
+            if (!stay.TryGetDamageable(t.Target, out var damageable, out var owner))
                 continue;
 
             if (_onceDamaged.Contains(damageable))
@@ -58,23 +62,24 @@ public class ZoneDamageModuleAction : ISpellAction {
             if (!DamageRelationship.CanDamage(context, damageable, owner)) continue;
 
             _onceDamaged.Add(damageable);
-            DealResolved(context, damageable, evt, t.Point);
+            DealResolved(context, damageable, t.Point, shouldLog, actionName, eventName);
         }
     }
 
-    private void Deal(ISpellContext context, ShapeHit hit, SpellEvent evt) {
+    private void Deal(ISpellContext context, OnZoneStayEvent stay, ShapeHit hit, bool shouldLog, string actionName, string eventName) {
         if (hit.Target == null) return;
-        if (!DamageUtils.TryGetOwnerFromCollider(hit.Target.gameObject, out var damageable, out var owner)) return;
+        if (!stay.TryGetDamageable(hit.Target, out var damageable, out var owner)) return;
         if (damageable.IsDead) return;
         if (!DamageRelationship.CanDamage(context, damageable, owner)) return;
 
-        DealResolved(context, damageable, evt, hit.Point);
+        DealResolved(context, damageable, hit.Point, shouldLog, actionName, eventName);
     }
 
-    private void DealResolved(ISpellContext context, Damageable damageable, SpellEvent evt, Vector3 point) {
+    private void DealResolved(ISpellContext context, Damageable damageable, Vector3 point, bool shouldLog, string actionName, string eventName) {
         var amount = DamageResolver.Resolve(context.SpellDamage, context, damageable, point);
         if (amount <= 0f) return;
-        SpellLog.Log($"SpellAction {GetType().Name} applied to {damageable.name}. Event: {evt.GetType().Name}");
+        if (shouldLog)
+            SpellLog.Log($"SpellAction {actionName} applied to {damageable.name}. Event: {eventName}");
         damageable.TakeDamage(context.Spell.spellName, context.OwnerId, amount,
             Ctx.GetSpellSound(context.Spell), context.SpellDamage.ignoreSoundCooldown);
     }

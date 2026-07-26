@@ -8,6 +8,7 @@ public abstract class TriggerZoneShapeBase : IShape {
     private readonly Dictionary<GameObject, Vector3> _points = new();
     private readonly List<SpellInstance> _spellCandidates = new();
     private readonly List<Damageable> _damageableCandidates = new();
+    private readonly List<ShapeHit> _hits = new();
 
     protected ISpellContext Context { get; private set; }
 
@@ -20,6 +21,12 @@ public abstract class TriggerZoneShapeBase : IShape {
     }
 
     public IEnumerable<ShapeHit> Query() {
+        Query(_hits);
+        return _hits;
+    }
+
+    public void Query(List<ShapeHit> results) {
+        results.Clear();
         using (SpellMetrics.Measure(SpellMetricSection.TriggerSphereQuery)) {
             var center = Context.Movement.Transform.position;
             var bounds = GetBroadphaseBounds(center);
@@ -86,10 +93,10 @@ public abstract class TriggerZoneShapeBase : IShape {
             using (SpellMetrics.Measure(SpellMetricSection.TriggerSphereYieldHits)) {
                 foreach (var go in _inside) {
                     if (go == null) continue;
-                    yield return new ShapeHit {
+                    results.Add(new ShapeHit {
                         Target = go,
                         Point = _points.TryGetValue(go, out var point) ? point : go.transform.position
-                    };
+                    });
                 }
             }
 

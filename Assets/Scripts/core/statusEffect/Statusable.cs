@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class Statusable : MonoBehaviour {
@@ -9,6 +8,11 @@ public class Statusable : MonoBehaviour {
     private IStatusableBridge _bridgeTyped;
 
     private Dictionary<string, StatusEffectRuntime> _active = new();
+    private readonly List<string> _removeOnHitBuffer = new();
+    private readonly List<StatusEffectRuntime> _tickSnapshot = new();
+    private readonly List<StatusEffectRuntime> _tickToRemove = new();
+    private int _syncBatchDepth;
+    private bool _syncPending;
 
     public event Action<StatusEffectRuntime> OnAdded;
     public event Action<StatusEffectRuntime> OnRemoved;
@@ -40,25 +44,38 @@ public class Statusable : MonoBehaviour {
         if (!_bridgeTyped.IsServer) return;
         if (!_bridgeTyped.IsSpawned) return;
 
-        SpellLog.Log($"Adding effect {data.effectName} to {gameObject.name} from client {applyContext.ownerId}");
-        if (FindPreviousEffect(data, out var previous)) {
-            switch (data.CompareTo(previous.data)) {
-                case EffectCompare.ResetTime:
-                    previous.ResetTime();
-                    break;
-                case EffectCompare.Replace:
-                    RemoveEffect(previous.data.effectName);
-                    Apply(applyContext, data.onStack != null ? previous.data.onStack : data);
-                    break;
-                case EffectCompare.Add:
-                    Apply(applyContext, data);
-                    break;
-            }
-        } else {
-            Apply(applyContext, data);
-        }
+        var changed = false;
+        BeginSyncBatch();
+        try {
+            if (GameConfig.SpellDebugLogsEnabled)
+                SpellLog.Log($"Adding effect {data.effectName} to {gameObject.name} from client {applyContext.ownerId}");
 
-        _bridgeTyped?.SyncFromCore(this);
+            if (FindPreviousEffect(data, out var previous)) {
+                switch (data.CompareTo(previous.data)) {
+                    case EffectCompare.ResetTime:
+                        previous.ResetTime();
+                        changed = true;
+                        break;
+                    case EffectCompare.Replace:
+                        RemoveEffect(previous.data.effectName);
+                        Apply(applyContext, data.onStack != null ? previous.data.onStack : data);
+                        changed = true;
+                        break;
+                    case EffectCompare.Add:
+                        Apply(applyContext, data);
+                        changed = true;
+                        break;
+                }
+            } else {
+                Apply(applyContext, data);
+                changed = true;
+            }
+
+            if (changed)
+                RequestSync();
+        } finally {
+            EndSyncBatch();
+        }
     }
 
     private bool FindPreviousEffect(StatusEffectData data, out StatusEffectRuntime previous) {
@@ -97,7 +114,7 @@ public class Statusable : MonoBehaviour {
         _active.Remove(effectName);
         OnRemoved?.Invoke(runtime);
 
-        _bridgeTyped?.SyncFromCore(this);
+        RequestSync();
         return removed;
     }
 
@@ -106,13 +123,24 @@ public class Statusable : MonoBehaviour {
         if (!_bridgeTyped.IsSpawned) return;
         _bridgeTyped.HandleHit(hit);
 
-        var toRemove = _active.Values
-            .Where(e => e.data.removeOnHit)
-            .Select(e => e.data.effectName)
-            .ToList();
+        _removeOnHitBuffer.Clear();
+        foreach (var effect in _active.Values) {
+            if (!effect.data.removeOnHit)
+                continue;
 
-        for (var i = 0; i < toRemove.Count; i++)
-            RemoveEffect(toRemove[i]);
+            _removeOnHitBuffer.Add(effect.data.effectName);
+        }
+
+        if (_removeOnHitBuffer.Count == 0)
+            return;
+
+        BeginSyncBatch();
+        try {
+            for (var i = 0; i < _removeOnHitBuffer.Count; i++)
+                RemoveEffect(_removeOnHitBuffer[i]);
+        } finally {
+            EndSyncBatch();
+        }
     }
 
     internal void TickServer(float dt) {
@@ -120,23 +148,58 @@ public class Statusable : MonoBehaviour {
         if (!_bridgeTyped.IsSpawned) return;
         if (_active.Count == 0) return;
 
-        var snapshot = new List<StatusEffectRuntime>(_active.Values);
-        var toRemove = new List<StatusEffectRuntime>();
+        _tickSnapshot.Clear();
+        _tickToRemove.Clear();
+        foreach (var effect in _active.Values)
+            _tickSnapshot.Add(effect);
 
-        for (var i = 0; i < snapshot.Count; i++) {
-            var effect = snapshot[i];
+        for (var i = 0; i < _tickSnapshot.Count; i++) {
+            var effect = _tickSnapshot[i];
             effect.OnTick(gameObject, dt);
             if (effect.IsExpired)
-                toRemove.Add(effect);
+                _tickToRemove.Add(effect);
         }
 
-        for (var i = 0; i < toRemove.Count; i++) {
-            var expired = toRemove[i];
-            RemoveEffect(expired.data.effectName);
-            _bridgeTyped.HandleExpireChain(expired.OwnerId, expired.data);
+        if (_tickToRemove.Count == 0)
+            return;
+
+        BeginSyncBatch();
+        try {
+            for (var i = 0; i < _tickToRemove.Count; i++) {
+                var expired = _tickToRemove[i];
+                RemoveEffect(expired.data.effectName);
+                _bridgeTyped.HandleExpireChain(expired.OwnerId, expired.data);
+            }
+        } finally {
+            EndSyncBatch();
+        }
+    }
+
+    private void RequestSync() {
+        if (_syncBatchDepth > 0) {
+            _syncPending = true;
+            return;
         }
 
+        _bridgeTyped?.SyncFromCore(this);
+    }
 
+    private void BeginSyncBatch() {
+        _syncBatchDepth++;
+    }
+
+    private void EndSyncBatch() {
+        if (_syncBatchDepth == 0)
+            return;
+
+        _syncBatchDepth--;
+        if (_syncBatchDepth != 0)
+            return;
+
+        if (!_syncPending)
+            return;
+
+        _syncPending = false;
         _bridgeTyped?.SyncFromCore(this);
     }
 
