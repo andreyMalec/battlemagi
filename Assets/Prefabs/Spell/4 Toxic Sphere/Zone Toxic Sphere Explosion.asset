@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6aed9f25a87b4df799fdec2a0637e94d, type: 3}
-  m_Name: Zone Ice Spear
+  m_Name: Zone Toxic Sphere Explosion
   m_EditorClassIdentifier: Assembly-CSharp::ZoneDefinition
-  prefabId: 3
-  shapeType: 1
+  prefabId: 4
+  shapeType: 0
   moveType: 0
-  moveSpeed: 0
+  moveSpeed: 5
   moveAlongGround: 0
   groundOffset: 0.1
   enableMaxDistance: 0

@@ -69,6 +69,7 @@ public class ProjectileDefinition : ScriptableObject, IValidate {
 
     [Header("Spawned Spells")]
     public SpellDefinition onHitSpawn;
+    public SpellDefinition onHitSpawn2;
 
     [ShowIf("enableMaxDistance")] public SpellDefinition atMaxDistanceSpawn;
     public SpellDefinition atStepDistanceSpawn;

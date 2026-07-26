@@ -47,9 +47,12 @@ public class BotDamageable : NetworkBehaviour {
                 Ctx.Players.AddAssist(enemy);
         }
 
+        if (!FallController.TryApplyPhysicsKillCredit(_identity.Id, deathInfo)) {
+            Ctx.Killfeed?.HandleClientRpc(ParticipantIdentityCodec.Encode(deathInfo.fromId),
+                ParticipantIdentityCodec.Encode(victim));
+        }
+
         Ctx.Players.AddDeath(victim);
         Ctx.BotLifecycle?.HandleBotDeath(victim, gameObject);
-        Ctx.Killfeed?.HandleClientRpc(ParticipantIdentityCodec.Encode(deathInfo.fromId),
-            ParticipantIdentityCodec.Encode(victim));
     }
 }

@@ -46,11 +46,12 @@ public class PlayerDamageable : NetworkBehaviour {
                 Ctx.Players.AddAssist(enemy);
         }
 
+        if (!FallController.TryApplyPhysicsKillCredit(_identity.Id, deathInfo)) {
+            Ctx.Killfeed?.HandleClientRpc(ParticipantIdentityCodec.Encode(killer),
+                ParticipantIdentityCodec.Encode(_identity.Id));
+        }
         Ctx.Players.AddDeath(OwnerClientId);
         Ctx.PlayerSpawner.HandleDeathServer(OwnerClientId);
-
-        Ctx.Killfeed?.HandleClientRpc(ParticipantIdentityCodec.Encode(killer),
-            ParticipantIdentityCodec.Encode(_identity.Id));
         var deathSource = deathInfo.source;
         if (killer.IsBot)
             deathSource += " (Bot)";

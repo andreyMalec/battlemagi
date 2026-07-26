@@ -10,6 +10,8 @@ public interface ISpellBind {
 public class SpellInstance : MonoBehaviour, ITarget {
     public static readonly List<SpellInstance> Active = new();
     private static SpellInstanceTicker _ticker;
+    private static readonly Dictionary<int, List<SpellInstance>> AudioGroups = new();
+    private static Transform _cachedListener;
 
     [SerializeField] private GameObject[] scale;
     [SerializeField] private ParticleSystem[] exclude;
@@ -22,6 +24,8 @@ public class SpellInstance : MonoBehaviour, ITarget {
     private bool _dieWithCaster;
     private SpellView _view;
     private int _activeIndex = -1;
+    private int _audioGroupKey;
+    private AudioSource[] _audioSources;
 
     public Vector3 Position => transform.position;
     public bool IsPlayer => false;
@@ -35,6 +39,8 @@ public class SpellInstance : MonoBehaviour, ITarget {
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetStatics() {
         Active.Clear();
+        AudioGroups.Clear();
+        _cachedListener = null;
         _ticker = null;
     }
 
@@ -46,6 +52,8 @@ public class SpellInstance : MonoBehaviour, ITarget {
         _isServer = authorityService != null && authorityService.IsServer;
         _dieWithCaster = _spell.dieWithCaster;
         _view = _context.View;
+        _audioGroupKey = GetAudioGroupKey(_spell);
+        _audioSources = GetComponentsInChildren<AudioSource>(true);
         var stats = _context.Caster.GetComponentInParent<Stats>();
         if (stats != null) {
             var spellDmg = stats.GetFinal(StatType.SpellDamage);
@@ -54,12 +62,14 @@ public class SpellInstance : MonoBehaviour, ITarget {
         }
         _initialized = true;
         RegisterActive();
+        RegisterAudio();
 
         Scale(_spell.scale, _context.Lifetime);
         ParticleUtils.ApplyBeamShape(gameObject, _spell.beam);
     }
 
     private void OnDestroy() {
+        UnregisterAudio();
         UnregisterActive();
     }
 
@@ -281,7 +291,142 @@ public class SpellInstance : MonoBehaviour, ITarget {
             instance.TickFixed(deltaTime);
         }
 
+        UpdateAudioGroups();
+
         SpellMetrics.FlushIfNeeded();
+    }
+
+    private static void UpdateAudioGroups() {
+        if (AudioGroups.Count == 0)
+            return;
+
+        if (!TryGetListenerPosition(out var listenerPosition))
+            return;
+
+        foreach (var pair in AudioGroups) {
+            var group = pair.Value;
+            if (group == null || group.Count == 0)
+                continue;
+
+            SpellInstance nearest0 = null;
+            SpellInstance nearest1 = null;
+            SpellInstance nearest2 = null;
+            var d0 = float.PositiveInfinity;
+            var d1 = float.PositiveInfinity;
+            var d2 = float.PositiveInfinity;
+
+            for (var i = group.Count - 1; i >= 0; i--) {
+                var instance = group[i];
+                if (instance == null || !instance._initialized) {
+                    group.RemoveAt(i);
+                    continue;
+                }
+
+                instance.SetAudioMuted(true);
+                var sqrDistance = (instance.transform.position - listenerPosition).sqrMagnitude;
+                if (sqrDistance >= d2)
+                    continue;
+
+                if (sqrDistance < d0) {
+                    d2 = d1;
+                    nearest2 = nearest1;
+                    d1 = d0;
+                    nearest1 = nearest0;
+                    d0 = sqrDistance;
+                    nearest0 = instance;
+                    continue;
+                }
+
+                if (sqrDistance < d1) {
+                    d2 = d1;
+                    nearest2 = nearest1;
+                    d1 = sqrDistance;
+                    nearest1 = instance;
+                    continue;
+                }
+
+                d2 = sqrDistance;
+                nearest2 = instance;
+            }
+
+            nearest0?.SetAudioMuted(false);
+            nearest1?.SetAudioMuted(false);
+            nearest2?.SetAudioMuted(false);
+        }
+    }
+
+    private static bool TryGetListenerPosition(out Vector3 listenerPosition) {
+        if (Player.local != null) {
+            listenerPosition = Player.local.transform.position;
+            return true;
+        }
+
+        if (_cachedListener == null || !_cachedListener.gameObject.activeInHierarchy) {
+            var listener = FindAnyObjectByType<AudioListener>();
+            _cachedListener = listener != null ? listener.transform : null;
+        }
+
+        if (_cachedListener != null) {
+            listenerPosition = _cachedListener.position;
+            return true;
+        }
+
+        listenerPosition = default;
+        return false;
+    }
+
+    private void RegisterAudio() {
+        if (_audioSources == null || _audioSources.Length == 0)
+            return;
+
+        if (!AudioGroups.TryGetValue(_audioGroupKey, out var group)) {
+            group = new List<SpellInstance>(4);
+            AudioGroups[_audioGroupKey] = group;
+        }
+
+        group.Add(this);
+        SetAudioMuted(false);
+    }
+
+    private void UnregisterAudio() {
+        if (_audioSources == null || _audioSources.Length == 0)
+            return;
+
+        if (!AudioGroups.TryGetValue(_audioGroupKey, out var group))
+            return;
+
+        group.Remove(this);
+        if (group.Count == 0)
+            AudioGroups.Remove(_audioGroupKey);
+
+        SetAudioMuted(false);
+    }
+
+    private void SetAudioMuted(bool muted) {
+        if (_audioSources == null)
+            return;
+
+        for (var i = 0; i < _audioSources.Length; i++) {
+            var source = _audioSources[i];
+            if (source == null)
+                continue;
+            if (source.mute == muted)
+                continue;
+            source.mute = muted;
+        }
+    }
+
+    private static int GetAudioGroupKey(SpellDefinition spell) {
+        var prefabId = spell.coreType switch {
+            CoreType.Projectile => (int)spell.projectile.prefabId,
+            CoreType.Zone => (int)spell.zone.prefabId,
+            CoreType.Beam => (int)spell.beam.prefabId,
+            CoreType.Self => (int)spell.self.prefabId,
+            CoreType.Summon => (int)spell.summon.prefabId,
+            _ => -1
+        };
+
+        return ((int)spell.coreType << 16) ^ prefabId;
     }
 
     private static void RemoveAt(int index) {

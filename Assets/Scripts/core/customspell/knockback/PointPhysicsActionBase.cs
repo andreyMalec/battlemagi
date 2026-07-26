@@ -128,8 +128,8 @@ public abstract class PointPhysicsActionBase : ISpellAction {
 
     protected void ReportLaunchIfNeeded(ISpellContext context, ResolvedPhysicsTarget target) {
         if (!target.HasOwner) return;
-        if (PlayerAchievementsManager.Instance == null) return;
-        PlayerAchievementsManager.Instance.ReportEnemyLaunchedServer(context.OwnerId, target.OwnerId);
+        if (!DamageRelationship.AreEnemies(context, target.OwnerId)) return;
+        FallController.ReportEnemyLaunchedServer(context.OwnerId, target.OwnerId);
     }
 
     protected void SetVelocitySource(

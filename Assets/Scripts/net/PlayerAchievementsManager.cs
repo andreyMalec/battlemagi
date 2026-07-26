@@ -19,8 +19,6 @@ public class PlayerAchievementsManager : NetworkBehaviour {
         public float manaBurstStartedAt = -999f;
         public float manaBurstStartValue;
         public float currentAirTime;
-        public ulong lastLaunchBy = ulong.MaxValue;
-        public float lastLaunchAt = -999f;
     }
 
     public static PlayerAchievementsManager Instance { get; private set; }
@@ -31,7 +29,6 @@ public class PlayerAchievementsManager : NetworkBehaviour {
 
     [SerializeField] private float parkourAirtimeThreshold = 3f;
     [SerializeField] private float gravityAirtimeThreshold = 12f;
-    [SerializeField] private float launchFallKillWindow = 3f;
 
     private void Awake() {
         if (Instance == null) Instance = this;
@@ -105,14 +102,11 @@ public class PlayerAchievementsManager : NetworkBehaviour {
         }
     }
 
-    public void ReportEnemyLaunchedServer(ParticipantId attackerId, ParticipantId victimId) {
+    public void ReportPhysicsExeStoppedServer(ParticipantId launcherId) {
         if (!IsServer) return;
-        if (attackerId == victimId) return;
-        if (!Ctx.AreEnemies(attackerId, victimId)) return;
+        if (!launcherId.IsHuman) return;
 
-        var victimState = GetAchievementState(victimId.Value);
-        victimState.lastLaunchBy = attackerId.Value;
-        victimState.lastLaunchAt = Time.time;
+        UnlockServer(launcherId.Value, SteamAchievementsCatalog.PhysicsExeStopped);
     }
 
     [ClientRpc]
@@ -248,8 +242,6 @@ public class PlayerAchievementsManager : NetworkBehaviour {
                 UnlockServer(deathInfo.fromId.Value, SteamAchievementsCatalog.ChainReaction);
         }
 
-        if (deathInfo.source == "Killbox" && victimState.lastLaunchBy != ulong.MaxValue && now - victimState.lastLaunchAt <= launchFallKillWindow)
-            UnlockServer(victimState.lastLaunchBy, SteamAchievementsCatalog.PhysicsExeStopped);
 
         victimState.lastDeathAt = now;
         victimState.tookDamageThisLife = false;

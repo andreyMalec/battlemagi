@@ -35,6 +35,7 @@ public class SpawnDefinition : ScriptableObject, IValidate {
 
     [ShowIf("_isRaycast")] public float raycastMaxDistance = 50f;
     [ShowIf("_isDirectDown")] public bool rotateForward;
+    [ShowIf("_isDirectDown")] public bool allowAtMaxDistance;
 
     private bool _isArc = false;
     private bool _isRaycast = false;

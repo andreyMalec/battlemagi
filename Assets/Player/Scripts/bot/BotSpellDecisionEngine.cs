@@ -164,6 +164,7 @@ public class BotSpellDecisionEngine {
 
         if (spell.projectile != null) {
             AddLink(links, spell.projectile.onHitSpawn, _weights.spawnOnHitWeight);
+            AddLink(links, spell.projectile.onHitSpawn2, _weights.spawnOnHitWeight);
             AddLink(links, spell.projectile.atStepDistanceSpawn, _weights.spawnStepWeight);
             AddLink(links, spell.projectile.onLifetimeHalfSpawn, _weights.spawnLifetimeWeight);
             AddLink(links, spell.projectile.onLifetimeEndSpawn, _weights.spawnLifetimeWeight);

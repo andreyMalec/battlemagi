@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Unity.Netcode;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "StatusEffects/Forced Movement")]
@@ -37,7 +36,7 @@ public class ForcedMovementEffect : StatusEffectData {
                 return false;
 
             player.StartForcedMovement(targetPoint, resolvedDuration);
-            Ctx.PlayerAchievements.ReportEnemyLaunchedServer(applyContext.OwnerId, identity.Id);
+            FallController.ReportEnemyLaunchedServer(applyContext.OwnerId, identity.Id);
             return true;
         }
 

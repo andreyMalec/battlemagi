@@ -633,6 +633,8 @@ public class SpellSystem {
             actions.Add(new ForkOnHitAction(def.forkCount, def.forkSpreadAngle));
         if (def.onHitSpawn != null)
             actions.Add(new SpawnOnHitAction());
+        if (def.onHitSpawn2 != null)
+            actions.Add(new SpawnOnHit2Action());
         if (spell.damage != null)
             actions.Add(new ProjectileInstantDamageAction());
         var knockback = KnockbackAction(spell);

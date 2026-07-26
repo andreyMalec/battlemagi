@@ -76,6 +76,22 @@ public interface ISpellSpawn {
             return FromHit(context, hit, direction);
         }
 
+        if (context.spawn.spawnMode == SpawnMode.DirectDown) {
+            if (context.spawn.allowAtMaxDistance) {
+                hitInfo = new RaycastHit {
+                    point = origin + direction * maxDistance,
+                    normal = Vector3.up
+                };
+                return context with {
+                    position = hitInfo.point,
+                    rotation = Quaternion.identity,
+                };;
+            }
+            
+            hitInfo = new RaycastHit();
+            return null;
+        }
+
         if (Physics.Raycast(origin + direction * maxDistance, Vector3.down, out hit, RayLength, mask)) {
             hitInfo = hit;
             return FromHit(context, hit, direction);
