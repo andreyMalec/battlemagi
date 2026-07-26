@@ -3,6 +3,7 @@ using System.Collections.Generic;
 public class ZoneCore : ISpellCore<ZoneContext> {
     private readonly IShape _shape;
     private readonly List<ShapeHit> _targets = new();
+    private readonly OnZoneStayEvent _stayEvent;
     private bool _isInitialTick = true;
 
     public ZoneCore(
@@ -11,6 +12,7 @@ public class ZoneCore : ISpellCore<ZoneContext> {
         SpellTrigger[] triggers
     ) : base(ctx, triggers) {
         _shape = shape;
+        _stayEvent = new OnZoneStayEvent(_targets, 0f, true);
     }
 
     protected override void TickInner(float delta) {
@@ -28,7 +30,8 @@ public class ZoneCore : ISpellCore<ZoneContext> {
             }
         }
 
-        HandleEvent(new OnZoneStayEvent(_targets, delta, _isInitialTick));
+        _stayEvent.Reset(_targets, delta, _isInitialTick);
+        HandleEvent(_stayEvent);
         _isInitialTick = false;
     }
 

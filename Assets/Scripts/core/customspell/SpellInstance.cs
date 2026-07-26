@@ -14,8 +14,12 @@ public class SpellInstance : MonoBehaviour, ITarget {
     [SerializeField] private GameObject[] scale;
     [SerializeField] private ParticleSystem[] exclude;
     public ISpellBind Bind { get; private set; }
+    private ISpellContext _context;
+    private SpellDefinition _spell;
     private IAuthorityService _authorityService;
     private bool _initialized;
+    private bool _isServer;
+    private bool _dieWithCaster;
     private SpellView _view;
     private int _activeIndex = -1;
 
@@ -36,9 +40,13 @@ public class SpellInstance : MonoBehaviour, ITarget {
 
     public void Init(ISpellBind bind, IAuthorityService authorityService) {
         Bind = bind;
+        _context = bind.Context;
+        _spell = _context.Spell;
         _authorityService = authorityService;
-        _view = bind.Context.View;
-        var stats = bind.Context.Caster.GetComponentInParent<Stats>();
+        _isServer = authorityService != null && authorityService.IsServer;
+        _dieWithCaster = _spell.dieWithCaster;
+        _view = _context.View;
+        var stats = _context.Caster.GetComponentInParent<Stats>();
         if (stats != null) {
             var spellDmg = stats.GetFinal(StatType.SpellDamage);
             if (!Mathf.Approximately(spellDmg, 1f))
@@ -47,8 +55,8 @@ public class SpellInstance : MonoBehaviour, ITarget {
         _initialized = true;
         RegisterActive();
 
-        Scale(bind.Context.Spell.scale, bind.Context.Lifetime);
-        ParticleUtils.ApplyBeamShape(gameObject, bind.Context.Spell.beam);
+        Scale(_spell.scale, _context.Lifetime);
+        ParticleUtils.ApplyBeamShape(gameObject, _spell.beam);
     }
 
     private void OnDestroy() {
@@ -58,16 +66,18 @@ public class SpellInstance : MonoBehaviour, ITarget {
     private void TickFixed(float deltaTime) {
         using var _ = SpellMetrics.Measure(SpellMetricSection.InstanceTick);
         if (!_initialized) return;
-        if (IsAlive) {
-            if (Bind.Context.Spell.dieWithCaster && Bind.Context.Caster.IsDead)
-                Bind.Context.View.Kill(Bind.Context);
-
-            if (_authorityService.IsServer)
-                Bind.Tick(deltaTime);
+        if (_view == null || !_view.IsAlive) {
+            UnregisterActive();
             return;
         }
 
-        UnregisterActive();
+        if (!_isServer)
+            return;
+
+        if (_dieWithCaster && _context.Caster.IsDead)
+            _view.Kill(_context);
+
+        Bind.Tick(deltaTime);
     }
 
     public void Kill() {
@@ -264,6 +274,9 @@ public class SpellInstance : MonoBehaviour, ITarget {
                 RemoveAt(i);
                 continue;
             }
+
+            if (!instance._isServer && instance._view != null && instance._view.IsAlive)
+                continue;
 
             instance.TickFixed(deltaTime);
         }

@@ -23,7 +23,9 @@ public class ZoneStatusEffectAction : ISpellAction {
     }
 
     private void Apply(ISpellContext context, StatusEffectApplyContext applyContext, EffectDefinition def, OnZoneStayEvent stay, bool shouldLog, string actionName, string eventName) {
-        foreach (var hit in stay.Targets) {
+        var targets = stay.Targets;
+        for (var i = 0; i < targets.Count; i++) {
+            var hit = targets[i];
             if (!stay.TryGetStatusable(hit.Target, out var statusableTarget, out var ownerId))
                 continue;
 

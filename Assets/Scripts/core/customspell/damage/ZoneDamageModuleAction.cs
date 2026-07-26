@@ -30,7 +30,9 @@ public class ZoneDamageModuleAction : ISpellAction {
     }
 
     private void ApplyInstant(ISpellContext context, OnZoneStayEvent stay, bool shouldLog, string actionName, string eventName) {
-        foreach (var t in stay.Targets) {
+        var targets = stay.Targets;
+        for (var i = 0; i < targets.Count; i++) {
+            var t = targets[i];
             if (!stay.TryGetDamageable(t.Target, out var damageable, out var owner))
                 continue;
 
@@ -46,12 +48,17 @@ public class ZoneDamageModuleAction : ISpellAction {
         if (_accumulator < context.SpellDamage.tickInterval) return;
         _accumulator = 0f;
 
-        foreach (var t in stay.Targets)
+        var targets = stay.Targets;
+        for (var i = 0; i < targets.Count; i++) {
+            var t = targets[i];
             Deal(context, stay, t, shouldLog, actionName, eventName);
+        }
     }
 
     private void ApplyOncePerTarget(ISpellContext context, OnZoneStayEvent stay, bool shouldLog, string actionName, string eventName) {
-        foreach (var t in stay.Targets) {
+        var targets = stay.Targets;
+        for (var i = 0; i < targets.Count; i++) {
+            var t = targets[i];
             if (!stay.TryGetDamageable(t.Target, out var damageable, out var owner))
                 continue;
 

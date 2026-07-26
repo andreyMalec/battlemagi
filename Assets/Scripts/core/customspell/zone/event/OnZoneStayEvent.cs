@@ -29,14 +29,20 @@ public sealed class OnZoneStayEvent : SpellEvent {
     private Dictionary<GameObject, StatusTargetCache> _statusTargets;
     private Dictionary<GameObject, DamageTargetCache> _damageTargets;
 
-    public IEnumerable<ShapeHit> Targets;
+    public List<ShapeHit> Targets;
     public float DeltaTime;
     public bool IsInitial;
 
-    public OnZoneStayEvent(IEnumerable<ShapeHit> targets, float deltaTime, bool isInitial = false) {
+    public OnZoneStayEvent(List<ShapeHit> targets, float deltaTime, bool isInitial = false) {
+        Reset(targets, deltaTime, isInitial);
+    }
+
+    public void Reset(List<ShapeHit> targets, float deltaTime, bool isInitial = false) {
         Targets = targets;
         DeltaTime = deltaTime;
         IsInitial = isInitial;
+        _statusTargets?.Clear();
+        _damageTargets?.Clear();
     }
 
     public bool TryGetStatusable(GameObject target, out Statusable statusable, out ParticipantId ownerId) {

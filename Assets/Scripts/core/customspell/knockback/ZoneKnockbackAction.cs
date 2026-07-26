@@ -11,7 +11,9 @@ public class ZoneKnockbackAction : PointPhysicsActionBase {
         if (def.mode is SpellKnockbackMode.Impulse && !stay.IsInitial) return;
 
         var point = context.Movement.Transform.position;
-        foreach (var hit in stay.Targets) {
+        var targets = stay.Targets;
+        for (var i = 0; i < targets.Count; i++) {
+            var hit = targets[i];
             if (!TryResolveTarget(context, hit.Target, out var target))
                 continue;
 

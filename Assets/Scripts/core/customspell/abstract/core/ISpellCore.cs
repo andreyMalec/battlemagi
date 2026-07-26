@@ -68,9 +68,10 @@ public abstract class ISpellCore<TContext>
 
     protected virtual void HandleEvent(SpellEvent evt) {
         using var _ = SpellMetrics.Measure(SpellMetricSection.EventDispatch);
+        var evtType = evt.GetType();
         foreach (var trigger in _triggers) {
             try {
-                trigger.TryFire(context, evt);
+                trigger.TryFire(context, evt, evtType);
             } catch (Exception e) {
                 Debug.LogWarning(e);
             }
