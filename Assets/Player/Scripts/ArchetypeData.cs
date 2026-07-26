@@ -9,6 +9,8 @@ public class ArchetypeData : ScriptableObject {
     public GameObject avatarHandsPrefab;
     public Shader bodyShader;
     public Shader cloakShader;
+    public Color bookColor;
+    public Texture2D bookImage;
     public SpellDefinition[] spells;
     public float maxHealth = 100f;
     public float maxMana = 125f;

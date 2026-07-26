@@ -106,7 +106,7 @@ public abstract class PointPhysicsActionBase : ISpellAction {
         Vector3 point,
         KnockbackDefinition def
     ) {
-        var id = context.View.GetInstanceID() ^ GetType().GetHashCode();
+        var id = (int)context.View.GetEntityId().GetRawData() ^ GetType().GetHashCode();
         if (target.Movement != null && target.Movement.IsSpawned) {
             var sendParams = new ClientRpcParams {
                 Send = new ClientRpcSendParams { TargetClientIds = new[] { target.Movement.OwnerClientId } }

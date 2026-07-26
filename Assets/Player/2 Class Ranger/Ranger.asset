@@ -18,6 +18,8 @@ MonoBehaviour:
   avatarHandsPrefab: {fileID: 6088019847677914415, guid: f989218694b63cc45af2498f15c8c1ef, type: 3}
   bodyShader: {fileID: -6465566751694194690, guid: 24b1c9e287d7f9e4096c6535a33ea25d, type: 3}
   cloakShader: {fileID: 0}
+  bookColor: {r: 0.7075472, g: 0.67080617, b: 0.09678713, a: 1}
+  bookImage: {fileID: 2800000, guid: 5aa30998c02675e4bb90c4aa65f24967, type: 3}
   spells:
   - {fileID: 11400000, guid: 88ae3a7b24de22243a3f8eeb5e7797ca, type: 2}
   - {fileID: 11400000, guid: 4c479c57913ccd44c977e389d0ca1834, type: 2}
@@ -34,6 +36,7 @@ MonoBehaviour:
   passive:
     baseStatModifiers: []
     onSpawnEffects: []
+    onSpawnSpell: {fileID: 0}
     afterTakeDamageEffects:
     - {fileID: 11400000, guid: c94c6c0a4fb30f54db6aa4e05f7f88eb, type: 2}
     - {fileID: 11400000, guid: b365fceaec6b8d74ba5ac0b3a9002d92, type: 2}

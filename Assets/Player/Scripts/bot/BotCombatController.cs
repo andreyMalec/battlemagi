@@ -70,7 +70,7 @@ public class BotCombatController : MonoBehaviour {
     private float _suppressedTargetTimer;
     private float _noLosRepathTimer;
     private int _strafeDirection = 1;
-    private int _suppressedTargetRootId;
+    private EntityId _suppressedTargetRootId;
     private string _debugLostReason = "";
     private bool isServer;
     private bool _hasVoiceParticipantId;
@@ -473,7 +473,7 @@ public class BotCombatController : MonoBehaviour {
         if (go == null)
             return;
 
-        _suppressedTargetRootId = go.transform.root.GetInstanceID();
+        _suppressedTargetRootId = go.transform.root.GetEntityId();
         _suppressedTargetTimer = lostTargetReacquireDelay;
     }
 
@@ -616,7 +616,7 @@ public class BotCombatController : MonoBehaviour {
             if (!IsEnemy(candidate))
                 continue;
             if (hasSuppressedTarget && candidate.Get != null &&
-                candidate.Get.transform.root.GetInstanceID() == _suppressedTargetRootId)
+                candidate.Get.transform.root.GetEntityId() == _suppressedTargetRootId)
                 continue;
 
             var dSqr = (candidate.Position - selfPosition).sqrMagnitude;

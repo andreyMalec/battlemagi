@@ -164,7 +164,7 @@ public class Portal : MonoBehaviour {
         if (_rt == null || _rt.width != w || _rt.height != h) {
             ReleaseRenderTexture();
             _rt = new RenderTexture(w, h, 24, RenderTextureFormat.ARGB32) {
-                name = $"PortalRT_{GetInstanceID()}",
+                name = $"PortalRT_{GetEntityId().ToString()}",
                 useMipMap = false,
                 autoGenerateMips = false
             };

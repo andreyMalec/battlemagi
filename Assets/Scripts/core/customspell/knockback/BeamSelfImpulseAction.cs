@@ -17,7 +17,7 @@ public class BeamSelfImpulseAction : PointPhysicsActionBase {
 
         if (!_initialized) {
             _initialized = true;
-            _forceId = context.View.GetInstanceID() ^ GetType().GetHashCode();
+            _forceId = (int)context.View.GetEntityId().GetRawData() ^ GetType().GetHashCode();
             var caster = context.Caster;
             if (!caster.TryGetComponent(out PlayerPhysics physics)) {
                 _hasPhysics = false;

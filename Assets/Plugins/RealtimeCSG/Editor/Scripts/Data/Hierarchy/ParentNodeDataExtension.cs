@@ -59,23 +59,23 @@ namespace RealtimeCSG
 			{
 				var iteratorTransformID = iterator.TransformID;
 
-				if (iteratorTransformID == 0)
+				if (iteratorTransformID == EntityId.None)
 				{
 					Debug.LogWarning("iterator_transform == null");
 				} else
 				if (iterator.LastLoopCount != currentLoopCount)
 				{
 					var iteratorTransform			= iterator.Transform;
-					var iteratorParentTransformID	= iteratorTransform.parent == null ? 0 : iteratorTransform.parent.GetInstanceID();
+					var iteratorParentTransformID	= iteratorTransform.parent == null ? EntityId.None : iteratorTransform.parent.GetEntityId();
 					// Compare the unity parent transform to the stored parent transform
 					if (iteratorParent.TransformID != iteratorParentTransformID)
 					{
-						var defaultCSGInstanceID = 0;
+						var defaultCSGInstanceID = EntityId.None;
 						var defaultCSGModel = InternalCSGModelManager.GetDefaultCSGModelForObject(iteratorTransform);
 						if (defaultCSGModel != null &&
 							defaultCSGModel.transform != null)
-							defaultCSGInstanceID = defaultCSGModel.transform.GetInstanceID();
-						if (defaultCSGInstanceID == 0 || defaultCSGInstanceID != iteratorParent.TransformID)
+							defaultCSGInstanceID = defaultCSGModel.transform.GetEntityId();
+						if (defaultCSGInstanceID == EntityId.None || defaultCSGInstanceID != iteratorParent.TransformID)
 						{
 							RemoveNode(node, top);
 							AddNode(node, top);
@@ -216,7 +216,7 @@ namespace RealtimeCSG
 			{
 				var ancestor = ancestors[ancestorDepth];
 				int childIndex;
-				if (!lastParent.FindSiblingIndex(ancestor, ancestor.GetSiblingIndex(), ancestor.GetInstanceID(), out childIndex))
+				if (!lastParent.FindSiblingIndex(ancestor, ancestor.GetSiblingIndex(), ancestor.GetEntityId(), out childIndex))
 					break;
 					
 				lastParent = lastParent.ChildNodes[childIndex];
@@ -226,7 +226,7 @@ namespace RealtimeCSG
 			{
 				var newAncestor = new HierarchyItem(); 
 				newAncestor.Transform	= ancestors[ancestorDepth];
-				newAncestor.TransformID	= newAncestor.Transform.GetInstanceID();
+				newAncestor.TransformID	= newAncestor.Transform.GetEntityId();
 				newAncestor.Parent		= lastParent;
 
 				if (!lastParent.AddChildItem(newAncestor))

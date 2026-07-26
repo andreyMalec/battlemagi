@@ -46,7 +46,7 @@ public class TemplateChapterBook : MonoBehaviour {
     [SerializeField] private Vector2 tooltipOffset = new Vector2(18f, -18f);
 
     [Header("Content")]
-    [SerializeField] BookDocument document = new BookDocument();
+    [SerializeField] public BookDocument document = new BookDocument();
 
     private int spreadStartIndex;
     private int targetSpreadStartIndex = -1;
@@ -122,6 +122,10 @@ public class TemplateChapterBook : MonoBehaviour {
         helperUI.SetActive(false);
     }
 
+    public void MoveBy(int value) {
+        RequestTargetSpread(spreadStartIndex + value);
+    }
+
     public void Next() {
         RequestTargetSpread(spreadStartIndex + 2);
     }
@@ -155,6 +159,46 @@ public class TemplateChapterBook : MonoBehaviour {
         } else {
             leftStaticRenderer.Render(BuildPageRenderData(targetSpreadStartIndex));
         }
+    }
+
+    public void MoveToChapter(int index) {
+        if (index < 0 || index >= document.chapters.Count) {
+            return;
+        }
+
+        var p = 0;
+        var c = 0;
+        while (true) {
+            if (c == index) {
+                break;
+            }
+
+            var s = document.chapters[c].pages.Count;
+            p += s;
+            c++;
+        }
+
+        var targetSpread = p;
+        targetSpread = Mathf.Clamp(targetSpread, 0, Mathf.Max(0, pageCount - 1));
+        targetSpread -= targetSpread % 2;
+
+        if (!isOpened) {
+            spreadStartIndex = targetSpread;
+            return;
+        }
+
+        if (isPaging || targetSpread == spreadStartIndex) {
+            return;
+        }
+
+        targetSpreadStartIndex = targetSpread;
+        activeFlipDirection = targetSpreadStartIndex > spreadStartIndex ? DirectionForward : DirectionBackward;
+        pendingSpreadStartIndex = targetSpreadStartIndex;
+
+        PrepareMovingSpread(spreadStartIndex, pendingSpreadStartIndex, activeFlipDirection);
+
+        isPaging = true;
+        animator.SetTrigger(activeFlipDirection == DirectionForward ? forwardTrigger : backwardTrigger);
     }
 
     private void RequestTargetSpread(int targetSpread) {
@@ -323,7 +367,7 @@ public class TemplateChapterBook : MonoBehaviour {
 
     [Serializable]
     public class BookChapter {
-        public Texture2D icon;
+        public Sprite icon;
         public Color iconTint;
         public List<BookPage> pages = new List<BookPage>();
     }
@@ -347,6 +391,9 @@ public class TemplateChapterBook : MonoBehaviour {
     }
 
     public enum PageTemplateType {
+        LeftPage,
+        RightPage,
+
         /**
          * Без заголовка, сплошной текст
          */
