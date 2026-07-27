@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SpellView : MonoBehaviour {
@@ -6,10 +7,12 @@ public class SpellView : MonoBehaviour {
     public bool IsAlive { get; private set; } = true;
     public bool scaleShape = false;
     public Stats Stats { get; private set; }
+    private TrajectoryRenderer _hitscanRenderer;
 
     private void Awake() {
         Stats = gameObject.AddComponent<Stats>();
         gameObject.AddComponent<Statusable>();
+        _hitscanRenderer = GetComponent<TrajectoryRenderer>();
     }
 
     private Coroutine _waitAndKillCoroutine;
@@ -49,6 +52,13 @@ public class SpellView : MonoBehaviour {
             yield return null;
         } while (anyAlive);
 
+        if (_hitscanRenderer != null)
+            _hitscanRenderer.Clear();
         DI.Get<IEntityManager>().Despawn(transform.parent.gameObject);
+    }
+
+    public void DrawTrajectory(Vector3[] points) {
+        if (_hitscanRenderer == null) return;
+        _hitscanRenderer.Build(points);
     }
 }

@@ -458,6 +458,7 @@ public class SpellSystem {
             SpellMovement.Linear => new LinearMoveTransform(direction, def.moveSpeed, def.moveAlongGround,
                 def.groundOffset),
             SpellMovement.Accelerated => new AcceleratedMoveTransform(direction, def.moveSpeed, def.acceleration),
+            SpellMovement.Hitscan => new HitscanMoveTransform(direction, def.moveSpeed, def.enableMaxDistance, def.maxDistance),
             SpellMovement.LookAtPoint => new LookAtPointTransform(def.moveSpeed, def.lookAtMaxDistance,
                 def.lookAtRayMask),
             SpellMovement.Spiral => new SpiralMoveTransform(

@@ -4,5 +4,6 @@ public enum SpellMovement {
     Spiral,
     FollowCaster,
     LookAtPoint,
-    Accelerated
+    Accelerated,
+    Hitscan
 }

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -102,6 +104,20 @@ public class NgoSpellSystemEvent : NetworkBehaviour, SpellSystemEvent {
     public void OnReturnToCaster(ISpellContext context) {
         var instance = context.View.Id();
         OnReturnToCasterClientRpc(instance);
+    }
+
+    public void OnTrajectoryConfirmed(SpellView view, List<Vector3> points) {
+        OnTrajectoryConfirmedClientRpc(view.Id(), points.ToArray());
+    }
+
+    [ClientRpc]
+    private void OnTrajectoryConfirmedClientRpc(ulong netObjectId, Vector3[] points) {
+        var obj = netObjectId.Get();
+        if (obj == null) return;
+        SpellLog.Log($"[NetworkSpellSystemEvent] OnTrajectoryConfirmedClientRpc: {netObjectId}");
+
+        var view = obj.GetComponentInChildren<SpellView>();
+        view.DrawTrajectory(points);
     }
 
     [ClientRpc]

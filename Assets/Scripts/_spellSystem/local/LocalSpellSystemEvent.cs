@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class LocalSpellSystemEvent : MonoBehaviour, SpellSystemEvent {
@@ -36,5 +37,9 @@ public class LocalSpellSystemEvent : MonoBehaviour, SpellSystemEvent {
 
     public void OnReturnToCaster(ISpellContext context) {
         context.View.BroadcastMessage("OnReturnToCaster", null, SendMessageOptions.DontRequireReceiver);
+    }
+
+    public void OnTrajectoryConfirmed(SpellView view, List<Vector3> points) {
+        view.DrawTrajectory(points.ToArray());
     }
 }

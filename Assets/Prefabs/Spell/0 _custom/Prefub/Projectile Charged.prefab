@@ -88,6 +88,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &7354784787554302670
 GameObject:
@@ -102,6 +103,7 @@ GameObject:
   - component: {fileID: 6267988551512579009}
   - component: {fileID: 3664427700494956184}
   - component: {fileID: 8242704175752411513}
+  - component: {fileID: 7047131179846085627}
   m_Layer: 0
   m_Name: Projectile Charged
   m_TagString: Untagged
@@ -137,7 +139,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 5062687673072769487, guid: 0dee41fcfd7ec4c429ddbec189e528ae, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: fa90e5d8d59ac0d4589eb17e23c3f8ac, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -252,7 +254,7 @@ MonoBehaviour:
   exclude: []
 --- !u!96 &8242704175752411513
 TrailRenderer:
-  serializedVersion: 3
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -298,6 +300,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Time: 1
   m_PreviewTimeScale: 1
   m_Parameters:
@@ -356,7 +359,21 @@ TrailRenderer:
     shadowBias: 0.5
     generateLightingData: 0
   m_MinVertexDistance: 1
-  m_MaskInteraction: 0
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
+--- !u!114 &7047131179846085627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7354784787554302670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1412876344e0404a97d14a7a9a8b5365, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GlobalSoundPlay
+  audioSource: {fileID: 7658732705350956444}
+  parentToPlayer: 0
+  maxDuration: -1

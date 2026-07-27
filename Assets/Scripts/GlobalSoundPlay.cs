@@ -1,5 +1,3 @@
-using System;
-using Unity.Netcode;
 using UnityEngine;
 
 public class GlobalSoundPlay : MonoBehaviour {
@@ -23,6 +21,7 @@ public class GlobalSoundPlay : MonoBehaviour {
         source.outputAudioMixerGroup = audioSource.outputAudioMixerGroup;
         source.spatialBlend = audioSource.spatialBlend;
         source.volume = audioSource.volume;
+        source.pitch = audioSource.pitch;
         source.maxDistance = audioSource.maxDistance;
         source.rolloffMode = audioSource.rolloffMode;
         source.loop = audioSource.loop;

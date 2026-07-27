@@ -23,11 +23,12 @@ MonoBehaviour:
   knockback: {fileID: 11400000, guid: 43545bc6e876fe64e8790ce8f8346c49, type: 2}
   effects: []
   scale: 1
-  lifetime: 3
+  lifetime: 2
   blinkAtLifetime: 0
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 705
+  dieWithCaster: 0
   castWaitingIndex: 1
   invocationIndex: 6
   manaCost: 50

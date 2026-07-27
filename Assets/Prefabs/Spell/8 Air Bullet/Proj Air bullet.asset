@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Proj Air Bullet
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileDefinition
   prefabId: 3
-  moveType: 1
+  moveType: 6
   moveSpeed: 500
   moveAlongGround: 0
   groundOffset: 0.1
@@ -53,9 +53,11 @@ MonoBehaviour:
   echoOnHit: 1
   spawnInHit: 0
   onHitSpawn: {fileID: 0}
+  onHitSpawn2: {fileID: 0}
   atMaxDistanceSpawn: {fileID: 0}
   atStepDistanceSpawn: {fileID: 0}
   spawnStep: 10
+  spawnStepAxes: 7
   onLifetimeEndSpawn: {fileID: 0}
   onLifetimeHalfSpawn: {fileID: 0}
   spawnAtStep: 0
