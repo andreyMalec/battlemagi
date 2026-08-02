@@ -1,0 +1,582 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Spells_en
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 13a1aff3971fe8749aacf96daf7f3acc, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 21466067247104
+    m_Localized: 
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21915063296000
+    m_Localized: 
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22025000198144
+    m_Localized: 
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22116264058880
+    m_Localized: 
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22242802016256
+    m_Localized: 
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22296577187840
+    m_Localized: 
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22393297838080
+    m_Localized: 
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22428156698624
+    m_Localized: 
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22608121700352
+    m_Localized: 
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22646143066112
+    m_Localized: Air bullet
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22767836602368
+    m_Localized: The compressed air stream turns into a deadly projectile of pure
+      pressure.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22834450538496
+    m_Localized: 'Instantly shoots at a target, bouncing off surfaces and recovering
+      [[echo|echo charge]] when it hits an enemy.
+
+
+      Affects: [affects]
+
+      Speed:
+      [moveSpeed]
+
+      Damage: [damage.amount]
+
+      Bounce count: [maxBounces]
+
+      [[echo|Echo]]
+      count: [echoCount]'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22909906067456
+    m_Localized: Ball lightning
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22932710498304
+    m_Localized: A living spark of storm, roaming restlessly in search of prey.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23079586635776
+    m_Localized: 'The projectile, attracted to enemies in a small radius, splits
+      into ([forkCount]) copies when hit, bounces off surfaces.
+
+
+      Affects:
+      [affects]
+
+      Speed: [moveSpeed]
+
+      Damage at full charge: [damage.amount]
+
+      [[charging|Charge
+      duration]]: [chargeDuration]
+
+      Bounce count: [maxBounces]'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23116743974912
+    m_Localized: Charged shot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23269026570240
+    m_Localized: Channels emerald energy into a charged magical arrow, drawn taut
+      with arcane power.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23270830120960
+    m_Localized: 'Damage that increases over time can be released at any moment.
+
+
+      Affects:
+      [affects]
+
+      Speed: [moveSpeed]
+
+      Damage at full charge: [damage.amount]
+
+      [[charging|Charge
+      duration]]: [chargeDuration]
+
+      Pierce count: [maxPierces]'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23475373744128
+    m_Localized: Dirt wall
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23478402031616
+    m_Localized: A surge of geomantic force erupts from the ground, raising a solid
+      barrier of soil and stone.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23667326066688
+    m_Localized: "Blocks incoming attacks and reshapes the battlefield. \n[F] to
+      alternate mode.\n\nAffects: [affects]\n[[echo|Echo]] count: [echoCount]\nMax
+      walls: [spawn.instanceLimit]"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23685189607424
+    m_Localized: Ember lash
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23698972090368
+    m_Localized: A searing lava whip lashes out, ensnaring nearby foes in molten
+      chains of fire.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23949078437888
+    m_Localized: 'Captures enemies around the caster and deals gradual burning damage
+      over time.
+
+
+      Affects: [affects]
+
+      Capture radius: [radius]
+
+      Damage
+      per second: [effect1.damagePerSecond]
+
+      Damage interval: [effect1.tick]
+
+      Duration:
+      [effect1.duration]'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24115806216192
+    m_Localized: Fireball
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24117731401728
+    m_Localized: A blazing sphere that erupts on impact, scorching everyone caught
+      in the blast.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24260392263680
+    m_Localized: 'Explodes on impact, dealing area damage around the target and apply
+      [[forced movement|forced movement]].
+
+
+      Affects: [affects]
+
+      Speed:
+      [moveSpeed]
+
+      Explosion damage: [onHitSpawn.damage.amount]. Efficiency
+      decreases with the distance from the explosion.
+
+      Explosion radius: [onHitSpawn.range]'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24261986099200
+    m_Localized: Flame dash
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24356471185408
+    m_Localized: Surge forward with blazing speed, leaving a trail of searing flames
+      in your wake.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24358052438016
+    m_Localized: 'Grants increased movement speed while creating a damaging fiery
+      path every ([spawnStep]) m.
+
+
+      Affects: [affects]
+
+      [[channelling|Channel
+      duration]]: [channelDuration]
+
+      Damage: [atStepDistanceSpawn.damage.perSecond]
+
+      Damage
+      interval: [atStepDistanceSpawn.damage.tick]
+
+      Trail radius: [atStepDistanceSpawn.range]
+
+      Trail
+      duration: [atStepDistanceSpawn.duration]
+
+      Movement speed bonus: [atStepDistanceSpawn.effect0.multiplier]'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24521626099712
+    m_Localized: Force field
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24534003490816
+    m_Localized: A shimmering dome of condensed magic, bending light and matter alike.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24655256625152
+    m_Localized: 'Absorbs incoming projectiles and then causes damage around itself.
+
+
+      Affects:
+      [affects]
+
+      Radius: [radius]
+
+      Area damage: [onEnemySpellDestroyedSpawn.damage.amount]
+
+      Area
+      range: [onEnemySpellDestroyedSpawn.range]
+
+      Max fields: [spawn.instanceLimit]'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24657462829056
+    m_Localized: Frost nova
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3600922312704
+    m_Localized: 'Triggers an explosive trap that deals area damage to all enemies
+      who cross its path.
+
+
+      Affects: [affects]
+
+      Radius: [summonSensorRadius]
+
+      Duration:
+      [duration]
+
+      Explosion damage: [mainSpell.damage.amount]
+
+      Max traps:
+      [spawn.instanceLimit]'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3606903390208
+    m_Localized: Scorching ray
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3610388856832
+    m_Localized: 'Channels a continuous beam of fire; caster is slowed while maintaining
+      it.
+
+
+      Affects: [affects]
+
+      Ray length: [coneLength]
+
+      Damage:
+      [damage.perSecond]
+
+      Damage interval: [damage.tick]
+
+      [[channel|Channel
+      duration]]: [channelDuration]
+
+      Self movement speed slow: [effect0.multiplier]'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3637819604992
+    m_Localized: 'Teleports the caster forward, creates a [[forced movement|pulling
+      area]] at the exit point.
+
+
+      Affects: [affects]
+
+      Cast range: [spawn.maxCastRange]
+
+      Area
+      radius: [range]
+
+      Area duration: [duration]'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3640101306368
+    m_Localized: Shockwave totem
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3643788099584
+    m_Localized: 'Inflicts damage and [[forced movement|pushes enemies back]] in
+      bursts.
+
+
+      Affects: [affects]
+
+      Cast range: [spawn.maxCastRange]
+
+      Burst
+      radius: [mainSpell.range]
+
+      Burst damage: [mainSpell.damage.amount]
+
+      Duration:
+      [duration]
+
+      [[echo|Echo]] count: [echoCount]
+
+      Max totems: [spawn.instanceLimit]'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3646426316800
+    m_Localized: Toxic sphere
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3650276687872
+    m_Localized: "Explodes on impact, creates an area that slows down and deals damage
+      over time.\n\nAffects: [affects]\nProjectile speed: [moveSpeed] \nExplosion
+      damage: [onHitSpawn2.damage.amount]\nArea radius: [onHitSpawn.range]\nArea
+      damage: [onHitSpawn.damage.perSecond]\nArea damage interval: [onHitSpawn.damage.tick]\nArea
+      duration: [onHitSpawn.duration]\nMovement speed slow: [onHitSpawn.effect0.multiplier]"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3651815997440
+    m_Localized: Tempest vortex
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44340988079140864
+    m_Localized: Frozen winds erupt in a swirling blizzard of snow, bursting outward
+      with a chilling embrace.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44341039425810432
+    m_Localized: 'Deals area damage, freezes and slows enemies caught in a snow whirlwind.
+
+
+      Affects:
+      [affects]
+
+      Radius: [radius]
+
+      Duration: [duration]
+
+      Damage:
+      [damage.amount]
+
+      Freeze damage: [effect0.damagePerSecond]
+
+      Freeze
+      damage interval: [effect0.tick]
+
+      Freeze duration: [effect0.duration]
+
+      Movement
+      speed slow: [effect2.multiplier]
+
+      Slow duration: [effect2.duration]'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44341290379407360
+    m_Localized: Ice shards
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44341494335827968
+    m_Localized: Razor shards of frozen air that pierce the ground and bind foes
+      in frost.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44342074877833216
+    m_Localized: 'Leaves icy spikes that freeze nearby enemies who step too close.
+
+
+      Affects:
+      [affects]
+
+      Shards count: [spawn.instanceCount]
+
+      Speed: [moveSpeed]
+
+      Damage:
+      [damage.amount]
+
+      Freeze damage: [onHitSpawn.effect1.damagePerSecond]
+
+      Freeze
+      damage interval: [effect1.tick]
+
+      Freeze duration: [onHitSpawn.effect1.duration]
+
+      Spikes
+      radius: [onHitSpawn.range]
+
+      Spikes duration: [onHitSpawn.duration]'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44342150039760896
+    m_Localized: Pain mirror
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45818245528317952
+    m_Localized: Surrounds the caster in a shimmering barrier that twists incoming
+      agony back at its source.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45818268043341824
+    m_Localized: 'Reflects a portion of damage taken back to attackers.
+
+
+      Affects:
+      [affects]
+
+      Damage reflected: [effect0.multiplier]
+
+      Effect duration:
+      [effect0.duration]'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3653393055744
+    m_Localized: A raging spiral of wind that sweeps all aside and drags victims
+      into its core.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3655020445696
+    m_Localized: "Creates a moving vortex that deals damage over time and [[forced
+      movement|pulls along its path]].\n\nAffects: [affects]\nSpeed: [moveSpeed]
+      \nRadius: [range]\nDamage: [damage.perSecond]\nDamage interval: [onHitSpawn.damage.tick]\nDuration:
+      [duration]"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3656412954624
+    m_Localized: Furious sun
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3669096529920
+    m_Localized: Magic hand
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6966293430272
+    m_Localized: 'Fires a projectile that leaves an icy ground trail; pierced targets
+      are carried along with the spear.
+
+      [F] to alternate mode.
+
+
+      Affects:
+      [affects]
+
+      Projectile speed: [moveSpeed]
+
+      Damage: [damage.amount]
+
+      Max
+      distance: [maxDistance]
+
+      Freeze duration: [effect1.duration]
+
+      Trail
+      duration: [atStepDistanceSpawn.duration]'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6968143118336
+    m_Localized: Charged shot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6971330789376
+    m_Localized: Instant death on impact, can be released at any moment.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3663186755584
+    m_Localized: "Creates a moving sphere that deals damage over time; releases homing
+      sparks as it moves, explodes when stopped.\n\nAffects: [affects]\nSpeed: [moveSpeed]
+      \nRadius: [range]\nDamage: [damage.amount] of max [damage.percentOf]\nSparkle
+      damage: [atStepDistanceSpawn.damage.amount]\nExplosion damage: [onLifetimeEndSpawn.effect0.amount]\n[[channel|Channel
+      duration]]: [channelDuration]"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3671403397120
+    m_Localized: A spectral hand slips from the void, grasps the target, and drags
+      it toward its master.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3702143451136
+    m_Localized: Ice spear
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3700998406144
+    m_Localized: 'On hit, pulls the target toward the caster.
+
+
+      Affects: [affects]
+
+      Projectile
+      speed: [moveSpeed]
+
+      Damage: [damage.amount]
+
+      Max distance: [maxDistance]'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3611919777792
+    m_Localized: Shadow step
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3613354229760
+    m_Localized: The caster slips between moments, stepping through darkness unseen.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 59942831320625152
+    m_Localized: Rune trap
+    m_Metadata:
+      m_Items: []
+  - m_Id: 59943040427651072
+    m_Localized: Ancient runes ignite beneath the feet of the unwary, unleashing
+      a burst of arcane energy.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3608698552320
+    m_Localized: A focused stream of flame that burns through flesh, will, and shadow
+      alike.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3641959383040
+    m_Localized: Summons a totem that emits shockwaves, striking nearby foes.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3648410222592
+    m_Localized: A swirling core of decay that poisons the ground it touches.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3658170368000
+    m_Localized: A blazing sun that unleashes furious sparks and ends in a blinding
+      detonation.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6963130925056
+    m_Localized: A shard of eternal frost cuts through the air, leaving a frozen
+      trail and carrying impaled foes in its wake.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6969762119680
+    m_Localized: Channels emerald energy into a charged magical arrow, drawn taut
+      with arcane power.
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

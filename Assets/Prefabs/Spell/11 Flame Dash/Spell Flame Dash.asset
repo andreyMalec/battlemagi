@@ -22,12 +22,13 @@ MonoBehaviour:
   damage: {fileID: 0}
   knockback: {fileID: 0}
   effects: []
-  scale: 20
+  scale: 1
   lifetime: 7
   blinkAtLifetime: 0
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 64
+  dieWithCaster: 0
   castWaitingIndex: 0
   invocationIndex: 7
   manaCost: 10

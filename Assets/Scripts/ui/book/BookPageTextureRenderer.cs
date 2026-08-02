@@ -8,17 +8,13 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [Serializable]
-public class PageStyle : MonoBehaviour {
+public struct PageStyle {
     [SerializeField] public GameObject root;
     [SerializeField] public TMP_Text heading;
     [SerializeField] public TMP_Text pageText;
     [SerializeField] public TMP_Text pageText2;
     [SerializeField] public RawImage fullPageImage;
     [SerializeField] public TMP_Text imageCaption;
-
-    public void SetData(BookPageTextureRenderer.PageRenderData data) {
-        
-    }
 }
 
 public class BookPageTextureRenderer : MonoBehaviour {
@@ -27,25 +23,23 @@ public class BookPageTextureRenderer : MonoBehaviour {
      */
     private static readonly Regex TooltipRegex = new Regex("\\[\\[([^\\]|]+)\\|([^\\]]+)\\]\\]", RegexOptions.Compiled);
 
+    [SerializeField] private TemplateChapterBook.PageTemplateType types;
     [SerializeField] private List<PageStyle> styles = new();
-    [SerializeField]
-    private Dictionary<string, int> itemCounts = new Dictionary<string, int>();
     [SerializeField] private Color tooltipTextColor = new Color(0.24f, 0.69f, 1.0f);
 
-    private readonly List<TooltipRegion> tooltipRegions = new List<TooltipRegion>();
+    private readonly List<TooltipRegion> _tooltipRegions = new List<TooltipRegion>();
 
-    private readonly Dictionary<string, string> tooltipById =
-        new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    private static readonly Dictionary<string, string> TooltipById = new(StringComparer.OrdinalIgnoreCase);
 
-    private RectTransform pageTextRectTransform;
-    private Canvas pageCanvas;
-    private Camera pageCamera;
+    private RectTransform _pageTextRectTransform;
+    private Canvas _pageCanvas;
+    private Camera _pageCamera;
 
     private PageStyle _active;
 
     private void Awake() {
-        pageCanvas = GetComponent<Canvas>();
-        pageCamera = pageCanvas.worldCamera;
+        _pageCanvas = GetComponent<Canvas>();
+        _pageCamera = _pageCanvas.worldCamera;
     }
 
     public void Render(TemplateChapterBook.BookPage page) {
@@ -58,20 +52,11 @@ public class BookPageTextureRenderer : MonoBehaviour {
 
         activeStyle.root.SetActive(true);
         _active = activeStyle;
-        pageTextRectTransform = activeStyle.pageText.rectTransform;
+        _pageTextRectTransform = activeStyle.pageText2.rectTransform;
         Render(BuildPageRenderData(page), activeStyle);
     }
 
     private void Render(PageRenderData data, PageStyle style) {
-        tooltipById.Clear();
-        for (int i = 0; i < data.tooltips.Count; i++) {
-            if (data.tooltips[i].id.Length == 0 || data.tooltips[i].text.Length == 0) {
-                continue;
-            }
-
-            tooltipById[data.tooltips[i].id] = data.tooltips[i].text;
-        }
-
         style.heading.text = data.heading;
         style.heading.gameObject.SetActive(data.heading?.Length > 0);
         style.pageText.text = data.text;
@@ -96,10 +81,10 @@ public class BookPageTextureRenderer : MonoBehaviour {
     }
 
     public void Clear() {
-        tooltipById.Clear();
-        tooltipRegions.Clear();
+        _tooltipRegions.Clear();
         foreach (var style in styles) {
             style.pageText.text = string.Empty;
+            style.pageText2.text = string.Empty;
             style.fullPageImage.texture = null;
             style.fullPageImage.gameObject.SetActive(false);
             style.imageCaption.text = string.Empty;
@@ -110,12 +95,12 @@ public class BookPageTextureRenderer : MonoBehaviour {
     }
 
     public bool TryResolveTooltip(Vector2 localUv, out string tooltipText) {
-        for (int i = 0; i < tooltipRegions.Count; i++) {
-            if (!tooltipRegions[i].uvRect.Contains(localUv)) {
+        for (int i = 0; i < _tooltipRegions.Count; i++) {
+            if (!_tooltipRegions[i].uvRect.Contains(localUv)) {
                 continue;
             }
 
-            tooltipText = tooltipRegions[i].text;
+            tooltipText = _tooltipRegions[i].text;
             return true;
         }
 
@@ -129,69 +114,19 @@ public class BookPageTextureRenderer : MonoBehaviour {
             text = string.Empty,
             image = null,
             caption = string.Empty,
-            tooltips = new List<TooltipEntryData>()
         };
         StringBuilder richBuilder = new StringBuilder(512);
 
-        for (int i = 0; i < page.tooltips.Count; i++) {
-            string id = page.tooltips[i].id?.Trim() ?? string.Empty;
-            string text = page.tooltips[i].text ?? string.Empty;
-            if (id.Length == 0 || text.Length == 0) {
-                continue;
-            }
-
-            data.tooltips.Add(new TooltipEntryData {
-                id = id,
-                text = text
-            });
-        }
-
-        if (true) {
-            data.heading = page.heading;
-            data.image = page.image;
-            data.caption = page.imageCaption;
-            data.text2 = page.paragraph2;
-            AppendParagraph(page.paragraph, richBuilder);
-            return FinalizeData(data, richBuilder);
-        }
-
-
-        if (page.template == TemplateChapterBook.PageTemplateType.HeadingParagraph) {
-            data.heading = page.heading;
-            AppendParagraph(page.paragraph, richBuilder);
-            return FinalizeData(data, richBuilder);
-        }
-
-        if (page.template == TemplateChapterBook.PageTemplateType.HeadingParagraphList) {
-            data.heading = page.heading;
-            AppendParagraph(page.paragraph, richBuilder);
-            AppendList(page.listItems, richBuilder);
-            return FinalizeData(data, richBuilder);
-        }
-
-        if (page.template == TemplateChapterBook.PageTemplateType.ParagraphList) {
-            AppendParagraph(page.paragraph, richBuilder);
-            AppendList(page.listItems, richBuilder);
-            return FinalizeData(data, richBuilder);
-        }
-
-        if (page.template == TemplateChapterBook.PageTemplateType.FullImageCaption) {
-            data.image = page.image;
-            data.caption = page.imageCaption;
-            return FinalizeData(data, richBuilder);
-        }
-
         data.heading = page.heading;
-        AppendParagraph(page.paragraph, richBuilder);
-        AppendParagraph(page.paragraph2, richBuilder);
-        AppendList(page.listItems, richBuilder);
         data.image = page.image;
         data.caption = page.imageCaption;
+        data.text = page.paragraph;
+        AppendParagraph(page.paragraph2, richBuilder);
         return FinalizeData(data, richBuilder);
     }
 
     private PageRenderData FinalizeData(PageRenderData data, StringBuilder richBuilder) {
-        data.text = richBuilder.ToString().TrimEnd();
+        data.text2 = richBuilder.ToString().TrimEnd();
         return data;
     }
 
@@ -261,19 +196,19 @@ public class BookPageTextureRenderer : MonoBehaviour {
     }
 
     private void RebuildTooltipRegions() {
-        tooltipRegions.Clear();
-        if (tooltipById.Count == 0 || _active.pageText.textInfo.linkCount == 0) {
+        _tooltipRegions.Clear();
+        if (_active.pageText2.textInfo.linkCount == 0) {
             return;
         }
 
-        _active.pageText.ForceMeshUpdate();
-        TMP_TextInfo textInfo = _active.pageText.textInfo;
+        _active.pageText2.ForceMeshUpdate();
+        TMP_TextInfo textInfo = _active.pageText2.textInfo;
 
         for (int linkIndex = 0; linkIndex < textInfo.linkCount; linkIndex++) {
             TMP_LinkInfo linkInfo = textInfo.linkInfo[linkIndex];
             string tipId = linkInfo.GetLinkID();
-            if (!tooltipById.TryGetValue(tipId, out string tipText)) {
-                continue;
+            if (!TooltipById.TryGetValue(tipId, out string tipText)) {
+                TooltipById[tipId] = tipText = R.String($"tooltip.{tipId}");
             }
 
             for (int charOffset = 0; charOffset < linkInfo.linkTextLength; charOffset++) {
@@ -288,7 +223,7 @@ public class BookPageTextureRenderer : MonoBehaviour {
                 }
 
                 Rect uvRect = BuildCharacterPageUvRect(character.bottomLeft, character.topRight);
-                tooltipRegions.Add(new TooltipRegion {
+                _tooltipRegions.Add(new TooltipRegion {
                     uvRect = uvRect,
                     text = tipText
                 });
@@ -297,11 +232,11 @@ public class BookPageTextureRenderer : MonoBehaviour {
     }
 
     private Rect BuildCharacterPageUvRect(Vector3 textBottomLeft, Vector3 textTopRight) {
-        Vector3 worldBottomLeft = pageTextRectTransform.TransformPoint(textBottomLeft);
-        Vector3 worldTopRight = pageTextRectTransform.TransformPoint(textTopRight);
+        Vector3 worldBottomLeft = _pageTextRectTransform.TransformPoint(textBottomLeft);
+        Vector3 worldTopRight = _pageTextRectTransform.TransformPoint(textTopRight);
 
-        Vector3 viewportBottomLeft = pageCamera.WorldToViewportPoint(worldBottomLeft);
-        Vector3 viewportTopRight = pageCamera.WorldToViewportPoint(worldTopRight);
+        Vector3 viewportBottomLeft = _pageCamera.WorldToViewportPoint(worldBottomLeft);
+        Vector3 viewportTopRight = _pageCamera.WorldToViewportPoint(worldTopRight);
 
         var rect = Rect.MinMaxRect(
             Mathf.Clamp01(Mathf.Min(viewportBottomLeft.x, viewportTopRight.x)),
@@ -326,7 +261,6 @@ public class BookPageTextureRenderer : MonoBehaviour {
         public string text2;
         public Texture2D image;
         public string caption;
-        public List<TooltipEntryData> tooltips;
     }
 
     [Serializable]

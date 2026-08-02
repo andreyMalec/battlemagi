@@ -10,7 +10,7 @@ using Voice;
 using Vosk;
 
 namespace Voice.Vosk {
-    public class VoskHolder : MonoBehaviour, SpeechToTextHolder {
+    public class VoskHolder : MonoBehaviour, SpeechToTextHolder, LanguageAware {
         public Language Language { get; set; }
         public SpeechToTextManager Manager { get; private set; }
         public bool IsInitialized { get; private set; }
@@ -109,6 +109,11 @@ namespace Voice.Vosk {
 
 
             _grammar = keywords.ToString();
+        }
+
+        public void OnLanguageChanged(Language language) {
+            Ctx.SpeechToText.Language = language;
+            StartCoroutine(Ctx.SpeechToText.Init());
         }
     }
 }

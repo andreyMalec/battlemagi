@@ -47,4 +47,13 @@ public static class Ext {
             SetLayerRecursively(root.GetChild(i), layer);
         }
     }
+
+    public static bool RemoveChildren(this Transform transform) {
+        for (int i = 0; i < transform.childCount; i++) {
+            var childTransform = transform.GetChild(i);
+            UnityEngine.Object.Destroy(childTransform.gameObject);
+        }
+
+        return true;
+    }
 }

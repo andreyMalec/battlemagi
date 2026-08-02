@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -47,9 +48,15 @@ public class GeneralSettings : MonoBehaviour {
         }
 
         var values = Enum.GetValues(typeof(Language)).Cast<Language>().ToList();
-        Ctx.Localization.SetSelectedLocale(
-            Locale.CreateLocale(values[languageIndex].ToString().ToLower()));
-        Ctx.SpeechToText.Language = (Language)languageIndex;
-        StartCoroutine(Ctx.SpeechToText.Init());
+        Ctx.Localization.SetSelectedLocale(Locale.CreateLocale(values[languageIndex].ToString().ToLower()));
+        OnSelectedLocaleChanged(values[languageIndex]);
+    }
+
+    private void OnSelectedLocaleChanged(Language language) {
+        R.OnLanguageChanged();
+        var languageAwareObjects = FindObjectsByType<MonoBehaviour>().OfType<LanguageAware>();
+        foreach (var obj in languageAwareObjects) {
+            obj.OnLanguageChanged(language);
+        }
     }
 }

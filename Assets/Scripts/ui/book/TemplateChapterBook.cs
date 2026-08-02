@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TemplateChapterBook : MonoBehaviour {
     private const int DirectionForward = 1;
@@ -31,6 +32,11 @@ public class TemplateChapterBook : MonoBehaviour {
     [SerializeField] private KeyCode nextKey = KeyCode.E;
     [SerializeField] private KeyCode prevKey = KeyCode.Q;
 
+    [Header("Sound")]
+    [SerializeField] public AudioClip[] flipSound;
+
+    [SerializeField] public AudioSource flipAudioSource;
+
     [Header("Tooltip")]
     [SerializeField] private Camera worldCamera;
 
@@ -48,12 +54,15 @@ public class TemplateChapterBook : MonoBehaviour {
     [Header("Content")]
     [SerializeField] public BookDocument document = new BookDocument();
 
+    [SerializeField] public BookTooltip[] tooltips;
+
     private int spreadStartIndex;
     private int targetSpreadStartIndex = -1;
     private int pendingSpreadStartIndex = -1;
     private int activeFlipDirection;
 
     private bool isOpened;
+    private bool needClose;
     private bool isPaging;
 
     private int pageCount {
@@ -75,6 +84,11 @@ public class TemplateChapterBook : MonoBehaviour {
             } else {
                 Open();
             }
+        }
+
+        if (needClose) {
+            needClose = false;
+            Close();
         }
 
         if (isOpened && !isPaging) {
@@ -107,6 +121,11 @@ public class TemplateChapterBook : MonoBehaviour {
 
     public void Close() {
         if (!isOpened) {
+            return;
+        }
+
+        if (isPaging) {
+            needClose = true;
             return;
         }
 
@@ -238,6 +257,7 @@ public class TemplateChapterBook : MonoBehaviour {
     }
 
     private void PrepareMovingSpread(int fromSpread, int toSpread, int direction) {
+        PlayPageSound();
         if (direction == DirectionForward) {
             flipFrontRenderer.Render(BuildPageRenderData(fromSpread + 1));
             flipBackRenderer.Render(BuildPageRenderData(toSpread));
@@ -324,8 +344,28 @@ public class TemplateChapterBook : MonoBehaviour {
 
     private void ShowTooltip(string value) {
         tooltipText.text = value;
+
+        // Обновить размеры TMP
+        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)tooltipText.transform);
+
         tooltipRoot.gameObject.SetActive(true);
-        tooltipRoot.position = (Vector2)Input.mousePosition + tooltipOffset;
+
+        Vector2 position = (Vector2)Input.mousePosition + tooltipOffset;
+
+        RectTransform rect = (RectTransform)tooltipText.transform;
+
+        Vector2 size = rect.rect.size;
+        Vector2 pivot = rect.pivot;
+
+        // Левая/нижняя граница
+        position.x = Mathf.Max(position.x, size.x * pivot.x);
+        position.y = Mathf.Max(position.y, size.y * pivot.y);
+
+        // Правая/верхняя граница
+        position.x = Mathf.Min(position.x, Screen.width - size.x * (1f - pivot.x));
+        position.y = Mathf.Min(position.y, Screen.height - size.y * (1f - pivot.y));
+
+        tooltipRoot.position = position;
     }
 
     private void HideTooltip() {
@@ -360,6 +400,11 @@ public class TemplateChapterBook : MonoBehaviour {
         rightStaticRenderer.gameObject.SetActive(show);
     }
 
+    private void PlayPageSound() {
+        if (flipAudioSource == null || flipSound == null || flipSound.Length == 0) return;
+        flipAudioSource.Play(flipSound);
+    }
+
     [Serializable]
     public class BookDocument {
         public List<BookChapter> chapters = new List<BookChapter>();
@@ -379,7 +424,6 @@ public class TemplateChapterBook : MonoBehaviour {
         [TextArea(3, 10)] public string paragraph;
         [TextArea(3, 10)] public string paragraph2;
         public List<string> listItems = new List<string>();
-        public List<BookTooltip> tooltips = new List<BookTooltip>();
         public Texture2D image;
         public string imageCaption;
     }
@@ -393,30 +437,7 @@ public class TemplateChapterBook : MonoBehaviour {
     public enum PageTemplateType {
         LeftPage,
         RightPage,
-
-        /**
-         * Без заголовка, сплошной текст
-         */
+        Archetype,
         FullText,
-
-        /**
-         * Заголовок + текст
-         */
-        HeadingParagraph,
-
-        /**
-         * Заголовок + текст + список
-         */
-        HeadingParagraphList,
-
-        /**
-         * Без заголовка, текст + список
-         */
-        ParagraphList,
-
-        /**
-         * Без заголовка, изображение + подпись
-         */
-        FullImageCaption
     }
 }
