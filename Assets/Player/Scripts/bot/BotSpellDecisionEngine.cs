@@ -212,7 +212,7 @@ public class BotSpellDecisionEngine {
             ? spell.damage.amount
             : spell.damage.percent * 100f;
 
-        if (spell.damage.mode == SpellDamageMode.DamageOverTime) {
+        if (spell.damage.mode == SpellDamageMode.OverTime) {
             var perSecond = 1 / spell.damage.tickInterval * raw;
             raw = perSecond * Math.Min(2f, spell.lifetime * 0.33f);
         }

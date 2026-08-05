@@ -37,8 +37,9 @@ public class SpellCasterPlayer : SpellCaster {
     public bool Charging { get; private set; }
     private Coroutine _chargingRoutine;
     private SpellDefinition _chargingSpell;
-    private float _chargingDamageMultiplier = 1f;
+    private float _chargingPercent = 1f;
     private bool _chargingUsedEcho;
+    private bool _chargingFullReached;
 
     private int _echoRemaining;
 
@@ -58,6 +59,8 @@ public class SpellCasterPlayer : SpellCaster {
 
     public bool CastWaiting => _spell != null || _echoSpell != null;
     public bool CanSelectSpell => !CastWaiting && !Channeling && !Charging;
+    public float ChargingProgress { get; private set; }
+    public float ChannelingProgress { get; private set; }
 
     public override Vector3 Origin {
         get {
@@ -172,16 +175,18 @@ public class SpellCasterPlayer : SpellCaster {
             CancelCast();
         }
 
-        if (isHuman && Charging && input.CastPressedThisFrame()) {
+        if (isHuman && Charging && input.CastReleasedThisFrame()) {
             ReleaseCharged(_chargingSpell);
         }
 
-        if (isHuman && !Channeling && !Charging && _spell != null && input.CastPressedThisFrame()) {
-            if (TryCastEcho(_spell)) {
-            } else if (CanStartCast(_spell)) {
-                if (_spell.charging) {
+        if (isHuman && !Channeling && !Charging && _spell != null) {
+            if (_spell.charging) {
+                if (input.CastHeld() && CanStartCast(_spell)) {
                     StartCharging(_spell);
-                } else {
+                }
+            } else if (input.CastPressedThisFrame()) {
+                if (TryCastEcho(_spell)) {
+                } else if (CanStartCast(_spell)) {
                     if (animateCast) {
                         _animator.AnimateCast(_spell);
                     } else
@@ -236,7 +241,7 @@ public class SpellCasterPlayer : SpellCaster {
         else
             Cast(spell, target);
 
-        return spell?.echoCount > 0 ? BotCastResult.StartEcho : BotCastResult.Casted;
+        return spell.echoCount > 0 ? BotCastResult.StartEcho : BotCastResult.Casted;
     }
 
     public override void Cast(SpellDefinition spell) {
@@ -392,7 +397,6 @@ public class SpellCasterPlayer : SpellCaster {
 
     public void CancelCast() {
         if (Charging) {
-            ReleaseCharged(_chargingSpell);
             return;
         }
 
@@ -413,7 +417,9 @@ public class SpellCasterPlayer : SpellCaster {
 
         Charging = false;
         _chargingUsedEcho = false;
-        _chargingDamageMultiplier = 1f;
+        _chargingPercent = 1f;
+        _chargingFullReached = false;
+        ChargingProgress = 0f;
 
         StopChanneling(true);
 
@@ -438,6 +444,7 @@ public class SpellCasterPlayer : SpellCaster {
             _bridgeTyped.RequestStopChanneling();
 
         Channeling = false;
+        ChannelingProgress = 0f;
         _channelingSpell = null;
         _bridgeTyped.EndChanneling();
         _spell = null;
@@ -447,8 +454,10 @@ public class SpellCasterPlayer : SpellCaster {
         if (_chargingRoutine != null) StopCoroutine(_chargingRoutine);
         _chargingUsedEcho = ConsumeCostOrEcho(spell);
         Charging = true;
+        ChargingProgress = 0f;
         _chargingSpell = spell;
-        _chargingDamageMultiplier = 1f;
+        _chargingPercent = 1f;
+        _chargingFullReached = false;
         _preview.StartCharging();
 
         if (animateCast) {
@@ -463,21 +472,35 @@ public class SpellCasterPlayer : SpellCaster {
         var costPerSecond = mana.CostPerSecond(spell);
 
         var elapsed = 0f;
-        while (Charging && elapsed < duration) {
+        while (Charging) {
             var dt = Time.deltaTime;
-            elapsed += dt;
-
-            var cost = costPerSecond * dt;
-            if (!SpendResourceServer(spell, cost)) {
+            if (elapsed / duration > GameModeRules.BotChargePercent() && !isHuman) {
                 ReleaseCharged(spell);
                 yield break;
             }
 
-            _chargingDamageMultiplier = Mathf.Clamp01((float)Math.Pow(elapsed / duration, 2));
+            if (elapsed < duration) {
+                elapsed = Mathf.Min(duration, elapsed + dt);
+
+                var cost = costPerSecond * dt;
+                if (!SpendResourceServer(spell, cost)) {
+                    ReleaseCharged(spell);
+                    yield break;
+                }
+            }
+
+            var t = duration > 0f ? Mathf.Clamp01(elapsed / duration) : 1f;
+            ChargingProgress = t;
+            _chargingPercent = Mathf.Clamp01((float)Math.Pow(t, 2));
+
+            if (!_chargingFullReached && t >= 1f) {
+                _chargingFullReached = true;
+                if (isHuman)
+                    _preview.FullyCharged();
+            }
+
             yield return null;
         }
-
-        ReleaseCharged(spell);
     }
 
     private void ReleaseCharged(SpellDefinition spell) {
@@ -493,13 +516,14 @@ public class SpellCasterPlayer : SpellCaster {
         }
 
         Charging = false;
+        ChargingProgress = 0f;
         var toCast = spell;
         _chargingSpell = null;
-        SpellLog.Log($"{gameObject.name} ReleaseCharged damageMultiplier={_chargingDamageMultiplier}");
+        SpellLog.Log($"{gameObject.name} ReleaseCharged damageMultiplier={_chargingPercent}");
 
         Cast(toCast);
 
-        _chargingDamageMultiplier = 1f;
+        _chargingPercent = 1f;
     }
 
     private IEnumerator Channel(SpellDefinition spell) {
@@ -507,6 +531,7 @@ public class SpellCasterPlayer : SpellCaster {
         _channelingSpell = spell;
         _channelingElapsed = 0;
         Channeling = true;
+        ChannelingProgress = 0f;
         _bridgeTyped.BeginChanneling(spell);
         var stoppedByBridge = false;
         var costPerSecond = mana.CostPerSecond(spell);
@@ -519,14 +544,17 @@ public class SpellCasterPlayer : SpellCaster {
                 break;
             }
 
-            var dt = Time.deltaTime;
+            var dt = Time.fixedDeltaTime;
             var costPerTick = costPerSecond * dt;
             if (!SpendResourceServer(spell, costPerTick)) {
                 break;
             }
 
-            yield return new WaitForSeconds(dt);
             _channelingElapsed += dt;
+            ChannelingProgress = spell.channelDuration > 0f
+                ? Mathf.Clamp01(_channelingElapsed / spell.channelDuration)
+                : 1f;
+            yield return new WaitForSeconds(dt);
         }
 
         StopChanneling(!stoppedByBridge);
@@ -534,7 +562,7 @@ public class SpellCasterPlayer : SpellCaster {
 
     public override SpawnContext CastContext(SpellDefinition spell) {
         var c = base.CastContext(spell);
-        c.spellDamageMultiplier = _chargingDamageMultiplier;
+        c.chargePercent = _chargingPercent;
         return c;
     }
 }

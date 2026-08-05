@@ -17,7 +17,7 @@ public struct PageStyle {
     [SerializeField] public TMP_Text imageCaption;
 }
 
-public class BookPageTextureRenderer : MonoBehaviour {
+public class BookPageTextureRenderer : MonoBehaviour, LanguageAware {
     /**
      * [[id|label]] = [[fireball|Огненный шар]]
      */
@@ -25,6 +25,7 @@ public class BookPageTextureRenderer : MonoBehaviour {
 
     [SerializeField] private TemplateChapterBook.PageTemplateType types;
     [SerializeField] private List<PageStyle> styles = new();
+    [SerializeField] private bool respectTooltips;
     [SerializeField] private Color tooltipTextColor = new Color(0.24f, 0.69f, 1.0f);
 
     private readonly List<TooltipRegion> _tooltipRegions = new List<TooltipRegion>();
@@ -196,6 +197,8 @@ public class BookPageTextureRenderer : MonoBehaviour {
     }
 
     private void RebuildTooltipRegions() {
+        if (!respectTooltips) return;
+
         _tooltipRegions.Clear();
         if (_active.pageText2.textInfo.linkCount == 0) {
             return;
@@ -263,14 +266,15 @@ public class BookPageTextureRenderer : MonoBehaviour {
         public string caption;
     }
 
-    [Serializable]
-    public struct TooltipEntryData {
-        public string id;
-        public string text;
-    }
-
     private struct TooltipRegion {
         public Rect uvRect;
         public string text;
+    }
+
+    public void OnLanguageChanged(Language language) {
+        if (!respectTooltips) return;
+        if (_active.root == null) return;
+        TooltipById.Clear();
+        RebuildTooltipRegions();
     }
 }

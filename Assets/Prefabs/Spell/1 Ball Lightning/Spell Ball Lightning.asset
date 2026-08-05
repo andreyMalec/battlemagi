@@ -24,7 +24,7 @@ MonoBehaviour:
   effects:
   - {fileID: 11400000, guid: 516dcc0779a98e3469063a57dd1195e6, type: 2}
   scale: 3
-  lifetime: 10
+  lifetime: 3
   blinkAtLifetime: 0
   defaultRaycast:
     serializedVersion: 2
@@ -38,7 +38,7 @@ MonoBehaviour:
   channeling: 0
   channelDuration: 0
   charging: 1
-  chargeDuration: 2
+  chargeDuration: 1
   manaPerSecond: 25
   projectile: {fileID: 11400000, guid: 9e2171af1e9dc214faee75a63b0b6ee3, type: 2}
   zone: {fileID: 0}

@@ -20,10 +20,10 @@ public class ZoneDamageModuleAction : ISpellAction {
                 _instantDamaged = true;
                 ApplyInstant(context, stay, shouldLog, actionName, eventName);
                 break;
-            case SpellDamageMode.DamageOverTime:
+            case SpellDamageMode.OverTime:
                 ApplyDot(context, stay, shouldLog, actionName, eventName);
                 break;
-            case SpellDamageMode.OncePerLifetime:
+            case SpellDamageMode.OncePerTarget:
                 ApplyOncePerTarget(context, stay, shouldLog, actionName, eventName);
                 break;
         }

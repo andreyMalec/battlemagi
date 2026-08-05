@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
@@ -9,6 +10,7 @@ public class MeshController : MonoBehaviour {
     [SerializeField] TwoBoneIKConstraint spineIkConstraint;
 
     public Transform invocation;
+    public Transform rightHand;
     [CanBeNull] public GameObject cloak;
 
     [Serializable]
@@ -18,6 +20,7 @@ public class MeshController : MonoBehaviour {
     }
 
     public RigidbodyEntry[] rigidbodies;
+    public Collider[] excludedColliders;
 
 #if UNITY_EDITOR
     private void OnValidate() {
@@ -27,6 +30,13 @@ public class MeshController : MonoBehaviour {
             for (int i = 0; i < found.Length; i++) {
                 rigidbodies[i].body = found[i];
                 rigidbodies[i].enableDetectCollisions = true;
+            }
+        }
+        if (excludedColliders == null || excludedColliders.Length == 0) {
+            var found = GetComponentsInChildren<ChildCollider>().Filter(x => x.excludeFromJoints).ToArray();
+            excludedColliders = new Collider[found.Length];
+            for (int i = 0; i < found.Length; i++) {
+                excludedColliders[i] = found[i].GetComponents<Collider>().Filter(x => !x.isTrigger).First();
             }
         }
     }
@@ -80,6 +90,9 @@ public class MeshController : MonoBehaviour {
         animator.enabled = !enable;
         if (cloth != null)
             cloth.enabled = !enable;
+        foreach (var coll in excludedColliders) {
+            coll.enabled = !enable;
+        }
         foreach (var rbEntry in rigidbodies) {
             rbEntry.body.isKinematic = !enable;
             rbEntry.body.useGravity = enable;

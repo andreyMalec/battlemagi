@@ -18,11 +18,20 @@ public class BookContentController : MonoBehaviour, LanguageAware {
         UpdateContent();
     }
 
+    private string Health(object value) {
+        return $"<color=#{ColorUtility.ToHtmlStringRGB(healthColor)}>{value}</color>";
+    }
+
+    private string Mana(object value) {
+        return $"<color=#{ColorUtility.ToHtmlStringRGB(manaColor)}>{value}</color>";
+    }
+
     private void UpdateContent() {
         bookmarksParent.RemoveChildren();
         var allDefaultSpells = Ctx.GetAllDefaultSpells();
         var document = new TemplateChapterBook.BookDocument();
         var c = 0;
+        var s = R.String("second");
         foreach (var archetype in Ctx.Archetypes.archetypes) {
             var chapterIndex = c;
             var chapter = new TemplateChapterBook.BookChapter();
@@ -30,19 +39,22 @@ public class BookContentController : MonoBehaviour, LanguageAware {
             chapter.iconTint = archetype.bookColor;
 
             var archetypeLeftPage = new TemplateChapterBook.BookPage();
-            archetypeLeftPage.template = TemplateChapterBook.PageTemplateType.LeftPage;
+            archetypeLeftPage.template = TemplateChapterBook.PageTemplateType.Archetype;
             archetypeLeftPage.image = archetype.bookImage;
-            archetypeLeftPage.imageCaption = R.String($"class.{archetype.archetypeName}");
+            archetypeLeftPage.heading = R.Archetype($"class.name.{archetype.archetypeName}");
+            // archetypeLeftPage.paragraph = R.Archetype($"class.description.{archetype.archetypeName}");
+
+            var hp = $"{archetype.maxHealth} +{archetype.healthRegen}/{s}";
+            var mp = $"{archetype.maxMana} +{archetype.manaRegen}/{s}";
+            archetypeLeftPage.paragraph2 = $"    Health: {Health(hp)}\n" +
+                                           $"    Mana: {Mana(mp)}\n" +
+                                           $"    Movement speed: {archetype.movementSpeed}";
             chapter.pages.Add(archetypeLeftPage);
 
             var archetypeRightPage = new TemplateChapterBook.BookPage();
             archetypeRightPage.template = TemplateChapterBook.PageTemplateType.FullText;
             archetypeRightPage.heading = "Passives";
-            archetypeRightPage.paragraph = "Passive 1\nDo nothing\n\nPassive 2\nDo something";
-            archetypeRightPage.listItems = new List<string>() {
-                "Passive 1\nDo nothing",
-                "Passive 2\nDo something",
-            };
+            archetypeRightPage.paragraph = R.Archetype($"class.passives.{archetype.archetypeName}");
             chapter.pages.Add(archetypeRightPage);
 
             var spells = archetype.spells.Map(s => allDefaultSpells.Find(sp => sp.spell.spellName == s.spellName));
@@ -101,7 +113,7 @@ public class BookContentController : MonoBehaviour, LanguageAware {
         if (!spell.channeling && !spell.charging)
             return $"{spell.manaCost:0}";
 
-        var perSecond = $"{spell.manaPerSecond:0}/{R.String("perSecond")}";
+        var perSecond = $"{spell.manaPerSecond:0}/{R.String("second")}";
         if (spell.manaCost > 0f && spell.manaPerSecond > 0f)
             return $"{spell.manaCost:0} + {perSecond}";
         if (spell.manaPerSecond > 0f)

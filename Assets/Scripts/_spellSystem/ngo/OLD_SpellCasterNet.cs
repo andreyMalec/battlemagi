@@ -15,7 +15,7 @@ public class OLD_SpellCasterNet : NetworkBehaviour {
         SpellNetworkCache.Put(id, json);
         SendSpellToServer(id, json);
         RequestCastServerRpc(NetworkObjectId, id, context.target?.ObjectId ?? ulong.MaxValue,
-            context.spellDamageMultiplier);
+            context.chargePercent);
     }
 
     public void RequestSpawn(SpawnContext context) {
@@ -24,7 +24,7 @@ public class OLD_SpellCasterNet : NetworkBehaviour {
         SpellNetworkCache.Put(id, json);
         SendSpellToServer(id, json);
         RequestSpawnServerRpc(NetworkObjectId, id, context.position, context.forward, context.rotation,
-            context.spellDamageMultiplier);
+            context.chargePercent);
     }
 
     private void SendSpellToServer(FixedString64Bytes id, string json) {
@@ -90,7 +90,7 @@ public class OLD_SpellCasterNet : NetworkBehaviour {
             forward = forward,
             caster = caster,
             forceFirstOrigin = true,
-            spellDamageMultiplier = damageMultiplier
+            chargePercent = damageMultiplier
         };
         var spellSpawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
         StartCoroutine(spellSpawn!.Request(context, ServerSpawnMain));
@@ -121,7 +121,7 @@ public class OLD_SpellCasterNet : NetworkBehaviour {
 
         var context = caster.CastContext(spell);
         context.target = target;
-        context.spellDamageMultiplier = damageMultiplier;
+        context.chargePercent = damageMultiplier;
         var spellSpawn = ISpellSpawn.GetMode(spell.spawn.spawnMode);
         CastCoroutine = StartCoroutine(spellSpawn!.Request(context, ServerSpawnMain));
     }

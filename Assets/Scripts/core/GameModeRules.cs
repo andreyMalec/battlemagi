@@ -16,6 +16,10 @@ public static class GameModeRules {
         return IsChargedShotOnlyMode() ? 2f : 5f;
     }
 
+    public static float BotChargePercent() {
+        return IsChargedShotOnlyMode() ? 0.1f : 0.9f;
+    }
+
     public static List<SpellDefinition> FilterSpellsForMode(IEnumerable<SpellDefinition> spells) {
         if (!IsChargedShotOnlyMode())
             return spells.ToList();

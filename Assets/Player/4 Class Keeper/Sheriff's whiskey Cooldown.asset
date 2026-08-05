@@ -9,17 +9,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f03f7f897ef24f9ba285bda8553af1f9, type: 3}
-  m_Name: Proj Slow
-  m_EditorClassIdentifier: Assembly-CSharp::ProjectileSpeedMultiplierEffect
-  effectName: Degen Aura Proj Slow
+  m_Script: {fileID: 11500000, guid: ea5155f06c3e436aa34b844f3e6c419a, type: 3}
+  m_Name: Sheriff's whiskey Cooldown
+  m_EditorClassIdentifier: Assembly-CSharp::ManaStoneEffect
+  effectName: Sheriff's whiskey cooldown
   title: 
   description: 
-  duration: 0.2
-  icon: {fileID: 0}
+  duration: 15
+  icon: {fileID: 21300000, guid: 3ad13561b0f013048a130eacf581cb3c, type: 3}
   color: {r: 0, g: 0, b: 0, a: 0}
   removeOnHit: 0
   onExpire: {fileID: 0}
   onStack: {fileID: 0}
   compare: 0
-  multiplier: 0.05
+  amount: 0

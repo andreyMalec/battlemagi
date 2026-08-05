@@ -724,7 +724,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 8
+  m_fontSize: 6
   m_fontSizeBase: 8
   m_fontWeight: 400
   m_enableAutoSizing: 0
@@ -993,7 +993,6 @@ MonoBehaviour:
         listItems: []
         image: {fileID: 0}
         imageCaption: 
-  tooltips: []
 --- !u!114 &1488900638595983951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2175,6 +2174,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 350.5
       objectReference: {fileID: 0}
+    - target: {fileID: 7424957100557677010, guid: 61fa542dd80756148b90a156cea18bfc, type: 3}
+      propertyPath: respectTooltips
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7425193528159923543, guid: 61fa542dd80756148b90a156cea18bfc, type: 3}
       propertyPath: m_CullingMask.m_Bits
       value: 4096
@@ -2351,6 +2354,10 @@ PrefabInstance:
     - target: {fileID: 6778576295258104536, guid: 61fa542dd80756148b90a156cea18bfc, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7424957100557677010, guid: 61fa542dd80756148b90a156cea18bfc, type: 3}
+      propertyPath: respectTooltips
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7425193528159923543, guid: 61fa542dd80756148b90a156cea18bfc, type: 3}
       propertyPath: m_TargetTexture

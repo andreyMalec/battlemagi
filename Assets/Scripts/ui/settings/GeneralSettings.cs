@@ -54,7 +54,7 @@ public class GeneralSettings : MonoBehaviour {
 
     private void OnSelectedLocaleChanged(Language language) {
         R.OnLanguageChanged();
-        var languageAwareObjects = FindObjectsByType<MonoBehaviour>().OfType<LanguageAware>();
+        var languageAwareObjects = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include).OfType<LanguageAware>();
         foreach (var obj in languageAwareObjects) {
             obj.OnLanguageChanged(language);
         }

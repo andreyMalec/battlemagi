@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileDefinition
   prefabId: 7
   moveType: 6
-  moveSpeed: 300
+  moveSpeed: 400
+  scaleSpeedWithCharge: 0
   moveAlongGround: 0
   groundOffset: 0.1
   enableMaxDistance: 0
@@ -49,6 +50,7 @@ MonoBehaviour:
   pierceTargetMode: 0
   enableFork: 0
   forkCount: 2
+  scaleForksWithCharge: 0
   forkSpreadAngle: 5
   echoOnHit: 0
   spawnInHit: 0

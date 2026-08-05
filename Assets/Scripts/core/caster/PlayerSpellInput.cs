@@ -11,6 +11,14 @@ public class PlayerSpellInput {
         return Input.GetKeyDown(castKey);
     }
 
+    public bool CastReleasedThisFrame() {
+        return Input.GetKeyUp(castKey);
+    }
+
+    public bool CastHeld() {
+        return Input.GetKey(castKey);
+    }
+
     public bool CancelPressedThisFrame() {
         return Input.GetKeyDown(cancelKey);
     }

@@ -3,8 +3,8 @@ using UnityEngine;
 
 public enum SpellDamageMode {
     Instant,
-    DamageOverTime,
-    OncePerLifetime,
+    OverTime,
+    OncePerTarget,
 }
 
 public enum SpellDamageBaseType {
@@ -44,7 +44,7 @@ public class DamageDefinition : ScriptableObject, IValidate {
     public void Validate() {
         _flat = baseType is SpellDamageBaseType.Flat;
         _percent = baseType is SpellDamageBaseType.Percent;
-        _dot = mode is SpellDamageMode.DamageOverTime;
+        _dot = mode is SpellDamageMode.OverTime;
         if (tickInterval < 0.01f) tickInterval = 0.01f;
     }
 

@@ -8,7 +8,7 @@ public class StatSystemDamageModifier : MonoBehaviour, IDamageModifier {
             stats = GetComponent<Stats>();
     }
 
-    public float ModifyIncoming(Damageable damageable, in DamageRequest request, float current) {
+    public float ModifyIncoming(Damageable damageable, ref DamageRequest request, float current) {
         if (stats == null) return current;
         SpellLog.Log($"Damage modifier applied: {current} -> {current * stats.GetFinal(StatType.DamageReduction)}");
         return current * stats.GetFinal(StatType.DamageReduction);

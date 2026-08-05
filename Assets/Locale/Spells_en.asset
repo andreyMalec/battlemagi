@@ -90,21 +90,21 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 23079586635776
-    m_Localized: 'The projectile, attracted to enemies in a small radius, splits
-      into ([forkCount]) copies when hit, bounces off surfaces.
+    m_Localized: 'The projectile splits into [forkCount] additional copies when hit,
+      bounces off surfaces.
 
 
-      Affects:
-      [affects]
+      Affects: [affects]
 
       Speed: [moveSpeed]
 
-      Damage at full charge: [damage.amount]
+      Damage
+      at full charge: [damage.amount]
 
-      [[charging|Charge
-      duration]]: [chargeDuration]
+      [[charging|Charge duration]]: [chargeDuration]
 
-      Bounce count: [maxBounces]'
+      Bounce
+      count: [maxBounces]'
     m_Metadata:
       m_Items: []
   - m_Id: 23116743974912
@@ -144,8 +144,8 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 23667326066688
     m_Localized: "Blocks incoming attacks and reshapes the battlefield. \n[F] to
-      alternate mode.\n\nAffects: [affects]\n[[echo|Echo]] count: [echoCount]\nMax
-      walls: [spawn.instanceLimit]"
+      alternate mode.\n\nAffects: [affects]\n[[echo|Echo]] count: [echoCount]\nWall
+      health: 100\nMax walls: [spawn.instanceLimit]"
     m_Metadata:
       m_Items: []
   - m_Id: 23685189607424
@@ -166,8 +166,8 @@ MonoBehaviour:
 
       Capture radius: [radius]
 
-      Damage
-      per second: [effect1.damagePerSecond]
+      Damage:
+      [effect1.damagePerSecond]
 
       Damage interval: [effect1.tick]
 
@@ -210,26 +210,26 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 24358052438016
-    m_Localized: 'Grants increased movement speed while creating a damaging fiery
-      path every ([spawnStep]) m.
+    m_Localized: 'Increases movement speed, leaving a destructive trail of fire.
 
 
-      Affects: [affects]
+      Affects:
+      [affects]
 
-      [[channelling|Channel
-      duration]]: [channelDuration]
+      [[channelling|Channel duration]]: [channelDuration]
 
-      Damage: [atStepDistanceSpawn.damage.perSecond]
+      Damage:
+      [atStepDistanceSpawn.damage.perSecond]
 
-      Damage
-      interval: [atStepDistanceSpawn.damage.tick]
-
-      Trail radius: [atStepDistanceSpawn.range]
+      Damage interval: [atStepDistanceSpawn.damage.tick]
 
       Trail
-      duration: [atStepDistanceSpawn.duration]
+      radius: [atStepDistanceSpawn.range]
 
-      Movement speed bonus: [atStepDistanceSpawn.effect0.multiplier]'
+      Trail duration: [atStepDistanceSpawn.duration]
+
+      Movement
+      speed bonus: [atStepDistanceSpawn.effect0.multiplier]'
     m_Metadata:
       m_Items: []
   - m_Id: 24521626099712
@@ -297,7 +297,7 @@ MonoBehaviour:
 
       Damage interval: [damage.tick]
 
-      [[channel|Channel
+      [[channelling|Channel
       duration]]: [channelDuration]
 
       Self movement speed slow: [effect0.multiplier]'
@@ -341,7 +341,10 @@ MonoBehaviour:
 
       [[echo|Echo]] count: [echoCount]
 
-      Max totems: [spawn.instanceLimit]'
+      Totem health: 75
+
+      Max
+      totems: [spawn.instanceLimit]'
     m_Metadata:
       m_Items: []
   - m_Id: 3646426316800
@@ -418,7 +421,7 @@ MonoBehaviour:
       Freeze damage: [onHitSpawn.effect1.damagePerSecond]
 
       Freeze
-      damage interval: [effect1.tick]
+      damage interval: [onHitSpawn.effect1.tick]
 
       Freeze duration: [onHitSpawn.effect1.duration]
 
@@ -458,7 +461,7 @@ MonoBehaviour:
   - m_Id: 3655020445696
     m_Localized: "Creates a moving vortex that deals damage over time and [[forced
       movement|pulls along its path]].\n\nAffects: [affects]\nSpeed: [moveSpeed]
-      \nRadius: [range]\nDamage: [damage.perSecond]\nDamage interval: [onHitSpawn.damage.tick]\nDuration:
+      \nRadius: [range]\nDamage: [damage.perSecond]\nDamage interval: [damage.tick]\nDuration:
       [duration]"
     m_Metadata:
       m_Items: []
@@ -480,7 +483,7 @@ MonoBehaviour:
       Affects:
       [affects]
 
-      Projectile speed: [moveSpeed]
+      Speed: [moveSpeed]
 
       Damage: [damage.amount]
 
@@ -498,14 +501,27 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 6971330789376
-    m_Localized: Instant death on impact, can be released at any moment.
+    m_Localized: 'Damage that increases over time can be released at any moment.
+
+
+      Affects:
+      [affects]
+
+      Speed: [moveSpeed]
+
+      Damage at full charge: [damage.amount]
+
+      [[charging|Charge
+      duration]]: [chargeDuration]
+
+      Pierce count: [maxPierces]'
     m_Metadata:
       m_Items: []
   - m_Id: 3663186755584
     m_Localized: "Creates a moving sphere that deals damage over time; releases homing
       sparks as it moves, explodes when stopped.\n\nAffects: [affects]\nSpeed: [moveSpeed]
       \nRadius: [range]\nDamage: [damage.amount] of max [damage.percentOf]\nSparkle
-      damage: [atStepDistanceSpawn.damage.amount]\nExplosion damage: [onLifetimeEndSpawn.effect0.amount]\n[[channel|Channel
+      damage: [atStepDistanceSpawn.damage.amount]\nExplosion damage: [onLifetimeEndSpawn.effect0.dps]\n[[channel|Channel
       duration]]: [channelDuration]"
     m_Metadata:
       m_Items: []
@@ -524,8 +540,8 @@ MonoBehaviour:
 
       Affects: [affects]
 
-      Projectile
-      speed: [moveSpeed]
+      Speed:
+      [moveSpeed]
 
       Damage: [damage.amount]
 

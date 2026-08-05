@@ -638,7 +638,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 21252545
+  GlobalObjectIdHash: 1995451379
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -956,6 +956,8 @@ MonoBehaviour:
   _armor:
     maxArmor: 50
     armorEffect: 0.75
+  _delayedDamage:
+    damageTick: 0.5
   _immortal: 0
   _invulnerable: 0
   _isStructure: 0
@@ -1290,13 +1292,13 @@ MonoBehaviour:
   thinkInterval: 0.15
   repathInterval: 0.25
   castAngleTolerance: 18
-  strafeRadius: 3
+  strafeRadius: 0
   strafeSwitchInterval: 1.1
   noLosFlankRadius: 4
   noLosRepathInterval: 0.35
   noSpellChaseDistance: 5
   targetBodyHeightFactor: 0.75
-  switchSpellDelay: 2
+  switchSpellDelay: 1
   castPrepareDelay: 1.5
   lostTargetReacquireDelay: 2
   echoRecastDelay: 0.4
@@ -1370,7 +1372,7 @@ MonoBehaviour:
     DestinationState: -499022955
     TransitionDuration: 0.14307326
     TriggerNameHash: 637825243
-    TransitionIndex: 1
+    TransitionIndex: 0
   AnimatorParameterEntries:
     ParameterEntries:
     - name: Velocity Z

@@ -176,6 +176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 0
 --- !u!1 &360896407429097975
 GameObject:
   m_ObjectHideFlags: 0
@@ -185,6 +186,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5852805024249594735}
+  - component: {fileID: 2503990807258738683}
+  - component: {fileID: 6280009228207117915}
   m_Layer: 9
   m_Name: spine_03.x
   m_TagString: Untagged
@@ -210,6 +213,42 @@ Transform:
   - {fileID: 8452689509523142107}
   m_Father: {fileID: 6909965706149164774}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &2503990807258738683
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 360896407429097975}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.11
+  m_Height: 0.51
+  m_Direction: 0
+  m_Center: {x: 0, y: 0.07, z: 0}
+--- !u!114 &6280009228207117915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 360896407429097975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 1
 --- !u!1 &418696644501151996
 GameObject:
   m_ObjectHideFlags: 0
@@ -223,6 +262,7 @@ GameObject:
   - component: {fileID: 5510523367614857827}
   - component: {fileID: 8790680011824722908}
   - component: {fileID: 601063373231395411}
+  - component: {fileID: 6875663367157645130}
   m_Layer: 9
   m_Name: head.x
   m_TagString: Untagged
@@ -264,7 +304,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.08705214
+  m_Radius: 0.095
   m_Center: {x: 0, y: 0.08705214, z: 0}
 --- !u!54 &5510523367614857827
 Rigidbody:
@@ -351,6 +391,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 0
+--- !u!136 &6875663367157645130
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 418696644501151996}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.05
+  m_Height: 0.18
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.06, z: 0.06}
 --- !u!1 &561991680658905515
 GameObject:
   m_ObjectHideFlags: 0
@@ -487,6 +551,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7774073098000354824}
+  - component: {fileID: 1294281301459985274}
+  - component: {fileID: 2757326417243849498}
   m_Layer: 9
   m_Name: toes_01.l
   m_TagString: Untagged
@@ -509,6 +575,42 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4514649621778662488}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &1294281301459985274
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 757411698907443611}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.06
+  m_Height: 0.27
+  m_Direction: 1
+  m_Center: {x: 0, y: -0.06, z: 0}
+--- !u!114 &2757326417243849498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 757411698907443611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 1
 --- !u!1 &1217426250236466827
 GameObject:
   m_ObjectHideFlags: 0
@@ -686,6 +788,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 0
 --- !u!1 &1289512219139661578
 GameObject:
   m_ObjectHideFlags: 0
@@ -1151,6 +1254,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 0
 --- !u!1 &3121976324660205549
 GameObject:
   m_ObjectHideFlags: 0
@@ -1327,6 +1431,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 0
 --- !u!1 &3194041783476451260
 GameObject:
   m_ObjectHideFlags: 0
@@ -1567,6 +1672,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 0
 --- !u!1 &4083304237332970870
 GameObject:
   m_ObjectHideFlags: 0
@@ -1872,6 +1978,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 0
 --- !u!1 &4443252704760174378
 GameObject:
   m_ObjectHideFlags: 0
@@ -1979,6 +2086,7 @@ MonoBehaviour:
   ikTargetHand: {fileID: 0}
   spineIkConstraint: {fileID: 4964110337970114951}
   invocation: {fileID: 7806130340732966523}
+  rightHand: {fileID: 503722921709314170}
   cloak: {fileID: 0}
   rigidbodies:
   - body: {fileID: 6479468526537271890}
@@ -2003,6 +2111,11 @@ MonoBehaviour:
     enableDetectCollisions: 1
   - body: {fileID: 8354582758249036806}
     enableDetectCollisions: 0
+  excludedColliders:
+  - {fileID: 2503990807258738683}
+  - {fileID: 425780842429395423}
+  - {fileID: 1294281301459985274}
+  - {fileID: 92634411701541147}
 --- !u!114 &3110394899216887019
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2181,6 +2294,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 0
 --- !u!1 &4713177851114341816
 GameObject:
   m_ObjectHideFlags: 0
@@ -2835,6 +2949,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8033096217919350926}
+  - component: {fileID: 425780842429395423}
+  - component: {fileID: 1161187300728379861}
   m_Layer: 9
   m_Name: neck.x
   m_TagString: Untagged
@@ -2858,6 +2974,42 @@ Transform:
   - {fileID: 7263074245760536223}
   m_Father: {fileID: 5852805024249594735}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &425780842429395423
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7253120067191639319}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.055
+  m_Height: 0.25
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1161187300728379861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7253120067191639319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 1
 --- !u!1 &7320204365432382617
 GameObject:
   m_ObjectHideFlags: 0
@@ -3160,6 +3312,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 0
 --- !u!1 &8262290466164111895
 GameObject:
   m_ObjectHideFlags: 0
@@ -3263,6 +3416,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3746903633668883984}
+  - component: {fileID: 92634411701541147}
+  - component: {fileID: 8753312300328156121}
   m_Layer: 9
   m_Name: toes_01.r
   m_TagString: Untagged
@@ -3285,6 +3440,42 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1314452506372103062}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &92634411701541147
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8634180263641579318}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.06
+  m_Height: 0.27
+  m_Direction: 1
+  m_Center: {x: 0, y: -0.06, z: 0}
+--- !u!114 &8753312300328156121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8634180263641579318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 1
 --- !u!1 &8693631747108517518
 GameObject:
   m_ObjectHideFlags: 0
@@ -3462,6 +3653,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 0
 --- !u!1 &8981062984854376660
 GameObject:
   m_ObjectHideFlags: 0
@@ -3756,3 +3948,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 0

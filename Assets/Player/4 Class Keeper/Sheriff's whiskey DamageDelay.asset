@@ -9,17 +9,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae012f65d5bc4d2ab17ff4df36859361, type: 3}
-  m_Name: Move Slow
-  m_EditorClassIdentifier: Assembly-CSharp::SpeedMultiplierEffect
-  effectName: Degen Aura Slow
+  m_Script: {fileID: 11500000, guid: 7646444c15f24b3188e020bc40b788cf, type: 3}
+  m_Name: Sheriff's whiskey DamageDelay
+  m_EditorClassIdentifier: Assembly-CSharp::DamageDelayEffect
+  effectName: Sheriff's whiskey damage delay
   title: 
   description: 
-  duration: 0.2
+  duration: 5
   icon: {fileID: 0}
-  color: {r: 0.59474015, g: 0.6976703, b: 0.764151, a: 1}
+  color: {r: 0, g: 0, b: 0, a: 0}
   removeOnHit: 0
   onExpire: {fileID: 0}
   onStack: {fileID: 0}
   compare: 0
-  multiplier: 0.5
+  delayedPercent: 0.65
+  delayDuration: 7

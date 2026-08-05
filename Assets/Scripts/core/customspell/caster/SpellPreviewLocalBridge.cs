@@ -9,6 +9,7 @@ public class SpellPreviewLocalBridge : MonoBehaviour, ISpellPreviewBridge {
     public bool IsServer => true;
     public bool IsSpawned => true;
     public bool IsOwner => clientId == 0;
+
     public ParticipantId OwnerId {
         get => ParticipantId.Human(clientId);
         set => throw new NotImplementedException();
@@ -36,6 +37,14 @@ public class SpellPreviewLocalBridge : MonoBehaviour, ISpellPreviewBridge {
     }
 
     public void StartCharging() {
-        GetComponentInChildren<SpellInHand>()?.StartCharging();
+        foreach (var handler in _hand.GetComponentsInChildren<ChargingEventHandler>()) {
+            handler.StartCharging();
+        }
+    }
+
+    public void FullyCharged() {
+        foreach (var handler in _hand.GetComponentsInChildren<ChargingEventHandler>()) {
+            handler.FullyCharged();
+        }
     }
 }

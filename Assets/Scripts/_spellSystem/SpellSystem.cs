@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Mathematics.Geometry;
 using UnityEngine;
 
 public class SpellSystem {
@@ -64,7 +65,7 @@ public class SpellSystem {
         var triggers = new List<SpellTrigger>();
         var onHitTrigger = new SpellTrigger {
             eventType = typeof(OnHitEvent),
-            actions = HitActions(def, def.projectile).ToArray()
+            actions = HitActions(def, def.projectile, spawnContext).ToArray()
         };
         triggers.Add(onHitTrigger);
         triggers.Add(new SpellTrigger {
@@ -125,8 +126,11 @@ public class SpellSystem {
 
         var bind = new SpellBind<ProjectileContext>(core, view, context, move);
         instance.Init(bind, _authority);
-        if (!Mathf.Approximately(spawnContext.spellDamageMultiplier, 1f))
-            view.Stats.AddModifier(StatType.SpellDamage, spawnContext.spellDamageMultiplier);
+        if (!Mathf.Approximately(spawnContext.chargePercent, 1f)) {
+            view.Stats.AddModifier(StatType.SpellDamage, spawnContext.chargePercent);
+            if (def.projectile.scaleSpeedWithCharge)
+                view.Stats.AddModifier(StatType.ProjectileSpeed, spawnContext.chargePercent);
+        }
     }
 
     private void CreateZone(
@@ -244,8 +248,8 @@ public class SpellSystem {
         instance.Init(bind, _authority);
         if (def.zone.impassableForEnemies)
             ZoneEnemyColliderBlocker.Attach(spawnContext.main, context.OwnerId, def.scale, def.zone.shapeType, view);
-        if (!Mathf.Approximately(spawnContext.spellDamageMultiplier, 1f))
-            view.Stats.AddModifier(StatType.SpellDamage, spawnContext.spellDamageMultiplier);
+        if (!Mathf.Approximately(spawnContext.chargePercent, 1f))
+            view.Stats.AddModifier(StatType.SpellDamage, spawnContext.chargePercent);
     }
 
     private void CreateBeam(
@@ -335,8 +339,8 @@ public class SpellSystem {
 
         var bind = new SpellBind<BeamContext>(core, view, context, move);
         instance.Init(bind, _authority);
-        if (!Mathf.Approximately(spawnContext.spellDamageMultiplier, 1f))
-            view.Stats.AddModifier(StatType.SpellDamage, spawnContext.spellDamageMultiplier);
+        if (!Mathf.Approximately(spawnContext.chargePercent, 1f))
+            view.Stats.AddModifier(StatType.SpellDamage, spawnContext.chargePercent);
     }
 
     private void CreateSummon(
@@ -411,8 +415,8 @@ public class SpellSystem {
 
         var bind = new SummonBind<SummonContext>(core, view, context, move, caster, brain, sensors);
         instance.Init(bind, _authority);
-        if (!Mathf.Approximately(spawnContext.spellDamageMultiplier, 1f))
-            view.Stats.AddModifier(StatType.SpellDamage, spawnContext.spellDamageMultiplier);
+        if (!Mathf.Approximately(spawnContext.chargePercent, 1f))
+            view.Stats.AddModifier(StatType.SpellDamage, spawnContext.chargePercent);
     }
 
     private void CreateSelf(
@@ -458,7 +462,8 @@ public class SpellSystem {
             SpellMovement.Linear => new LinearMoveTransform(direction, def.moveSpeed, def.moveAlongGround,
                 def.groundOffset),
             SpellMovement.Accelerated => new AcceleratedMoveTransform(direction, def.moveSpeed, def.acceleration),
-            SpellMovement.Hitscan => new HitscanMoveTransform(direction, def.moveSpeed, def.enableMaxDistance, def.maxDistance),
+            SpellMovement.Hitscan => new HitscanMoveTransform(direction, def.moveSpeed, def.enableMaxDistance,
+                def.maxDistance),
             SpellMovement.LookAtPoint => new LookAtPointTransform(def.moveSpeed, def.lookAtMaxDistance,
                 def.lookAtRayMask),
             SpellMovement.Spiral => new SpiralMoveTransform(
@@ -624,14 +629,23 @@ public class SpellSystem {
         };
     }
 
-    private static List<ISpellAction> HitActions(SpellDefinition spell, ProjectileDefinition def) {
+    private static List<ISpellAction> HitActions(
+        SpellDefinition spell,
+        ProjectileDefinition def,
+        SpawnContext spawnContext
+    ) {
         var actions = new List<ISpellAction>();
         if (def.enablePierce)
             actions.Add(new PierceOnHitAction(def.maxPierces, def.pierceTargetMode));
         if (def.enableBounce)
             actions.Add(new BounceOnHitAction(def.maxBounces, def.bounceSpeedMultiplier));
-        if (def.enableFork)
-            actions.Add(new ForkOnHitAction(def.forkCount, def.forkSpreadAngle));
+        if (def.enableFork) {
+            var forkCount = def.scaleForksWithCharge
+                ? (int)System.Math.Round(def.forkCount * spawnContext.chargePercent)
+                : def.forkCount;
+            actions.Add(new ForkOnHitAction(forkCount, def.forkSpreadAngle));
+        }
+
         if (def.onHitSpawn != null)
             actions.Add(new SpawnOnHitAction());
         if (def.onHitSpawn2 != null)

@@ -30,15 +30,26 @@ MonoBehaviour:
   maxMana: 125
   movementSpeed: 5.5
   runSpeed: 1.5
-  healthRegen: 1
+  healthRegen: 2
   manaRegen: 5
   jumpStrength: 3
   passive:
     baseStatModifiers: []
     onSpawnEffects: []
-    onSpawnSpell: {fileID: 11400000, guid: 0d0f28ae8131f18489bddb42761389d8, type: 2}
+    onSpawnSpell: {fileID: 0}
     afterTakeDamageEffects: []
     onDealDamageEffects: []
+    triggerEffects:
+    - effect: {fileID: 11400000, guid: 156daec5f9490b846912931050ec376d, type: 2}
+      cooldownEffect: {fileID: 11400000, guid: 24d28a24d183f0a4ba2d5e4af87b00b8, type: 2}
+      trigger: 0
+      healthBelow: 0.7
+      manaBelow: 0
+    - effect: {fileID: 11400000, guid: 63995d10ccdfea847b85728e4d4c8fd1, type: 2}
+      cooldownEffect: {fileID: 11400000, guid: 24d28a24d183f0a4ba2d5e4af87b00b8, type: 2}
+      trigger: 0
+      healthBelow: 0.7
+      manaBelow: 0
     lifeStealFraction: 0
     outgoingDamageMultiplier: 1
     distanceDamageBonus:

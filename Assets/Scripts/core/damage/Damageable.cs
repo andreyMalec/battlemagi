@@ -32,6 +32,7 @@ public class Damageable : MonoBehaviour {
     [SerializeField] private HealthModule _health = new();
 
     [SerializeField] private ArmorModule _armor = new();
+    [SerializeField] private DelayedDamageModule _delayedDamage = new();
 
     [Header("State")]
     [SerializeField] private bool _immortal;
@@ -44,6 +45,7 @@ public class Damageable : MonoBehaviour {
 
     public HealthModule Health => _health;
     public ArmorModule Armor => _armor;
+    public DelayedDamageModule DelayedDamage => _delayedDamage;
 
     public float CurrentHealth { get; private set; }
     public float CurrentArmor { get; private set; }
@@ -124,13 +126,14 @@ public class Damageable : MonoBehaviour {
         _modules.Clear();
         _modules.Add(_health);
         _modules.Add(_armor);
-
+        _modules.Add(_delayedDamage);
         foreach (var m in _modules)
             m.Initialize(this, _stats);
 
         gameObject.AddComponent<StatSystemDamageModifier>();
         foreach (var m in GetComponents<IDamageModifier>())
             _modifiers.Add(m);
+        _modifiers.Add(_delayedDamage);
 
         CurrentHealth = _health.Health;
         CurrentArmor = _armor.Armor;
@@ -261,11 +264,12 @@ public class Damageable : MonoBehaviour {
         if (!_bridgeTyped.HandlePreApplyDamage(ref request, beforeHp))
             return;
 
-        var applied = ApplyDamageServer(in request);
+        var applied = ApplyDamageServer(ref request);
 
         _bridgeTyped.HandlePostApplyDamage(in applied, ref request, ignoreSoundCooldown);
         _bridgeTyped.SyncFromCore(this);
-        _statusable?.HandleHit(request);
+        if (request.kind != DamageKind.Delayed)
+            _statusable?.HandleHit(request);
     }
 
     public bool CanTakeDamage(float amount) {
@@ -276,14 +280,14 @@ public class Damageable : MonoBehaviour {
         return true;
     }
 
-    private DamageApplied ApplyDamageServer(in DamageRequest request) {
+    private DamageApplied ApplyDamageServer(ref DamageRequest request) {
         if (!CanTakeDamage(request.amount))
             return new DamageApplied(request, request.amount, 0f, 0f, 0f, Health.Health);
 
         var incoming = request.amount;
         var modded = incoming;
         for (var i = 0; i < _modifiers.Count; i++)
-            modded = _modifiers[i].ModifyIncoming(this, in request, modded);
+            modded = _modifiers[i].ModifyIncoming(this, ref request, modded);
 
         modded = Mathf.Max(0f, modded);
 

@@ -9,4 +9,5 @@ public interface ISpellPreviewBridge : IdentityUser {
     void Show(SpellDefinition spell);
     void Hide();
     void StartCharging();
+    void FullyCharged();
 }

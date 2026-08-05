@@ -419,6 +419,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2288459728434322602, guid: 82cbf6eff1aaf964094dfaf0f6aebae2, type: 3}
+      propertyPath: items.Array.size
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 2288459728434322602, guid: 82cbf6eff1aaf964094dfaf0f6aebae2, type: 3}
+      propertyPath: items.Array.data[22].name
+      value: Degen Aura 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2288459728434322602, guid: 82cbf6eff1aaf964094dfaf0f6aebae2, type: 3}
+      propertyPath: items.Array.data[22].spell
+      value: 
+      objectReference: {fileID: 11400000, guid: f0c2a4918237b184f9c2f396760efb2f, type: 2}
     - target: {fileID: 2543264403459149607, guid: 82cbf6eff1aaf964094dfaf0f6aebae2, type: 3}
       propertyPath: m_Name
       value: DefaultSpells
@@ -1893,13 +1905,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 910188372047049241, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
+      propertyPath: effects.Array.size
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 910188372047049241, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
       propertyPath: 'effects.Array.data[9]'
       value: 
-      objectReference: {fileID: 11400000, guid: b365fceaec6b8d74ba5ac0b3a9002d92, type: 2}
+      objectReference: {fileID: 11400000, guid: 156daec5f9490b846912931050ec376d, type: 2}
     - target: {fileID: 910188372047049241, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
       propertyPath: 'effects.Array.data[10]'
       value: 
-      objectReference: {fileID: 11400000, guid: fbf323d173c99f947b2dd64633905b22, type: 2}
+      objectReference: {fileID: 11400000, guid: 24d28a24d183f0a4ba2d5e4af87b00b8, type: 2}
     - target: {fileID: 910188372047049241, guid: 8bd288840b8e5b144aaf0cca8080f636, type: 3}
       propertyPath: 'effects.Array.data[11]'
       value: 

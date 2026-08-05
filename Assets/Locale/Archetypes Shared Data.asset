@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: Archetypes Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: Archetypes
+  m_TableCollectionNameGuidString: fbbf1fa5a7dc88c4db48a5aab19975e0
+  m_Entries:
+  - m_Id: 26700021760
+    m_Key: class.name.Archmage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 203699650560
+    m_Key: class.description.Archmage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 241221894144
+    m_Key: class.passives.Archmage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 351892799488
+    m_Key: class.name.Magician
+    m_Metadata:
+      m_Items: []
+  - m_Id: 452623204352
+    m_Key: class.description.Magician
+    m_Metadata:
+      m_Items: []
+  - m_Id: 454640664576
+    m_Key: class.passives.Magician
+    m_Metadata:
+      m_Items: []
+  - m_Id: 545254408192
+    m_Key: class.name.Ranger
+    m_Metadata:
+      m_Items: []
+  - m_Id: 587235196928
+    m_Key: class.description.Ranger
+    m_Metadata:
+      m_Items: []
+  - m_Id: 589076496384
+    m_Key: class.passives.Ranger
+    m_Metadata:
+      m_Items: []
+  - m_Id: 604746416128
+    m_Key: class.name.Pyromancer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 676112498688
+    m_Key: class.description.Pyromancer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 678616498176
+    m_Key: class.passives.Pyromancer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 714184196096
+    m_Key: class.name.Keeper
+    m_Metadata:
+      m_Items: []
+  - m_Id: 745016524800
+    m_Key: class.description.Keeper
+    m_Metadata:
+      m_Items: []
+  - m_Id: 746736189440
+    m_Key: class.passives.Keeper
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 7856557142602940505
+  references:
+    version: 2
+    RefIds:
+    - rid: 7856557142602940505
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1785857907948

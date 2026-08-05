@@ -32,7 +32,6 @@ public class SpawnOnHitAction : SpawnOnEventAction {
             caster = context.Caster,
             alternativeSpawn = context.AlternativeSpawn,
             forceFirstOrigin = true,
-            spellDamageMultiplier = context.Stats.GetFinal(StatType.SpellDamage)
         };
         return spawnContext;
     }

@@ -24,6 +24,7 @@ public class PlayerUI : NetworkBehaviour {
     private float _displayMp = 1f;
     private float _displayHpSpendPreview = 0f;
     private float _displayMpSpendPreview = 0f;
+    private float _displayCastProgress = 0f;
 
     [SerializeField] private RectTransform echoItemPrefab;
     [SerializeField] private PlayerEffectUIItem effectItemPrefab;
@@ -65,6 +66,9 @@ public class PlayerUI : NetworkBehaviour {
         _displayMp = Math.Clamp(_caster.Mana.Mana / _caster.Mana.MaxMana, 0, 1);
         _displayHpSpendPreview = 0f;
         _displayMpSpendPreview = 0f;
+        _displayCastProgress = 0f;
+        _renderer.castProgressRoot.gameObject.SetActive(false);
+        _renderer.castProgressFill.transform.localScale = new Vector3(0f, 1f, 1f);
 
         for (int i = _renderer.effectsContainer.childCount - 1; i >= 0; i--) {
             var child = _renderer.effectsContainer.GetChild(i);
@@ -154,6 +158,12 @@ public class PlayerUI : NetworkBehaviour {
         Show(_statusable.DurationEffects);
 
         _renderer.alternativeSpawn.gameObject.SetActive(_caster.alternativeSpawn);
+
+        var castingInProgress = _caster.Charging;
+        var castProgress = _caster.ChargingProgress;
+        _displayCastProgress = Smooth01(_displayCastProgress, castingInProgress ? castProgress : 0f);
+        _renderer.castProgressRoot.gameObject.SetActive(castingInProgress);
+        _renderer.castProgressFill.transform.localScale = new Vector3(_displayCastProgress, 1f, 1f);
 
         if (_renderer.echoContainer.childCount != _caster.EchoCount) {
             if (_renderer.echoContainer.childCount < _caster.EchoCount) {

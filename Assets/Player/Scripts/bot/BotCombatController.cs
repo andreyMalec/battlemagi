@@ -158,6 +158,10 @@ public class BotCombatController : MonoBehaviour {
         _suppressedTargetTimer -= Time.deltaTime;
         _noLosRepathTimer -= Time.deltaTime;
 
+        if (_caster.ChargingProgress > GameModeRules.BotChargePercent()) {
+            _caster.CancelCast();
+        }
+
         switch (_state) {
             case BotCombatState.NoTarget:
                 TickNoTargetState();
@@ -485,7 +489,7 @@ public class BotCombatController : MonoBehaviour {
         _preparedSpell = spell;
         _preparedTarget = target;
         _preparedCastTimer = castPrepareDelay;
-        _spellSwitchTimer = switchSpellDelay;
+        _spellSwitchTimer = GameModeRules.IsChargedShotOnlyMode() ? switchSpellDelay / 1.5f : switchSpellDelay;
         _hasPreparedSpell = true;
         _caster.SelectSpell(_preparedSpell);
     }
@@ -698,6 +702,8 @@ public class BotCombatController : MonoBehaviour {
 
     private static float GetCastCooldown(SpellDefinition spell) {
         var cooldown = 3f;
+        if (GameModeRules.IsChargedShotOnlyMode())
+            return cooldown;
         if (spell.channeling)
             cooldown += Mathf.Min(0.75f, spell.channelDuration * 0.4f);
         if (spell.charging)

@@ -186,6 +186,8 @@ public class StatusableNetworkBridge : NetworkBehaviour, IStatusableBridge {
     public void HandleHit(DamageRequest hit) {
         if (hit.source != "Pain Mirror" && hit.fromId != OwnerId) {
             if (_core.HasEffect("Pain Mirror")) {
+                if (hit.fromId == ParticipantId.EnvironmentId) return;
+
                 if (ParticipantIdentity.TryFind(hit.fromId, out var player) && player != null) {
                     var reflectDamage = hit.amount;
                     if (_stats != null)

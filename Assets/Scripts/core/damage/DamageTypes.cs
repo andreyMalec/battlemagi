@@ -12,6 +12,7 @@ public enum DamageKind {
     Reflect,
     Fall,
     Dirt,
+    Delayed,
 }
 
 [Flags]

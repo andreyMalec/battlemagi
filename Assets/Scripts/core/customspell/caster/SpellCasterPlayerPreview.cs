@@ -1,9 +1,10 @@
-using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
 
 public class SpellCasterPlayerPreview : MonoBehaviour {
+    public event System.Action OnChargingCompleteLocal;
+
     private SpellCasterPlayer _caster;
     private ISpellSpawnPreview _spawnPreview;
     private SpellDefinition _spell;
@@ -38,6 +39,10 @@ public class SpellCasterPlayerPreview : MonoBehaviour {
 
     public void StartCharging() {
         _bridgeTyped.StartCharging();
+    }
+
+    public void FullyCharged() {
+        _bridgeTyped.FullyCharged();
     }
 
     private void UpdatePreview(bool force) {

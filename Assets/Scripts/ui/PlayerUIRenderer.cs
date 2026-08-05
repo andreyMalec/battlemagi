@@ -13,6 +13,8 @@ public class PlayerUIRenderer : MonoBehaviour {
     public TMP_Text mpText;
     public Image mpSpendPreview;
     public TMP_Text mpSpendText;
+    public RectTransform castProgressRoot;
+    public Image castProgressFill;
     public RectTransform[] uiContainers;
     public RectTransform effectsContainer;
     public RectTransform echoContainer;

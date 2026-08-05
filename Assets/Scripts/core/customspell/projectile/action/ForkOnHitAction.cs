@@ -55,7 +55,6 @@ public class ForkOnHitAction : ISpellAction {
             caster = context.Caster,
             alternativeSpawn = context.AlternativeSpawn,
             forceFirstOrigin = true,
-            spellDamageMultiplier = context.Stats.GetFinal(StatType.SpellDamage)
         };
         context.Caster.Spawn(spawnContext);
     }

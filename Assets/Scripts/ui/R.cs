@@ -2,6 +2,9 @@ using UnityEngine.Localization.Settings;
 using UnityEngine.Localization.Tables;
 
 public static class R {
+    private static StringTable _spells;
+    private static StringTable _archetypes;
+
     public static string String(string key) {
         return LocalizationSettings.StringDatabase.GetLocalizedString(key);
     }
@@ -17,9 +20,8 @@ public static class R {
 
     public static void OnLanguageChanged() {
         _spells = null;
+        _archetypes = null;
     }
-
-    private static StringTable _spells;
 
     public static string Spell(string key) {
         if (_spells == null) {
@@ -36,5 +38,13 @@ public static class R {
         }
 
         return str;
+    }
+
+    public static string Archetype(string key) {
+        if (_archetypes == null) {
+            _archetypes = LocalizationSettings.StringDatabase.GetTable("Archetypes");
+        }
+
+        return _archetypes [key].GetLocalizedString();
     }
 }

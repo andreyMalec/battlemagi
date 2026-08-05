@@ -15,6 +15,7 @@ MonoBehaviour:
   prefabId: 5
   moveType: 1
   moveSpeed: 60
+  scaleSpeedWithCharge: 1
   moveAlongGround: 0
   groundOffset: 0.1
   enableMaxDistance: 0
@@ -30,11 +31,11 @@ MonoBehaviour:
   spiralRadius: 0.5
   spiralAxis: 0
   acceleration: 0
-  enableHoming: 1
+  enableHoming: 0
   obstacleMask:
     serializedVersion: 2
     m_Bits: 64
-  homingRadius: 3
+  homingRadius: 1
   homingMaxTurnDegrees: 50
   homingSlerp: 0.75
   enableSquashStretch: 0
@@ -49,13 +50,16 @@ MonoBehaviour:
   pierceTargetMode: 0
   enableFork: 1
   forkCount: 2
-  forkSpreadAngle: 35
+  scaleForksWithCharge: 0
+  forkSpreadAngle: 10
   echoOnHit: 0
   spawnInHit: 0
   onHitSpawn: {fileID: 0}
+  onHitSpawn2: {fileID: 0}
   atMaxDistanceSpawn: {fileID: 0}
   atStepDistanceSpawn: {fileID: 0}
   spawnStep: 10
+  spawnStepAxes: 7
   onLifetimeEndSpawn: {fileID: 0}
   onLifetimeHalfSpawn: {fileID: 0}
   spawnAtStep: 0

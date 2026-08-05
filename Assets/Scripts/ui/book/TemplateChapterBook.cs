@@ -54,8 +54,6 @@ public class TemplateChapterBook : MonoBehaviour {
     [Header("Content")]
     [SerializeField] public BookDocument document = new BookDocument();
 
-    [SerializeField] public BookTooltip[] tooltips;
-
     private int spreadStartIndex;
     private int targetSpreadStartIndex = -1;
     private int pendingSpreadStartIndex = -1;

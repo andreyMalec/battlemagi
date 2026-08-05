@@ -9,10 +9,10 @@ public class BeamDamageModuleAction : ISpellAction {
         if (context.SpellDamage == null) return;
 
         switch (context.SpellDamage.mode) {
-            case SpellDamageMode.DamageOverTime:
+            case SpellDamageMode.OverTime:
                 ApplyDot(context, evt);
                 break;
-            case SpellDamageMode.OncePerLifetime:
+            case SpellDamageMode.OncePerTarget:
                 ApplyOncePerTarget(context, evt);
                 break;
         }

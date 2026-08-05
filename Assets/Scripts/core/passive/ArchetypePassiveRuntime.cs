@@ -21,6 +21,7 @@ public class ArchetypePassiveRuntime : MonoBehaviour {
     private float _activeSpellDamageModifier = 1f;
 
     private List<float> _afterTakeDamageEffectsTimer = new();
+    private Dictionary<TriggerEffect, float> _triggerEffectsTimer = new();
 
     private void Awake() {
         _stats = GetComponent<Stats>();
@@ -51,6 +52,38 @@ public class ArchetypePassiveRuntime : MonoBehaviour {
 
         UpdateActiveSpellDamageModifier();
         UpdateTakeDamageEffects();
+        UpdateTriggerEffects();
+    }
+
+    private void UpdateTriggerEffects() {
+        if (_config.triggerEffects == null)
+            return;
+
+        for (var i = 0; i < _config.triggerEffects.Length; i++) {
+            var triggerEffect = _config.triggerEffects[i];
+            if (_triggerEffectsTimer.TryGetValue(triggerEffect, out var timer) && timer > 0f) {
+                _triggerEffectsTimer[triggerEffect] -= Time.fixedDeltaTime;
+                continue;
+            }
+
+            switch (triggerEffect.trigger) {
+                case TriggerType.Health:
+                    if (_damageable.Health.Health / _damageable.Health.maxHealth >= triggerEffect.healthBelow)
+                        continue;
+                    break;
+                case TriggerType.Mana:
+                    if (_caster.Mana.Mana / _caster.Mana.maxMana >= triggerEffect.manaBelow)
+                        continue;
+                    break;
+                case TriggerType.Frozen:
+                    // if (!_statusable.HasEffect("Frozen")) TODO
+                        continue;
+                    break;
+            }
+            _statusable.AddEffect(_damageable.OwnerId, triggerEffect.effect);
+            _statusable.AddEffect(_damageable.OwnerId, triggerEffect.cooldownEffect);
+            _triggerEffectsTimer[triggerEffect] = triggerEffect.cooldownEffect.duration;
+        }
     }
 
     private void Subscribe() {

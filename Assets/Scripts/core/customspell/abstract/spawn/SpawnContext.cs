@@ -12,7 +12,7 @@ public record SpawnContext {
     public bool branch;
     public ITarget target;
 
-    public float spellDamageMultiplier = 1f;
+    public float chargePercent = 1f;
     public bool alternativeSpawn;
     public int index;
     public int count;

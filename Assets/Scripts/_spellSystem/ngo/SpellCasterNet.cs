@@ -11,7 +11,7 @@ public class SpellCasterNet : NetworkBehaviour {
             context.spell.name,
             context.position, context.forward, context.rotation,
             context.alternativeSpawn,
-            context.spellDamageMultiplier
+            context.chargePercent
         );
     }
 
@@ -21,13 +21,13 @@ public class SpellCasterNet : NetworkBehaviour {
         string spellName,
         Vector3 position, Vector3 forward, Quaternion rotation,
         bool alternativeSpawn,
-        float damageMultiplier
+        float chargePercent
     ) {
         if (!Ctx.TryGetSpawnedObject(casterNetObjectId, out var casterNetObj))
             return;
 
         SpellLog.Log(
-            $"[NetworkSpellSystemEvent] RequestSpawnServerRpc: {casterNetObj.name}, position={position}, forward={forward}, damageMultiplier={damageMultiplier}");
+            $"[NetworkSpellSystemEvent] RequestSpawnServerRpc: {casterNetObj.name}, position={position}, forward={forward}, damageMultiplier={chargePercent}");
         var spell = DefaultSpells.Get(spellName)?.spell ?? DefaultSpells.GetSubSpell(spellName);
         if (spell == null)
             return;
@@ -42,7 +42,7 @@ public class SpellCasterNet : NetworkBehaviour {
             caster = caster,
             alternativeSpawn = alternativeSpawn,
             forceFirstOrigin = true,
-            spellDamageMultiplier = damageMultiplier,
+            chargePercent = chargePercent,
             branch = true
         };
         var spellSpawn = ISpellSpawn.GetMode(alternativeSpawn && spell.spawn.useAlternativeSpawnMode
@@ -55,7 +55,7 @@ public class SpellCasterNet : NetworkBehaviour {
         RequestCastServerRpc(NetworkObjectId, context.spell.name, context.alternativeSpawn,
             context.target?.ObjectId ?? ulong.MaxValue,
             context.target?.Position ?? Vector3.zero,
-            context.spellDamageMultiplier);
+            context.chargePercent);
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
@@ -65,7 +65,7 @@ public class SpellCasterNet : NetworkBehaviour {
         bool alternativeSpawn,
         ulong targetNetObjectId = ulong.MaxValue,
         Vector3 targetPosition = default,
-        float damageMultiplier = 1f,
+        float chargePercent = 1f,
         RpcParams rpcParams = default
     ) {
         if (!Ctx.TryGetSpawnedObject(casterNetObjectId, out var casterNetObj))
@@ -84,7 +84,7 @@ public class SpellCasterNet : NetworkBehaviour {
         });
 
         SpellLog.Log(
-            $"[NetworkSpellSystemEvent] RequestCastServerRpc: {casterNetObj.name}, target={target}, damageMultiplier={damageMultiplier}");
+            $"[NetworkSpellSystemEvent] RequestCastServerRpc: {casterNetObj.name}, target={target}, chargePercent={chargePercent}");
         var spell = DefaultSpells.Get(spellName)?.spell ?? DefaultSpells.GetSubSpell(spellName);
         if (spell == null)
             return;
@@ -99,7 +99,7 @@ public class SpellCasterNet : NetworkBehaviour {
         var context = caster.CastContext(spell);
         context.target = target;
         context.alternativeSpawn = alternativeSpawn;
-        context.spellDamageMultiplier = damageMultiplier;
+        context.chargePercent = chargePercent;
         var spellSpawn = ISpellSpawn.GetMode(alternativeSpawn && spell.spawn.useAlternativeSpawnMode
             ? spell.spawn.alternativeSpawnMode
             : spell.spawn.spawnMode);

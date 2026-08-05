@@ -9,6 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6055409217010266343}
+  - component: {fileID: 250729178097385533}
+  - component: {fileID: 2796540268545572335}
   m_Layer: 9
   m_Name: spine_03.x
   m_TagString: Untagged
@@ -34,6 +36,40 @@ Transform:
   - {fileID: 8105786510043579987}
   m_Father: {fileID: 6545230557530801518}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &250729178097385533
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 14175933523532415}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.49, y: 0.19, z: 0.43}
+  m_Center: {x: 0, y: 0.15, z: 0}
+--- !u!114 &2796540268545572335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 14175933523532415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 1
 --- !u!1 &72048593189639028
 GameObject:
   m_ObjectHideFlags: 0
@@ -175,6 +211,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 0
 --- !u!1 &102761680604274851
 GameObject:
   m_ObjectHideFlags: 0
@@ -320,6 +357,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 0
 --- !u!1 &215308316126423587
 GameObject:
   m_ObjectHideFlags: 0
@@ -596,7 +634,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.06478249
+  m_Radius: 0.09
   m_Height: 0.25912997
   m_Direction: 1
   m_Center: {x: 0, y: 0.12956499, z: 0}
@@ -685,6 +723,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 0
 --- !u!1 &1573268133304968451
 GameObject:
   m_ObjectHideFlags: 0
@@ -826,6 +865,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1661170919700129822}
+  - component: {fileID: 3477182764521989391}
+  - component: {fileID: 9141735486645334745}
   m_Layer: 9
   m_Name: foot.r
   m_TagString: Untagged
@@ -849,6 +890,42 @@ Transform:
   - {fileID: 3949613656504104344}
   m_Father: {fileID: 2570908652285979445}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &3477182764521989391
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2410262295827552784}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.06
+  m_Height: 0.27
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.09, z: 0}
+--- !u!114 &9141735486645334745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2410262295827552784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 1
 --- !u!1 &2683407658182563045
 GameObject:
   m_ObjectHideFlags: 0
@@ -1000,8 +1077,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.447273, y: 0.426732, z: 0.28778216}
-  m_Center: {x: 0.00016602874, y: 0.21336623, z: -0.012948811}
+  m_Size: {x: 0.447273, y: 0.426732, z: 0.38}
+  m_Center: {x: 0.00016602874, y: 0.21336623, z: 0.02}
 --- !u!54 &8407810245311606376
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1110,6 +1187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 0
 --- !u!1 &3342525640439768165
 GameObject:
   m_ObjectHideFlags: 0
@@ -1286,6 +1364,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 0
 --- !u!1 &3671646620697326995
 GameObject:
   m_ObjectHideFlags: 0
@@ -1342,7 +1421,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.06478248
+  m_Radius: 0.09
   m_Height: 0.2591299
   m_Direction: 1
   m_Center: {x: 0, y: 0.12956496, z: 0}
@@ -1431,6 +1510,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 0
 --- !u!1 &3966482465398372500
 GameObject:
   m_ObjectHideFlags: 0
@@ -1872,6 +1952,7 @@ MonoBehaviour:
   ikTargetHand: {fileID: 0}
   spineIkConstraint: {fileID: 5172968046446341536}
   invocation: {fileID: 1933632529031243535}
+  rightHand: {fileID: 274122428541932530}
   cloak: {fileID: 8771685419707555780}
   rigidbodies:
   - body: {fileID: 6791274383778968144}
@@ -1896,6 +1977,11 @@ MonoBehaviour:
     enableDetectCollisions: 1
   - body: {fileID: 7083296332975068303}
     enableDetectCollisions: 0
+  excludedColliders:
+  - {fileID: 250729178097385533}
+  - {fileID: 1624697466884800737}
+  - {fileID: 6122194153273613040}
+  - {fileID: 3477182764521989391}
 --- !u!114 &3346855600943169794
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2074,6 +2160,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 0
 --- !u!1 &4373745355908193274
 GameObject:
   m_ObjectHideFlags: 0
@@ -2243,6 +2330,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4293958322836027344}
+  - component: {fileID: 6122194153273613040}
+  - component: {fileID: 3684427502390656919}
   m_Layer: 9
   m_Name: foot.l
   m_TagString: Untagged
@@ -2266,6 +2355,42 @@ Transform:
   - {fileID: 7985862879401901440}
   m_Father: {fileID: 4713393408391972657}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &6122194153273613040
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4635095470865252488}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.06
+  m_Height: 0.27
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.09, z: 0}
+--- !u!114 &3684427502390656919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4635095470865252488}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 1
 --- !u!1 &4675689649673414340
 GameObject:
   m_ObjectHideFlags: 0
@@ -2452,7 +2577,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.10875279
+  m_Radius: 0.14
   m_Height: 0.36250928
   m_Direction: 1
   m_Center: {x: 0, y: 0.18125464, z: 0}
@@ -2541,6 +2666,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 0
 --- !u!1 &5110707620596693244
 GameObject:
   m_ObjectHideFlags: 0
@@ -2929,6 +3055,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7659285700643969798}
   - component: {fileID: 4508260332552087980}
+  - component: {fileID: 1624697466884800737}
+  - component: {fileID: 6960698433675587092}
   m_Layer: 9
   m_Name: neck.x
   m_TagString: Untagged
@@ -2975,6 +3103,42 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 2
   m_Center: {x: 0, y: 0.34, z: 0.04}
+--- !u!136 &1624697466884800737
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7032432342768959135}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.14
+  m_Height: 0.37
+  m_Direction: 2
+  m_Center: {x: 0, y: 0.12, z: 0.03}
+--- !u!114 &6960698433675587092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7032432342768959135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 1
 --- !u!1 &7065297655565472494
 GameObject:
   m_ObjectHideFlags: 0
@@ -3451,7 +3615,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.108752705
+  m_Radius: 0.14
   m_Height: 0.362509
   m_Direction: 1
   m_Center: {x: 0, y: 0.1812545, z: 0}
@@ -3540,6 +3704,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 0
 --- !u!1 &8618192960582830495
 GameObject:
   m_ObjectHideFlags: 0
@@ -3967,8 +4132,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.4472828, y: 0.14869787, z: 0.28698722}
-  m_Center: {x: 0.00000035762787, y: 0.074348934, z: -0.02480106}
+  m_Size: {x: 0.4472828, y: 0.14869787, z: 0.38}
+  m_Center: {x: 0.00000035762787, y: 0.074348934, z: 0.01}
 --- !u!54 &6791274383778968144
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -4008,6 +4173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 0
 --- !u!1 &8894687071911355984
 GameObject:
   m_ObjectHideFlags: 0
@@ -4218,3 +4384,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4d453a5b528445b9e34c2c54e88a114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChildCollider
+  excludeFromJoints: 0

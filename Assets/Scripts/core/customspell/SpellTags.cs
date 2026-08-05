@@ -6,7 +6,7 @@ public static class SpellTags {
         var tags = new Dictionary<string, string>();
         var affects = new HashSet<string>();
         Make(spell, ref tags, ref affects);
-        tags["affects"] = string.Join("/", affects);
+        tags["affects"] = string.Join(" /", affects);
         return tags;
     }
 
@@ -40,11 +40,13 @@ public static class SpellTags {
     }
 
     private static void Core(SpellDefinition spell, ref Dictionary<string, string> tags, string prefix = "") {
-        tags[$"{prefix}radius"] = $"{spell.scale:0.##}m";
-        tags[$"{prefix}scale"] = $"{spell.scale:0.##}m";
-        tags[$"{prefix}range"] = $"{spell.scale:0.##}m";
-        tags[$"{prefix}duration"] = $"{spell.lifetime:0.##}s";
-        tags[$"{prefix}lifetime"] = $"{spell.lifetime:0.##}s";
+        var m = R.String("meter");
+        var s = R.String("second");
+        tags[$"{prefix}radius"] = $"{spell.scale:0.##}{m}";
+        tags[$"{prefix}scale"] = $"{spell.scale:0.##}{m}";
+        tags[$"{prefix}range"] = $"{spell.scale:0.##}{m}";
+        tags[$"{prefix}duration"] = $"{spell.lifetime:0.##}{s}";
+        tags[$"{prefix}lifetime"] = $"{spell.lifetime:0.##}{s}";
         tags[$"{prefix}echoCount"] = $"{spell.echoCount}";
         tags[$"{prefix}manaCost"] = $"{spell.manaCost:0.##}";
         tags[$"{prefix}manaPerSecond"] = $"{spell.manaPerSecond:0.##}";
@@ -52,9 +54,9 @@ public static class SpellTags {
         tags[$"{prefix}channeling"] = spell.channeling ? "Yes" : "No";
         tags[$"{prefix}charging"] = spell.charging ? "Yes" : "No";
         if (spell.channeling)
-            tags[$"{prefix}channelDuration"] = $"{spell.channelDuration:0.##}s";
+            tags[$"{prefix}channelDuration"] = $"{spell.channelDuration:0.##}{s}";
         if (spell.charging)
-            tags[$"{prefix}chargeDuration"] = $"{spell.chargeDuration:0.##}s";
+            tags[$"{prefix}chargeDuration"] = $"{spell.chargeDuration:0.##}{s}";
     }
 
     private static void Damage(SpellDefinition spell, ref Dictionary<string, string> tags, string prefix = "") {
@@ -68,15 +70,16 @@ public static class SpellTags {
             tags[$"{prefix}damage.scaleWithRange"] = dmg.scaleWithRange ? "Yes" : "No";
             tags[$"{prefix}damage.percentOf"] = dmg.percentOf.ToString();
             tags[$"{prefix}damage.percent"] = $"{dmg.percent * 100f:0.##}%";
-            if (dmg.mode == SpellDamageMode.DamageOverTime) {
-                tags[$"{prefix}damage.perSecond"] = $"{dmg.amount / dmg.tickInterval:0.##}/s";
-                tags[$"{prefix}damage.tick"] = $"{dmg.tickInterval:0.##}";
+            if (dmg.mode == SpellDamageMode.OverTime) {
+                tags[$"{prefix}damage.perSecond"] = $"{dmg.amount / dmg.tickInterval:0.##}/{R.String("second")}";
+                tags[$"{prefix}damage.tick"] = $"{dmg.tickInterval:0.##}{R.String("second")}";
             }
 
             if (dmg.baseType == SpellDamageBaseType.Percent) {
                 tags[$"{prefix}damage.amount"] = $"{dmg.percent * 100f:0.##}%";
-                if (dmg.mode == SpellDamageMode.DamageOverTime) {
-                    tags[$"{prefix}damage.perSecond"] = $"{dmg.percent * 100f / dmg.tickInterval:0.##}%/s";
+                if (dmg.mode == SpellDamageMode.OverTime) {
+                    tags[$"{prefix}damage.perSecond"] =
+                        $"{dmg.percent * 100f / dmg.tickInterval:0.##}%/{R.String("second")}";
                 }
             }
         } else {
@@ -93,7 +96,7 @@ public static class SpellTags {
             tags[$"{prefix}knockback.canHitAllies"] = kb.canHitAllies ? "Yes" : "No";
             tags[$"{prefix}knockback.impulse"] = $"{kb.impulse:0.##}";
             tags[$"{prefix}knockback.forcePerSecond"] = $"{kb.forcePerSecond:0.##}";
-            tags[$"{prefix}knockback.duration"] = $"{kb.duration:0.##}";
+            tags[$"{prefix}knockback.duration"] = $"{kb.duration:0.##}{R.String("second")}";
             tags[$"{prefix}knockback.beamSelfImpulse"] = $"{kb.beamSelfImpulse:0.##}";
             tags[$"{prefix}knockback.beamSelfImpulseAngle"] = $"{kb.beamSelfImpulseAngle:0.##}";
             tags[$"{prefix}knockback.upBias"] = $"{kb.upBias:0.##}";
@@ -120,12 +123,12 @@ public static class SpellTags {
             tags[$"{prefix}spawn.circleHeight"] = $"{spawn.circleHeight:0.##}";
             tags[$"{prefix}spawn.raycastMaxDistance"] = $"{spawn.raycastMaxDistance:0.##}";
             tags[$"{prefix}spawn.rotateForward"] = spawn.rotateForward ? "Yes" : "No";
-            tags[$"{prefix}spawn.maxCastRange"] = $"{spawn.MaxCastRange():0.##}m";
+            tags[$"{prefix}spawn.maxCastRange"] = $"{spawn.MaxCastRange():0.##}{R.String("meter")}";
         }
     }
 
     private static void Effects(SpellDefinition spell, ref Dictionary<string, string> tags, string prefix = "") {
-        var effectLines = new List<string>();
+        var s = R.String("second");
         if (spell.effects != null && spell.effects.Count > 0) {
             tags[$"{prefix}hasEffects"] = "Yes";
             tags[$"{prefix}effectsCount"] = $"{spell.effects.Count}";
@@ -139,7 +142,7 @@ public static class SpellTags {
                 tags[$"{iprefix}target"] = effect.target.ToString();
                 tags[$"{iprefix}oneShot"] = effect.oneShot ? "Yes" : "No";
                 if (effect.effect != null) {
-                    tags[$"{iprefix}duration"] = $"{effect.effect.duration:0.##}s";
+                    tags[$"{iprefix}duration"] = $"{effect.effect.duration:0.##}{s}";
                     tags[$"{iprefix}removeOnHit"] = effect.effect.removeOnHit ? "Yes" : "No";
                     tags[$"{iprefix}compare"] = effect.effect.compare.ToString();
                     tags[$"{iprefix}value"] = effect.effect.StringValue();
@@ -152,8 +155,8 @@ public static class SpellTags {
                         tags[$"{iprefix}amount"] = $"{mana.amount:0.##}";
                     else if (effect.effect is DamageOverTimeEffect dot) {
                         tags[$"{iprefix}dps"] = $"{dot.dps:0.##}";
-                        tags[$"{iprefix}damagePerSecond"] = $"{dot.dps / dot.tickInterval:0.##}/s";
-                        tags[$"{iprefix}tick"] = $"{dot.tickInterval:0.##}";
+                        tags[$"{iprefix}damagePerSecond"] = $"{dot.dps / dot.tickInterval:0.##}/{s}";
+                        tags[$"{iprefix}tick"] = $"{dot.tickInterval:0.##}{s}";
                         tags[$"{iprefix}canSelfDamage"] = dot.canSelfDamage ? "Yes" : "No";
                         tags[$"{iprefix}percentDamage"] = dot.percentDamage ? "Yes" : "No";
                         tags[$"{iprefix}percentOfSourceDamage"] = dot.percentOfSourceDamage ? "Yes" : "No";
@@ -170,41 +173,33 @@ public static class SpellTags {
                             tags[$"{iprefix}multiplier"] = $"{(stat.multiplier - 1) * 100:0.##}%";
                     }
                 }
-
-                var effectLine = effect.type.ToString();
-                if (effect.effect != null) {
-                    var value = effect.effect.StringValue();
-                    if (!string.IsNullOrEmpty(value))
-                        effectLine += $" {value}";
-                    if (effect.effect.duration > 0f)
-                        effectLine += $" ({effect.effect.duration:0.##}s)";
-                }
-
-                effectLines.Add(effectLine);
             }
         } else {
             tags[$"{prefix}hasEffects"] = "No";
             tags[$"{prefix}effectsCount"] = "No";
         }
-
-        tags[$"{prefix}effectsList"] = string.Join(", ", effectLines);
     }
 
     private static void Projectile(
-        ProjectileDefinition proj, ref Dictionary<string, string> tags, ref HashSet<string> targets, string prefix = ""
+        ProjectileDefinition proj, 
+        ref Dictionary<string, string> tags, 
+        ref HashSet<string> targets,
+        string prefix = ""
     ) {
+        var m = R.String("meter");
+        var s = R.String("second");
         tags[$"{prefix}type"] = "Projectile";
         tags[$"{prefix}moveType"] = proj.moveType.ToString();
         if (proj.moveType == SpellMovement.Hitscan)
-            tags[$"{prefix}moveSpeed"] = "Instant";
+            tags[$"{prefix}moveSpeed"] = R.String("Instant");
         else
-            tags[$"{prefix}moveSpeed"] = $"{proj.moveSpeed:0.##}m/s";
+            tags[$"{prefix}moveSpeed"] = $"{proj.moveSpeed:0.##}{m}/{s}";
         tags[$"{prefix}moveAlongGround"] = proj.moveAlongGround ? "Yes" : "No";
         if (proj.enableMaxDistance)
-            tags[$"{prefix}maxDistance"] = $"{proj.maxDistance:0.##}m";
+            tags[$"{prefix}maxDistance"] = $"{proj.maxDistance:0.##}{m}";
         tags[$"{prefix}enableGravity"] = proj.enableGravity ? "Yes" : "No";
         tags[$"{prefix}enableHoming"] = proj.enableHoming ? "Yes" : "No";
-        tags[$"{prefix}homingRadius"] = $"{proj.homingRadius:0.##}m";
+        tags[$"{prefix}homingRadius"] = $"{proj.homingRadius:0.##}{m}";
         tags[$"{prefix}maxBounces"] = $"{proj.maxBounces}";
         tags[$"{prefix}maxPierces"] = $"{proj.maxPierces}";
         tags[$"{prefix}forkCount"] = $"{proj.forkCount}";
@@ -220,18 +215,23 @@ public static class SpellTags {
     }
 
     private static void Zone(
-        ZoneDefinition zone, ref Dictionary<string, string> tags, ref HashSet<string> targets, string prefix = ""
+        ZoneDefinition zone, 
+        ref Dictionary<string, string> tags,
+        ref HashSet<string> targets, 
+        string prefix = ""
     ) {
+        var m = R.String("meter");
+        var s = R.String("second");
         tags[$"{prefix}type"] = $"Area";
         tags[$"{prefix}shape"] = zone.shapeType.ToString();
         tags[$"{prefix}moveType"] = zone.moveType.ToString();
-        tags[$"{prefix}moveSpeed"] = $"{zone.moveSpeed:0.##}m/s";
+        tags[$"{prefix}moveSpeed"] = $"{zone.moveSpeed:0.##}{m}/{s}";
         if (zone.enableMaxDistance)
-            tags[$"{prefix}maxDistance"] = $"{zone.maxDistance:0.##}m";
+            tags[$"{prefix}maxDistance"] = $"{zone.maxDistance:0.##}{m}";
         tags[$"{prefix}destroyIncomingSpells"] = zone.destroyIncomingSpells ? "Yes" : "No";
         tags[$"{prefix}impassableForEnemies"] = zone.impassableForEnemies ? "Yes" : "No";
         tags[$"{prefix}enableHoming"] = zone.enableHoming ? "Yes" : "No";
-        tags[$"{prefix}homingRadius"] = $"{zone.homingRadius:0.##}";
+        tags[$"{prefix}homingRadius"] = $"{zone.homingRadius:0.##}{m}";
         tags[$"{prefix}spawnStep"] = $"{zone.spawnStep:0.##}";
         Make(zone.atStepDistanceSpawn, ref tags, ref targets, $"{prefix}atStepDistanceSpawn.");
         Make(zone.onLifetimeEndSpawn, ref tags, ref targets, $"{prefix}onLifetimeEndSpawn.");
@@ -243,15 +243,17 @@ public static class SpellTags {
     private static void Beam(
         BeamDefinition beam, ref Dictionary<string, string> tags, ref HashSet<string> targets, string prefix = ""
     ) {
+        var m = R.String("meter");
+        var s = R.String("second");
         tags[$"{prefix}type"] = $"Beam";
         tags[$"{prefix}shape"] = beam.shapeType.ToString();
-        tags[$"{prefix}maxLength"] = $"{beam.MaxLength:0.##}m";
+        tags[$"{prefix}maxLength"] = $"{beam.MaxLength:0.##}{m}";
         tags[$"{prefix}coneAngle"] = $"{beam.coneAngle:0.##}";
-        tags[$"{prefix}coneLength"] = $"{beam.coneLength:0.##}m";
+        tags[$"{prefix}coneLength"] = $"{beam.coneLength:0.##}{m}";
         tags[$"{prefix}moveType"] = beam.moveType.ToString();
-        tags[$"{prefix}moveSpeed"] = $"{beam.moveSpeed:0.##}m/s";
+        tags[$"{prefix}moveSpeed"] = $"{beam.moveSpeed:0.##}{m}/{s}";
         if (beam.enableMaxDistance)
-            tags[$"{prefix}maxDistance"] = $"{beam.maxDistance:0.##}m";
+            tags[$"{prefix}maxDistance"] = $"{beam.maxDistance:0.##}{m}";
         tags[$"{prefix}maxBounces"] = $"{beam.maxBounces}";
         tags[$"{prefix}maxPierces"] = $"{beam.maxPierces}";
         tags[$"{prefix}forkCount"] = $"{beam.forkCount}";
@@ -265,23 +267,31 @@ public static class SpellTags {
     }
 
     private static void Summon(
-        SummonDefinition summon, ref Dictionary<string, string> tags, ref HashSet<string> targets, string prefix = ""
+        SummonDefinition summon,
+        ref Dictionary<string, string> tags, 
+        ref HashSet<string> targets, 
+        string prefix = ""
     ) {
+        var m = R.String("meter");
+        var s = R.String("second");
         tags[$"{prefix}type"] = $"Summon";
         tags[$"{prefix}summonBrain"] = summon.brain.ToString();
         tags[$"{prefix}summonTargetFilter"] = summon.targetFilter.ToString();
         tags[$"{prefix}summonCanTargetAllies"] = summon.canTargetAllies ? "Yes" : "No";
         tags[$"{prefix}summonMotion"] = summon.motion.ToString();
         tags[$"{prefix}summonSensors"] = summon.sensors.ToString();
-        tags[$"{prefix}moveSpeed"] = $"{summon.moveSpeed:0.##}m/s";
-        tags[$"{prefix}summonFloatingHeight"] = $"{summon.floatingHeight:0.##}m";
-        tags[$"{prefix}summonSensorRadius"] = $"{summon.sensorRadius:0.##}m";
-        tags[$"{prefix}summonMaxCastRange"] = $"{summon.MaxCastRange():0.##}m";
+        tags[$"{prefix}moveSpeed"] = $"{summon.moveSpeed:0.##}{m}/{s}";
+        tags[$"{prefix}summonFloatingHeight"] = $"{summon.floatingHeight:0.##}{m}";
+        tags[$"{prefix}summonSensorRadius"] = $"{summon.sensorRadius:0.##}{m}";
+        tags[$"{prefix}summonMaxCastRange"] = $"{summon.MaxCastRange():0.##}{m}";
         Make(summon.mainSpell, ref tags, ref targets, $"{prefix}mainSpell.");
     }
 
     private static void Self(
-        SelfDefinition self, ref Dictionary<string, string> tags, ref HashSet<string> targets, string prefix = ""
+        SelfDefinition self, 
+        ref Dictionary<string, string> tags,
+        ref HashSet<string> targets, 
+        string prefix = ""
     ) {
         tags[$"{prefix}type"] = $"Self";
     }
@@ -292,37 +302,44 @@ public static class SpellTags {
         if (spell.summon != null) {
             switch (spell.summon.targetFilter) {
                 case TargetFilter.Player:
-                    targets.Add(spell.summon.canTargetAllies ? "Allies" : "Enemies");
+                    targets.Add(spell.summon.canTargetAllies ? R.String("Allies") : R.String("Enemies"));
                     break;
                 case TargetFilter.Spell:
-                    targets.Add(spell.summon.canTargetAllies ? "Allied Spells" : "Enemy Spells");
+                    targets.Add(spell.summon.canTargetAllies ? R.String("Allied Spells") : R.String("Enemy Spells"));
                     break;
                 default:
-                    targets.Add(spell.summon.canTargetAllies ? "Allied Units" : "Enemy Units");
+                    targets.Add(spell.summon.canTargetAllies ? R.String("Allied Units") : R.String("Enemy Units"));
                     break;
             }
         }
 
         if (spell.zone != null) {
             if (spell.zone.destroyIncomingSpells)
-                targets.Add("Enemy Spells");
+                targets.Add(R.String("Enemy Spells"));
         }
 
         if (spell.damage != null) {
-            targets.Add("Enemies");
+            targets.Add(R.String("Enemies"));
             if (spell.damage.canHitAllies)
-                targets.Add("Allies");
+                targets.Add(R.String("Allies"));
         }
 
         if (spell.knockback != null) {
-            targets.Add("Enemies");
+            targets.Add(R.String("Enemies"));
             if (spell.knockback.canHitAllies)
-                targets.Add("Allies");
+                targets.Add(R.String("Allies"));
         }
 
         if (spell.effects != null && spell.effects.Count > 0) {
             foreach (var effect in spell.effects) {
-                targets.Add(effect.target.ToString());
+                if (effect.target.HasFlag(EffectTarget.Allies))
+                    targets.Add(R.String("Allies"));
+                if (effect.target.HasFlag(EffectTarget.Enemies))
+                    targets.Add(R.String("Enemies"));
+                if (effect.target.HasFlag(EffectTarget.Draggable))
+                    targets.Add(R.String("Draggable"));
+                if (effect.target.HasFlag(EffectTarget.Self))
+                    targets.Add(R.String("Self"));
             }
         }
     }

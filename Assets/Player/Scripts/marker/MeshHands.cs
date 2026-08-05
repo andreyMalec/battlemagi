@@ -4,6 +4,7 @@ using UnityEngine;
 public class MeshHands : MonoBehaviour {
     private static readonly int Scale = Shader.PropertyToID("_Scale");
     public Transform invocation;
+    public Transform rightHand;
     [SerializeField] private Renderer mesh;
     [SerializeField] private AudioSource clapSource;
     [SerializeField] private AudioClip[] claps;

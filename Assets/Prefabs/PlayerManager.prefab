@@ -461,7 +461,6 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   parkourAirtimeThreshold: 3
   gravityAirtimeThreshold: 12
-  launchFallKillWindow: 3
 --- !u!114 &4209512637272849082
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -561,7 +560,7 @@ MonoBehaviour:
     mobility: 1
   - available: 1
     spell: {fileID: 11400000, guid: e0c836c4dea8e9c49b4260ce43893123, type: 2}
-    offensive: 1.1
+    offensive: 0.5
     defensive: 1
     mobility: 1
   - available: 1
