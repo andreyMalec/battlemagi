@@ -68,7 +68,7 @@ public static class SpellTags {
             tags[$"{prefix}damage.baseType"] = dmg.baseType.ToString();
             tags[$"{prefix}damage.canHitAllies"] = dmg.canHitAllies ? "Yes" : "No";
             tags[$"{prefix}damage.scaleWithRange"] = dmg.scaleWithRange ? "Yes" : "No";
-            tags[$"{prefix}damage.percentOf"] = dmg.percentOf.ToString();
+            tags[$"{prefix}damage.percentOf"] = R.String(dmg.percentOf+"%");
             tags[$"{prefix}damage.percent"] = $"{dmg.percent * 100f:0.##}%";
             if (dmg.mode == SpellDamageMode.OverTime) {
                 tags[$"{prefix}damage.perSecond"] = $"{dmg.amount / dmg.tickInterval:0.##}/{R.String("second")}";

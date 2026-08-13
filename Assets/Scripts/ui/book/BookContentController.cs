@@ -31,6 +31,7 @@ public class BookContentController : MonoBehaviour, LanguageAware {
         var allDefaultSpells = Ctx.GetAllDefaultSpells();
         var document = new TemplateChapterBook.BookDocument();
         var c = 0;
+        var m = R.String("meter");
         var s = R.String("second");
         foreach (var archetype in Ctx.Archetypes.archetypes) {
             var chapterIndex = c;
@@ -42,18 +43,17 @@ public class BookContentController : MonoBehaviour, LanguageAware {
             archetypeLeftPage.template = TemplateChapterBook.PageTemplateType.Archetype;
             archetypeLeftPage.image = archetype.bookImage;
             archetypeLeftPage.heading = R.Archetype($"class.name.{archetype.archetypeName}");
-            // archetypeLeftPage.paragraph = R.Archetype($"class.description.{archetype.archetypeName}");
 
             var hp = $"{archetype.maxHealth} +{archetype.healthRegen}/{s}";
             var mp = $"{archetype.maxMana} +{archetype.manaRegen}/{s}";
-            archetypeLeftPage.paragraph2 = $"    Health: {Health(hp)}\n" +
-                                           $"    Mana: {Mana(mp)}\n" +
-                                           $"    Movement speed: {archetype.movementSpeed}";
+            archetypeLeftPage.paragraph2 = $"    {R.String("Health")}: {Health(hp)}\n" +
+                                           $"    {R.String("Mana")}: {Mana(mp)}\n" +
+                                           $"    {R.String("Movement speed")}: {archetype.movementSpeed}{m}/{s}";
             chapter.pages.Add(archetypeLeftPage);
 
             var archetypeRightPage = new TemplateChapterBook.BookPage();
             archetypeRightPage.template = TemplateChapterBook.PageTemplateType.FullText;
-            archetypeRightPage.heading = "Passives";
+            archetypeRightPage.heading = R.String("Passives");
             archetypeRightPage.paragraph = R.Archetype($"class.passives.{archetype.archetypeName}");
             chapter.pages.Add(archetypeRightPage);
 

@@ -93,7 +93,6 @@ MonoBehaviour:
     m_Localized: 'The projectile splits into [forkCount] additional copies upon impact,
       bounces off surfaces, and is attracted to enemies within a small radius.
 
-      
 
       Affects:
       [affects]
@@ -102,8 +101,8 @@ MonoBehaviour:
 
       Damage: [damage.amount]
 
-      Number
-      of bounces: [maxBounces]'
+      Bounce
+      count: [maxBounces]'
     m_Metadata:
       m_Items: []
   - m_Id: 23116743974912

@@ -3,21 +3,47 @@ using UnityEngine;
 
 public class Bookmark : MonoBehaviour {
     [SerializeField] private Vector3 hoverMove;
-    [SerializeField] private float hoverUpTime = 0.5f;
     [SerializeField] private Renderer mainRenderer;
     [SerializeField] private Renderer iconRenderer;
 
     public event Action OnClick;
 
     private Vector3 _initialPosition;
-    private float _hoverUpTimer;
     private Material _iconMat;
     private Material _backgroundMat;
+
+    private bool _isHovering;
+    private Collider _hoveringCollider;
+    private Camera _mainCamera;
 
     public void Awake() {
         _iconMat = iconRenderer.material;
         _backgroundMat = mainRenderer.material;
         _initialPosition = transform.localPosition;
+        _hoveringCollider = GetComponent<Collider>();
+        _mainCamera = Camera.main;
+    }
+
+    private void Update() {
+        if (_isHovering) {
+            transform.localPosition = _initialPosition + hoverMove;
+        } else {
+            transform.localPosition = _initialPosition;
+        }
+
+        if (_mainCamera == null) {
+            _mainCamera = Camera.main;
+        }
+
+        var mouse = _mainCamera?.ScreenPointToRay(Input.mousePosition) ?? new Ray();
+        if (_hoveringCollider.Raycast(mouse, out _, 100)) {
+            _isHovering = true;
+            if (Input.GetMouseButtonDown(0)) {
+                OnClick?.Invoke();
+            }
+        } else {
+            _isHovering = false;
+        }
     }
 
     public void Set(Color color, Sprite icon) {
@@ -34,17 +60,5 @@ public class Bookmark : MonoBehaviour {
         newTexture.filterMode = sourceTexture.filterMode;
         newTexture.Apply();
         return newTexture;
-    }
-
-    private void OnMouseEnter() {
-        transform.localPosition = _initialPosition + hoverMove;
-    }
-
-    private void OnMouseExit() {
-        transform.localPosition = _initialPosition;
-    }
-
-    private void OnMouseUpAsButton() {
-        OnClick?.Invoke();
     }
 }

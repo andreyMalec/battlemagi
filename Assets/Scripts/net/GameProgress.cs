@@ -76,7 +76,7 @@ public class GameProgress : NetworkBehaviour {
             param[$"botArchetype_{arch}"] = prev + 1;
         }
 
-        Ctx.Analytics.SendEvent("MatchStarted", param);
+        Ctx.Analytics.SendEvent("MatchStarted", param.FilterValues(v => v is int i && i > 0));
     }
 
     public override void OnNetworkSpawn() {

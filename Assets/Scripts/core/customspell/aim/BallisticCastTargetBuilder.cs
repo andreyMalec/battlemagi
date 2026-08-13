@@ -160,7 +160,7 @@ public static class BallisticCastTargetBuilder {
 
         var projectile = spell.projectile;
         var gravityY = Mathf.Abs(projectile.gravity.y);
-        if (!projectile.enableGravity || gravityY <= 0.1f) {
+        if (!projectile.enableGravity || gravityY <= 0.1f || projectile.botAimToCenter) {
             // если спавним зону из снаряда то целимся под ноги, иначе в центр
             if (projectile.onHitSpawn != null && projectile.onHitSpawn.coreType == CoreType.Zone)
                 return target;

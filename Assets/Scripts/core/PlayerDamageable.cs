@@ -59,8 +59,8 @@ public class PlayerDamageable : NetworkBehaviour {
         try {
             var killerData = Ctx.Players.Participants.First(p => p.Id == killer);
             killerArchetype = Ctx.GetArchetype(killerData.Archetype).archetypeName;
-        } catch (Exception) {
-            // ignored
+        } catch (Exception e) {
+            Debug.Log(e);
         }
 
         SendAnalytics(OwnerClientId, deathSource, killerArchetype);

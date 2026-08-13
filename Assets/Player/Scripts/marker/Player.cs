@@ -13,6 +13,7 @@ public class Player : NetworkBehaviour {
     [SerializeField] private Behaviour[] scriptsToDisable;
     [SerializeField] private GameObject[] objectsToDisable;
     [SerializeField] private Camera mainCamera;
+    [SerializeField] private Transform[] reparentToHands;
     private GameObject bodyAvatar;
     private GameObject handsAvatar;
     public MeshController meshController;
@@ -82,6 +83,9 @@ public class Player : NetworkBehaviour {
         var scpp = GetComponent<SpellCasterPlayerPreview>();
         if (isFP && IsOwner) {
             scpp?.BindHand(meshHands.invocation);
+            foreach (var obj in reparentToHands) {
+                obj.SetParent(handsAvatar.transform, false);
+            }
         } else {
             scpp?.BindHand(meshController.invocation);
         }

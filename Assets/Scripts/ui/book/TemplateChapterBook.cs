@@ -73,6 +73,10 @@ public class TemplateChapterBook : MonoBehaviour {
         book.SetActive(false);
         tooltipRoot.gameObject.SetActive(false);
         ClearMovingSpread();
+
+        if (Ctx.Lobby.State == LobbyManager.PlayerState.InGame) {
+            MoveToChapter(Player.local.ArchetypeId);
+        }
     }
 
     private void Update() {

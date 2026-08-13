@@ -15,6 +15,7 @@ public class ProjectileDefinition : ScriptableObject, IValidate {
     [ShowIf("enableMaxDistance")] public float maxDistance = 20f;
     [ShowIf(EConditionOperator.And, "enableMaxDistance", "_canReturnToCaster")] public bool returnToCaster;
     public bool enableGravity;
+    [ShowIf("enableGravity")] public bool botAimToCenter;
     [ShowIf("enableGravity")] public Vector3 gravity = new(0, -9.81f, 0);
 
     [Header("LookAtPoint")]

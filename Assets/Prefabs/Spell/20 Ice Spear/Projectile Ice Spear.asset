@@ -15,12 +15,14 @@ MonoBehaviour:
   prefabId: 10
   moveType: 1
   moveSpeed: 100
+  scaleSpeedWithCharge: 0
   moveAlongGround: 0
   groundOffset: 0.1
   enableMaxDistance: 1
   maxDistance: 70
   returnToCaster: 0
   enableGravity: 1
+  botAimToCenter: 1
   gravity: {x: 0, y: -9.81, z: 0}
   lookAtMaxDistance: 50
   lookAtRayMask:
@@ -49,13 +51,16 @@ MonoBehaviour:
   pierceTargetMode: 1
   enableFork: 0
   forkCount: 3
+  scaleForksWithCharge: 0
   forkSpreadAngle: 35
   echoOnHit: 0
   spawnInHit: 0
   onHitSpawn: {fileID: 0}
+  onHitSpawn2: {fileID: 0}
   atMaxDistanceSpawn: {fileID: 0}
   atStepDistanceSpawn: {fileID: 11400000, guid: 9cfd91048632ef1458f4f37c2487ac28, type: 2}
   spawnStep: 2
+  spawnStepAxes: 7
   onLifetimeEndSpawn: {fileID: 0}
   onLifetimeHalfSpawn: {fileID: 0}
   spawnAtStep: 1
