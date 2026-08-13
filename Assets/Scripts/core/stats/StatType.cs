@@ -9,4 +9,5 @@ public enum StatType {
     ManaRegen,
     ManaCost,
     DamageReflection,
+    Scale,
 }

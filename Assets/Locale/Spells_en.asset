@@ -90,21 +90,20 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 23079586635776
-    m_Localized: 'The projectile splits into [forkCount] additional copies when hit,
-      bounces off surfaces.
+    m_Localized: 'The projectile splits into [forkCount] additional copies upon impact,
+      bounces off surfaces, and is attracted to enemies within a small radius.
 
+      
 
-      Affects: [affects]
+      Affects:
+      [affects]
 
       Speed: [moveSpeed]
 
-      Damage
-      at full charge: [damage.amount]
+      Damage: [damage.amount]
 
-      [[charging|Charge duration]]: [chargeDuration]
-
-      Bounce
-      count: [maxBounces]'
+      Number
+      of bounces: [maxBounces]'
     m_Metadata:
       m_Items: []
   - m_Id: 23116743974912

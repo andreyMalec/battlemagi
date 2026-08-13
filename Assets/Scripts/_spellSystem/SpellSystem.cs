@@ -125,12 +125,9 @@ public class SpellSystem {
         );
 
         var bind = new SpellBind<ProjectileContext>(core, view, context, move);
+        ApplyChargeScaleAndDamage(def, view, spawnContext.chargePercent);
+        ApplyChargeSpeed(view, spawnContext.chargePercent, def.projectile.scaleSpeedWithCharge);
         instance.Init(bind, _authority);
-        if (!Mathf.Approximately(spawnContext.chargePercent, 1f)) {
-            view.Stats.AddModifier(StatType.SpellDamage, spawnContext.chargePercent);
-            if (def.projectile.scaleSpeedWithCharge)
-                view.Stats.AddModifier(StatType.ProjectileSpeed, spawnContext.chargePercent);
-        }
     }
 
     private void CreateZone(
@@ -245,11 +242,12 @@ public class SpellSystem {
         );
 
         var bind = new SpellBind<ZoneContext>(core, view, context, move);
+        ApplyChargeScaleAndDamage(def, view, spawnContext.chargePercent);
+        ApplyChargeSpeed(view, spawnContext.chargePercent, def.zone.scaleSpeedWithCharge);
         instance.Init(bind, _authority);
         if (def.zone.impassableForEnemies)
-            ZoneEnemyColliderBlocker.Attach(spawnContext.main, context.OwnerId, def.scale, def.zone.shapeType, view);
-        if (!Mathf.Approximately(spawnContext.chargePercent, 1f))
-            view.Stats.AddModifier(StatType.SpellDamage, spawnContext.chargePercent);
+            ZoneEnemyColliderBlocker.Attach(spawnContext.main, context.OwnerId,
+                def.scale * view.Stats.GetFinal(StatType.Scale), def.zone.shapeType, view);
     }
 
     private void CreateBeam(
@@ -338,9 +336,8 @@ public class SpellSystem {
         );
 
         var bind = new SpellBind<BeamContext>(core, view, context, move);
+        ApplyChargeScaleAndDamage(def, view, spawnContext.chargePercent);
         instance.Init(bind, _authority);
-        if (!Mathf.Approximately(spawnContext.chargePercent, 1f))
-            view.Stats.AddModifier(StatType.SpellDamage, spawnContext.chargePercent);
     }
 
     private void CreateSummon(
@@ -414,9 +411,8 @@ public class SpellSystem {
         );
 
         var bind = new SummonBind<SummonContext>(core, view, context, move, caster, brain, sensors);
+        ApplyChargeScaleAndDamage(def, view, spawnContext.chargePercent);
         instance.Init(bind, _authority);
-        if (!Mathf.Approximately(spawnContext.chargePercent, 1f))
-            view.Stats.AddModifier(StatType.SpellDamage, spawnContext.chargePercent);
     }
 
     private void CreateSelf(
@@ -660,6 +656,22 @@ public class SpellSystem {
         if (def.echoOnHit)
             actions.Add(new EchoOnHitAction());
         return actions;
+    }
+
+    private static void ApplyChargeScaleAndDamage(SpellDefinition def, SpellView view, float chargePercent) {
+        if (Mathf.Approximately(chargePercent, 1f))
+            return;
+
+        view.Stats.AddModifier(StatType.SpellDamage, chargePercent);
+        if (def.scaleWithCharge)
+            view.Stats.AddModifier(StatType.Scale, chargePercent);
+    }
+
+    private static void ApplyChargeSpeed(SpellView view, float chargePercent, bool scaleSpeedWithCharge) {
+        if (Mathf.Approximately(chargePercent, 1f) || !scaleSpeedWithCharge)
+            return;
+
+        view.Stats.AddModifier(StatType.ProjectileSpeed, chargePercent);
     }
 
     private static ISpellAction KnockbackAction(SpellDefinition spell) {

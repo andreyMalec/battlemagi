@@ -9,6 +9,7 @@ public class ZoneDefinition : ScriptableObject, IValidate {
     public SpellMovement moveType;
 
     [ShowIf("_canMove")] public float moveSpeed;
+    [ShowIf("_canMove")] public bool scaleSpeedWithCharge;
     [ShowIf("_transformLinear")] public bool moveAlongGround;
     [ShowIf(EConditionOperator.And, "_transformLinear", "moveAlongGround")] public float groundOffset = 0.1f;
 

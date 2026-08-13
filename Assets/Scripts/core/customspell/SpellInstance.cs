@@ -59,12 +59,15 @@ public class SpellInstance : MonoBehaviour, ITarget {
             var spellDmg = stats.GetFinal(StatType.SpellDamage);
             if (!Mathf.Approximately(spellDmg, 1f))
                 _view.Stats.AddModifier(StatType.SpellDamage, spellDmg);
+            var spellScale = stats.GetFinal(StatType.Scale);
+            if (!Mathf.Approximately(spellScale, 1f))
+                _view.Stats.AddModifier(StatType.Scale, spellScale);
         }
         _initialized = true;
         RegisterActive();
         RegisterAudio();
 
-        Scale(_spell.scale, _context.Lifetime);
+        Scale(CurrentScale(), _context.Lifetime);
         ParticleUtils.ApplyBeamShape(gameObject, _spell.beam);
     }
 
@@ -169,6 +172,10 @@ public class SpellInstance : MonoBehaviour, ITarget {
         }
     }
 
+    private float CurrentScale() {
+        return _spell.scale * _view.Stats.GetFinal(StatType.Scale);
+    }
+
     private void OnDrawGizmos() {
         if (Bind == null) return;
         var beam = Bind.Context.Spell.beam;
@@ -189,8 +196,9 @@ public class SpellInstance : MonoBehaviour, ITarget {
     }
 
     private void DrawZoneGizmos(ZoneDefinition zone) {
+        var s = Bind.Context.Spell.scale * Bind.Context.Stats.GetFinal(StatType.Scale);
         if (zone.shapeType is ZoneShapeType.Plate) {
-            var side = Bind.Context.Spell.scale * 2f;
+            var side = s * 2f;
             var height = side * 0.1f;
             var previousMatrix = Gizmos.matrix;
             Gizmos.matrix = Matrix4x4.TRS(transform.position, transform.rotation, Vector3.one);
@@ -199,7 +207,7 @@ public class SpellInstance : MonoBehaviour, ITarget {
             return;
         }
 
-        Gizmos.DrawSphere(transform.position, Bind.Context.Spell.scale);
+        Gizmos.DrawSphere(transform.position, s);
     }
 
     private void DrawConeGizmos(BeamDefinition beam) {

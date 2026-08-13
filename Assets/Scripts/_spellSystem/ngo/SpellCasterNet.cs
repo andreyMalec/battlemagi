@@ -147,6 +147,7 @@ public class SpellCasterNet : NetworkBehaviour {
         var impassableForEnemies = context.spell.coreType is CoreType.Zone && context.spell.zone.impassableForEnemies;
         context.main = main;
         caster.SpellSystem.CastSpell(context);
+        var scale = context.spell.scale * main.GetComponentInChildren<SpellView>().Stats.GetFinal(StatType.Scale);
         var excludeHost = new ClientRpcParams {
             Send = new ClientRpcSendParams
                 { TargetClientIds = NetworkManager.ConnectedClients.Keys.Filter(it => it > 0).ToArray() }
@@ -154,7 +155,7 @@ public class SpellCasterNet : NetworkBehaviour {
         if (prefabId > -1)
             OnCastClientRpc(ParticipantIdentityCodec.Encode(identity.Id), id, casterNetObj.NetworkObjectId,
                 context.spell.name, (int)context.spell.coreType, prefabId,
-                context.spell.scale, context.spell.lifetime, impassableForEnemies, excludeHost);
+                scale, context.spell.lifetime, impassableForEnemies, excludeHost);
     }
 
     [ClientRpc]

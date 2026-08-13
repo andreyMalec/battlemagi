@@ -140,6 +140,7 @@ public static class ParticleUtils {
             vel.x = ScaleCurve(vel.x, k);
             vel.y = ScaleCurve(vel.y, k);
             vel.z = ScaleCurve(vel.z, k);
+            vel.radial = ScaleCurve(vel.radial, k);
         }
 
         var inherit = ps.inheritVelocity;

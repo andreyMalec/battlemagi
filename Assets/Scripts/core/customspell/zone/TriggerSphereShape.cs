@@ -5,7 +5,7 @@ public class TriggerSphereShape : TriggerZoneShapeBase {
     private float _radiusSqr;
 
     protected override void InitShape(ISpellContext context) {
-        _radius = context.Spell.scale;
+        _radius = context.Spell.scale * context.Stats.GetFinal(StatType.Scale);
         _radiusSqr = _radius * _radius;
     }
 

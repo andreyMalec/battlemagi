@@ -1,11 +1,10 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class LocalSpellSystemEvent : MonoBehaviour, SpellSystemEvent {
     public void OnApplyScale(ISpellContext context) {
         var instance = context.View.GetComponent<SpellInstance>();
-        var k = context.Spell.scale;
+        var k = context.Spell.scale * context.Stats.GetFinal(StatType.Scale);
         var lifetime = context.Spell.lifetime;
         instance.Scale(k, lifetime);
     }

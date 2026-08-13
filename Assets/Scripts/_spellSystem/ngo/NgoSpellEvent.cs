@@ -7,7 +7,7 @@ using UnityEngine;
 public class NgoSpellSystemEvent : NetworkBehaviour, SpellSystemEvent {
     public void OnApplyScale(ISpellContext context) {
         var instance = context.View.Id();
-        var k = context.Spell.scale;
+        var k = context.Spell.scale * context.Stats.GetFinal(StatType.Scale);
         var lifetime = context.Spell.lifetime;
         OnApplyScaleClientRpc(instance, k, lifetime);
     }

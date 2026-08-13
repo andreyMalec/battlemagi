@@ -15,6 +15,7 @@ public class SpellDefinition : ScriptableObject, IValidate {
     public List<EffectDefinition> effects;
 
     public float scale = 1;
+    [ShowIf("charging")] public bool scaleWithCharge;
     public float lifetime = 5;
     public bool blinkAtLifetime;
     public LayerMask defaultRaycast = ~0;

@@ -24,6 +24,7 @@ MonoBehaviour:
   effects:
   - {fileID: 11400000, guid: 516dcc0779a98e3469063a57dd1195e6, type: 2}
   scale: 3
+  scaleWithCharge: 0
   lifetime: 3
   blinkAtLifetime: 0
   defaultRaycast:
@@ -31,13 +32,13 @@ MonoBehaviour:
     m_Bits: 576
   dieWithCaster: 0
   castWaitingIndex: 0
-  invocationIndex: 10
-  manaCost: 10
+  invocationIndex: 1
+  manaCost: 75
   bloodMagic: 0
   echoCount: 0
   channeling: 0
   channelDuration: 0
-  charging: 1
+  charging: 0
   chargeDuration: 1
   manaPerSecond: 25
   projectile: {fileID: 11400000, guid: 9e2171af1e9dc214faee75a63b0b6ee3, type: 2}

@@ -9,7 +9,7 @@ public class TriggerPlateShape : TriggerZoneShapeBase {
     private Vector3 _halfExtents;
 
     protected override void InitShape(ISpellContext context) {
-        _side = context.Spell.scale * 2f;
+        _side = context.Spell.scale * context.Stats.GetFinal(StatType.Scale) * 2f;
         _height = _side * HeightFactor;
         _halfExtents = new Vector3(_side * 0.5f, _height * 0.5f, _side * 0.5f);
     }

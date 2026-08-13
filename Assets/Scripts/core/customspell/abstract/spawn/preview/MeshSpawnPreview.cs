@@ -14,6 +14,7 @@ public class MeshSpawnPreview : ISpellSpawnPreview {
     private Material wireMat;
     private SpellDefinition _spell;
     private ISpellSpawn _spawnMode;
+    private SpellCasterPlayer _caster;
 
     private bool _active;
 
@@ -40,6 +41,7 @@ public class MeshSpawnPreview : ISpellSpawnPreview {
         mesh = m;
         _wireMesh = BuildWireMesh(mesh);
         scale = c.transform.localScale * context.spell.scale;
+        _caster = context.caster as SpellCasterPlayer;
         position = c.transform.localPosition;
         rotation = c.transform.localRotation;
         _active = true;
@@ -74,7 +76,7 @@ public class MeshSpawnPreview : ISpellSpawnPreview {
         var drawWireMat = wireMat;
         var drawPosition = position;
         var drawRotation = rotation;
-        var drawScale = scale;
+        var drawScale = _spell.scaleWithCharge ? scale * _caster.ChargingProgress : scale;
 
         if (context == null || drawMesh == null || drawWireMesh == null || drawFillMat == null || drawWireMat == null)
             return;

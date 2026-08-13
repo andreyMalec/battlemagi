@@ -10,7 +10,8 @@ public static class DamageResolver {
         var damageMulti = 1f;
         if (def.scaleWithRange) {
             var distance = Vector3.Distance(context.View.transform.position, point);
-            var areaDamageMulti = 1f - distance / context.Spell.scale;
+            var scale = context.Spell.scale * context.Stats.GetFinal(StatType.Scale);
+            var areaDamageMulti = 1f - distance / scale;
             damageMulti *= areaDamageMulti;
         }
 
