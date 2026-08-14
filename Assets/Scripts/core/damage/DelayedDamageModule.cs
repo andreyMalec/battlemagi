@@ -94,11 +94,11 @@ public class DelayedDamageModule : IDamageModule, IDamageModifier {
         }
     }
 
-    private void TryDelayIncomingDamage(ref DamageRequest request, float currentAmount) {
-        if (!_damageDelayActive) return;
-        if (_damageDelayPercent <= 0f) return;
-        if (_damageDelayDuration <= 0f) return;
-        if (currentAmount <= 0f) return;
+    private bool TryDelayIncomingDamage(ref DamageRequest request, float currentAmount) {
+        if (!_damageDelayActive) return false;
+        if (_damageDelayPercent <= 0f) return false;
+        if (_damageDelayDuration <= 0f) return false;
+        if (currentAmount <= 0f) return false;
 
         var delayedAmount = currentAmount * _damageDelayPercent;
         var immediateAmount = Mathf.Max(0f, currentAmount - delayedAmount);
@@ -113,12 +113,14 @@ public class DelayedDamageModule : IDamageModule, IDamageModifier {
         }
 
         request = new DamageRequest(request.source, request.fromId, immediateAmount, DamageKind.Delayed);
+        return true;
     }
 
     public float ModifyIncoming(Damageable damageable, ref DamageRequest request, float current) {
         if (request.kind == DamageKind.Delayed) return current;
 
-        TryDelayIncomingDamage(ref request, current);
-        return request.amount;
+        if (TryDelayIncomingDamage(ref request, current))
+            return request.amount;
+        return current;
     }
 }

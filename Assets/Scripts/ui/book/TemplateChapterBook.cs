@@ -67,16 +67,14 @@ public class TemplateChapterBook : MonoBehaviour {
         get { return document.chapters.Sum(c => c.pages.Count); }
     }
 
+    private bool isFirstOpen = true;
+
     private void Start() {
         SetUIVisibility(false);
         helperUI.SetActive(false);
         book.SetActive(false);
         tooltipRoot.gameObject.SetActive(false);
         ClearMovingSpread();
-
-        if (Ctx.Lobby.State == LobbyManager.PlayerState.InGame) {
-            MoveToChapter(Player.local.ArchetypeId);
-        }
     }
 
     private void Update() {
@@ -109,6 +107,13 @@ public class TemplateChapterBook : MonoBehaviour {
     public void Open() {
         if (isOpened) {
             return;
+        }
+
+        if (isFirstOpen) {
+            isFirstOpen = false;
+            if (Ctx.Lobby.State == LobbyManager.PlayerState.InGame) {
+                MoveToChapter(Player.local.ArchetypeId);
+            }
         }
 
         worldCamera = Camera.main;

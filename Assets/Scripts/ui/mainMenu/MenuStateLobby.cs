@@ -149,6 +149,7 @@ public class MenuStateLobby : MonoBehaviour {
     }
 
     private void StartGame() {
+        Ctx.GameProgress.SetKeyCast(dropdownKeyCast.value == 1);
         Ctx.GameProgress.StartMatch();
     }
 
