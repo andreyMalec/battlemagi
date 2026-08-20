@@ -16,14 +16,11 @@ public class FirstPersonMovement : NetworkBehaviour {
 
     public float jumpStrength;
     public float movementSpeed;
-    public float runSpeed;
 
-    public bool IsRunning { get; private set; }
     public event System.Action Jumped;
     public event System.Action Climbing;
 
     // Сетевые переменные
-    private readonly NetworkVariable<bool> _isRunningNetwork = new();
     private readonly NetworkVariable<bool> _isJumpingNetwork = new();
     public readonly NetworkVariable<Vector3> spawnPoint = new();
     private int _spawnTick;
@@ -34,11 +31,6 @@ public class FirstPersonMovement : NetworkBehaviour {
     private CharacterController _controller;
     private FirstPersonLook _look;
     private float _jumpCooldownTimer;
-
-    // Ключи/локи для бега
-    private bool _lastSentRunKeyHeld; // клиентская оптимизация: шлём RPC только при изменении
-    private bool _runKeyHeldServer; // серверный флаг (который ставит SetRunKeyHeldServerRpc)
-    private bool _runLock; // серверный лок: запрещает авто-включение пока не отпустили кнопку
 
     private Vector3 _teleportPosition;
     private Quaternion _teleportRotation;
@@ -62,7 +54,6 @@ public class FirstPersonMovement : NetworkBehaviour {
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
 
-        _isRunningNetwork.OnValueChanged += OnIsRunningChanged;
         _isJumpingNetwork.OnValueChanged += OnIsJumpingChanged;
 
         if (IsOwner) {
@@ -77,7 +68,6 @@ public class FirstPersonMovement : NetworkBehaviour {
 
     public override void OnNetworkDespawn() {
         base.OnNetworkDespawn();
-        _isRunningNetwork.OnValueChanged -= OnIsRunningChanged;
         _isJumpingNetwork.OnValueChanged -= OnIsJumpingChanged;
 
         if (IsOwner) {
@@ -87,8 +77,6 @@ public class FirstPersonMovement : NetworkBehaviour {
         if (_isClimbing)
             StopClimb();
     }
-
-    private void OnIsRunningChanged(bool _, bool newValue) => IsRunning = newValue;
 
     private void OnIsJumpingChanged(bool oldValue, bool newValue) {
         if (newValue && !oldValue && !IsOwner)
@@ -149,49 +137,24 @@ public class FirstPersonMovement : NetworkBehaviour {
     private void HandleMovementInput() {
         Vector2 input = new(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
-        bool runKeyHeld = movementSettings.canRun && Input.GetKey(movementSettings.runningKey);
-        if (runKeyHeld != _lastSentRunKeyHeld) {
-            SetRunKeyHeldServerRpc(runKeyHeld);
-            _lastSentRunKeyHeld = runKeyHeld;
-        }
-
-        bool running = _isRunningNetwork.Value;
-        ApplyMovement(input, running);
+        ApplyMovement(input);
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
-    private void SetRunKeyHeldServerRpc(bool held) {
-        _runKeyHeldServer = held;
-        if (!held) {
-            _runLock = false;
-        }
-
-        UpdateRunningStateServer();
-    }
-
-    private void UpdateRunningStateServer() {
-        bool shouldRun = _runKeyHeldServer && !_runLock;
-        if (shouldRun != _isRunningNetwork.Value) {
-            _isRunningNetwork.Value = shouldRun;
-        }
-    }
-
-    private void ApplyMovement(Vector2 input, bool running) {
-        var moveDirection = ResolveMoveDirection(input, running);
+    private void ApplyMovement(Vector2 input) {
+        var moveDirection = ResolveMoveDirection(input);
         if (_iceSlide.IsActive)
             moveDirection = _iceSlide.ResolveVelocity(moveDirection, input.sqrMagnitude > 0.0001f, Time.deltaTime);
         _physics.MoveWithGravity(moveDirection);
     }
 
-    private Vector3 ResolveMoveDirection(Vector2 input, bool running) {
-        float targetSpeed = running ? runSpeed : movementSpeed;
+    private Vector3 ResolveMoveDirection(Vector2 input) {
         float speedMultiplier = groundCheck.isGrounded ? 1f : movementSettings.flySpeedMultiplier;
 
         speedMultiplier *= _stats?.GetFinal(StatType.MoveSpeed) ?? 1f;
         return transform.TransformDirection(new Vector3(
-            input.x * targetSpeed * speedMultiplier,
+            input.x * movementSpeed * speedMultiplier,
             0f,
-            input.y * targetSpeed * speedMultiplier
+            input.y * movementSpeed * speedMultiplier
         ));
     }
 
@@ -351,11 +314,6 @@ public class FirstPersonMovement : NetworkBehaviour {
         _climbDuration = Mathf.Max(0.01f, movementSettings.climbDuration);
         Climbing?.Invoke();
         _physics.ClearJump();
-
-        if (_lastSentRunKeyHeld) {
-            SetRunKeyHeldServerRpc(false);
-            _lastSentRunKeyHeld = false;
-        }
     }
 
     private void TickClimb() {

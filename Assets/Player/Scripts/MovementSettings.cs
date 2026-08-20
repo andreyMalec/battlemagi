@@ -5,9 +5,6 @@ public class MovementSettings : ScriptableObject {
     [Header("Movement")]
     public float staminaRestore = 0.1f;
 
-    public float staminaUsage = 0.5f;
-    public bool canRun = true;
-    public KeyCode runningKey = KeyCode.LeftShift;
     public float flySpeedMultiplier = 0.5f;
 
     [Header("Jumping")]

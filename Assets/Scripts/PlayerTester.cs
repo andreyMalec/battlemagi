@@ -12,8 +12,7 @@ public class PlayerTester : MonoBehaviour {
     [SerializeField] private Transform hand;
     [SerializeField] private float jumpStrength = 2f;
 
-    public float movementSpeed = 2;
-    public float runSpeed = 5;
+    public float movementSpeed = 5;
 
     private PlayerPhysics _physics;
     private IceSlideMovementModule _iceSlide;
@@ -38,9 +37,7 @@ public class PlayerTester : MonoBehaviour {
     private void Update() {
         Vector2 input = new(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
-        bool running = movementSettings.canRun && Input.GetKey(movementSettings.runningKey);
-
-        ApplyMovement(input, running);
+        ApplyMovement(input);
         TryJump();
         ProcessMouseInput();
     }
@@ -58,15 +55,14 @@ public class PlayerTester : MonoBehaviour {
         transform.localRotation = Quaternion.AngleAxis(_currentRotation.x, Vector3.up);
     }
 
-    private void ApplyMovement(Vector2 input, bool running) {
-        float targetSpeed = running ? runSpeed : movementSpeed;
+    private void ApplyMovement(Vector2 input) {
         float speedMultiplier = groundCheck.isGrounded ? 1f : movementSettings.flySpeedMultiplier;
 
         speedMultiplier *= _stats.GetFinal(StatType.MoveSpeed);
         Vector3 moveDirection = transform.TransformDirection(new Vector3(
-            input.x * targetSpeed * speedMultiplier,
+            input.x * movementSpeed * speedMultiplier,
             0f,
-            input.y * targetSpeed * speedMultiplier
+            input.y * movementSpeed * speedMultiplier
         ));
 
         if (_iceSlide.IsActive)

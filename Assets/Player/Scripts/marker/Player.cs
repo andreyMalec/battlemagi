@@ -132,7 +132,6 @@ public class Player : NetworkBehaviour {
 
         var movement = GetComponent<FirstPersonMovement>();
         movement.movementSpeed = archetype.movementSpeed;
-        movement.runSpeed = archetype.runSpeed;
         movement.jumpStrength = archetype.jumpStrength;
 
         var caster = GetComponent<SpellCasterPlayer>();

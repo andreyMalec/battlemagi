@@ -27,10 +27,7 @@ public class PlayerAnimator : NetworkBehaviour {
     private float velocityZ = 0f;
     private float velocityX = 0f;
 
-    private bool isRunning => movement.IsRunning;
-
-    // private float maxVelocity => (2f) * statSystem.Stats.GetFinal(StatType.MoveSpeed);
-    private float maxVelocity => (isRunning ? 0.5f : 2f) * _stats?.GetFinal(StatType.MoveSpeed) ?? 1f;
+    private float maxVelocity => 2f * _stats?.GetFinal(StatType.MoveSpeed) ?? 1f;
 
     private bool jumpStart = false;
     private bool fallStart = false;
@@ -121,7 +118,7 @@ public class PlayerAnimator : NetworkBehaviour {
             velocity -= decelerate(velocity) * Time.deltaTime;
         }
 
-        if (keyPressed && isRunning && velocity > maxVelocity) {
+        if (keyPressed && velocity > maxVelocity) {
             velocity = maxVelocity;
         } else if (keyPressed && velocity > maxVelocity) {
             velocity -= decelerate(velocity) * Time.deltaTime;
@@ -144,7 +141,7 @@ public class PlayerAnimator : NetworkBehaviour {
             velocity += decelerate(velocity) * Time.deltaTime;
         }
 
-        if (keyPressed && isRunning && velocity < -maxVelocity) {
+        if (keyPressed && velocity < -maxVelocity) {
             velocity = -maxVelocity;
         } else if (keyPressed && velocity < -maxVelocity) {
             velocity += decelerate(velocity) * Time.deltaTime;
