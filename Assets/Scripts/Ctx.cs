@@ -2,11 +2,24 @@ using System.Collections.Generic;
 using System.Linq;
 using Steamworks.Data;
 using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
 using UnityEngine.Localization.Settings;
 using Voice;
 
 public static class Ctx {
     public static NetworkManager NetManager => NetworkManager.Singleton;
+
+    private static NetworkTransport _transport;
+
+    public static bool IsLocalMultiplayer {
+        get {
+            if (_transport == null) {
+                _transport = NetManager?.NetworkConfig?.NetworkTransport;
+            }
+
+            return _transport is UnityTransport;
+        }
+    }
 
     public static bool IsClient => NetworkManager.Singleton.IsClient;
 
@@ -234,5 +247,3 @@ public static class Ctx {
         return false;
     }
 }
-
-

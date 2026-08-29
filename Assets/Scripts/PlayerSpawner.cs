@@ -76,6 +76,9 @@ public class PlayerSpawner : NetworkBehaviour {
             if (elapsed >= timeout) {
                 Debug.LogError(
                     $"[PlayerSpawner] Сервер: Не дождались синхронизации PlayerManager/TeamManager для игрока {clientId}");
+                Ctx.Teams.Reset();
+                Ctx.LeaveLobby();
+                SceneLoader.LoadMenu(true);
                 yield break;
             }
 
@@ -251,17 +254,19 @@ public class PlayerSpawner : NetworkBehaviour {
             GameObject newPlayer = Instantiate(playerPrefab, position, rotation);
             newPlayer.transform.SetPositionAndRotation(position, rotation);
             var participantIdentity = newPlayer.GetComponent<ParticipantIdentity>();
-            participantIdentity.SetParticipantId(descriptor.ParticipantId);
-            foreach (var identityUser in newPlayer.GetComponents<IdentityUser>()) {
-                identityUser.Use(newPlayer);
+            if (participantIdentity != null) {
+                participantIdentity.SetParticipantId(descriptor.ParticipantId);
+                foreach (var identityUser in newPlayer.GetComponents<IdentityUser>()) {
+                    identityUser.Use(newPlayer);
+                }
             }
 
             var player = newPlayer.GetComponent<Player>();
-            player.ApplyPlayerState(descriptor.SteamId, descriptor.Archetype, descriptor.Hue, descriptor.Saturation);
+            player?.ApplyPlayerState(descriptor.SteamId, descriptor.Archetype, descriptor.Hue, descriptor.Saturation);
 
             var netObj = newPlayer.GetComponent<NetworkObject>();
             netObj.SpawnAsPlayerObject(ownerClientId, true);
-            player.Init(ParticipantIdentityCodec.Encode(participantIdentity.Id), position, rotation);
+            player?.Init(ParticipantIdentityCodec.Encode(participantIdentity.Id), position, rotation);
 
             newPlayer.name = $"Player_{ownerClientId}";
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Steamworks;
 using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -138,6 +139,8 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
     }
 
     private void OnConnectionEvent(NetworkManager arg1, ConnectionEventData arg2) {
+        if (Ctx.IsLocalMultiplayer) return;
+
         if (arg2.EventType == ConnectionEvent.ClientDisconnected) {
             OnClientDisconnected(arg2.ClientId);
         }
@@ -202,7 +205,7 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
         UpdateNetworkStatsServerRpc(pingMs, packetLossPercent);
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)] 
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void UpdateNetworkStatsServerRpc(int pingMs, float packetLossPercent, RpcParams rpcParams = default) {
         var clientId = rpcParams.Receive.SenderClientId;
         for (int i = 0; i < players.Count; i++) {
@@ -277,7 +280,7 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
         }
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)] 
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void RegisterPlayerServerRpc(ulong steamId, RpcParams rpcParams = default) {
         ulong clientId = rpcParams.Receive.SenderClientId;
         int existingIndex = FindIndexBySteamId(steamId);
@@ -652,7 +655,7 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
         }
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)] 
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void SetArchetypeServerRpc(int archetype, RpcParams rpcParams = default) {
         var clientId = rpcParams.Receive.SenderClientId;
         for (int i = players.Count - 1; i >= 0; i--) {
@@ -665,7 +668,7 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
         }
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)] 
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void SetColorServerRpc(float hue, float saturation, RpcParams rpcParams = default) {
         var clientId = rpcParams.Receive.SenderClientId;
         for (int i = players.Count - 1; i >= 0; i--) {
