@@ -13,19 +13,29 @@ public class RuneCraftUiController : MonoBehaviour {
     [SerializeField] private Toggle linkModeToggle;
     [SerializeField] private TMP_Dropdown fromSideDropdown;
     [SerializeField] private TMP_Dropdown toSideDropdown;
+    [SerializeField] private Button saveGlyph;
 
     private readonly Dictionary<string, RuneGlyphDefinition> _glyphById = new Dictionary<string, RuneGlyphDefinition>();
     private readonly Dictionary<HexCoord, string> _occupiedCells = new Dictionary<HexCoord, string>();
 
     private string _activePaletteGlyphId = string.Empty;
+    private bool _dragActive;
+    private bool _suppressNextClick;
+    private HexCoord _dragCurrentCell;
 
     private void Start() {
         BuildGlyphCache();
         paletteView.Bind(editor.GlyphCatalog);
         paletteView.GlyphClicked += HandlePaletteGlyphClicked;
+        saveGlyph.onClick.AddListener(SaveGlyphShape);
 
-        boardView.BuildGrid(editor.Draft.board.radius);
-        boardView.CellClicked += HandleBoardCellClick;
+        boardView?.BuildGrid(editor.Draft.board.radius);
+        if (boardView != null) {
+            boardView.CellClicked += HandleBoardCellClick;
+            boardView.CellDragStarted += HandleBoardDragStart;
+            boardView.CellDragged += HandleBoardDrag;
+            boardView.CellDragEnded += HandleBoardDragEnd;
+        }
 
         if (editor.GlyphCatalog.Count > 0) {
             SelectPaletteGlyph(editor.GlyphCatalog[0]);
@@ -108,6 +118,11 @@ public class RuneCraftUiController : MonoBehaviour {
     }
 
     private void HandleBoardCellClick(HexCoord cell, PointerEventData eventData) {
+        if (_suppressNextClick) {
+            _suppressNextClick = false;
+            return;
+        }
+
         RebuildOccupiedLookup();
         var hasPlacement = _occupiedCells.TryGetValue(cell, out var placementId);
 
@@ -159,6 +174,55 @@ public class RuneCraftUiController : MonoBehaviour {
         SetStatus("Selected");
     }
 
+    private void HandleBoardDragStart(HexCoord cell, PointerEventData eventData) {
+        if (eventData.button != PointerEventData.InputButton.Left)
+            return;
+
+        if (linkModeToggle.isOn)
+            return;
+
+        RebuildOccupiedLookup();
+        if (!_occupiedCells.TryGetValue(cell, out var placementId))
+            return;
+
+        if (editor.Selection.Count != 1 || editor.Selection[0] != placementId) {
+            editor.SetSelection(new[] { placementId });
+            RefreshBoard();
+        }
+
+        _dragActive = true;
+        _dragCurrentCell = cell;
+    }
+
+    private void HandleBoardDrag(HexCoord cell, PointerEventData eventData) {
+        if (!_dragActive)
+            return;
+
+        HexCoord nextCell;
+        if (!TryGetCellFromPointer(eventData, out nextCell)) {
+            nextCell = cell;
+        }
+
+        if (nextCell.q == _dragCurrentCell.q && nextCell.r == _dragCurrentCell.r)
+            return;
+
+        var stepDelta = new HexCoord(nextCell.q - _dragCurrentCell.q, nextCell.r - _dragCurrentCell.r);
+        if (editor.TryMoveSelection(stepDelta)) {
+            _dragCurrentCell = nextCell;
+            RefreshBoard();
+            SetStatus("Moved");
+        }
+    }
+
+    private void HandleBoardDragEnd(HexCoord cell, PointerEventData eventData) {
+        if (!_dragActive)
+            return;
+
+        _dragActive = false;
+        _suppressNextClick = true;
+        RefreshBoard();
+    }
+
     private void RefreshBoard() {
         RebuildOccupiedLookup();
         var selected = new HashSet<string>();
@@ -166,7 +230,7 @@ public class RuneCraftUiController : MonoBehaviour {
             selected.Add(editor.Selection[i]);
         }
 
-        boardView.Render(_occupiedCells, selected);
+        boardView?.Render(_occupiedCells, selected);
     }
 
     private void RebuildOccupiedLookup() {
@@ -222,9 +286,25 @@ public class RuneCraftUiController : MonoBehaviour {
         }
     }
 
+    private static bool TryGetCellFromPointer(PointerEventData eventData, out HexCoord coord) {
+        var target = eventData.pointerCurrentRaycast.gameObject;
+        if (target == null)
+            target = eventData.pointerEnter;
+
+        if (target != null) {
+            var cell = target.GetComponentInParent<RuneHexCellButton>();
+            if (cell != null) {
+                coord = cell.coord;
+                return true;
+            }
+        }
+
+        coord = new HexCoord(0, 0);
+        return false;
+    }
+
     private void SetStatus(string text) {
         statusText.text = text;
     }
 }
-
 

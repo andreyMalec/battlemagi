@@ -14,6 +14,10 @@ public class RuneCraftBoardView : MonoBehaviour {
     private readonly Dictionary<HexCoord, RuneHexCellButton> _cells = new Dictionary<HexCoord, RuneHexCellButton>();
 
     public event Action<HexCoord, PointerEventData> CellClicked;
+    public event Action<HexCoord, PointerEventData> CellPointerDown;
+    public event Action<HexCoord, PointerEventData> CellDragStarted;
+    public event Action<HexCoord, PointerEventData> CellDragged;
+    public event Action<HexCoord, PointerEventData> CellDragEnded;
 
     public void BuildGrid(int radius) {
         ClearGrid();
@@ -23,7 +27,7 @@ public class RuneCraftBoardView : MonoBehaviour {
             for (var r = minR; r <= maxR; r++) {
                 var coord = new HexCoord(q, r);
                 var cell = Instantiate(cellPrefab, cellsRoot);
-                cell.Setup(coord, HandleCellClick);
+                cell.Setup(coord, HandleCellClick, HandleCellPointerDown, HandleCellDragStart, HandleCellDrag, HandleCellDragEnd);
                 var pos = AxialToUi(coord, cellSize);
                 ((RectTransform)cell.transform).anchoredPosition = pos;
                 cell.SetColor(emptyColor);
@@ -45,6 +49,22 @@ public class RuneCraftBoardView : MonoBehaviour {
 
     private void HandleCellClick(RuneHexCellButton cell, PointerEventData eventData) {
         CellClicked?.Invoke(cell.coord, eventData);
+    }
+
+    private void HandleCellPointerDown(RuneHexCellButton cell, PointerEventData eventData) {
+        CellPointerDown?.Invoke(cell.coord, eventData);
+    }
+
+    private void HandleCellDragStart(RuneHexCellButton cell, PointerEventData eventData) {
+        CellDragStarted?.Invoke(cell.coord, eventData);
+    }
+
+    private void HandleCellDrag(RuneHexCellButton cell, PointerEventData eventData) {
+        CellDragged?.Invoke(cell.coord, eventData);
+    }
+
+    private void HandleCellDragEnd(RuneHexCellButton cell, PointerEventData eventData) {
+        CellDragEnded?.Invoke(cell.coord, eventData);
     }
 
     private void ClearGrid() {
