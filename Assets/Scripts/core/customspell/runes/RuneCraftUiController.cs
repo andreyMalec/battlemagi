@@ -22,6 +22,9 @@ public class RuneCraftUiController : MonoBehaviour {
     private bool _dragActive;
     private bool _suppressNextClick;
     private HexCoord _dragCurrentCell;
+    private bool _hasHeldCell;
+    private string _heldPlacementId = string.Empty;
+    private HexCoord _heldCell;
 
     private void Start() {
         BuildGlyphCache();
@@ -31,6 +34,7 @@ public class RuneCraftUiController : MonoBehaviour {
 
         boardView?.BuildGrid(editor.Draft.board.radius);
         if (boardView != null) {
+            boardView.CellPointerDown += HandleBoardCellPointerDown;
             boardView.CellClicked += HandleBoardCellClick;
             boardView.CellDragStarted += HandleBoardDragStart;
             boardView.CellDragged += HandleBoardDrag;
@@ -70,7 +74,7 @@ public class RuneCraftUiController : MonoBehaviour {
         if (editor.Selection.Count == 0)
             return;
 
-        var pivot = GetSelectionPivot();
+        var pivot = GetRotationPivot();
         if (editor.TryRotateSelection(1, pivot)) {
             RefreshBoard();
             SetStatus("Rotated");
@@ -81,7 +85,7 @@ public class RuneCraftUiController : MonoBehaviour {
         if (editor.Selection.Count == 0)
             return;
 
-        var pivot = GetSelectionPivot();
+        var pivot = GetRotationPivot();
         if (editor.TryRotateSelection(-1, pivot)) {
             RefreshBoard();
             SetStatus("Rotated");
@@ -117,8 +121,21 @@ public class RuneCraftUiController : MonoBehaviour {
         glyphShapeEditor?.BindGlyph(glyph);
     }
 
+    private void HandleBoardCellPointerDown(HexCoord cell, PointerEventData eventData) {
+        RebuildOccupiedLookup();
+        if (!_occupiedCells.TryGetValue(cell, out var placementId))
+            return;
+
+        editor.SetSelection(new[] { placementId });
+        _heldPlacementId = placementId;
+        _heldCell = cell;
+        _hasHeldCell = true;
+        RefreshBoard();
+        SetStatus("Selected");
+    }
+
     private void HandleBoardCellClick(HexCoord cell, PointerEventData eventData) {
-        if (_suppressNextClick) {
+        if (_suppressNextClick && eventData.button != PointerEventData.InputButton.Right) {
             _suppressNextClick = false;
             return;
         }
@@ -127,11 +144,24 @@ public class RuneCraftUiController : MonoBehaviour {
         var hasPlacement = _occupiedCells.TryGetValue(cell, out var placementId);
 
         if (eventData.button == PointerEventData.InputButton.Right) {
+            if (_dragActive && _hasHeldCell && editor.Selection.Count == 1) {
+                var dragPivot = GetRotationPivot();
+                if (editor.TryRotateSelection(1, dragPivot)) {
+                    RefreshBoard();
+                    SetStatus("Rotated");
+                }
+                return;
+            }
+
             if (!hasPlacement)
                 return;
 
             editor.SetSelection(new[] { placementId });
-            var pivot = GetAnchorByPlacement(placementId);
+            _heldPlacementId = placementId;
+            _heldCell = cell;
+            _hasHeldCell = true;
+
+            var pivot = GetRotationPivot();
             if (editor.TryRotateSelection(1, pivot)) {
                 RefreshBoard();
                 SetStatus("Rotated");
@@ -139,18 +169,20 @@ public class RuneCraftUiController : MonoBehaviour {
             return;
         }
 
-        if (!string.IsNullOrWhiteSpace(_activePaletteGlyphId)) {
-            if (editor.TryAddGlyph(_activePaletteGlyphId, cell)) {
-                RefreshBoard();
-                SetStatus("Placed");
-            }
-            else {
-                SetStatus("Cannot place");
-            }
-            return;
-        }
-
         if (!hasPlacement) {
+            if (!string.IsNullOrWhiteSpace(_activePaletteGlyphId)) {
+                if (editor.TryAddGlyph(_activePaletteGlyphId, cell)) {
+                    RefreshBoard();
+                    SetStatus("Placed");
+                }
+                else {
+                    SetStatus("Cannot place");
+                }
+                return;
+            }
+
+            _hasHeldCell = false;
+            _heldPlacementId = string.Empty;
             editor.SetSelection(System.Array.Empty<string>());
             RefreshBoard();
             return;
@@ -190,6 +222,9 @@ public class RuneCraftUiController : MonoBehaviour {
             RefreshBoard();
         }
 
+        _heldPlacementId = placementId;
+        _heldCell = cell;
+        _hasHeldCell = true;
         _dragActive = true;
         _dragCurrentCell = cell;
     }
@@ -209,6 +244,7 @@ public class RuneCraftUiController : MonoBehaviour {
         var stepDelta = new HexCoord(nextCell.q - _dragCurrentCell.q, nextCell.r - _dragCurrentCell.r);
         if (editor.TryMoveSelection(stepDelta)) {
             _dragCurrentCell = nextCell;
+            _heldCell = nextCell;
             RefreshBoard();
             SetStatus("Moved");
         }
@@ -219,6 +255,8 @@ public class RuneCraftUiController : MonoBehaviour {
             return;
 
         _dragActive = false;
+        _hasHeldCell = false;
+        _heldPlacementId = string.Empty;
         _suppressNextClick = true;
         RefreshBoard();
     }
@@ -257,6 +295,13 @@ public class RuneCraftUiController : MonoBehaviour {
                 continue;
             _glyphById[glyph.glyphId] = glyph;
         }
+    }
+
+    private HexCoord GetRotationPivot() {
+        if (_hasHeldCell && editor.Selection.Count == 1 && editor.Selection[0] == _heldPlacementId)
+            return _heldCell;
+
+        return GetSelectionPivot();
     }
 
     private HexCoord GetSelectionPivot() {
@@ -307,4 +352,3 @@ public class RuneCraftUiController : MonoBehaviour {
         statusText.text = text;
     }
 }
-

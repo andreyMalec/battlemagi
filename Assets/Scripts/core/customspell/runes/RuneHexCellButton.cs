@@ -38,6 +38,10 @@ public class RuneHexCellButton : MonoBehaviour, IPointerClickHandler, IPointerDo
         background.color = color;
     }
 
+    public void SetSprite(Sprite sprite) {
+        background.sprite = sprite;
+    }
+
     public void OnPointerClick(PointerEventData eventData) {
         _onClick?.Invoke(this, eventData);
     }
