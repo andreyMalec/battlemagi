@@ -10,13 +10,11 @@ public class RuneCraftUiController : MonoBehaviour {
     [SerializeField] private RuneGlyphPaletteView paletteView;
     [SerializeField] private RuneGlyphShapeEditorView glyphShapeEditor;
     [SerializeField] private TMP_Text statusText;
-    [SerializeField] private Toggle linkModeToggle;
-    [SerializeField] private TMP_Dropdown fromSideDropdown;
-    [SerializeField] private TMP_Dropdown toSideDropdown;
     [SerializeField] private Button saveGlyph;
 
     private readonly Dictionary<string, RuneGlyphDefinition> _glyphById = new Dictionary<string, RuneGlyphDefinition>();
     private readonly Dictionary<HexCoord, string> _occupiedCells = new Dictionary<HexCoord, string>();
+    private readonly Dictionary<HexCoord, int> _outputByCell = new Dictionary<HexCoord, int>();
 
     private string _activePaletteGlyphId = string.Empty;
     private bool _dragActive;
@@ -177,6 +175,7 @@ public class RuneCraftUiController : MonoBehaviour {
                 }
                 else {
                     SetStatus("Cannot place");
+                    editor.SetSelection(System.Array.Empty<string>());
                 }
                 return;
             }
@@ -188,19 +187,6 @@ public class RuneCraftUiController : MonoBehaviour {
             return;
         }
 
-        if (linkModeToggle.isOn && editor.Selection.Count == 1 && editor.Selection[0] != placementId) {
-            var fromSide = fromSideDropdown.value;
-            var toSide = toSideDropdown.value;
-            if (editor.TryLinkSelectedTo(placementId, fromSide, toSide)) {
-                RefreshBoard();
-                SetStatus("Linked");
-            }
-            else {
-                SetStatus("Cannot link");
-            }
-            return;
-        }
-
         editor.SetSelection(new[] { placementId });
         RefreshBoard();
         SetStatus("Selected");
@@ -208,9 +194,6 @@ public class RuneCraftUiController : MonoBehaviour {
 
     private void HandleBoardDragStart(HexCoord cell, PointerEventData eventData) {
         if (eventData.button != PointerEventData.InputButton.Left)
-            return;
-
-        if (linkModeToggle.isOn)
             return;
 
         RebuildOccupiedLookup();
@@ -268,11 +251,12 @@ public class RuneCraftUiController : MonoBehaviour {
             selected.Add(editor.Selection[i]);
         }
 
-        boardView?.Render(_occupiedCells, selected);
+        boardView?.Render(_occupiedCells, selected, _outputByCell);
     }
 
     private void RebuildOccupiedLookup() {
         _occupiedCells.Clear();
+        _outputByCell.Clear();
         var placed = editor.Draft.board.glyphs;
         for (var i = 0; i < placed.Count; i++) {
             var glyph = placed[i];
@@ -283,6 +267,13 @@ public class RuneCraftUiController : MonoBehaviour {
                 var local = definition.shape[c].ToCoord();
                 var rotated = HexCoord.Rotate(local, glyph.rotation);
                 _occupiedCells[glyph.anchor + rotated] = glyph.placementId;
+            }
+
+            if (definition.shape.Count > 0) {
+                var outputLocal = definition.shape[0].ToCoord();
+                var outputCoord = glyph.anchor + HexCoord.Rotate(outputLocal, glyph.rotation);
+                var outputSide = RuneGlyphRenderUtils.NormalizeSide(definition.outputSide - glyph.rotation);
+                _outputByCell[outputCoord] = outputSide;
             }
         }
     }

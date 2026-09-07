@@ -10,12 +10,13 @@ public class RuneGlyphShapeEditorView : MonoBehaviour {
     [SerializeField] private int editRadius = 4;
     [SerializeField] private Sprite defaultCellSprite;
     [SerializeField] private Sprite outputCellSprite;
-    [SerializeField] private List<Button> outputSideButtons = new List<Button>();
-    [SerializeField] private List<Image> outputSideImages = new List<Image>();
     [SerializeField] private Color inactiveSideColor = new Color(0.2f, 0.2f, 0.2f, 0.9f);
     [SerializeField] private Color activeSideColor = new Color(0.95f, 0.65f, 0.2f, 0.95f);
     [SerializeField] private Color offCellColor = new Color(0.11f, 0.11f, 0.11f, 0.7f);
     [SerializeField] private Color onCellColor = new Color(0.32f, 0.9f, 0.5f, 0.92f);
+    [SerializeField] private Color contourColor = new Color(0.06f, 0.08f, 0.09f, 1f);
+    [SerializeField] private Color outputMarkerColor = new Color(1f, 1f, 1f, 0.95f);
+    [SerializeField] private Sprite outputTriangleSprite;
 
     private readonly Dictionary<HexCoord, RuneHexCellButton> _cells = new Dictionary<HexCoord, RuneHexCellButton>();
     private readonly HashSet<HexCoord> _shape = new HashSet<HexCoord>();
@@ -31,7 +32,6 @@ public class RuneGlyphShapeEditorView : MonoBehaviour {
 
     private void Awake() {
         BuildGrid();
-        BindSideButtons();
         Render();
     }
 
@@ -44,8 +44,7 @@ public class RuneGlyphShapeEditorView : MonoBehaviour {
 
         if (glyph.shape.Count > 0) {
             _outputCell = glyph.shape[0].ToCoord();
-        }
-        else {
+        } else {
             _outputCell = new HexCoord(0, 0);
             _shape.Add(_outputCell);
         }
@@ -99,20 +98,13 @@ public class RuneGlyphShapeEditorView : MonoBehaviour {
             for (var r = minR; r <= maxR; r++) {
                 var coord = new HexCoord(q, r);
                 var cell = Instantiate(cellPrefab, gridRoot);
-                cell.Setup(coord, HandleCellClick, HandleCellPointerDown, HandleCellDragStart, HandleCellDrag, HandleCellDragEnd);
+                cell.Setup(coord, HandleCellClick, HandleCellPointerDown, HandleCellDragStart, HandleCellDrag,
+                    HandleCellDragEnd);
                 if (defaultCellSprite != null)
                     cell.SetSprite(defaultCellSprite);
                 ((RectTransform)cell.transform).anchoredPosition = AxialToUi(coord, cellSize);
                 _cells[coord] = cell;
             }
-        }
-    }
-
-    private void BindSideButtons() {
-        for (var i = 0; i < outputSideButtons.Count; i++) {
-            var side = i;
-            outputSideButtons[i].onClick.RemoveAllListeners();
-            outputSideButtons[i].onClick.AddListener(() => SetOutputSide(side));
         }
     }
 
@@ -143,6 +135,7 @@ public class RuneGlyphShapeEditorView : MonoBehaviour {
             if (TryRotateHeldCell(1)) {
                 Render();
             }
+
             return;
         }
 
@@ -150,8 +143,7 @@ public class RuneGlyphShapeEditorView : MonoBehaviour {
             if (coord.q == _outputCell.q && coord.r == _outputCell.r)
                 return;
             _shape.Remove(coord);
-        }
-        else {
+        } else {
             _shape.Add(coord);
         }
 
@@ -201,18 +193,24 @@ public class RuneGlyphShapeEditorView : MonoBehaviour {
 
     private void Render() {
         foreach (var pair in _cells) {
-            pair.Value.SetColor(_shape.Contains(pair.Key) ? onCellColor : offCellColor);
+            var filled = _shape.Contains(pair.Key);
+            pair.Value.SetColor(filled ? onCellColor : offCellColor);
+
+            if (filled) {
+                var contourMask = RuneGlyphRenderUtils.BuildContourMask(pair.Key, _shape);
+                pair.Value.SetContour(contourColor, contourMask);
+            } else {
+                pair.Value.SetContour(contourColor, null);
+            }
+
             var isOutput = pair.Key.q == _outputCell.q && pair.Key.r == _outputCell.r;
             if (isOutput && outputCellSprite != null) {
                 pair.Value.SetSprite(outputCellSprite);
-            }
-            else if (defaultCellSprite != null) {
+            } else if (defaultCellSprite != null) {
                 pair.Value.SetSprite(defaultCellSprite);
             }
-        }
 
-        for (var i = 0; i < outputSideImages.Count; i++) {
-            outputSideImages[i].color = i == _outputSide ? activeSideColor : inactiveSideColor;
+            pair.Value.SetOutputMarker(isOutput && filled, _outputSide, outputMarkerColor, null, outputTriangleSprite);
         }
     }
 
@@ -250,7 +248,7 @@ public class RuneGlyphShapeEditorView : MonoBehaviour {
             return false;
 
         if (_heldCell.q == _outputCell.q && _heldCell.r == _outputCell.r) {
-            _outputSide = ((_outputSide + clockwiseSteps) % 6 + 6) % 6;
+            _outputSide = ((_outputSide - clockwiseSteps) % 6 + 6) % 6;
             return true;
         }
 
@@ -291,5 +289,3 @@ public class RuneGlyphShapeEditorView : MonoBehaviour {
         return false;
     }
 }
-
-

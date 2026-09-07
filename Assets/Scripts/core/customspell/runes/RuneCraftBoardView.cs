@@ -8,8 +8,13 @@ public class RuneCraftBoardView : MonoBehaviour {
     [SerializeField] private RuneHexCellButton cellPrefab;
     [SerializeField] private float cellSize = 28f;
     [SerializeField] private Color emptyColor = new Color(0.12f, 0.12f, 0.12f, 0.75f);
-    [SerializeField] private Color filledColor = new Color(0.32f, 0.32f, 0.9f, 0.9f);
-    [SerializeField] private Color selectedColor = new Color(0.95f, 0.85f, 0.2f, 0.95f);
+    [SerializeField] private Color glyphFillColor = new Color(0.32f, 0.32f, 0.9f, 0.88f);
+    [SerializeField] private Color selectedFillColor = new Color(0.95f, 0.85f, 0.2f, 0.92f);
+    [SerializeField] private Color glyphBorderColor = new Color(0.08f, 0.08f, 0.14f, 1f);
+    [SerializeField] private Color selectedBorderColor = new Color(1f, 0.95f, 0.55f, 1f);
+    [SerializeField] private Color outputMarkerColor = new Color(1f, 1f, 1f, 0.95f);
+    [SerializeField] private Sprite outputIconSprite;
+    [SerializeField] private Sprite outputTriangleSprite;
 
     private readonly Dictionary<HexCoord, RuneHexCellButton> _cells = new Dictionary<HexCoord, RuneHexCellButton>();
 
@@ -36,14 +41,28 @@ public class RuneCraftBoardView : MonoBehaviour {
         }
     }
 
-    public void Render(Dictionary<HexCoord, string> occupiedToPlacement, HashSet<string> selectedPlacements) {
+    public void Render(Dictionary<HexCoord, string> occupiedToPlacement, HashSet<string> selectedPlacements, Dictionary<HexCoord, int> outputByCell) {
         foreach (var pair in _cells) {
-            var color = emptyColor;
+            var fill = emptyColor;
+            var border = glyphBorderColor;
+            bool[] contourMask = null;
+            var isOutput = false;
+            var outputSide = 0;
+
             if (occupiedToPlacement.TryGetValue(pair.Key, out var placementId)) {
-                color = selectedPlacements.Contains(placementId) ? selectedColor : filledColor;
+                var selected = selectedPlacements.Contains(placementId);
+                fill = selected ? selectedFillColor : glyphFillColor;
+                border = selected ? selectedBorderColor : glyphBorderColor;
+                contourMask = RuneGlyphRenderUtils.BuildContourMask(pair.Key, placementId, occupiedToPlacement);
+
+                if (outputByCell.TryGetValue(pair.Key, out outputSide)) {
+                    isOutput = true;
+                }
             }
 
-            pair.Value.SetColor(color);
+            pair.Value.SetColor(fill);
+            pair.Value.SetContour(border, contourMask);
+            pair.Value.SetOutputMarker(isOutput, outputSide, outputMarkerColor, outputIconSprite, outputTriangleSprite);
         }
     }
 
