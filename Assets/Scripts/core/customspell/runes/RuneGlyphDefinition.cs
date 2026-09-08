@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "RuneGlyph", menuName = "Spells/Runes/Glyph")]
@@ -6,9 +7,9 @@ public class RuneGlyphDefinition : ScriptableObject {
     public string glyphId;
     public string displayName;
     public RuneGlyphType glyphType;
-    public RuneElement element;
     [Range(0, 5)] public int outputSide;
-    public List<string> incompatibleGlyphIds = new List<string>();
+    public List<RuneGlyphDefinition> incompatibleGlyphs = new List<RuneGlyphDefinition>();
+    [HideInInspector] public List<string> incompatibleGlyphIds = new List<string>();
     public List<RuneShapeCell> shape = new List<RuneShapeCell> { new RuneShapeCell(0, 0) };
 
     public IReadOnlyList<HexCoord> GetLocalShape() {
@@ -23,8 +24,7 @@ public class RuneGlyphDefinition : ScriptableObject {
 #if UNITY_EDITOR
     private void OnValidate() {
         outputSide = ((outputSide % 6) + 6) % 6;
+        incompatibleGlyphIds = incompatibleGlyphs.Select(item => item.glyphId).ToList();
     }
 #endif
 }
-
-

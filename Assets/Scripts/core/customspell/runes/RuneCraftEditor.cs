@@ -25,6 +25,7 @@ public class RuneCraftEditor : MonoBehaviour {
     private void Awake() {
         draft.board.radius = boardRadius;
         _boardService = new RuneBoardService(glyphCatalog);
+        _boardService.RebuildAutoLinks(draft.board);
         StampTime();
     }
 
@@ -33,6 +34,7 @@ public class RuneCraftEditor : MonoBehaviour {
         if (!_boardService.TryPlaceGlyph(draft.board, glyphId, anchor, rotation, out var placementId))
             return UndoInternal();
 
+        _boardService.RebuildAutoLinks(draft.board);
         _selection.Clear();
         _selection.Add(placementId);
         StampTime();
@@ -60,6 +62,7 @@ public class RuneCraftEditor : MonoBehaviour {
         if (!_boardService.TryMoveGroup(draft.board, _selection, delta))
             return UndoInternal();
 
+        _boardService.RebuildAutoLinks(draft.board);
         StampTime();
         return true;
     }
@@ -72,6 +75,7 @@ public class RuneCraftEditor : MonoBehaviour {
         if (!_boardService.TryRotateGroup(draft.board, _selection, pivot, clockwiseSteps))
             return UndoInternal();
 
+        _boardService.RebuildAutoLinks(draft.board);
         StampTime();
         return true;
     }
@@ -89,6 +93,7 @@ public class RuneCraftEditor : MonoBehaviour {
         if (!removedAny)
             return UndoInternal();
 
+        _boardService.RebuildAutoLinks(draft.board);
         _selection.Clear();
         StampTime();
         return true;
@@ -107,6 +112,7 @@ public class RuneCraftEditor : MonoBehaviour {
 
         _redo.Push(draft.board.Clone());
         draft.board = _undo.Pop().Clone();
+        _boardService.RebuildAutoLinks(draft.board);
         _selection.Clear();
         StampTime();
         return true;
@@ -118,6 +124,7 @@ public class RuneCraftEditor : MonoBehaviour {
 
         _undo.Push(draft.board.Clone());
         draft.board = _redo.Pop().Clone();
+        _boardService.RebuildAutoLinks(draft.board);
         _selection.Clear();
         StampTime();
         return true;
@@ -134,6 +141,7 @@ public class RuneCraftEditor : MonoBehaviour {
         if (draft.board == null)
             draft.board = new RuneBoardData();
         draft.board.radius = boardRadius;
+        _boardService.RebuildAutoLinks(draft.board);
         _undo.Clear();
         _redo.Clear();
         _selection.Clear();

@@ -174,6 +174,55 @@ public class RuneBoardService {
         return true;
     }
 
+    public void RebuildAutoLinks(RuneBoardData board) {
+        board.links.Clear();
+
+        var occupied = new Dictionary<HexCoord, string>();
+        var byPlacement = new Dictionary<string, RunePlacedGlyph>();
+        for (var i = 0; i < board.glyphs.Count; i++) {
+            var glyph = board.glyphs[i];
+            byPlacement[glyph.placementId] = glyph;
+            foreach (var cell in OccupiedCells(glyph)) {
+                occupied[cell] = glyph.placementId;
+            }
+        }
+
+        for (var i = 0; i < board.glyphs.Count; i++) {
+            var from = board.glyphs[i];
+            if (!_glyphCatalog.TryGetValue(from.glyphId, out var fromDef))
+                continue;
+
+            var outputLocal = fromDef.shape.Count > 0 ? fromDef.shape[0].ToCoord() : new HexCoord(0, 0);
+            var outputCell = from.anchor + HexCoord.Rotate(outputLocal, from.rotation);
+            var fromSide = NormalizeSide(fromDef.outputSide - from.rotation);
+            var targetCell = outputCell + SideDirections[fromSide];
+
+            if (!occupied.TryGetValue(targetCell, out var targetPlacementId))
+                continue;
+
+            if (targetPlacementId == from.placementId)
+                continue;
+
+            if (!byPlacement.TryGetValue(targetPlacementId, out var to))
+                continue;
+
+            if (!AreCompatible(from.glyphId, to.glyphId))
+                continue;
+
+            var link = new RuneLink {
+                fromPlacementId = from.placementId,
+                toPlacementId = targetPlacementId,
+                fromSide = fromSide,
+                toSide = NormalizeSide(fromSide + 3)
+            };
+
+            board.links.Add(link);
+            if (HasCycle(board)) {
+                board.links.RemoveAt(board.links.Count - 1);
+            }
+        }
+    }
+
     public bool HasCycle(RuneBoardData board) {
         var state = new Dictionary<string, int>();
         for (var i = 0; i < board.glyphs.Count; i++) {
