@@ -1,8 +1,9 @@
 public enum RuneGlyphType {
     Core = 0,
-    Property = 1,
+    Trigger = 10,
     Movement = 2,
-    Trigger = 3,
+    Property = 3,
+    Element = 4,
 }
 
 public enum RuneElement {

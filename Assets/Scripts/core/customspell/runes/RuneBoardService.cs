@@ -80,49 +80,6 @@ public class RuneBoardService {
         return true;
     }
 
-    public bool TryLink(RuneBoardData board, string fromPlacementId, string toPlacementId, int fromSide, int toSide) {
-        if (fromPlacementId == toPlacementId)
-            return false;
-
-        var from = GetPlacedGlyph(board, fromPlacementId);
-        var to = GetPlacedGlyph(board, toPlacementId);
-        if (from == null || to == null)
-            return false;
-
-        if (!AreCompatible(from.glyphId, to.glyphId))
-            return false;
-
-        if (!CanTouchOnSides(from, to, fromSide, toSide))
-            return false;
-
-        if (board.links.Exists(l => l.fromPlacementId == fromPlacementId && l.toPlacementId == toPlacementId))
-            return false;
-
-        var link = new RuneLink {
-            fromPlacementId = fromPlacementId,
-            toPlacementId = toPlacementId,
-            fromSide = NormalizeSide(fromSide),
-            toSide = NormalizeSide(toSide),
-        };
-
-        board.links.Add(link);
-        if (HasCycle(board)) {
-            board.links.Remove(link);
-            return false;
-        }
-
-        return true;
-    }
-
-    public bool RemoveLink(RuneBoardData board, string fromPlacementId, string toPlacementId) {
-        var index = board.links.FindIndex(l => l.fromPlacementId == fromPlacementId && l.toPlacementId == toPlacementId);
-        if (index < 0)
-            return false;
-
-        board.links.RemoveAt(index);
-        return true;
-    }
-
     public bool TryMoveGroup(RuneBoardData board, IReadOnlyList<string> placementIds, HexCoord delta) {
         var moved = new List<(RunePlacedGlyph glyph, HexCoord original)>();
         for (var i = 0; i < placementIds.Count; i++) {

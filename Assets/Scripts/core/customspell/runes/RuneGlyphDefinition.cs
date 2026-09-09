@@ -2,8 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "RuneGlyph", menuName = "Spells/Runes/Glyph")]
-public class RuneGlyphDefinition : ScriptableObject {
+public abstract class RuneGlyphDefinition : ScriptableObject {
     public string glyphId;
     public string displayName;
     public RuneGlyphType glyphType;
@@ -20,6 +19,8 @@ public class RuneGlyphDefinition : ScriptableObject {
 
         return cells;
     }
+
+    public abstract bool Apply(RuneGlyphContext ctx);
 
 #if UNITY_EDITOR
     private void OnValidate() {

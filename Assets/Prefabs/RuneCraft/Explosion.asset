@@ -9,15 +9,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dbbbcacb2b624764afb4f325f7ff3490, type: 3}
-  m_Name: RuneGlyph 1
-  m_EditorClassIdentifier: Assembly-CSharp::RuneGlyphDefinition
-  glyphId: ne
-  displayName: ne
+  m_Script: {fileID: 11500000, guid: f19c4e66e5f2483a8ef367c622a65d58, type: 3}
+  m_Name: Explosion
+  m_EditorClassIdentifier: Assembly-CSharp::GlyphExplosion
+  glyphId: Explosion
+  displayName: Explosion
   glyphType: 0
-  element: 0
   outputSide: 0
+  incompatibleGlyphs: []
   incompatibleGlyphIds: []
   shape:
-  - q: 0
+  - q: 1
     r: 0
+  - q: 0
+    r: 1
+  - q: -1
+    r: 1
+  - q: -1
+    r: 0
+  - q: 0
+    r: -1
+  - q: 1
+    r: -1

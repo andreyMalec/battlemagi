@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -11,6 +12,8 @@ public class RuneCraftUiController : MonoBehaviour {
     [SerializeField] private RuneGlyphShapeEditorView glyphShapeEditor;
     [SerializeField] private TMP_Text statusText;
     [SerializeField] private Button saveGlyph;
+    [SerializeField] private Button craftSpell;
+    [SerializeField] private SpellDefinition craftedSpell;
 
     private readonly Dictionary<string, RuneGlyphDefinition> _glyphById = new Dictionary<string, RuneGlyphDefinition>();
     private readonly Dictionary<HexCoord, string> _occupiedCells = new Dictionary<HexCoord, string>();
@@ -29,6 +32,17 @@ public class RuneCraftUiController : MonoBehaviour {
         paletteView.Bind(editor.GlyphCatalog);
         paletteView.GlyphClicked += HandlePaletteGlyphClicked;
         saveGlyph.onClick.AddListener(SaveGlyphShape);
+        craftSpell.onClick.AddListener(() => {
+            if (editor.TryBuildSpell(out var spell, out var error)) {
+                craftedSpell = spell;
+                SetStatus($"Crafted spell");
+
+                var caster = FindAnyObjectByType<SpellCasterPlayer>();
+                caster.UpdateAvailableSpells(new List<SpellDefinition> { spell });
+            } else {
+                SetStatus("Failed to craft spell: " + error);
+            }
+        });
 
         boardView?.BuildGrid(editor.Draft.board.radius);
         if (boardView != null) {
@@ -45,6 +59,20 @@ public class RuneCraftUiController : MonoBehaviour {
 
         RefreshBoard();
         SetStatus("Ready");
+    }
+
+    private void Update() {
+        if (Input.GetKeyDown(KeyCode.Delete)) {
+            DeleteSelection();
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Z)) {
+            Undo();
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Y)) {
+            Redo();
+        }
     }
 
     public void Undo() {
@@ -148,6 +176,7 @@ public class RuneCraftUiController : MonoBehaviour {
                     RefreshBoard();
                     SetStatus("Rotated");
                 }
+
                 return;
             }
 
@@ -164,6 +193,7 @@ public class RuneCraftUiController : MonoBehaviour {
                 RefreshBoard();
                 SetStatus("Rotated");
             }
+
             return;
         }
 
@@ -172,11 +202,11 @@ public class RuneCraftUiController : MonoBehaviour {
                 if (editor.TryAddGlyph(_activePaletteGlyphId, cell)) {
                     RefreshBoard();
                     SetStatus("Placed");
-                }
-                else {
+                } else {
                     SetStatus("Cannot place");
                     editor.SetSelection(System.Array.Empty<string>());
                 }
+
                 return;
             }
 

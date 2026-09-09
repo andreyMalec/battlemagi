@@ -5,6 +5,7 @@ using UnityEngine;
 public class RuneCraftEditor : MonoBehaviour {
     [SerializeField] private int boardRadius = 5;
     [SerializeField] private List<RuneGlyphDefinition> glyphCatalog = new List<RuneGlyphDefinition>();
+    [SerializeField] private SpellDefinition baseSpellTemplate;
 
     [SerializeField] private RuneSpellDraft draft = new RuneSpellDraft {
         name = "New Rune Spell",
@@ -17,6 +18,7 @@ public class RuneCraftEditor : MonoBehaviour {
     private readonly Stack<RuneBoardData> _undo = new Stack<RuneBoardData>();
     private readonly Stack<RuneBoardData> _redo = new Stack<RuneBoardData>();
     private RuneBoardService _boardService;
+    private RuneSpellAssembler _spellAssembler;
 
     public RuneSpellDraft Draft => draft;
     public IReadOnlyList<RuneGlyphDefinition> GlyphCatalog => glyphCatalog;
@@ -25,8 +27,26 @@ public class RuneCraftEditor : MonoBehaviour {
     private void Awake() {
         draft.board.radius = boardRadius;
         _boardService = new RuneBoardService(glyphCatalog);
+        _spellAssembler = new RuneSpellAssembler(glyphCatalog);
         _boardService.RebuildAutoLinks(draft.board);
         StampTime();
+
+        var lastDraft = PlayerPrefs.GetString("Draft", null);
+        if (lastDraft != null) {
+            LoadDraftJson(lastDraft);
+        }
+    }
+
+    private float timer;
+    private void FixedUpdate() {
+        if (timer < 5f) {
+            timer += Time.deltaTime;
+            return;
+        }
+        
+        StampTime();
+        PlayerPrefs.SetString("Draft", SaveDraftJson(false));
+        timer = 0f;
     }
 
     public bool TryAddGlyph(string glyphId, HexCoord anchor, int rotation = 0) {
@@ -37,19 +57,6 @@ public class RuneCraftEditor : MonoBehaviour {
         _boardService.RebuildAutoLinks(draft.board);
         _selection.Clear();
         _selection.Add(placementId);
-        StampTime();
-        return true;
-    }
-
-    public bool TryLinkSelectedTo(string targetPlacementId, int selectedSide, int targetSide) {
-        if (_selection.Count != 1)
-            return false;
-
-        PushSnapshot();
-        var ok = _boardService.TryLink(draft.board, _selection[0], targetPlacementId, selectedSide, targetSide);
-        if (!ok)
-            return UndoInternal();
-
         StampTime();
         return true;
     }
@@ -148,17 +155,13 @@ public class RuneCraftEditor : MonoBehaviour {
         StampTime();
     }
 
-    public bool TryUnlink(string fromPlacementId, string toPlacementId) {
-        PushSnapshot();
-        if (!_boardService.RemoveLink(draft.board, fromPlacementId, toPlacementId))
-            return UndoInternal();
-
-        StampTime();
-        return true;
-    }
-
     public bool ValidateGraph() {
         return !_boardService.HasCycle(draft.board);
+    }
+
+    public bool TryBuildSpell(out SpellDefinition spell, out string error) {
+        _boardService.RebuildAutoLinks(draft.board);
+        return _spellAssembler.TryAssemble(draft.board, baseSpellTemplate, out spell, out error);
     }
 
     private bool UndoInternal() {

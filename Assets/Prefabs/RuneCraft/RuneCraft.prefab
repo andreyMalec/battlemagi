@@ -2127,9 +2127,9 @@ MonoBehaviour:
   paletteView: {fileID: 5558405796603302757}
   glyphShapeEditor: {fileID: 5083134245214291843}
   statusText: {fileID: 7612652292844081338}
-  linkModeToggle: {fileID: 5737632405708940929}
-  fromSideDropdown: {fileID: 5172387896485176692}
-  toSideDropdown: {fileID: 7024664640901631695}
+  saveGlyph: {fileID: 0}
+  craftSpell: {fileID: 0}
+  craftedSpell: {fileID: 0}
 --- !u!114 &7884972023326597208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2143,7 +2143,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RuneCraftEditor
   boardRadius: 5
-  glyphCatalog: []
+  glyphCatalog:
+  - {fileID: 11400000, guid: 3f7aa546b6cf839448a6039026aa8464, type: 2}
+  - {fileID: 11400000, guid: b1d221ead143fd94880c6f33dcc06399, type: 2}
+  - {fileID: 11400000, guid: 7ae7d92ca9ae61b45bed11df5683d95a, type: 2}
+  - {fileID: 11400000, guid: 451563e426616bf42b4d2f40e6b08cc4, type: 2}
+  - {fileID: 11400000, guid: 4bc1630c72924f340b12d012fdf0d95f, type: 2}
+  baseSpellTemplate: {fileID: 0}
   draft:
     name: New Rune Spell
     version: 1
@@ -2168,8 +2174,13 @@ MonoBehaviour:
   cellPrefab: {fileID: 3467319973831976865, guid: a19b55dcddb20534588b3e6d4f5f01b1, type: 3}
   cellSize: 28
   emptyColor: {r: 0.12, g: 0.12, b: 0.12, a: 0.75}
-  filledColor: {r: 0.32, g: 0.32, b: 0.9, a: 0.9}
-  selectedColor: {r: 0.95, g: 0.85, b: 0.2, a: 0.95}
+  glyphFillColor: {r: 0.32, g: 0.32, b: 0.9, a: 0.88}
+  selectedFillColor: {r: 0.95, g: 0.85, b: 0.2, a: 0.92}
+  glyphBorderColor: {r: 0.08, g: 0.08, b: 0.14, a: 1}
+  selectedBorderColor: {r: 1, g: 0.95, b: 0.55, a: 1}
+  outputMarkerColor: {r: 1, g: 1, b: 1, a: 0.95}
+  outputIconSprite: {fileID: 0}
+  outputTriangleSprite: {fileID: 0}
 --- !u!114 &5083134245214291843
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2186,12 +2197,15 @@ MonoBehaviour:
   cellPrefab: {fileID: 3467319973831976865, guid: a19b55dcddb20534588b3e6d4f5f01b1, type: 3}
   cellSize: 22
   editRadius: 4
-  outputSideButtons: []
-  outputSideImages: []
+  defaultCellSprite: {fileID: 0}
+  outputCellSprite: {fileID: 0}
   inactiveSideColor: {r: 0.2, g: 0.2, b: 0.2, a: 0.9}
   activeSideColor: {r: 0.95, g: 0.65, b: 0.2, a: 0.95}
   offCellColor: {r: 0.11, g: 0.11, b: 0.11, a: 0.7}
   onCellColor: {r: 0.32, g: 0.9, b: 0.5, a: 0.92}
+  contourColor: {r: 0.06, g: 0.08, b: 0.09, a: 1}
+  outputMarkerColor: {r: 1, g: 1, b: 1, a: 0.95}
+  outputTriangleSprite: {fileID: 0}
 --- !u!1 &6052878245298699875
 GameObject:
   m_ObjectHideFlags: 0
