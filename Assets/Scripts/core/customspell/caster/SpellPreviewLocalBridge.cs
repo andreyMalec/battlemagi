@@ -23,7 +23,7 @@ public class SpellPreviewLocalBridge : MonoBehaviour, ISpellPreviewBridge {
 
     public void Show(SpellDefinition spell) {
         Hide();
-        var prefab = DefaultSpells.Get(spell)?.inHandPrefab;
+        var prefab = DefaultSpells.Get(spell)?.inHandPrefab ?? SpellPrefabDatabase.Instance.Hand(spell);
         if (prefab == null) return;
         GameObject obj = Instantiate(prefab, _hand);
         obj.transform.localPosition = Vector3.zero;

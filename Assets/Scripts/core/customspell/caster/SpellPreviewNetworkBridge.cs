@@ -50,7 +50,7 @@ public class SpellPreviewNetworkBridge : NetworkBehaviour, ISpellPreviewBridge {
     [ClientRpc]
     private void ShowInHandClientRpc(string spellName, ulong previewObjectId) {
         if (!TryResolveBridge(previewObjectId, out var bridge)) return;
-
+//TODO custom spell
         var spell = DefaultSpells.Get(spellName);
         var prefab = spell?.inHandPrefab;
         if (prefab == null) return;

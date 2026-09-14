@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -11,6 +12,7 @@ public class RuneCraftUiController : MonoBehaviour {
     [SerializeField] private RuneGlyphPaletteView paletteView;
     [SerializeField] private RuneGlyphShapeEditorView glyphShapeEditor;
     [SerializeField] private TMP_Text statusText;
+    [SerializeField] private TMP_Text selectedText;
     [SerializeField] private Button saveGlyph;
     [SerializeField] private Button craftSpell;
     [SerializeField] private SpellDefinition craftedSpell;
@@ -37,8 +39,11 @@ public class RuneCraftUiController : MonoBehaviour {
                 craftedSpell = spell;
                 SetStatus($"Crafted spell");
 
-                var caster = FindAnyObjectByType<SpellCasterPlayer>();
-                caster.UpdateAvailableSpells(new List<SpellDefinition> { spell });
+                var casters = FindObjectsByType<SpellCasterPlayer>();
+                foreach (var caster in casters) {
+                    if (!caster.enabled) continue;
+                    caster.UpdateAvailableSpells(new List<SpellDefinition> { spell });
+                }
             } else {
                 SetStatus("Failed to craft spell: " + error);
             }
@@ -46,15 +51,10 @@ public class RuneCraftUiController : MonoBehaviour {
 
         boardView?.BuildGrid(editor.Draft.board.radius);
         if (boardView != null) {
-            boardView.CellPointerDown += HandleBoardCellPointerDown;
             boardView.CellClicked += HandleBoardCellClick;
             boardView.CellDragStarted += HandleBoardDragStart;
             boardView.CellDragged += HandleBoardDrag;
             boardView.CellDragEnded += HandleBoardDragEnd;
-        }
-
-        if (editor.GlyphCatalog.Count > 0) {
-            SelectPaletteGlyph(editor.GlyphCatalog[0]);
         }
 
         RefreshBoard();
@@ -147,25 +147,25 @@ public class RuneCraftUiController : MonoBehaviour {
         glyphShapeEditor?.BindGlyph(glyph);
     }
 
-    private void HandleBoardCellPointerDown(HexCoord cell, PointerEventData eventData) {
-        RebuildOccupiedLookup();
-        if (!_occupiedCells.TryGetValue(cell, out var placementId))
-            return;
+    private void UnselectPaletteGlyph() {
+        _activePaletteGlyphId = string.Empty;
+        paletteView.SetSelectedGlyph(_activePaletteGlyphId);
+    }
 
-        editor.SetSelection(new[] { placementId });
-        _heldPlacementId = placementId;
-        _heldCell = cell;
-        _hasHeldCell = true;
-        RefreshBoard();
-        SetStatus("Selected");
+    private void UpdateSelectedGlyphName(string placementId) {
+        selectedText.text = "";
+        var placed = editor.Draft.board.glyphs;
+        for (var i = 0; i < placed.Count; i++) {
+            var glyph = placed[i];
+            if (glyph.placementId != placementId)
+                continue;
+            if (!_glyphById.TryGetValue(glyph.glyphId, out var definition))
+                continue;
+            selectedText.text = definition.displayName;
+        }
     }
 
     private void HandleBoardCellClick(HexCoord cell, PointerEventData eventData) {
-        if (_suppressNextClick && eventData.button != PointerEventData.InputButton.Right) {
-            _suppressNextClick = false;
-            return;
-        }
-
         RebuildOccupiedLookup();
         var hasPlacement = _occupiedCells.TryGetValue(cell, out var placementId);
 
@@ -183,7 +183,6 @@ public class RuneCraftUiController : MonoBehaviour {
             if (!hasPlacement)
                 return;
 
-            editor.SetSelection(new[] { placementId });
             _heldPlacementId = placementId;
             _heldCell = cell;
             _hasHeldCell = true;
@@ -202,6 +201,7 @@ public class RuneCraftUiController : MonoBehaviour {
                 if (editor.TryAddGlyph(_activePaletteGlyphId, cell)) {
                     RefreshBoard();
                     SetStatus("Placed");
+                    UnselectPaletteGlyph();
                 } else {
                     SetStatus("Cannot place");
                     editor.SetSelection(System.Array.Empty<string>());
@@ -217,9 +217,17 @@ public class RuneCraftUiController : MonoBehaviour {
             return;
         }
 
-        editor.SetSelection(new[] { placementId });
+        if (Input.GetKey(KeyCode.LeftShift)) {
+            editor.SetSelection(editor.Selection.Contains(placementId)
+                ? editor.Selection.Where(id => id != placementId).ToArray()
+                : editor.Selection.Concat(new[] { placementId }).ToArray());
+        } else if (editor.Selection.Count == 0 || !editor.Selection.Contains(placementId))  {
+            editor.SetSelection(new[] { placementId });
+        }
+
         RefreshBoard();
         SetStatus("Selected");
+        UpdateSelectedGlyphName(placementId);
     }
 
     private void HandleBoardDragStart(HexCoord cell, PointerEventData eventData) {
@@ -230,7 +238,7 @@ public class RuneCraftUiController : MonoBehaviour {
         if (!_occupiedCells.TryGetValue(cell, out var placementId))
             return;
 
-        if (editor.Selection.Count != 1 || editor.Selection[0] != placementId) {
+        if (editor.Selection.Count == 0 || (editor.Selection.Count == 1 && editor.Selection[0] != placementId)) {
             editor.SetSelection(new[] { placementId });
             RefreshBoard();
         }
@@ -270,7 +278,6 @@ public class RuneCraftUiController : MonoBehaviour {
         _dragActive = false;
         _hasHeldCell = false;
         _heldPlacementId = string.Empty;
-        _suppressNextClick = true;
         RefreshBoard();
     }
 
@@ -281,7 +288,7 @@ public class RuneCraftUiController : MonoBehaviour {
             selected.Add(editor.Selection[i]);
         }
 
-        boardView?.Render(_occupiedCells, selected, _outputByCell);
+        boardView?.Render(_occupiedCells, selected, _outputByCell, editor.Draft.board.glyphs, _glyphById);
     }
 
     private void RebuildOccupiedLookup() {
@@ -319,15 +326,7 @@ public class RuneCraftUiController : MonoBehaviour {
     }
 
     private HexCoord GetRotationPivot() {
-        if (_hasHeldCell && editor.Selection.Count == 1 && editor.Selection[0] == _heldPlacementId)
-            return _heldCell;
-
-        return GetSelectionPivot();
-    }
-
-    private HexCoord GetSelectionPivot() {
-        var placementId = editor.Selection[0];
-        return GetAnchorByPlacement(placementId);
+        return _heldCell;
     }
 
     private HexCoord GetAnchorByPlacement(string placementId) {

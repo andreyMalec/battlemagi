@@ -18,4 +18,3 @@ public enum RuneElement {
     Frost = 8,
     Arcane = 9,
 }
-

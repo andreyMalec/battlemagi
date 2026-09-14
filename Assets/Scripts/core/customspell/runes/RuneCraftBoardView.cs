@@ -8,8 +8,7 @@ public class RuneCraftBoardView : MonoBehaviour {
     [SerializeField] private RuneHexCellButton cellPrefab;
     [SerializeField] private float cellSize = 28f;
     [SerializeField] private Color emptyColor = new Color(0.12f, 0.12f, 0.12f, 0.75f);
-    [SerializeField] private Color glyphFillColor = new Color(0.32f, 0.32f, 0.9f, 0.88f);
-    [SerializeField] private Color selectedFillColor = new Color(0.95f, 0.85f, 0.2f, 0.92f);
+    [SerializeField] private List<RuneGlyphColor> glyphTypeColors = new List<RuneGlyphColor>();
     [SerializeField] private Color glyphBorderColor = new Color(0.08f, 0.08f, 0.14f, 1f);
     [SerializeField] private Color selectedBorderColor = new Color(1f, 0.95f, 0.55f, 1f);
     [SerializeField] private Color outputMarkerColor = new Color(1f, 1f, 1f, 0.95f);
@@ -32,7 +31,8 @@ public class RuneCraftBoardView : MonoBehaviour {
             for (var r = minR; r <= maxR; r++) {
                 var coord = new HexCoord(q, r);
                 var cell = Instantiate(cellPrefab, cellsRoot);
-                cell.Setup(coord, HandleCellClick, HandleCellPointerDown, HandleCellDragStart, HandleCellDrag, HandleCellDragEnd);
+                cell.Setup(coord, HandleCellClick, HandleCellPointerDown, HandleCellDragStart, HandleCellDrag,
+                    HandleCellDragEnd);
                 var pos = AxialToUi(coord, cellSize);
                 ((RectTransform)cell.transform).anchoredPosition = pos;
                 cell.SetColor(emptyColor);
@@ -41,27 +41,34 @@ public class RuneCraftBoardView : MonoBehaviour {
         }
     }
 
-    public void Render(Dictionary<HexCoord, string> occupiedToPlacement, HashSet<string> selectedPlacements, Dictionary<HexCoord, int> outputByCell) {
+    public void Render(
+        Dictionary<HexCoord, string> occupiedToPlacement,
+        HashSet<string> selectedPlacements,
+        Dictionary<HexCoord, int> outputByCell,
+        List<RunePlacedGlyph> placed,
+        Dictionary<string, RuneGlyphDefinition> glyphById
+    ) {
         foreach (var pair in _cells) {
             var fill = emptyColor;
-            var border = glyphBorderColor;
-            bool[] contourMask = null;
             var isOutput = false;
             var outputSide = 0;
 
             if (occupiedToPlacement.TryGetValue(pair.Key, out var placementId)) {
                 var selected = selectedPlacements.Contains(placementId);
-                fill = selected ? selectedFillColor : glyphFillColor;
-                border = selected ? selectedBorderColor : glyphBorderColor;
-                contourMask = RuneGlyphRenderUtils.BuildContourMask(pair.Key, placementId, occupiedToPlacement);
+                var placedGlyph = placed.Find(it => it.placementId == placementId);
+                fill = glyphById.TryGetValue(placedGlyph.glyphId, out var glyphDef) ? glyphTypeColors.Find(it => glyphDef.glyphType == it.type).color : Color.black;
+                var border = selected ? selectedBorderColor : glyphBorderColor;
+                var contourMask = RuneGlyphRenderUtils.BuildContourMask(pair.Key, placementId, occupiedToPlacement);
 
                 if (outputByCell.TryGetValue(pair.Key, out outputSide)) {
                     isOutput = true;
                 }
+                pair.Value.SetContour(border, contourMask, selected);
+            } else {
+                pair.Value.SetContour(glyphBorderColor, null, false);
             }
 
             pair.Value.SetColor(fill);
-            pair.Value.SetContour(border, contourMask);
             pair.Value.SetOutputMarker(isOutput, outputSide, outputMarkerColor, outputIconSprite, outputTriangleSprite);
         }
     }
@@ -100,4 +107,8 @@ public class RuneCraftBoardView : MonoBehaviour {
     }
 }
 
-
+[Serializable]
+public struct RuneGlyphColor {
+    public RuneGlyphType type;
+    public Color color;
+}

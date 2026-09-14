@@ -20,11 +20,13 @@ public class RuneHexCellButton : MonoBehaviour, IPointerClickHandler, IPointerDo
     private Image _outputIcon;
     private Image _outputTriangle;
     private Sprite _uiSprite;
+    private float _sqrt3_2;
 
     public HexCoord coord;
 
     private void Awake() {
         _uiSprite = Resources.GetBuiltinResource<Sprite>("UI/Skin/UISprite.psd");
+        _sqrt3_2 = Mathf.Sqrt(3f) / 2f;
         BuildVisualLayers();
     }
 
@@ -56,11 +58,12 @@ public class RuneHexCellButton : MonoBehaviour, IPointerClickHandler, IPointerDo
         background.sprite = sprite;
     }
 
-    public void SetContour(Color color, bool[] sidesVisible) {
+    public void SetContour(Color color, bool[] sidesVisible, bool selected) {
         var rect = (RectTransform)transform;
         var radius = Mathf.Min(rect.rect.width, rect.rect.height) * 0.5f;
-        var apothem = radius * 0.86f;
+        var apothem = radius * _sqrt3_2;
         var edgeLength = radius;
+        rect.SetSiblingIndex(selected ? 1000 : sidesVisible == null ? 0 : 100);
 
         for (var side = 0; side < _contourSides.Count; side++) {
             var sideImage = _contourSides[side];
@@ -95,7 +98,7 @@ public class RuneHexCellButton : MonoBehaviour, IPointerClickHandler, IPointerDo
 
         var rect = (RectTransform)transform;
         var radius = Mathf.Min(rect.rect.width, rect.rect.height) * 0.5f;
-        var trianglePos = dir * Mathf.Min(radius * 0.8f, outputTriangleOffset);
+        var trianglePos = dir * Mathf.Min(radius * _sqrt3_2, outputTriangleOffset);
 
         var iconRect = (RectTransform)_outputIcon.transform;
         iconRect.anchoredPosition = Vector2.zero;

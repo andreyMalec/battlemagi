@@ -198,9 +198,9 @@ public class RuneGlyphShapeEditorView : MonoBehaviour {
 
             if (filled) {
                 var contourMask = RuneGlyphRenderUtils.BuildContourMask(pair.Key, _shape);
-                pair.Value.SetContour(contourColor, contourMask);
+                pair.Value.SetContour(contourColor, contourMask, false);
             } else {
-                pair.Value.SetContour(contourColor, null);
+                pair.Value.SetContour(contourColor, null, false);
             }
 
             var isOutput = pair.Key.q == _outputCell.q && pair.Key.r == _outputCell.r;
