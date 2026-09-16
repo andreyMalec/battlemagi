@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RuneCraftEditor : MonoBehaviour {
     [SerializeField] private int boardRadius = 5;
-    [SerializeField] private List<RuneGlyphDefinition> glyphCatalog = new List<RuneGlyphDefinition>();
+    [SerializeField] private RuneGlyphList glyphCatalog;
     [SerializeField] private SpellDefinition baseSpellTemplate;
 
     [SerializeField] private RuneSpellDraft draft = new RuneSpellDraft {
@@ -21,13 +21,13 @@ public class RuneCraftEditor : MonoBehaviour {
     private RuneSpellAssembler _spellAssembler;
 
     public RuneSpellDraft Draft => draft;
-    public IReadOnlyList<RuneGlyphDefinition> GlyphCatalog => glyphCatalog;
+    public IReadOnlyList<RuneGlyphDefinition> GlyphCatalog => glyphCatalog.items;
     public IReadOnlyList<string> Selection => _selection;
 
     private void Awake() {
         draft.board.radius = boardRadius;
-        _boardService = new RuneBoardService(glyphCatalog);
-        _spellAssembler = new RuneSpellAssembler(glyphCatalog);
+        _boardService = new RuneBoardService(glyphCatalog.items);
+        _spellAssembler = new RuneSpellAssembler(glyphCatalog.items);
         _boardService.RebuildAutoLinks(draft.board);
         StampTime();
 

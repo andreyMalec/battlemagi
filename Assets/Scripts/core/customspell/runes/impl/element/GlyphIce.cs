@@ -9,7 +9,15 @@ public class GlyphIce : RuneGlyphDefinition {
         }
 
         if (ctx.workingSpell.coreType == CoreType.Zone) {
-            ctx.workingSpell.zone.prefabId = SpellZonePrefabId.ZoneExplosionIce;
+            if (ctx.coreGlyph is GlyphExplosion) {
+                ctx.workingSpell.zone.prefabId = SpellZonePrefabId.ZoneExplosionIce;
+            } else if (ctx.coreGlyph is GlyphCloud) {
+                ctx.workingSpell.zone.prefabId = SpellZonePrefabId.ZoneIce;
+            } else if (ctx.coreGlyph is GlyphPulse) {
+                ctx.workingSpell.zone.prefabId = SpellZonePrefabId.ZoneExplosionIce;
+            } else {
+                ctx.workingSpell.zone.prefabId = SpellZonePrefabId.ZoneExplosionIce;
+            }
             return true;
         }
 

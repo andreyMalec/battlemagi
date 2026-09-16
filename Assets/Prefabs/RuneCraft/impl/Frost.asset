@@ -9,25 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f19c4e66e5f2483a8ef367c622a65d58, type: 3}
-  m_Name: Explosion
-  m_EditorClassIdentifier: Assembly-CSharp::GlyphExplosion
-  glyphId: Explosion
-  displayName: Explosion
-  glyphType: 0
+  m_Script: {fileID: 11500000, guid: 486a740f8e924e5fadb9703af6e7f15f, type: 3}
+  m_Name: Frost
+  m_EditorClassIdentifier: Assembly-CSharp::GlyphFrost
+  glyphId: Frost
+  displayName: Frost
+  glyphType: 4
   outputSide: 0
   incompatibleGlyphs: []
   incompatibleGlyphIds: []
   shape:
-  - q: 1
-    r: 0
   - q: 0
-    r: 1
-  - q: -1
-    r: 1
-  - q: -1
     r: 0
-  - q: 0
-    r: -1
-  - q: 1
-    r: -1

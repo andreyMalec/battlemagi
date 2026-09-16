@@ -213,6 +213,7 @@ public class RuneCraftUiController : MonoBehaviour {
             _hasHeldCell = false;
             _heldPlacementId = string.Empty;
             editor.SetSelection(System.Array.Empty<string>());
+            UpdateSelectedGlyphName(null);
             RefreshBoard();
             return;
         }

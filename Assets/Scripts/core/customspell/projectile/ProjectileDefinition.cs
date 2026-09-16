@@ -50,7 +50,7 @@ public class ProjectileDefinition : ScriptableObject, IValidate {
     [Header("Bounce")]
     public bool enableBounce;
 
-    [ShowIf("enableBounce")] public int maxBounces = 3;
+    [ShowIf("enableBounce")] public int maxBounces;
     [ShowIf("enableBounce")] public float bounceSpeedMultiplier = 0.9f;
 
     [Header("Pierce")]

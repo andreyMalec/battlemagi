@@ -252,6 +252,7 @@ public class RuneSpellAssembler {
 
                 if (!glyph.Apply(context)) {
                     error = $"Glyph apply failed: {glyph.glyphId}";
+                    error += "\n" + string.Join("\n", context.errors);
                     return false;
                 }
 
