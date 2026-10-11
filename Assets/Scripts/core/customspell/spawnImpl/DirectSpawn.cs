@@ -19,7 +19,10 @@ public class DirectSpawn : ISpellSpawn, IDelayOriginRespect {
             }
 
             ctx = ApplyDirectionToTarget(ctx);
-            spawn(ctx);
+            spawn(ctx with {
+                index = i,
+                count = count,
+            });
 
             if (delay > 0f && i < count - 1)
                 yield return new WaitForSeconds(delay);

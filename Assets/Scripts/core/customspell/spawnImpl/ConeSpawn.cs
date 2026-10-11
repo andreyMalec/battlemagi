@@ -37,7 +37,9 @@ public class ConeSpawn : ISpellSpawn, IDelayOriginRespect {
             spawn(ctx with {
                 position = pos,
                 rotation = rot2,
-                forward = worldDir
+                forward = worldDir,
+                index = i,
+                count = count,
             });
 
             if (delay > 0f && i < count)

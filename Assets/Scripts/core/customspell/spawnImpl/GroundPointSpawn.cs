@@ -17,13 +17,19 @@ public class GroundPointSpawn : ISpellSpawn, IDelayOriginRespect {
             switch (origin) {
                 case DelayOrigin.First:
                     if (onFirst != null)
-                        spawn(onFirst);
+                        spawn(onFirst with {
+                            index = i,
+                            count = count,
+                        });
                     break;
                 case DelayOrigin.Continuous:
                     var currentBase = BaseContext(context, origin, isFirst: false);
                     var ctx = ISpellSpawn.GroundPos(currentBase, currentBase.forward, out _);
                     if (ctx != null)
-                        spawn(ctx);
+                        spawn(ctx with {
+                            index = i,
+                            count = count,
+                        });
                     break;
             }
 

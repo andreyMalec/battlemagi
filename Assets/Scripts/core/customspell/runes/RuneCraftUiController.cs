@@ -61,17 +61,31 @@ public class RuneCraftUiController : MonoBehaviour {
         SetStatus("Ready");
     }
 
+    private void OnDisable() {
+        SaveGlyphShape();
+    }
+
     private void Update() {
         if (Input.GetKeyDown(KeyCode.Delete)) {
             DeleteSelection();
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Z)) {
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Z)) {
             Undo();
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Y)) {
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Y)) {
             Redo();
+        }
+
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.Z)) {
+            Redo();
+        }
+
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.A)) {
+            editor.SetSelection(editor.Draft.board.glyphs.Select(g => g.placementId).ToArray());
+            RefreshBoard();
+            SetStatus("Selected all");
         }
     }
 
@@ -93,6 +107,7 @@ public class RuneCraftUiController : MonoBehaviour {
         if (editor.DeleteSelection()) {
             RefreshBoard();
             SetStatus("Deleted");
+            UpdateSelectedGlyphName(string.Empty);
         }
     }
 
@@ -139,6 +154,7 @@ public class RuneCraftUiController : MonoBehaviour {
     private void HandlePaletteGlyphClicked(RuneGlyphDefinition glyph) {
         SelectPaletteGlyph(glyph);
         SetStatus("Glyph selected");
+        selectedText.text = glyph.displayName;
     }
 
     private void SelectPaletteGlyph(RuneGlyphDefinition glyph) {
@@ -222,7 +238,7 @@ public class RuneCraftUiController : MonoBehaviour {
             editor.SetSelection(editor.Selection.Contains(placementId)
                 ? editor.Selection.Where(id => id != placementId).ToArray()
                 : editor.Selection.Concat(new[] { placementId }).ToArray());
-        } else if (editor.Selection.Count == 0 || !editor.Selection.Contains(placementId))  {
+        } else if (editor.Selection.Count == 0 || !editor.Selection.Contains(placementId)) {
             editor.SetSelection(new[] { placementId });
         }
 

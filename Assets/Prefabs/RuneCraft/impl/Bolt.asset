@@ -16,8 +16,9 @@ MonoBehaviour:
   displayName: Bolt
   glyphType: 0
   outputSide: 3
-  incompatibleGlyphs: []
-  incompatibleGlyphIds: []
+  glyphTags: 01000000
+  requiredTags: 
+  forbiddenTags: 
   shape:
   - q: -2
     r: 0
@@ -27,13 +28,7 @@ MonoBehaviour:
     r: 0
   - q: 1
     r: 1
-  - q: 2
-    r: 0
-  - q: 2
-    r: -1
   - q: 1
     r: 0
-  - q: 0
-    r: 2
   - q: 2
-    r: -2
+    r: 0

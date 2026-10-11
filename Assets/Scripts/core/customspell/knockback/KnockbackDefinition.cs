@@ -19,9 +19,9 @@ public class KnockbackDefinition : ScriptableObject, IValidate {
     public bool canHitAllies;
     public SpellKnockbackVectorMode vectorMode = SpellKnockbackVectorMode.AwayFromPoint;
 
-    [ShowIf("_impulse")] public float impulse = 8f;
+    [ShowIf("_impulse")] public float impulse;
 
-    [ShowIf("_continuous")] public float forcePerSecond = 10f;
+    [ShowIf("_continuous")] public float forcePerSecond;
     [ShowIf("_continuous")] public float duration = 0.5f;
 
     [ShowIf("_beamSelfImpulse")] public float beamSelfImpulse = 0.75f;

@@ -17,7 +17,7 @@ public class SpawnDefinition : ScriptableObject, IValidate {
     [ShowIf("useAlternativeSpawnMode")] public SpawnMode alternativeSpawnMode = SpawnMode.Direct;
 
     [ShowIf("_isForward")] public bool useVectorStep;
-    [ShowIf("_isForward")] public float forwardStep = 3;
+    [ShowIf("_isForward")] public float forwardStep;
 
     [ShowIf(EConditionOperator.And, "_isForward", "useVectorStep")]
     public Vector3 forwardVectorStep;

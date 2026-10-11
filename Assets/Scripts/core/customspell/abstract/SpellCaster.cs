@@ -131,6 +131,11 @@ public abstract class SpellCaster : MonoBehaviour, ITarget, IdentityUser {
     private void SpawnMain(SpawnContext context) {
         var prefab = Ctx.GetSpellPrefab(_useNetwork);
         var main = Instantiate(prefab, context.position, context.rotation);
+        if (context.count > 0) {
+            var index = main.AddComponent<ArcIndex>();
+            index.Index = context.index;
+            index.Count = context.count;
+        }
         HandleSpellLimit(context.spell, main);
         SpellSystem.CastSpell(context with { main = main });
         SpellLog.Log($"{gameObject.name} SpawnMain = {context.spell.coreType}, main={main.name}");

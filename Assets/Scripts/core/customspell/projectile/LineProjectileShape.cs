@@ -18,7 +18,7 @@ public class LineProjectileShape : IShape {
             var newPos = _context.Movement.Sample(_context.DeltaTime);
             var delta = newPos - origin;
             var distance = delta.magnitude;
-            if (distance <= 0.0001f)
+            if (distance <= 0.001f)
                 yield break;
 
             var direction = delta / distance;

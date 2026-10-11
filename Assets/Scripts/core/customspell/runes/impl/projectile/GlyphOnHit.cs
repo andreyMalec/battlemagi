@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "OnHit", menuName = "Glyphs/OnHit")]
+[CreateAssetMenu(fileName = "OnHit", menuName = "Glyphs/Projectile/OnHit")]
 public class GlyphOnHit : RuneGlyphDefinition {
     public override bool Apply(RuneGlyphContext ctx) {
         if (ctx.workingSpell.coreType == CoreType.Projectile) {

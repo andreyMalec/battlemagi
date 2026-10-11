@@ -53,12 +53,12 @@ public enum SpawnMode {
     GroundPointForward,
 
     /**
-     * Круг над найденной GroundPoint: радиус @{circleRadius}, высота @{circleHeight}
+     * Круг (рамка) над найденной GroundPoint: радиус @{circleRadius}, высота @{circleHeight}
      */
     GroundPointCircleUp,
 
     /**
-     * Диск над найденной GroundPoint (по всей площади): радиус @{circleRadius}, высота @{circleHeight}
+     * Диск (заливка) над найденной GroundPoint (по всей площади): радиус @{circleRadius}, высота @{circleHeight}
      */
     GroundPointDiskUp,
 

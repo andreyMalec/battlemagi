@@ -16,12 +16,18 @@ public class RayCastSpawn : ISpellSpawn, IDelayOriginRespect {
         for (int i = count - 1; i >= 0; i--) {
             switch (origin) {
                 case DelayOrigin.First:
-                    spawn(onFirst);
+                    spawn(onFirst with {
+                        index = i,
+                        count = count,
+                    });
                     break;
                 case DelayOrigin.Continuous:
                     var currentBase = BaseContext(context, origin, isFirst: false);
                     var ctx = RayCast(currentBase, currentBase.forward);
-                    spawn(ctx);
+                    spawn(ctx with {
+                        index = i,
+                        count = count,
+                    });
                     break;
             }
 

@@ -8,11 +8,11 @@ public class SpellDefinition : ScriptableObject, IValidate {
     public string[] words;
     public string[] wordsRu;
     public CoreType coreType;
-    public SpawnDefinition spawn;
+    [Expandable] public SpawnDefinition spawn;
 
-    public DamageDefinition damage;
-    public KnockbackDefinition knockback;
-    public List<EffectDefinition> effects;
+    [Expandable] public DamageDefinition damage;
+    [Expandable] public KnockbackDefinition knockback;
+    [Expandable] public List<EffectDefinition> effects;
 
     public float scale = 1;
     [ShowIf("charging")] public bool scaleWithCharge;
@@ -34,19 +34,20 @@ public class SpellDefinition : ScriptableObject, IValidate {
     [ShowIf("_usesManaPerSecond")] public float manaPerSecond = 0f;
 
     [Header("Projectile")]
-    [ShowIf("_typeProjectile")] public ProjectileDefinition projectile;
+    [Expandable] [ShowIf("_typeProjectile")]
+    public ProjectileDefinition projectile;
 
     [Header("Zone")]
-    [ShowIf("_typeZone")] public ZoneDefinition zone;
+    [Expandable] [ShowIf("_typeZone")] public ZoneDefinition zone;
 
     [Header("Beam")]
-    [ShowIf("_typeBeam")] public BeamDefinition beam;
+    [Expandable] [ShowIf("_typeBeam")] public BeamDefinition beam;
 
     [Header("Summon")]
-    [ShowIf("_typeSummon")] public SummonDefinition summon;
+    [Expandable] [ShowIf("_typeSummon")] public SummonDefinition summon;
 
     [Header("Self")]
-    [ShowIf("_typeSelf")] public SelfDefinition self;
+    [Expandable] [ShowIf("_typeSelf")] public SelfDefinition self;
 
     private bool _typeProjectile = false;
     private bool _typeZone = false;

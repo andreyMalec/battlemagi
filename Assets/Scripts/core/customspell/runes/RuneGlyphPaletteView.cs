@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class RuneGlyphPaletteView : MonoBehaviour {
@@ -15,8 +16,9 @@ public class RuneGlyphPaletteView : MonoBehaviour {
 
     public void Bind(IReadOnlyList<RuneGlyphDefinition> glyphs) {
         _glyphs.Clear();
-        for (var i = 0; i < glyphs.Count; i++) {
-            _glyphs.Add(glyphs[i]);
+        var sorted = glyphs.OrderBy(g => g.displayName).ToList();
+        for (var i = 0; i < sorted.Count; i++) {
+            _glyphs.Add(sorted[i]);
         }
 
         Rebuild();

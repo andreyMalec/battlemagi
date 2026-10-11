@@ -43,6 +43,8 @@ public class GroundPointCircleUpSpawn : ISpellSpawn, IDelayOriginRespect {
                 rotation = rot,
                 forward = tiltedDown,
                 forceFirstOrigin = true,
+                index = i,
+                count = count,
             });
 
             if (delay > 0f && i < count - 1)

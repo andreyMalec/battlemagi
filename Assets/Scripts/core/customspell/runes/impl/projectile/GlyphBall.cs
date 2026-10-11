@@ -4,7 +4,7 @@ using UnityEngine;
  * Шар
  * Снаряд средней скорости с гравитацией
  */
-[CreateAssetMenu(fileName = "Ball", menuName = "Glyphs/Ball")]
+[CreateAssetMenu(fileName = "Ball", menuName = "Glyphs/Projectile/Ball")]
 public class GlyphBall : RuneGlyphDefinition {
     public override bool Apply(RuneGlyphContext ctx) {
         ctx.workingSpell.coreType = CoreType.Projectile;

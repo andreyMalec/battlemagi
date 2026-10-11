@@ -461,7 +461,7 @@ public class SpellSystem {
             SpellMovement.Hitscan => new HitscanMoveTransform(direction, def.moveSpeed, def.enableMaxDistance,
                 def.maxDistance),
             SpellMovement.LookAtPoint => new LookAtPointTransform(def.moveSpeed, def.lookAtMaxDistance,
-                def.lookAtRayMask),
+                def.lookAtRayMask, false),
             SpellMovement.Spiral => new SpiralMoveTransform(
                 direction,
                 def.spiralAxis,
@@ -521,7 +521,7 @@ public class SpellSystem {
                 def.groundOffset),
             SpellMovement.Accelerated => new AcceleratedMoveTransform(direction, def.moveSpeed, def.acceleration),
             SpellMovement.LookAtPoint => new LookAtPointTransform(def.moveSpeed, def.lookAtMaxDistance,
-                def.lookAtRayMask),
+                def.lookAtRayMask, true),
             SpellMovement.Spiral => new SpiralMoveTransform(
                 direction,
                 def.spiralAxis,
@@ -578,7 +578,7 @@ public class SpellSystem {
                 def.groundOffset),
             SpellMovement.Accelerated => new AcceleratedMoveTransform(direction, def.moveSpeed, def.acceleration),
             SpellMovement.LookAtPoint => new LookAtPointTransform(def.moveSpeed, def.lookAtMaxDistance,
-                def.lookAtRayMask),
+                def.lookAtRayMask, true),
             SpellMovement.FollowCaster => new FollowCasterTransform(def.followTarget),
             _ => new StaticTransform()
         };

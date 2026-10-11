@@ -250,11 +250,19 @@ public class RuneSpellAssembler {
                 if (glyph.glyphType == RuneGlyphType.Core)
                     context.coreGlyph = glyph;
 
+                if (!ValidateGlyphTags(context, glyph)) {
+                    error = $"Glyph tag requirements failed: {glyph.glyphId}";
+                    error += "\n" + string.Join("\n", context.errors);
+                    return false;
+                }
+
                 if (!glyph.Apply(context)) {
                     error = $"Glyph apply failed: {glyph.glyphId}";
                     error += "\n" + string.Join("\n", context.errors);
                     return false;
                 }
+
+                AddGlyphTags(context, glyph);
 
                 context.appliedPlacements.Add(placementId);
             }
@@ -299,10 +307,18 @@ public class RuneSpellAssembler {
                 context.triggerGlyph = triggerGlyph;
                 context.nestedSpell = nestedSpell;
 
+                if (!ValidateGlyphTags(context, triggerGlyph)) {
+                    error = $"Trigger tag requirements failed: {triggerGlyph.glyphId}";
+                    error += "\n" + string.Join("\n", context.errors);
+                    return false;
+                }
+
                 if (!triggerGlyph.Apply(context)) {
                     error = $"Trigger apply failed: {triggerGlyph.glyphId}";
                     return false;
                 }
+
+                AddGlyphTags(context, triggerGlyph);
 
                 context.appliedPlacements.Add(childTriggerId);
             }
@@ -467,6 +483,34 @@ public class RuneSpellAssembler {
                 return spell.self != null;
             default:
                 return false;
+        }
+    }
+
+    private static bool ValidateGlyphTags(RuneGlyphContext context, RuneGlyphDefinition glyph) {
+        var hasError = false;
+        for (var i = 0; i < glyph.requiredTags.Count; i++) {
+            var required = glyph.requiredTags[i];
+            if (context.HasTag(required))
+                continue;
+            context.AddError($"Glyph {glyph.glyphId} requires tag '{required}'.");
+            hasError = true;
+        }
+
+        for (var i = 0; i < glyph.forbiddenTags.Count; i++) {
+            var forbidden = glyph.forbiddenTags[i];
+            if (!context.HasTag(forbidden))
+                continue;
+            context.AddError($"Glyph {glyph.glyphId} is forbidden with tag '{forbidden}'.");
+            hasError = true;
+        }
+
+        return !hasError;
+    }
+
+    private static void AddGlyphTags(RuneGlyphContext context, RuneGlyphDefinition glyph) {
+        var tags = glyph.glyphTags;
+        for (var i = 0; i < tags.Count; i++) {
+            context.AddTag(tags[i]);
         }
     }
 }

@@ -28,7 +28,9 @@ public class DirectDownForwardSpawn : ISpellSpawn {
             spawn(context with {
                 position = hit.point + forward * (step * i + 1),
                 rotation = Quaternion.LookRotation(forward, Vector3.up),
-                forward = forward
+                forward = forward,
+                index = i,
+                count = count,
             });
 
             if (delay > 0f && i < count - 1)

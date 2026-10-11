@@ -20,7 +20,10 @@ public class DirectDownSpawn : ISpellSpawn, IDelayOriginRespect {
                         first.rotation = Quaternion.LookRotation(forwardOnPlane, hitFirst.normal);
                     }
 
-                    spawn(first);
+                    spawn(first with {
+                        index = i,
+                        count = count,
+                    });
                 }
             } else {
                 context.position = context.caster.transform.position;
@@ -31,7 +34,10 @@ public class DirectDownSpawn : ISpellSpawn, IDelayOriginRespect {
                         current.rotation = Quaternion.LookRotation(forwardOnPlane, hitFirst.normal);
                     }
 
-                    spawn(current);
+                    spawn(current with {
+                        index = i,
+                        count = count,
+                    });
                 }
             }
 

@@ -10,16 +10,18 @@ public class LookAtPointTransform : ISpellTransform {
     private readonly float _speed;
     private readonly float _maxDistance;
     private readonly LayerMask _mask;
+    private readonly bool _destroyOnArrival;
 
     private ISpellContext _ctx;
 
     private Vector3 _lastMoveDirection;
     private bool _arrived;
 
-    public LookAtPointTransform(float speed, float maxDistance, LayerMask mask) {
+    public LookAtPointTransform(float speed, float maxDistance, LayerMask mask, bool destroyOnArrival) {
         _speed = speed;
         _maxDistance = maxDistance;
         _mask = mask;
+        _destroyOnArrival = destroyOnArrival;
         Motion = default;
     }
 
@@ -32,7 +34,7 @@ public class LookAtPointTransform : ISpellTransform {
     }
 
     public void Tick(float dt) {
-        if (_arrived) {
+        if (_arrived && _destroyOnArrival) {
             Motion = default;
             return;
         }
@@ -44,8 +46,11 @@ public class LookAtPointTransform : ISpellTransform {
             Transform.position = target;
             Motion = default;
             _arrived = true;
-            _ctx.SendEvent(new OnLifetimeEndingEvent { remaining = 0 });
-            _ctx.View.Kill(_ctx);
+            if (_destroyOnArrival) {
+                _ctx.SendEvent(new OnLifetimeEndingEvent { remaining = 0 });
+                _ctx.View.Kill(_ctx);
+            }
+
             return;
         }
 
@@ -57,12 +62,14 @@ public class LookAtPointTransform : ISpellTransform {
         Transform.position += dir * moveDistance;
         _lastMoveDirection = dir;
 
-        if (moveDistance >= distance - 0.0001f) {
+        if (moveDistance >= distance - MinTargetDistanceSqr) {
             Transform.position = target;
             Motion = default;
             _arrived = true;
-            _ctx.SendEvent(new OnLifetimeEndingEvent { remaining = 0 });
-            _ctx.View.Kill(_ctx);
+            if (_destroyOnArrival) {
+                _ctx.SendEvent(new OnLifetimeEndingEvent { remaining = 0 });
+                _ctx.View.Kill(_ctx);
+            }
         }
 
         if (_lastMoveDirection.sqrMagnitude > 0f)
@@ -70,7 +77,7 @@ public class LookAtPointTransform : ISpellTransform {
     }
 
     public Vector3 Sample(float dt) {
-        if (_arrived)
+        if (_arrived && _destroyOnArrival)
             return Transform.position;
 
         var target = GetTarget();

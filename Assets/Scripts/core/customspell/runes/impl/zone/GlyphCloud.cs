@@ -4,7 +4,7 @@ using UnityEngine;
  * Облако
  * Область с периодическим уроном
  */
-[CreateAssetMenu(fileName = "Cloud", menuName = "Glyphs/Cloud")]
+[CreateAssetMenu(fileName = "Cloud", menuName = "Glyphs/Zone/Cloud")]
 public class GlyphCloud : RuneGlyphDefinition {
     [Header("Properties")]
     public float lifetime = 10f;

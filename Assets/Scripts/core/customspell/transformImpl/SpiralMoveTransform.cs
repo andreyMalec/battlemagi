@@ -16,6 +16,9 @@ public class SpiralMoveTransform : ISpellTransform {
     private float _angle;
     private ISpellContext _ctx;
 
+    private int _index;
+    private int _count;
+
     public SpiralMoveTransform(
         Vector3 forward,
         SpiralAxis axisMode,
@@ -37,6 +40,13 @@ public class SpiralMoveTransform : ISpellTransform {
         _center = transform.position;
         Transform.position = _center;
         _ctx = ctx;
+        if (transform.TryGetComponent<ArcIndex>(out var index)) {
+            _index = index.Index;
+            _count = index.Count;
+
+            var angleStep = 360 / _count;
+            _angle = Mathf.Deg2Rad * angleStep * _index;
+        }
     }
 
     public void Tick(float dt) {

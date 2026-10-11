@@ -4,7 +4,7 @@ using UnityEngine;
  * Импульс
  * Область с единорозовым уроном при касании
  */
-[CreateAssetMenu(fileName = "Pulse", menuName = "Glyphs/Pulse")]
+[CreateAssetMenu(fileName = "Pulse", menuName = "Glyphs/Zone/Pulse")]
 public class GlyphPulse : RuneGlyphDefinition {
     [Header("Properties")]
     public float lifetime = 5f;

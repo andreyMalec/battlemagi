@@ -56,13 +56,13 @@ public class ProjectileDefinition : ScriptableObject, IValidate {
     [Header("Pierce")]
     public bool enablePierce;
 
-    [ShowIf("enablePierce")] public int maxPierces = 1;
+    [ShowIf("enablePierce")] public int maxPierces;
     [ShowIf("enablePierce")] public PierceTargetMode pierceTargetMode;
 
     [Header("Fork")]
     public bool enableFork;
 
-    [ShowIf("enableFork")] public int forkCount = 3;
+    [ShowIf("enableFork")] public int forkCount;
     [ShowIf("enableFork")] public bool scaleForksWithCharge;
     [ShowIf("enableFork")] public float forkSpreadAngle = 35f;
 

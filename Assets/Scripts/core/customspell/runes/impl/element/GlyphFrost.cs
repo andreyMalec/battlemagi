@@ -1,14 +1,14 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Frost", menuName = "Glyphs/Frost")]
+[CreateAssetMenu(fileName = "Frost", menuName = "Glyphs/Element/Frost")]
 public class GlyphFrost : RuneGlyphDefinition {
     public override bool Apply(RuneGlyphContext ctx) {
-        if (ctx.workingSpell.coreType == CoreType.Projectile) {
+        if (ctx.HasTag(RuneGlyphTag.Projectile)) {
             ctx.workingSpell.projectile.prefabId = SpellProjectilePrefabId.ProjectileIce;
             return true;
         }
 
-        if (ctx.workingSpell.coreType == CoreType.Zone) {
+        if (ctx.HasTag(RuneGlyphTag.Area)) {
             if (ctx.coreGlyph is GlyphExplosion) {
                 ctx.AddError("Frost cannot be applied to Explosion");
                 return false;

@@ -26,7 +26,9 @@ public class GroundPointForwardSpawn : ISpellSpawn {
                 spawn(ground with {
                     position = ground.position + step * i,
                     rotation = ground.rotation * Quaternion.Euler(baseCtx.spawn.forwardAngleStep),
-                    forward = forward
+                    forward = forward,
+                    index = i,
+                    count = count,
                 });
 
                 if (delay > 0f && i < count - 1)
@@ -39,7 +41,9 @@ public class GroundPointForwardSpawn : ISpellSpawn {
                 var forward = RotationFromNormal(baseCtx.forward, hit.normal);
                 spawn(ground with {
                     position = ground.position + forward * (step * i),
-                    forward = forward
+                    forward = forward,
+                    index = i,
+                    count = count,
                 });
 
                 if (delay > 0f && i < count - 1)

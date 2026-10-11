@@ -4,7 +4,7 @@ using UnityEngine;
  * Взрыв
  * Область с уроном при появлении
  */
-[CreateAssetMenu(fileName = "Explosion", menuName = "Glyphs/Explosion")]
+[CreateAssetMenu(fileName = "Explosion", menuName = "Glyphs/Zone/Explosion")]
 public class GlyphExplosion : RuneGlyphDefinition {
     [Header("Properties")]
     public float lifetime = 2f;

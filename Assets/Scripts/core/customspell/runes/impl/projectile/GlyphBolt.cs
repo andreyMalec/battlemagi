@@ -4,7 +4,7 @@ using UnityEngine;
  * Стрела
  * Снаряд высокой скорости
  */
-[CreateAssetMenu(fileName = "Bolt", menuName = "Glyphs/Bolt")]
+[CreateAssetMenu(fileName = "Bolt", menuName = "Glyphs/Projectile/Bolt")]
 public class GlyphBolt : RuneGlyphDefinition {
     public override bool Apply(RuneGlyphContext ctx) {
         ctx.workingSpell.coreType = CoreType.Projectile;

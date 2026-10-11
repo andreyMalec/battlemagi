@@ -260,10 +260,10 @@ public class RuneBoardService {
     private bool AreCompatible(string leftGlyphId, string rightGlyphId) {
         var left = _glyphCatalog[leftGlyphId];
         var right = _glyphCatalog[rightGlyphId];
-        if (left.incompatibleGlyphIds.Contains(rightGlyphId))
-            return false;
-        if (right.incompatibleGlyphIds.Contains(leftGlyphId))
-            return false;
+        // if (left.incompatibleGlyphIds.Contains(rightGlyphId))
+        //     return false;
+        // if (right.incompatibleGlyphIds.Contains(leftGlyphId))
+        //     return false;
         return true;
     }
 

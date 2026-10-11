@@ -6,6 +6,19 @@ public enum RuneGlyphType {
     Element = 4,
 }
 
+public enum RuneGlyphTag {
+    Element,
+    
+    Projectile,
+    Gravity,
+    Trigger,
+    
+    Area,
+    Explosion,
+    Dot,
+    Duration
+}
+
 public enum RuneElement {
     Fire = 0,
     Ice = 1,

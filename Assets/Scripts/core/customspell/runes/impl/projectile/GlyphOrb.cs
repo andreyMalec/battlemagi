@@ -4,7 +4,7 @@ using UnityEngine;
  * Сгусток
  * Снаряд низкой скорости с высокой гравитацией
  */
-[CreateAssetMenu(fileName = "Orb", menuName = "Glyphs/Orb")]
+[CreateAssetMenu(fileName = "Orb", menuName = "Glyphs/Projectile/Orb")]
 public class GlyphOrb : RuneGlyphDefinition  {
     public override bool Apply(RuneGlyphContext ctx) {
         ctx.workingSpell.coreType = CoreType.Projectile;
