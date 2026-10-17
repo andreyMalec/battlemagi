@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -10,14 +11,21 @@ public class StateController : NetworkBehaviour {
     private PlayerPhysics _physics;
     private IceSlideMovementModule _iceSlide;
     private Freeze _freeze;
+    private Root _root;
     private bool _forcedMovementActive;
     private Vector3 _forcedMovementTargetPoint;
     private float _forcedMovementRemaining;
+
+    public NetworkVariable<float> Chill = new(0, NetworkVariableReadPermission.Owner);
+    [SerializeField] private float chillReducePerSecond;
+    public NetworkVariable<float> Darkness = new(0, NetworkVariableReadPermission.Owner);
+    [SerializeField] private float darknessReducePerSecond;
 
     private void Awake() {
         _physics = GetComponent<PlayerPhysics>();
         _iceSlide = GetComponent<IceSlideMovementModule>();
         _freeze = GetComponentInChildren<Freeze>(true);
+        _root = GetComponentInChildren<Root>(true);
     }
 
     public override void OnNetworkDespawn() {
@@ -27,10 +35,25 @@ public class StateController : NetworkBehaviour {
     }
 
     private void FixedUpdate() {
+        UpdateStatuses();
         if (!IsOwner || !_forcedMovementActive)
             return;
 
         UpdateForcedMovement();
+    }
+
+    private void UpdateStatuses() {
+        if (!IsServer) return;;
+
+        if (Chill.Value > 0) {
+            var perTick = chillReducePerSecond * Time.fixedDeltaTime;
+            Chill.Value = Mathf.Max(0, Chill.Value - perTick);
+        }
+
+        if (Darkness.Value > 0) {
+            var perTick = darknessReducePerSecond * Time.fixedDeltaTime;
+            Darkness.Value = Mathf.Max(0, Darkness.Value - perTick);
+        }
     }
 
     public void SetFreeze(bool active) {
@@ -43,6 +66,20 @@ public class StateController : NetworkBehaviour {
         Debug.Log($"FreezeClientRpc targetNetObj={netObj}, active={active}");
         var freeze = netObj.GetComponentInChildren<Freeze>(true);
         if (freeze != null) freeze.gameObject.SetActive(active);
+        if (netObj.TryGetComponent<StateController>(out var stateController))
+            stateController.RefreshMovementState();
+    }
+
+    public void SetRooted(bool active) {
+        RootedClientRpc(NetworkObjectId, active);
+    }
+
+    [ClientRpc]
+    private void RootedClientRpc(ulong targetNetObj, bool active) {
+        if (!Ctx.TryGetSpawnedObject(targetNetObj, out var netObj)) return;
+        Debug.Log($"RootedClientRpc targetNetObj={netObj}, active={active}");
+        var rooted = netObj.GetComponentInChildren<Root>(true);
+        if (rooted != null) rooted.gameObject.SetActive(active);
         if (netObj.TryGetComponent<StateController>(out var stateController))
             stateController.RefreshMovementState();
     }
@@ -182,7 +219,8 @@ public class StateController : NetworkBehaviour {
         }
 
         var frozen = _freeze != null && _freeze.gameObject.activeSelf;
-        movement.enabled = IsOwner && !_forcedMovementActive && !frozen;
+        var rooted = _root != null && _root.gameObject.activeSelf;
+        movement.enabled = IsOwner && !_forcedMovementActive && !frozen && !rooted;
     }
 
     private void ClearIceSliding() {

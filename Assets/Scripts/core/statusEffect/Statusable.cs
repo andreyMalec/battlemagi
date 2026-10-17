@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Statusable : MonoBehaviour {
@@ -48,7 +49,8 @@ public class Statusable : MonoBehaviour {
         BeginSyncBatch();
         try {
             if (GameConfig.SpellDebugLogsEnabled)
-                SpellLog.Log($"Adding effect {data.effectName} to {gameObject.name} from client {applyContext.ownerId}");
+                SpellLog.Log(
+                    $"Adding effect {data.effectName} to {gameObject.name} from client {applyContext.ownerId}");
 
             if (FindPreviousEffect(data, out var previous)) {
                 switch (data.CompareTo(previous.data)) {
@@ -62,7 +64,7 @@ public class Statusable : MonoBehaviour {
                         changed = true;
                         break;
                     case EffectCompare.Add:
-                        Apply(applyContext, data);
+                        Apply(applyContext, data, previous._timeRemaining);
                         changed = true;
                         break;
                 }
@@ -71,8 +73,10 @@ public class Statusable : MonoBehaviour {
                 changed = true;
             }
 
-            if (changed)
-                RequestSync();
+            // if (changed)
+            //     RequestSync();
+        } catch (Exception e) {
+            Debug.LogError($"Error adding effect {data.effectName} to {gameObject.name}: {e}");
         } finally {
             EndSyncBatch();
         }
@@ -95,9 +99,12 @@ public class Statusable : MonoBehaviour {
         return false;
     }
 
-    private void Apply(StatusEffectApplyContext applyContext, StatusEffectData data) {
+//TODO target gameObject выглядит так как будто может быть разный при применении функицй OnApply/OnTick, но по факту он никога не меняется
+    private void Apply(StatusEffectApplyContext applyContext, StatusEffectData data, float extendDuration = 0f) {
         var runtime = data.CreateRuntime();
         runtime.OnApply(applyContext, gameObject);
+        if (extendDuration > 0f)
+            runtime.AddTime(extendDuration);
         _active[data.effectName] = runtime;
         OnAdded?.Invoke(runtime);
     }
@@ -116,6 +123,25 @@ public class Statusable : MonoBehaviour {
 
         RequestSync();
         return removed;
+    }
+
+    public void RemoveAllEffects(string effectName) {
+        if (!_bridgeTyped.IsServer) return;
+        if (!_bridgeTyped.IsSpawned) return;
+
+        BeginSyncBatch();
+        try {
+            foreach (var effect in _active.Values.ToList()) {
+                if (effect.data.effectName != effectName)
+                    continue;
+
+                effect.OnExpire(gameObject);
+                _active.Remove(effectName);
+                OnRemoved?.Invoke(effect);
+            }
+        } finally {
+            EndSyncBatch();
+        }
     }
 
     public void HandleHit(DamageRequest hit) {

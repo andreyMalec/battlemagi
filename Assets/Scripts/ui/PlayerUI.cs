@@ -12,6 +12,7 @@ public class PlayerUI : NetworkBehaviour {
     private Damageable _damageable;
     private SpellCasterPlayer _caster;
     private Statusable _statusable;
+    private StateController _stateController;
 
     private float _armorBarWidth;
 
@@ -52,6 +53,7 @@ public class PlayerUI : NetworkBehaviour {
         _renderer = FindFirstObjectByType<PlayerUIRenderer>();
         _damageable = GetComponent<Damageable>();
         _statusable = GetComponent<Statusable>();
+        _stateController = GetComponent<StateController>();
         _caster = GetComponent<SpellCasterPlayer>();
         var ui = GetComponentsInChildren<UICameraSway>();
         for (var i = 0; i < ui.Length; i++) {
@@ -179,6 +181,10 @@ public class PlayerUI : NetworkBehaviour {
         }
 
         UpdateHitMarker();
+        var chill = _stateController.Chill.Value;
+        _renderer.chillEffect.alpha = Mathf.Clamp01(chill / 100f);
+        var darkness = _stateController.Darkness.Value;
+        _renderer.darknessEffect.alpha = Mathf.Clamp01(darkness / 100f);
     }
 
     private void ShowHitMarker(bool isKill, float victimHealthRatio) {

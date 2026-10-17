@@ -15,6 +15,10 @@ public abstract class StatusEffectRuntime {
         _timeRemaining = data.duration;
     }
 
+    public virtual void AddTime(float duration) {
+        _timeRemaining += duration;
+    }
+
     public virtual void OnApply(StatusEffectApplyContext applyContext, GameObject target) {
         _ctx = applyContext;
         OnApply(applyContext.ownerId, target);

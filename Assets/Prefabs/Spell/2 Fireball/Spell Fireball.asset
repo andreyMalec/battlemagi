@@ -24,11 +24,13 @@ MonoBehaviour:
   knockback: {fileID: 0}
   effects: []
   scale: 1
+  scaleWithCharge: 0
   lifetime: 10
   blinkAtLifetime: 0
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 576
+  dieWithCaster: 0
   castWaitingIndex: 0
   invocationIndex: 3
   manaCost: 25

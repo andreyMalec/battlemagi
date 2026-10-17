@@ -21,4 +21,6 @@ public class PlayerUIRenderer : MonoBehaviour {
     public RectTransform alternativeSpawn;
     public RectTransform hitMarkerRoot;
     public Image[] hitMarkerParts;
+    public CanvasGroup chillEffect;
+    public CanvasGroup darknessEffect;
 }
