@@ -19,6 +19,14 @@ public class RuneCraftEditor : MonoBehaviour {
     private readonly Stack<RuneBoardData> _redo = new Stack<RuneBoardData>();
     private RuneBoardService _boardService;
     private RuneSpellAssembler _spellAssembler;
+    private bool _selectionDragMoveActive;
+    private bool _selectionDragMoveSnapshotPushed;
+
+    public struct RuneGlyphPlacementInput {
+        public string GlyphId;
+        public HexCoord Anchor;
+        public int Rotation;
+    }
 
     public RuneSpellDraft Draft => draft;
     public IReadOnlyList<RuneGlyphDefinition> GlyphCatalog => glyphCatalog.items;
@@ -61,9 +69,45 @@ public class RuneCraftEditor : MonoBehaviour {
         return true;
     }
 
+    public bool TryPasteGlyphs(IReadOnlyList<RuneGlyphPlacementInput> glyphsToPlace) {
+        if (glyphsToPlace == null || glyphsToPlace.Count == 0)
+            return false;
+
+        PushSnapshot();
+        var placedIds = new List<string>(glyphsToPlace.Count);
+        for (var i = 0; i < glyphsToPlace.Count; i++) {
+            var input = glyphsToPlace[i];
+            if (!_boardService.TryPlaceGlyph(draft.board, input.GlyphId, input.Anchor, input.Rotation, out var placementId))
+                return UndoInternal();
+            placedIds.Add(placementId);
+        }
+
+        _boardService.RebuildAutoLinks(draft.board);
+        _selection.Clear();
+        for (var i = 0; i < placedIds.Count; i++) {
+            _selection.Add(placedIds[i]);
+        }
+        StampTime();
+        return true;
+    }
+
     public bool TryMoveSelection(HexCoord delta) {
         if (_selection.Count == 0)
             return false;
+
+        if (_selectionDragMoveActive) {
+            if (!_selectionDragMoveSnapshotPushed) {
+                PushSnapshot();
+                _selectionDragMoveSnapshotPushed = true;
+            }
+
+            if (!_boardService.TryMoveGroup(draft.board, _selection, delta))
+                return false;
+
+            _boardService.RebuildAutoLinks(draft.board);
+            StampTime();
+            return true;
+        }
 
         PushSnapshot();
         if (!_boardService.TryMoveGroup(draft.board, _selection, delta))
@@ -74,9 +118,33 @@ public class RuneCraftEditor : MonoBehaviour {
         return true;
     }
 
+    public void BeginSelectionDragMove() {
+        _selectionDragMoveActive = true;
+        _selectionDragMoveSnapshotPushed = false;
+    }
+
+    public void EndSelectionDragMove() {
+        _selectionDragMoveActive = false;
+        _selectionDragMoveSnapshotPushed = false;
+    }
+
     public bool TryRotateSelection(int clockwiseSteps, HexCoord pivot) {
         if (_selection.Count == 0)
             return false;
+
+        if (_selectionDragMoveActive) {
+            if (!_selectionDragMoveSnapshotPushed) {
+                PushSnapshot();
+                _selectionDragMoveSnapshotPushed = true;
+            }
+
+            if (!_boardService.TryRotateGroup(draft.board, _selection, pivot, clockwiseSteps))
+                return false;
+
+            _boardService.RebuildAutoLinks(draft.board);
+            StampTime();
+            return true;
+        }
 
         PushSnapshot();
         if (!_boardService.TryRotateGroup(draft.board, _selection, pivot, clockwiseSteps))
@@ -117,6 +185,8 @@ public class RuneCraftEditor : MonoBehaviour {
         if (_undo.Count == 0)
             return false;
 
+        EndSelectionDragMove();
+
         _redo.Push(draft.board.Clone());
         draft.board = _undo.Pop().Clone();
         _boardService.RebuildAutoLinks(draft.board);
@@ -128,6 +198,8 @@ public class RuneCraftEditor : MonoBehaviour {
     public bool Redo() {
         if (_redo.Count == 0)
             return false;
+
+        EndSelectionDragMove();
 
         _undo.Push(draft.board.Clone());
         draft.board = _redo.Pop().Clone();
@@ -151,6 +223,7 @@ public class RuneCraftEditor : MonoBehaviour {
         _boardService.RebuildAutoLinks(draft.board);
         _undo.Clear();
         _redo.Clear();
+        EndSelectionDragMove();
         _selection.Clear();
         StampTime();
     }

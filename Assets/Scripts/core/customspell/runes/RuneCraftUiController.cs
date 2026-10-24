@@ -28,6 +28,16 @@ public class RuneCraftUiController : MonoBehaviour {
     private bool _hasHeldCell;
     private string _heldPlacementId = string.Empty;
     private HexCoord _heldCell;
+    private readonly List<ClipboardGlyph> _clipboard = new List<ClipboardGlyph>();
+    private bool _clipboardHasData;
+    private HexCoord _lastPointerCell;
+    private bool _hasLastPointerCell;
+
+    private struct ClipboardGlyph {
+        public string glyphId;
+        public HexCoord relativeAnchor;
+        public int rotation;
+    }
 
     private void Start() {
         BuildGlyphCache();
@@ -66,6 +76,17 @@ public class RuneCraftUiController : MonoBehaviour {
     }
 
     private void Update() {
+        if (paletteView.SearchFocused)
+            return;
+
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.C)) {
+            CopySelection();
+        }
+
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.V)) {
+            PasteClipboard();
+        }
+
         if (Input.GetKeyDown(KeyCode.Delete)) {
             DeleteSelection();
         }
@@ -182,6 +203,8 @@ public class RuneCraftUiController : MonoBehaviour {
     }
 
     private void HandleBoardCellClick(HexCoord cell, PointerEventData eventData) {
+        _lastPointerCell = cell;
+        _hasLastPointerCell = true;
         RebuildOccupiedLookup();
         var hasPlacement = _occupiedCells.TryGetValue(cell, out var placementId);
 
@@ -248,6 +271,8 @@ public class RuneCraftUiController : MonoBehaviour {
     }
 
     private void HandleBoardDragStart(HexCoord cell, PointerEventData eventData) {
+        _lastPointerCell = cell;
+        _hasLastPointerCell = true;
         if (eventData.button != PointerEventData.InputButton.Left)
             return;
 
@@ -265,6 +290,7 @@ public class RuneCraftUiController : MonoBehaviour {
         _hasHeldCell = true;
         _dragActive = true;
         _dragCurrentCell = cell;
+        editor.BeginSelectionDragMove();
     }
 
     private void HandleBoardDrag(HexCoord cell, PointerEventData eventData) {
@@ -283,6 +309,8 @@ public class RuneCraftUiController : MonoBehaviour {
         if (editor.TryMoveSelection(stepDelta)) {
             _dragCurrentCell = nextCell;
             _heldCell = nextCell;
+            _lastPointerCell = nextCell;
+            _hasLastPointerCell = true;
             RefreshBoard();
             SetStatus("Moved");
         }
@@ -292,6 +320,7 @@ public class RuneCraftUiController : MonoBehaviour {
         if (!_dragActive)
             return;
 
+        editor.EndSelectionDragMove();
         _dragActive = false;
         _hasHeldCell = false;
         _heldPlacementId = string.Empty;
@@ -383,6 +412,155 @@ public class RuneCraftUiController : MonoBehaviour {
 
         coord = new HexCoord(0, 0);
         return false;
+    }
+
+    private void CopySelection() {
+        if (_dragActive)
+            return;
+
+        if (editor.Selection.Count == 0) {
+            SetStatus("Nothing selected");
+            return;
+        }
+
+        RebuildOccupiedLookup();
+        if (!TryGetCopyPivotCell(out var pivot)) {
+            SetStatus("No filled cells for copy pivot");
+            return;
+        }
+
+        _clipboard.Clear();
+        var placed = editor.Draft.board.glyphs;
+        for (var i = 0; i < editor.Selection.Count; i++) {
+            var placementId = editor.Selection[i];
+            for (var g = 0; g < placed.Count; g++) {
+                if (placed[g].placementId != placementId)
+                    continue;
+
+                var glyph = placed[g];
+                _clipboard.Add(new ClipboardGlyph {
+                    glyphId = glyph.glyphId,
+                    rotation = glyph.rotation,
+                    relativeAnchor = new HexCoord(glyph.anchor.q - pivot.q, glyph.anchor.r - pivot.r)
+                });
+                break;
+            }
+        }
+
+        _clipboardHasData = _clipboard.Count > 0;
+        SetStatus(_clipboardHasData ? "Copied" : "Nothing selected");
+    }
+
+    private void PasteClipboard() {
+        if (_dragActive)
+            return;
+
+        if (!_clipboardHasData || _clipboard.Count == 0) {
+            SetStatus("Clipboard is empty");
+            return;
+        }
+
+        if (!TryGetCursorCell(out var pivot)) {
+            SetStatus("Cursor is outside board");
+            return;
+        }
+
+        var inputs = new List<RuneCraftEditor.RuneGlyphPlacementInput>(_clipboard.Count);
+        for (var i = 0; i < _clipboard.Count; i++) {
+            var entry = _clipboard[i];
+            inputs.Add(new RuneCraftEditor.RuneGlyphPlacementInput {
+                GlyphId = entry.glyphId,
+                Rotation = entry.rotation,
+                Anchor = pivot + entry.relativeAnchor
+            });
+        }
+
+        if (!editor.TryPasteGlyphs(inputs)) {
+            SetStatus("Cannot paste");
+            return;
+        }
+
+        RefreshBoard();
+        SetStatus("Pasted");
+    }
+
+    private bool TryGetCursorCell(out HexCoord coord) {
+        var eventData = new PointerEventData(EventSystem.current) {
+            position = Input.mousePosition
+        };
+        var hits = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventData, hits);
+        for (var i = 0; i < hits.Count; i++) {
+            var hitCell = hits[i].gameObject.GetComponentInParent<RuneHexCellButton>();
+            if (hitCell == null)
+                continue;
+            coord = hitCell.coord;
+            _lastPointerCell = coord;
+            _hasLastPointerCell = true;
+            return true;
+        }
+
+        if (_hasLastPointerCell) {
+            coord = _lastPointerCell;
+            return true;
+        }
+
+        coord = new HexCoord(0, 0);
+        return false;
+    }
+
+    private bool TryGetCopyPivotCell(out HexCoord pivot) {
+        if (!TryGetCursorCell(out var cursorCell)) {
+            pivot = new HexCoord(0, 0);
+            return false;
+        }
+
+        var selectedPlacements = new HashSet<string>(editor.Selection);
+        var bestSelectedCell = new HexCoord(0, 0);
+        var bestSelectedDistance = int.MaxValue;
+        var foundSelected = false;
+
+        var bestAnyCell = new HexCoord(0, 0);
+        var bestAnyDistance = int.MaxValue;
+        var foundAny = false;
+
+        foreach (var pair in _occupiedCells) {
+            var distance = HexDistance(cursorCell, pair.Key);
+            if (distance < bestAnyDistance) {
+                bestAnyDistance = distance;
+                bestAnyCell = pair.Key;
+                foundAny = true;
+            }
+
+            if (!selectedPlacements.Contains(pair.Value))
+                continue;
+
+            if (distance < bestSelectedDistance) {
+                bestSelectedDistance = distance;
+                bestSelectedCell = pair.Key;
+                foundSelected = true;
+            }
+        }
+
+        if (foundSelected) {
+            pivot = bestSelectedCell;
+            return true;
+        }
+
+        if (foundAny) {
+            pivot = bestAnyCell;
+            return true;
+        }
+
+        pivot = new HexCoord(0, 0);
+        return false;
+    }
+
+    private static int HexDistance(HexCoord a, HexCoord b) {
+        var dq = Mathf.Abs(a.q - b.q);
+        var dr = Mathf.Abs(a.r - b.r);
+        var ds = Mathf.Abs(a.s - b.s);
+        return Mathf.Max(dq, Mathf.Max(dr, ds));
     }
 
     private void SetStatus(string text) {
