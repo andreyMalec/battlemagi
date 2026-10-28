@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Steamworks;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,6 +21,7 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
         public float Saturation;
         public int PingMs;
         public float PacketLossPercent;
+        public int SpellLoadoutState;
 
         public PlayerData(ulong clientId, ulong steamId) {
             ClientId = clientId;
@@ -32,6 +35,7 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
             Saturation = 0.5f;
             PingMs = 0;
             PacketLossPercent = 0f;
+            SpellLoadoutState = (int)SpellLoadoutApprovalState.None;
         }
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter {
@@ -46,13 +50,15 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
             serializer.SerializeValue(ref Saturation);
             serializer.SerializeValue(ref PingMs);
             serializer.SerializeValue(ref PacketLossPercent);
+            serializer.SerializeValue(ref SpellLoadoutState);
         }
 
         public bool Equals(PlayerData other) =>
             ClientId == other.ClientId && SteamId == other.SteamId && Kills == other.Kills && Deaths == other.Deaths &&
             Assists == other.Assists && Flags == other.Flags && Archetype == other.Archetype &&
             Mathf.Approximately(Hue, other.Hue) && Mathf.Approximately(Saturation, other.Saturation) &&
-            PingMs == other.PingMs && Mathf.Approximately(PacketLossPercent, other.PacketLossPercent);
+            PingMs == other.PingMs && Mathf.Approximately(PacketLossPercent, other.PacketLossPercent) &&
+            SpellLoadoutState == other.SpellLoadoutState;
 
         public override string ToString() {
             return
@@ -79,12 +85,16 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
     [SerializeField] private List<PlayerData> debugPlayers = new(); // видимый в инспекторе
     [SerializeField] private List<MatchParticipantData> debugBots = new();
     [SerializeField] private float networkStatsRefreshInterval = 1f;
+    [SerializeField] private RuneGlyphList runeGlyphCatalog;
+    [SerializeField] private SpellDefinition runeBaseSpellTemplate;
 
     public static PlayerManager Instance { get; private set; }
 
     private float _networkStatsRefreshTimer;
     private int _lastReportedPingMs = -1;
     private float _lastReportedPacketLossPercent = -1f;
+    private const int EmptySpellSlot = -1;
+    private readonly Dictionary<ulong, List<RuneSpellDraft>> _approvedRuneDraftsByClient = new();
 
     public IReadOnlyList<MatchParticipantData> Participants {
         get {
@@ -676,5 +686,84 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
                 players[i] = player;
             }
         }
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void RequestRuneSpellLoadoutServerRpc(
+        FixedString4096Bytes draft0Json,
+        FixedString4096Bytes draft1Json,
+        FixedString4096Bytes draft2Json,
+        int selectedCount,
+        RpcParams rpcParams = default
+    ) {
+        var clientId = rpcParams.Receive.SenderClientId;
+        for (int i = 0; i < players.Count; i++) {
+            var player = players[i];
+            if (player.ClientId != clientId)
+                continue;
+
+            player.SpellLoadoutState = (int)SpellLoadoutApprovalState.Pending;
+            players[i] = player;
+
+            var payloads = new[] {
+                draft0Json.ToString(),
+                draft1Json.ToString(),
+                draft2Json.ToString(),
+            };
+
+            if (!TryValidateRuneSpellLoadout(clientId, payloads, selectedCount, out var state)) {
+                player = players[i];
+                player.SpellLoadoutState = (int)state;
+                players[i] = player;
+                return;
+            }
+
+            player = players[i];
+            player.SpellLoadoutState = (int)SpellLoadoutApprovalState.Approved;
+            players[i] = player;
+            return;
+        }
+    }
+
+    private bool TryValidateRuneSpellLoadout(ulong clientId, IReadOnlyList<string> payloads, int selectedCount, out SpellLoadoutApprovalState state) {
+        state = SpellLoadoutApprovalState.Rejected;
+        if (selectedCount < 1 || selectedCount > 3)
+            return false;
+        if (runeGlyphCatalog == null || runeBaseSpellTemplate == null)
+            return false;
+
+        var boardService = new RuneBoardService(runeGlyphCatalog.items);
+        var assembler = new RuneSpellAssembler(runeGlyphCatalog.items);
+        var approvedDrafts = new List<RuneSpellDraft>(selectedCount);
+
+        for (var i = 0; i < selectedCount; i++) {
+            if (i >= payloads.Count)
+                return false;
+
+            var json = payloads[i];
+            if (string.IsNullOrWhiteSpace(json))
+                return false;
+
+            RuneSpellDraft draft;
+            try {
+                draft = SpellJsonSerializer.FromJson<RuneSpellDraft>(json);
+                draft.board.radius = runeGlyphCatalog.boardRadius;
+            } catch (Exception) {
+                return false;
+            }
+
+            if (draft == null || draft.board == null)
+                return false;
+
+            boardService.RebuildAutoLinks(draft.board);
+            if (!assembler.TryAssemble(draft.board, runeBaseSpellTemplate, out _, out _))
+                return false;
+
+            approvedDrafts.Add(draft);
+        }
+
+        _approvedRuneDraftsByClient[clientId] = approvedDrafts;
+        state = SpellLoadoutApprovalState.Approved;
+        return true;
     }
 }

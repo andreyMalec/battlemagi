@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class RuneCraftEditor : MonoBehaviour {
-    [SerializeField] private int boardRadius = 5;
     [SerializeField] private RuneGlyphList glyphCatalog;
     [SerializeField] private SpellDefinition baseSpellTemplate;
 
@@ -33,7 +32,7 @@ public class RuneCraftEditor : MonoBehaviour {
     public IReadOnlyList<string> Selection => _selection;
 
     private void Awake() {
-        draft.board.radius = boardRadius;
+        draft.board.radius = glyphCatalog.boardRadius;
         _boardService = new RuneBoardService(glyphCatalog.items);
         _spellAssembler = new RuneSpellAssembler(glyphCatalog.items);
         _boardService.RebuildAutoLinks(draft.board);
@@ -214,18 +213,22 @@ public class RuneCraftEditor : MonoBehaviour {
         return SpellJsonSerializer.ToJson(draft, pretty);
     }
 
-    public void LoadDraftJson(string json) {
-        var loaded = SpellJsonSerializer.FromJson<RuneSpellDraft>(json);
-        draft = loaded ?? new RuneSpellDraft();
+    public void LoadDraft(RuneSpellDraft loadedDraft) {
+        draft = loadedDraft ?? new RuneSpellDraft();
         if (draft.board == null)
             draft.board = new RuneBoardData();
-        draft.board.radius = boardRadius;
+        draft.board.radius = glyphCatalog.boardRadius;
         _boardService.RebuildAutoLinks(draft.board);
         _undo.Clear();
         _redo.Clear();
         EndSelectionDragMove();
         _selection.Clear();
         StampTime();
+    }
+
+    public void LoadDraftJson(string json) {
+        var loaded = SpellJsonSerializer.FromJson<RuneSpellDraft>(json);
+        LoadDraft(loaded);
     }
 
     public bool ValidateGraph() {

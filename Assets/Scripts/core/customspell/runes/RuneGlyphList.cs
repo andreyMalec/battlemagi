@@ -5,6 +5,7 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "RuneGlyphList", menuName = "Glyphs/List", order = -1)]
 public class RuneGlyphList : ScriptableObject {
+    public int boardRadius = 5;
     public List<RuneGlyphDefinition> items = new List<RuneGlyphDefinition>();
 
 #if UNITY_EDITOR

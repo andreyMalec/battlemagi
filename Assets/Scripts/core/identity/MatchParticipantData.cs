@@ -13,6 +13,7 @@ public struct MatchParticipantData : INetworkSerializable, IEquatable<MatchParti
     public int Archetype;
     public float Hue;
     public float Saturation;
+    public int SpellLoadoutState;
 
     public MatchParticipantData(ParticipantId id, ulong steamId) {
         Id = id;
@@ -24,6 +25,7 @@ public struct MatchParticipantData : INetworkSerializable, IEquatable<MatchParti
         Archetype = 0;
         Hue = 78f;
         Saturation = 0.5f;
+        SpellLoadoutState = (int)SpellLoadoutApprovalState.None;
     }
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter {
@@ -40,12 +42,21 @@ public struct MatchParticipantData : INetworkSerializable, IEquatable<MatchParti
         serializer.SerializeValue(ref Archetype);
         serializer.SerializeValue(ref Hue);
         serializer.SerializeValue(ref Saturation);
+        serializer.SerializeValue(ref SpellLoadoutState);
     }
 
     public bool Equals(MatchParticipantData other) {
         return Id == other.Id && SteamId == other.SteamId && Kills == other.Kills && Deaths == other.Deaths &&
                Assists == other.Assists && Flags == other.Flags && Archetype == other.Archetype &&
-               Mathf.Approximately(Hue, other.Hue) && Mathf.Approximately(Saturation, other.Saturation);
+               Mathf.Approximately(Hue, other.Hue) && Mathf.Approximately(Saturation, other.Saturation) &&
+               SpellLoadoutState == other.SpellLoadoutState;
     }
+}
+
+public enum SpellLoadoutApprovalState {
+    None = 0,
+    Pending = 1,
+    Approved = 2,
+    Rejected = 3,
 }
 

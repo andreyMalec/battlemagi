@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -13,8 +12,12 @@ public class RuneCraftUiController : MonoBehaviour {
     [SerializeField] private RuneGlyphShapeEditorView glyphShapeEditor;
     [SerializeField] private TMP_Text statusText;
     [SerializeField] private TMP_Text selectedText;
+    [SerializeField] private TMP_InputField spellNameInput;
     [SerializeField] private Button saveGlyph;
     [SerializeField] private Button craftSpell;
+    [SerializeField] private Button saveSpell;
+    [SerializeField] private Button refreshSaves;
+    [SerializeField] private RuneSpellSaveListView savesListView;
     [SerializeField] private SpellDefinition craftedSpell;
 
     private readonly Dictionary<string, RuneGlyphDefinition> _glyphById = new Dictionary<string, RuneGlyphDefinition>();
@@ -32,6 +35,8 @@ public class RuneCraftUiController : MonoBehaviour {
     private bool _clipboardHasData;
     private HexCoord _lastPointerCell;
     private bool _hasLastPointerCell;
+    private readonly RuneSpellLocalStorage _localStorage = new RuneSpellLocalStorage();
+    private string _openedSaveFileName = string.Empty;
 
     private struct ClipboardGlyph {
         public string glyphId;
@@ -44,10 +49,20 @@ public class RuneCraftUiController : MonoBehaviour {
         paletteView.Bind(editor.GlyphCatalog);
         paletteView.GlyphClicked += HandlePaletteGlyphClicked;
         saveGlyph.onClick.AddListener(SaveGlyphShape);
+        saveSpell.onClick.AddListener(SaveCurrentSpellDraft);
+        refreshSaves.onClick.AddListener(RefreshSavedSpells);
+        if (spellNameInput != null)
+            spellNameInput.onEndEdit.AddListener(HandleSpellNameEdited);
+
         craftSpell.onClick.AddListener(() => {
             if (editor.TryBuildSpell(out var spell, out var error)) {
                 craftedSpell = spell;
-                SetStatus($"Crafted spell");
+                var desiredName = string.IsNullOrWhiteSpace(spell.spellName) ? editor.Draft.name : spell.spellName;
+                if (SaveSpellToLocal(desiredName, out var savedName, out var saveError)) {
+                    SetStatus($"Crafted and saved: {savedName}");
+                } else {
+                    SetStatus("Crafted spell, save failed: " + saveError);
+                }
 
                 var casters = FindObjectsByType<SpellCasterPlayer>();
                 foreach (var caster in casters) {
@@ -68,6 +83,8 @@ public class RuneCraftUiController : MonoBehaviour {
         }
 
         RefreshBoard();
+        SyncSpellNameInput();
+        RefreshSavedSpells();
         SetStatus("Ready");
     }
 
@@ -563,7 +580,84 @@ public class RuneCraftUiController : MonoBehaviour {
         return Mathf.Max(dq, Mathf.Max(dr, ds));
     }
 
+    public void SaveCurrentSpellDraft() {
+        var desiredName = GetDesiredSpellName();
+        if (SaveSpellToLocal(desiredName, out var savedName, out var error)) {
+            SetStatus("Saved: " + savedName);
+        } else {
+            SetStatus("Save failed: " + error);
+        }
+    }
+
+    public void RefreshSavedSpells() {
+        var saves = _localStorage.List();
+        savesListView.Bind(saves, OpenSavedSpell, HandleLoadoutSelectionChanged);
+    }
+
+    public void OpenSavedSpell(string fileName) {
+        if (!_localStorage.TryLoad(fileName, out var loadedDraft, out var error)) {
+            SetStatus("Open failed: " + error);
+            return;
+        }
+
+        editor.LoadDraft(loadedDraft);
+        _openedSaveFileName = fileName;
+        SyncSpellNameInput();
+        RefreshBoard();
+        SetStatus("Opened: " + fileName);
+    }
+
+    private bool SaveSpellToLocal(string desiredName, out string savedName, out string error) {
+        var sanitizedName = desiredName;
+        if (string.IsNullOrWhiteSpace(sanitizedName))
+            sanitizedName = editor.Draft.name;
+        if (string.IsNullOrWhiteSpace(sanitizedName))
+            sanitizedName = "NewSpell";
+
+        editor.Draft.name = sanitizedName;
+        if (_localStorage.Save(sanitizedName, editor.Draft, _openedSaveFileName, out savedName, out error)) {
+            _openedSaveFileName = savedName;
+            editor.Draft.name = savedName;
+            SyncSpellNameInput();
+            RefreshSavedSpells();
+            return true;
+        }
+
+        return false;
+    }
+
+    private string GetDesiredSpellName() {
+        if (spellNameInput != null && !string.IsNullOrWhiteSpace(spellNameInput.text))
+            return spellNameInput.text.Trim();
+        if (!string.IsNullOrWhiteSpace(editor.Draft.name))
+            return editor.Draft.name.Trim();
+        return "NewSpell";
+    }
+
+    private void HandleSpellNameEdited(string value) {
+        if (string.IsNullOrWhiteSpace(value))
+            return;
+        editor.Draft.name = value.Trim();
+    }
+
+    private void SyncSpellNameInput() {
+        var value = string.IsNullOrWhiteSpace(editor.Draft.name) ? "NewSpell" : editor.Draft.name;
+        editor.Draft.name = value;
+        if (spellNameInput != null)
+            spellNameInput.text = value;
+    }
+
     private void SetStatus(string text) {
         statusText.text = text;
+    }
+
+    private void HandleLoadoutSelectionChanged(string fileName, bool isSelectedForLoadout) {
+        if (_localStorage.SetSelectedForLoadout(fileName, isSelectedForLoadout, out var error)) {
+            RefreshSavedSpells();
+            SetStatus(isSelectedForLoadout ? "Added to loadout" : "Removed from loadout");
+            return;
+        }
+
+        SetStatus("Loadout mark failed: " + error);
     }
 }
