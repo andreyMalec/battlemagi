@@ -239,7 +239,8 @@ public class Damageable : MonoBehaviour {
         ParticipantId fromId,
         float amount,
         DamageKind sound = DamageKind.Default,
-        bool ignoreSoundCooldown = false
+        bool ignoreSoundCooldown = false,
+        DamageResourceTarget resourceTarget = DamageResourceTarget.Health
     ) {
         if (!_initialized) return;
         if (!IsAlive) return;
@@ -248,7 +249,7 @@ public class Damageable : MonoBehaviour {
         if (!_bridgeTyped.IsServer) return;
         if (!_bridgeTyped.IsSpawned) return;
 
-        var request = new DamageRequest(source, fromId, amount, (DamageKind)sound);
+        var request = new DamageRequest(source, fromId, amount, sound, resourceTarget);
         if (OnModifyOutgoingDamage != null) {
             var currentAmount = request.amount;
             foreach (var handler in OnModifyOutgoingDamage.GetInvocationList()) {
@@ -256,7 +257,8 @@ public class Damageable : MonoBehaviour {
                     currentAmount = modifier.Invoke(fromId, this, request, currentAmount);
             }
 
-            request = new DamageRequest(request.source, request.fromId, Mathf.Max(0f, currentAmount), request.kind);
+            request = new DamageRequest(request.source, request.fromId, Mathf.Max(0f, currentAmount), request.kind,
+                request.resourceTarget);
         }
 
         var beforeHp = _health.Health;
@@ -284,6 +286,15 @@ public class Damageable : MonoBehaviour {
         if (!CanTakeDamage(request.amount))
             return new DamageApplied(request, request.amount, 0f, 0f, 0f, Health.Health);
 
+        if (request.resourceTarget == DamageResourceTarget.Mana) {
+            var manaApplied = ApplyManaDamageServer(request.amount);
+            var overkillMana = Mathf.Max(0f, request.amount - manaApplied);
+            var manaAppliedEvent = new DamageApplied(request, request.amount, manaApplied, 0f, 0f, overkillMana, manaApplied);
+            OnDamageApplied?.Invoke(manaAppliedEvent);
+            OnDamageDealt?.Invoke(request.fromId, this, manaAppliedEvent);
+            return manaAppliedEvent;
+        }
+
         var incoming = request.amount;
         var modded = incoming;
         for (var i = 0; i < _modifiers.Count; i++)
@@ -305,6 +316,20 @@ public class Damageable : MonoBehaviour {
             TryDie(new DeathInfo(_bridgeTyped.OwnerId, request.fromId, request.source));
 
         return applied;
+    }
+
+    private float ApplyManaDamageServer(float amount) {
+        if (amount <= 0f)
+            return 0f;
+        if (!TryGetComponent<SpellCasterPlayer>(out var caster))
+            return 0f;
+
+        var beforeMana = caster.Mana.Mana;
+        var beforePrimal = caster.Mana.PrimalMana;
+        caster.Mana.SpendWithPrimalServer(amount);
+        var spentMana = Mathf.Max(0f, beforeMana - caster.Mana.Mana);
+        var spentPrimal = Mathf.Max(0f, caster.Mana.PrimalMana - beforePrimal);
+        return spentMana + spentPrimal;
     }
 
     private void ApplyHealServer(string source, float amount) {

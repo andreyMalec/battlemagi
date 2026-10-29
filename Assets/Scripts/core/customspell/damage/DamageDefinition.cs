@@ -36,6 +36,7 @@ public class DamageDefinition : ScriptableObject, IValidate {
 
     [ShowIf("_dot")] public float tickInterval = 1f;
     [ShowIf("_dot")] public bool ignoreSoundCooldown;
+    public DamageResourceTarget resourceTarget = DamageResourceTarget.Health;
 
     private bool _flat;
     private bool _percent;

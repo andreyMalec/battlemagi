@@ -4,6 +4,7 @@ using UnityEngine;
 public class ElectrifiedEffect : StatusEffectData {
     [Min(0.1f)] public float metersPerProc = 2f;
     [Min(0f)] public float damagePerProc = 5f;
+    public DamageResourceTarget damageTarget = DamageResourceTarget.Health;
     public DamageKind damageSound = DamageKind.Default;
     public bool ignoreDamageSoundCooldown;
     public bool canSelfDamage = true;
@@ -59,15 +60,16 @@ public class ElectrifiedEffect : StatusEffectData {
         }
 
         private void TriggerProc(GameObject target) {
-            if (target.TryGetComponent<Damageable>(out var damageable)) {
-                if (_data.canSelfDamage || !Ctx.AreAllies(OwnerId, damageable.OwnerId)) {
-                    if (_data.damagePerProc > 0f) {
+            if (_data.damagePerProc > 0f) {
+                if (target.TryGetComponent<Damageable>(out var damageable)) {
+                    if (_data.canSelfDamage || !Ctx.AreAllies(OwnerId, damageable.OwnerId)) {
                         damageable.TakeDamage(
                             _data.effectName,
                             OwnerId,
                             _data.damagePerProc,
                             _data.damageSound,
-                            _data.ignoreDamageSoundCooldown
+                            _data.ignoreDamageSoundCooldown,
+                            _data.damageTarget
                         );
                     }
                 }

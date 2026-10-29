@@ -151,7 +151,7 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
             }
         }
 
-        PlayDamageSound((DamageKind)request.kind, ignoreSoundCooldown);
+        PlayDamageSound(request.kind, ignoreSoundCooldown);
     }
 
     [ClientRpc]
@@ -174,6 +174,10 @@ public class DamageableNetworkBridge : NetworkBehaviour, IDamageableBridge {
     }
 
     private static DamageApplied PreviewDamageNoSideEffects(Damageable core, in DamageRequest request) {
+        if (request.resourceTarget == DamageResourceTarget.Mana) {
+            return new DamageApplied(request, request.amount, request.amount, 0f, 0f, 0f, request.amount);
+        }
+
         var pArmor = core.Armor.Armor;
         var pHealth = core.Health.Health;
 

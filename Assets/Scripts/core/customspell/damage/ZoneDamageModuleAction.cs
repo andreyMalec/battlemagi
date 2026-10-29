@@ -88,6 +88,7 @@ public class ZoneDamageModuleAction : ISpellAction {
         if (shouldLog)
             SpellLog.Log($"SpellAction {actionName} applied to {damageable.name}. Event: {eventName}");
         damageable.TakeDamage(context.Spell.spellName, context.OwnerId, amount,
-            Ctx.GetSpellSound(context.Spell), context.SpellDamage.ignoreSoundCooldown);
+            Ctx.GetSpellSound(context.Spell), context.SpellDamage.ignoreSoundCooldown,
+            context.SpellDamage.resourceTarget);
     }
 }

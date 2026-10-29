@@ -47,7 +47,8 @@ public class BeamDamageModuleAction : ISpellAction {
 
         base.Apply(context, evt);
         damageable.TakeDamage(context.Spell.spellName, context.OwnerId, amount,
-            Ctx.GetSpellSound(context.Spell), context.SpellDamage.ignoreSoundCooldown);
+            Ctx.GetSpellSound(context.Spell), context.SpellDamage.ignoreSoundCooldown,
+            context.SpellDamage.resourceTarget);
     }
 
     private void Deal(ISpellContext context, ShapeHit hit, SpellEvent evt) {
@@ -61,6 +62,7 @@ public class BeamDamageModuleAction : ISpellAction {
 
         base.Apply(context, evt);
         damageable.TakeDamage(context.Spell.spellName, context.OwnerId, amount,
-            Ctx.GetSpellSound(context.Spell), context.SpellDamage.ignoreSoundCooldown);
+            Ctx.GetSpellSound(context.Spell), context.SpellDamage.ignoreSoundCooldown,
+            context.SpellDamage.resourceTarget);
     }
 }

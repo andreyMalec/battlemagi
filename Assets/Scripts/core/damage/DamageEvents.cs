@@ -5,12 +5,15 @@ public readonly struct DamageRequest {
     public readonly ParticipantId fromId;
     public readonly float amount;
     public readonly DamageKind kind;
+    public readonly DamageResourceTarget resourceTarget;
 
-    public DamageRequest(string source, ParticipantId fromId, float amount, DamageKind kind) {
+    public DamageRequest(string source, ParticipantId fromId, float amount, DamageKind kind,
+        DamageResourceTarget resourceTarget = DamageResourceTarget.Health) {
         this.source = source;
         this.fromId = fromId;
         this.amount = amount;
         this.kind = kind;
+        this.resourceTarget = resourceTarget;
     }
 }
 
@@ -20,14 +23,17 @@ public readonly struct DamageApplied {
     public readonly float final;
     public readonly float armorApplied;
     public readonly float healthApplied;
+    public readonly float manaApplied;
     public readonly float overkill;
 
-    public DamageApplied(DamageRequest request, float incoming, float final, float armorApplied, float healthApplied, float overkill) {
+    public DamageApplied(DamageRequest request, float incoming, float final, float armorApplied, float healthApplied, float overkill,
+        float manaApplied = 0f) {
         this.request = request;
         this.incoming = incoming;
         this.final = final;
         this.armorApplied = armorApplied;
         this.healthApplied = healthApplied;
+        this.manaApplied = manaApplied;
         this.overkill = overkill;
     }
 }

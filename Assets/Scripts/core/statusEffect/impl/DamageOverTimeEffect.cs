@@ -5,6 +5,7 @@ public class DamageOverTimeEffect : StatusEffectData {
     public float dps;
     public float tickInterval = 1f;
     public DamageKind damageSound;
+    public DamageResourceTarget resourceTarget = DamageResourceTarget.Health;
     public bool ignoreDamageSoundCooldown = false;
     public bool canSelfDamage = true;
     public bool percentDamage = false;
@@ -68,7 +69,8 @@ public class DamageOverTimeEffect : StatusEffectData {
                         OwnerId,
                         damage,
                         _data.damageSound,
-                        _data.ignoreDamageSoundCooldown
+                        _data.ignoreDamageSoundCooldown,
+                        _data.resourceTarget
                     );
                 }
             }

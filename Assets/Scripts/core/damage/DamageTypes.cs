@@ -15,6 +15,11 @@ public enum DamageKind {
     Delayed,
 }
 
+public enum DamageResourceTarget {
+    Health = 0,
+    Mana = 1,
+}
+
 [Flags]
 public enum DamageableState {
     None = 0,
