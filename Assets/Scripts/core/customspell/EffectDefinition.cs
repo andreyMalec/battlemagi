@@ -31,6 +31,7 @@ public enum StatusEffectType {
     Rooted,
     StatusImmune,
     ControlImmune,
+    Electrified,
 }
 
 [CreateAssetMenu(fileName = "New Spell Effect", menuName = "Spells/Effect Definition")]
@@ -58,6 +59,7 @@ public class EffectDefinition : ScriptableObject, IValidate {
             StatusEffectType.Rooted => Ensure<RootEffect>(effect),
             StatusEffectType.StatusImmune => Ensure<StatusImmuneEffect>(effect),
             StatusEffectType.ControlImmune => Ensure<ControlImmuneEffect>(effect),
+            StatusEffectType.Electrified => Ensure<ElectrifiedEffect>(effect),
             StatusEffectType.Freeze => Ensure<FreezeEffect>(effect),
             StatusEffectType.IceSlide => Ensure<IceSlideEffect>(effect),
             StatusEffectType.RuneOfStasis => Ensure<RuneOfStasisEffect>(effect),
