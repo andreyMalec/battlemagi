@@ -240,6 +240,11 @@ public class RuneCraftEditor : MonoBehaviour {
         return _spellAssembler.TryAssemble(draft.board, baseSpellTemplate, out spell, out error);
     }
 
+    public bool TryCalculateSpellCost(out RuneSpellCostResult cost, out string error) {
+        _boardService.RebuildAutoLinks(draft.board);
+        return _spellAssembler.TryCalculateMainChainCost(draft.board, out cost, out error);
+    }
+
     private bool UndoInternal() {
         if (_undo.Count > 0) {
             _redo.Push(draft.board.Clone());

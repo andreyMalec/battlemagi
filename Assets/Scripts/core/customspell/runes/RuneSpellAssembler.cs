@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public class RuneSpellAssembler {
     private readonly Dictionary<string, RuneGlyphDefinition> _glyphCatalog;
@@ -59,6 +60,77 @@ public class RuneSpellAssembler {
             out spell,
             out error
         );
+    }
+
+    public bool TryCalculateMainChainCost(RuneBoardData board, out RuneSpellCostResult result, out string error) {
+        result = new RuneSpellCostResult();
+        error = string.Empty;
+
+        if (board == null) {
+            error = "Rune board is null.";
+            return false;
+        }
+
+        if (board.glyphs == null || board.glyphs.Count == 0) {
+            error = "Rune board is empty.";
+            return false;
+        }
+
+        var placedById = BuildPlacedMap(board);
+        var glyphByPlacementId = ResolveGlyphs(placedById, out error);
+        if (glyphByPlacementId == null)
+            return false;
+
+        var outgoing = BuildOutgoing(board, placedById);
+        var incoming = BuildIncoming(board, placedById);
+
+        var triggerId = SelectTrigger(glyphByPlacementId, outgoing);
+        var coreId = SelectCore(glyphByPlacementId, triggerId, outgoing);
+        if (string.IsNullOrWhiteSpace(coreId)) {
+            error = "Core glyph was not found.";
+            return false;
+        }
+
+        var mainChain = BuildExecutionOrder(coreId, glyphByPlacementId, outgoing, incoming);
+        if (mainChain.Count == 0) {
+            error = "No glyph chain to calculate cost.";
+            return false;
+        }
+
+        var copiesByGlyphId = new Dictionary<string, int>();
+        var lineIndexByGlyphId = new Dictionary<string, int>();
+
+        for (var i = 0; i < mainChain.Count; i++) {
+            var placementId = mainChain[i];
+            var glyph = glyphByPlacementId[placementId];
+            var glyphId = glyph.glyphId;
+
+            copiesByGlyphId.TryGetValue(glyphId, out var copyIndex);
+            var multiplier = Mathf.Pow(1f + glyph.repeatCostPercent * 0.01f, copyIndex);
+            var itemCost = glyph.baseCost * multiplier;
+
+            result.totalCost += itemCost;
+            result.placements.Add(placementId);
+
+            if (!lineIndexByGlyphId.TryGetValue(glyphId, out var lineIndex)) {
+                lineIndex = result.lines.Count;
+                lineIndexByGlyphId[glyphId] = lineIndex;
+                result.lines.Add(new RuneSpellCostLine {
+                    glyphId = glyphId,
+                    count = 1,
+                    totalCost = itemCost,
+                });
+            } else {
+                var line = result.lines[lineIndex];
+                line.count += 1;
+                line.totalCost += itemCost;
+                result.lines[lineIndex] = line;
+            }
+
+            copiesByGlyphId[glyphId] = copyIndex + 1;
+        }
+
+        return true;
     }
 
     public static SpellDefinition CloneSpell(SpellDefinition source) {
@@ -513,6 +585,20 @@ public class RuneSpellAssembler {
             context.AddTag(tags[i]);
         }
     }
+}
+
+[System.Serializable]
+public struct RuneSpellCostLine {
+    public string glyphId;
+    public int count;
+    public float totalCost;
+}
+
+[System.Serializable]
+public class RuneSpellCostResult {
+    public float totalCost;
+    public List<string> placements = new List<string>();
+    public List<RuneSpellCostLine> lines = new List<RuneSpellCostLine>();
 }
 
 

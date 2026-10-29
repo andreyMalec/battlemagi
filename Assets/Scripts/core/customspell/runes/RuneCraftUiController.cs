@@ -12,6 +12,7 @@ public class RuneCraftUiController : MonoBehaviour {
     [SerializeField] private RuneGlyphShapeEditorView glyphShapeEditor;
     [SerializeField] private TMP_Text statusText;
     [SerializeField] private TMP_Text selectedText;
+    [SerializeField] private TMP_Text costText;
     [SerializeField] private TMP_InputField spellNameInput;
     [SerializeField] private Button saveGlyph;
     [SerializeField] private Button craftSpell;
@@ -352,6 +353,19 @@ public class RuneCraftUiController : MonoBehaviour {
         }
 
         boardView?.Render(_occupiedCells, selected, _outputByCell, editor.Draft.board.glyphs, _glyphById);
+        RefreshCostText();
+    }
+
+    private void RefreshCostText() {
+        if (costText == null)
+            return;
+
+        if (editor.TryCalculateSpellCost(out var cost, out _)) {
+            costText.text = $"Cost: {cost.totalCost:0.##}";
+            return;
+        }
+
+        costText.text = "Cost: -";
     }
 
     private void RebuildOccupiedLookup() {
