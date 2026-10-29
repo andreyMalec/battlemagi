@@ -5,6 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "StatusEffects/Root")]
 public class RootEffect : StatusEffectData {
     public bool canSelfRoot = true;
+    public override bool IsControlEffect => true;
 
     public override StatusEffectRuntime CreateRuntime() {
         return new RootRuntime(this);

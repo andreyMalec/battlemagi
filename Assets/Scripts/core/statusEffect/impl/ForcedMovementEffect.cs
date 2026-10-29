@@ -4,6 +4,8 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName = "StatusEffects/Forced Movement")]
 public class ForcedMovementEffect : StatusEffectData {
+    public override bool IsControlEffect => true;
+
     private static readonly RaycastHit[] RaycastHitsBuffer = new RaycastHit[16];
 
     private static readonly IComparer<RaycastHit> RaycastHitDistanceComparer =

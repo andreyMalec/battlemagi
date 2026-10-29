@@ -3,6 +3,8 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName = "StatusEffects/Attach")]
 public class AttachEffect : StatusEffectData {
+    public override bool IsControlEffect => true;
+
     public override StatusEffectRuntime CreateRuntime() {
         return new AttachRuntime(this);
     }

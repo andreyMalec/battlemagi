@@ -4,6 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "StatusEffects/Freeze")]
 public class FreezeEffect : StatusEffectData {
     public bool canSelfFreeze = true;
+    public override bool IsControlEffect => true;
 
     public override StatusEffectRuntime CreateRuntime() {
         return new FreezeRuntime(this);

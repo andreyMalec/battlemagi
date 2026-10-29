@@ -100,6 +100,34 @@ public class Statusable : MonoBehaviour {
         }
     }
 
+    public void RemoveControlEffectsExcept(string effectNameToKeep) {
+        if (!_bridgeTyped.IsServer) return;
+        if (!_bridgeTyped.IsSpawned) return;
+
+        BeginSyncBatch();
+        try {
+            foreach (var effect in _active.Values.ToList()) {
+                if (!string.IsNullOrWhiteSpace(effectNameToKeep) && effect.data.effectName == effectNameToKeep)
+                    continue;
+                if (!effect.data.IsControlEffect)
+                    continue;
+
+                RemoveEffect(effect.data.effectName);
+            }
+        } finally {
+            EndSyncBatch();
+        }
+    }
+
+    public bool HasControlBlocker() {
+        foreach (var effect in _active.Values) {
+            if (effect.data != null && effect.data.BlocksIncomingControlEffects)
+                return true;
+        }
+
+        return false;
+    }
+
     private bool FindPreviousEffect(StatusEffectData data, out StatusEffectRuntime previous) {
         if (data.onStack == null) {
             return _active.TryGetValue(data.effectName, out previous);
@@ -232,10 +260,20 @@ public class Statusable : MonoBehaviour {
         if (data.BypassesStatusBlock)
             return true;
 
+        var hasStatusBlocker = false;
+        var hasControlBlocker = false;
         foreach (var effect in _active.Values) {
-            if (effect.data != null && effect.data.BlocksIncomingStatuses)
-                return false;
+            if (effect.data == null)
+                continue;
+            hasStatusBlocker |= effect.data.BlocksIncomingStatuses;
+            hasControlBlocker |= effect.data.BlocksIncomingControlEffects;
         }
+
+        if (hasStatusBlocker)
+            return false;
+
+        if (data.IsControlEffect && hasControlBlocker && !data.BypassesControlBlock)
+            return false;
 
         return true;
     }

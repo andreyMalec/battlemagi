@@ -4,6 +4,7 @@ using UnityEngine;
 public class IceSlideEffect : StatusEffectData {
     [SerializeField] private float acceleration = 8f;
     [SerializeField] private float deceleration = 2f;
+    public override bool IsControlEffect => true;
 
     public override StatusEffectRuntime CreateRuntime() {
         return new IceSlideRuntime(this);

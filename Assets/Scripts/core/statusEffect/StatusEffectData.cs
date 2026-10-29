@@ -37,6 +37,9 @@ public abstract class StatusEffectData : ScriptableObject {
 
     public virtual bool BlocksIncomingStatuses => false;
     public virtual bool BypassesStatusBlock => false;
+    public virtual bool IsControlEffect => false;
+    public virtual bool BlocksIncomingControlEffects => false;
+    public virtual bool BypassesControlBlock => false;
 
     public abstract StatusEffectRuntime CreateRuntime();
 

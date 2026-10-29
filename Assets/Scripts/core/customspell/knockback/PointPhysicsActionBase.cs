@@ -44,19 +44,30 @@ public abstract class PointPhysicsActionBase : ISpellAction {
             if (damageable.IsDead) return false;
             if (damageable.TryGetComponent<PlayerPhysics>(out var physics)) {
                 if (!CanAffect(context, ownerId)) return false;
+                if (HasControlImmunity(damageable.gameObject)) return false;
                 damageable.TryGetComponent<FirstPersonMovement>(out var movement);
                 resolvedTarget = new ResolvedPhysicsTarget(damageable, physics, movement, null, ownerId, true);
                 return true;
             }
 
             if (!TryResolveRigidbody(target, out var damageableRigidbody)) return false;
+            if (HasControlImmunity(damageable.gameObject)) return false;
             resolvedTarget = new ResolvedPhysicsTarget(damageable, null, null, damageableRigidbody, ownerId, true);
             return true;
         }
 
         if (!TryResolveRigidbody(target, out var rigidbody)) return false;
+        if (HasControlImmunity(target)) return false;
         resolvedTarget = new ResolvedPhysicsTarget(null, null, null, rigidbody, default, false);
         return true;
+    }
+
+    private static bool HasControlImmunity(GameObject target) {
+        if (target.TryGetComponent<Statusable>(out var statusable))
+            return statusable.HasControlBlocker();
+
+        var parentStatusable = target.GetComponentInParent<Statusable>();
+        return parentStatusable != null && parentStatusable.HasControlBlocker();
     }
 
     private bool TryResolveRigidbody(GameObject target, out Rigidbody rigidbody) {
