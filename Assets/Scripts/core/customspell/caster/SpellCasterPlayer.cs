@@ -115,7 +115,7 @@ public class SpellCasterPlayer : SpellCaster {
     internal void ApplyRestoreEcho(string spellWords, int amount) {
         if (string.IsNullOrEmpty(spellWords) || amount <= 0) return;
 
-        var spell = DefaultSpells.Get(spellWords)?.spell;
+        var spell = DefaultSpells.Resolve(spellWords);
         if (spell == null) return;
         ApplyRestoreEcho(spell, amount);
     }

@@ -94,7 +94,7 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
     private int _lastReportedPingMs = -1;
     private float _lastReportedPacketLossPercent = -1f;
     private const int EmptySpellSlot = -1;
-    private readonly Dictionary<ulong, List<RuneSpellDraft>> _approvedRuneDraftsByClient = new();
+    private readonly Dictionary<ulong, List<RuneSpellDraft>> _approvedRuneDraftsBySteamId = new();
 
     public IReadOnlyList<MatchParticipantData> Participants {
         get {
@@ -169,6 +169,7 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
             players.Clear();
             participants.Clear();
             _botParticipants.Clear();
+            _approvedRuneDraftsBySteamId.Clear();
             _networkStatsRefreshTimer = 0f;
         }
     }
@@ -303,6 +304,7 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
             }
 
             SyncExistingPlayersToClient(clientId);
+            SyncApprovedRuneSpellsToClient(clientId, steamId);
             return;
         }
 
@@ -316,6 +318,7 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
         players.Add(data);
         OnPlayerAdded?.Invoke(data);
         SyncExistingPlayersToClient(clientId);
+        SyncApprovedRuneSpellsToClient(clientId, steamId);
 
         Debug.Log($"[Server] Registered player ClientId={clientId}, SteamId={steamId}");
     }
@@ -711,12 +714,18 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
                 draft2Json.ToString(),
             };
 
-            if (!TryValidateRuneSpellLoadout(clientId, payloads, selectedCount, out var state)) {
+            var steamId = player.SteamId;
+
+            if (!TryValidateRuneSpellLoadout(steamId, payloads, selectedCount, out var approvedDrafts, out var approvedSpells, out var state)) {
                 player = players[i];
                 player.SpellLoadoutState = (int)state;
                 players[i] = player;
                 return;
             }
+
+            ApplyApprovedRuneSpells(steamId, approvedSpells);
+            _approvedRuneDraftsBySteamId[steamId] = approvedDrafts;
+            BroadcastApprovedRuneSpells(steamId, approvedDrafts);
 
             player = players[i];
             player.SpellLoadoutState = (int)SpellLoadoutApprovalState.Approved;
@@ -725,7 +734,16 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
         }
     }
 
-    private bool TryValidateRuneSpellLoadout(ulong clientId, IReadOnlyList<string> payloads, int selectedCount, out SpellLoadoutApprovalState state) {
+    private bool TryValidateRuneSpellLoadout(
+        ulong steamId,
+        IReadOnlyList<string> payloads,
+        int selectedCount,
+        out List<RuneSpellDraft> approvedDrafts,
+        out List<SpellDefinition> approvedSpells,
+        out SpellLoadoutApprovalState state
+    ) {
+        approvedDrafts = new List<RuneSpellDraft>();
+        approvedSpells = new List<SpellDefinition>();
         state = SpellLoadoutApprovalState.Rejected;
         if (selectedCount < 1 || selectedCount > 3)
             return false;
@@ -734,7 +752,8 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
 
         var boardService = new RuneBoardService(runeGlyphCatalog.items);
         var assembler = new RuneSpellAssembler(runeGlyphCatalog.items);
-        var approvedDrafts = new List<RuneSpellDraft>(selectedCount);
+        approvedDrafts = new List<RuneSpellDraft>(selectedCount);
+        approvedSpells = new List<SpellDefinition>(selectedCount);
 
         for (var i = 0; i < selectedCount; i++) {
             if (i >= payloads.Count)
@@ -756,14 +775,130 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
                 return false;
 
             boardService.RebuildAutoLinks(draft.board);
-            if (!assembler.TryAssemble(draft.board, runeBaseSpellTemplate, out _, out _))
+            if (!assembler.TryAssemble(draft.board, runeBaseSpellTemplate, out var spell, out _))
                 return false;
+
+            var displayName = string.IsNullOrWhiteSpace(draft.name)
+                ? (string.IsNullOrWhiteSpace(spell.spellName) ? $"RuneSpell{i + 1}" : spell.spellName)
+                : draft.name.Trim();
+
+            spell.spellName = displayName;
+            approvedSpells.Add(spell);
 
             approvedDrafts.Add(draft);
         }
 
-        _approvedRuneDraftsByClient[clientId] = approvedDrafts;
         state = SpellLoadoutApprovalState.Approved;
         return true;
+    }
+
+    public List<SpellDefinition> GetApprovedRuntimeSpellsForClient(ulong clientId) {
+        if (!TryGetPlayerData(clientId, out var player))
+            return new List<SpellDefinition>();
+        return DefaultSpells.GetRuntimeSpells(player.SteamId);
+    }
+
+    private static void ApplyApprovedRuneSpells(ulong steamId, List<SpellDefinition> approvedSpells) {
+        DefaultSpells.ClearRuntimeSpells(steamId);
+        for (var i = 0; i < approvedSpells.Count; i++) {
+            var spell = approvedSpells[i];
+            var spellName = string.IsNullOrWhiteSpace(spell.spellName) ? $"RuneSpell{i + 1}" : spell.spellName;
+            DefaultSpells.RegisterRuntimeSpell(steamId, spellName, spell);
+        }
+    }
+
+    private void BroadcastApprovedRuneSpells(ulong steamId, List<RuneSpellDraft> drafts) {
+        var payload0 = new FixedString4096Bytes(string.Empty);
+        var payload1 = new FixedString4096Bytes(string.Empty);
+        var payload2 = new FixedString4096Bytes(string.Empty);
+
+        for (var i = 0; i < drafts.Count && i < 3; i++) {
+            var json = SpellJsonSerializer.ToJson(drafts[i], false);
+            var payload = new FixedString4096Bytes(json);
+            if (i == 0) payload0 = payload;
+            if (i == 1) payload1 = payload;
+            if (i == 2) payload2 = payload;
+        }
+
+        SyncApprovedRuneSpellsClientRpc(steamId, payload0, payload1, payload2, Mathf.Min(drafts.Count, 3));
+    }
+
+    private void SyncApprovedRuneSpellsToClient(ulong targetClientId, ulong steamId) {
+        if (!_approvedRuneDraftsBySteamId.TryGetValue(steamId, out var drafts) || drafts == null || drafts.Count == 0)
+            return;
+
+        var payload0 = new FixedString4096Bytes(string.Empty);
+        var payload1 = new FixedString4096Bytes(string.Empty);
+        var payload2 = new FixedString4096Bytes(string.Empty);
+
+        for (var i = 0; i < drafts.Count && i < 3; i++) {
+            var json = SpellJsonSerializer.ToJson(drafts[i], false);
+            var payload = new FixedString4096Bytes(json);
+            if (i == 0) payload0 = payload;
+            if (i == 1) payload1 = payload;
+            if (i == 2) payload2 = payload;
+        }
+
+        var sendParams = new ClientRpcParams {
+            Send = new ClientRpcSendParams { TargetClientIds = new[] { targetClientId } }
+        };
+        SyncApprovedRuneSpellsClientRpc(steamId, payload0, payload1, payload2, Mathf.Min(drafts.Count, 3), sendParams);
+    }
+
+    [ClientRpc]
+    private void SyncApprovedRuneSpellsClientRpc(
+        ulong steamId,
+        FixedString4096Bytes draft0Json,
+        FixedString4096Bytes draft1Json,
+        FixedString4096Bytes draft2Json,
+        int selectedCount,
+        ClientRpcParams rpcParams = default
+    ) {
+        _ = rpcParams;
+        if (selectedCount < 1 || selectedCount > 3)
+            return;
+        if (runeGlyphCatalog == null || runeBaseSpellTemplate == null)
+            return;
+
+        var payloads = new[] {
+            draft0Json.ToString(),
+            draft1Json.ToString(),
+            draft2Json.ToString(),
+        };
+
+        var boardService = new RuneBoardService(runeGlyphCatalog.items);
+        var assembler = new RuneSpellAssembler(runeGlyphCatalog.items);
+        var approvedSpells = new List<SpellDefinition>(selectedCount);
+
+        for (var i = 0; i < selectedCount; i++) {
+            if (i >= payloads.Length)
+                return;
+
+            var json = payloads[i];
+            if (string.IsNullOrWhiteSpace(json))
+                return;
+
+            RuneSpellDraft draft;
+            try {
+                draft = SpellJsonSerializer.FromJson<RuneSpellDraft>(json);
+                draft.board.radius = runeGlyphCatalog.boardRadius;
+            } catch (Exception) {
+                return;
+            }
+
+            if (draft == null || draft.board == null)
+                return;
+
+            boardService.RebuildAutoLinks(draft.board);
+            if (!assembler.TryAssemble(draft.board, runeBaseSpellTemplate, out var spell, out _))
+                return;
+
+            spell.spellName = string.IsNullOrWhiteSpace(draft.name)
+                ? (string.IsNullOrWhiteSpace(spell.spellName) ? $"RuneSpell{i + 1}" : spell.spellName)
+                : draft.name.Trim();
+            approvedSpells.Add(spell);
+        }
+
+        ApplyApprovedRuneSpells(steamId, approvedSpells);
     }
 }

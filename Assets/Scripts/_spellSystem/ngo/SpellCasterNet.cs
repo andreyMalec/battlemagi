@@ -28,7 +28,7 @@ public class SpellCasterNet : NetworkBehaviour {
 
         SpellLog.Log(
             $"[NetworkSpellSystemEvent] RequestSpawnServerRpc: {casterNetObj.name}, position={position}, forward={forward}, damageMultiplier={chargePercent}");
-        var spell = DefaultSpells.Get(spellName)?.spell ?? DefaultSpells.GetSubSpell(spellName);
+        var spell = DefaultSpells.Resolve(spellName);
         if (spell == null)
             return;
         var caster = casterNetObj.GetComponentInChildren<SpellCaster>();
@@ -85,7 +85,7 @@ public class SpellCasterNet : NetworkBehaviour {
 
         SpellLog.Log(
             $"[NetworkSpellSystemEvent] RequestCastServerRpc: {casterNetObj.name}, target={target}, chargePercent={chargePercent}");
-        var spell = DefaultSpells.Get(spellName)?.spell ?? DefaultSpells.GetSubSpell(spellName);
+        var spell = DefaultSpells.Resolve(spellName);
         if (spell == null)
             return;
         var caster = casterNetObj.GetComponentInChildren<SpellCaster>();

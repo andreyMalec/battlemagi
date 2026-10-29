@@ -228,7 +228,7 @@ public class SpellCasterNetworkBridge : NetworkBehaviour, ISpellCasterBridge {
 
     [ServerRpc]
     private void RequestStopChannelingServerRpc(string spellName) {
-        var spell = DefaultSpells.Get(spellName)?.spell ?? DefaultSpells.GetSubSpell(spellName);
+        var spell = DefaultSpells.Resolve(spellName);
         KillChannelingSpell(spell);
     }
 

@@ -50,9 +50,10 @@ public class SpellPreviewNetworkBridge : NetworkBehaviour, ISpellPreviewBridge {
     [ClientRpc]
     private void ShowInHandClientRpc(string spellName, ulong previewObjectId) {
         if (!TryResolveBridge(previewObjectId, out var bridge)) return;
-//TODO custom spell
-        var spell = DefaultSpells.Get(spellName);
-        var prefab = spell?.inHandPrefab;
+        var spell = DefaultSpells.Resolve(spellName);
+        var prefab = DefaultSpells.Get(spellName)?.inHandPrefab;
+        if (prefab == null && spell != null)
+            prefab = SpellPrefabDatabase.Instance.Hand(spell);//TODO custom spell
         if (prefab == null) return;
         GameObject obj = Instantiate(prefab, bridge._hand);
         obj.transform.localPosition = Vector3.zero;
