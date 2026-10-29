@@ -35,6 +35,9 @@ public abstract class StatusEffectData : ScriptableObject {
     public StatusEffectData onStack;
     public EffectCompare compare = EffectCompare.ResetTime;
 
+    public virtual bool BlocksIncomingStatuses => false;
+    public virtual bool BypassesStatusBlock => false;
+
     public abstract StatusEffectRuntime CreateRuntime();
 
     public virtual EffectCompare CompareTo(StatusEffectData other) {

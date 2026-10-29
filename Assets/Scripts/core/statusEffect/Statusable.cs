@@ -44,6 +44,7 @@ public class Statusable : MonoBehaviour {
 
         if (!_bridgeTyped.IsServer) return;
         if (!_bridgeTyped.IsSpawned) return;
+        if (!CanApplyEffect(data)) return;
 
         var changed = false;
         BeginSyncBatch();
@@ -77,6 +78,23 @@ public class Statusable : MonoBehaviour {
             //     RequestSync();
         } catch (Exception e) {
             Debug.LogError($"Error adding effect {data.effectName} to {gameObject.name}: {e}");
+        } finally {
+            EndSyncBatch();
+        }
+    }
+
+    public void RemoveAllEffectsExcept(string effectNameToKeep) {
+        if (!_bridgeTyped.IsServer) return;
+        if (!_bridgeTyped.IsSpawned) return;
+
+        BeginSyncBatch();
+        try {
+            foreach (var effect in _active.Values.ToList()) {
+                if (!string.IsNullOrWhiteSpace(effectNameToKeep) && effect.data.effectName == effectNameToKeep)
+                    continue;
+
+                RemoveEffect(effect.data.effectName);
+            }
         } finally {
             EndSyncBatch();
         }
@@ -208,6 +226,18 @@ public class Statusable : MonoBehaviour {
         }
 
         _bridgeTyped?.SyncFromCore(this);
+    }
+
+    private bool CanApplyEffect(StatusEffectData data) {
+        if (data.BypassesStatusBlock)
+            return true;
+
+        foreach (var effect in _active.Values) {
+            if (effect.data != null && effect.data.BlocksIncomingStatuses)
+                return false;
+        }
+
+        return true;
     }
 
     private void BeginSyncBatch() {
