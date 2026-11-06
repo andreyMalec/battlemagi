@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -300,6 +301,8 @@ public class RuneSpellAssembler {
             }
 
             spell = CloneSpell(baseTemplate);
+            var coreGlyph = glyphByPlacementId[coreId];
+            spell.spellName  = $"Crafted_{coreGlyph.glyphId}_{coreId}";
             var context = new RuneGlyphContext {
                 baseSpell = baseTemplate,
                 workingSpell = spell,
@@ -310,7 +313,7 @@ public class RuneSpellAssembler {
                 triggerGlyph = !string.IsNullOrWhiteSpace(sourceTriggerId) && glyphByPlacementId.ContainsKey(sourceTriggerId)
                     ? glyphByPlacementId[sourceTriggerId]
                     : null,
-                coreGlyph = glyphByPlacementId[coreId],
+                coreGlyph = coreGlyph,
             };
 
             for (var i = 0; i < executionOrder.Count; i++) {
@@ -411,7 +414,8 @@ public class RuneSpellAssembler {
     private static List<string> BuildExecutionOrder(string coreId,
         IReadOnlyDictionary<string, RuneGlyphDefinition> glyphByPlacementId,
         IReadOnlyDictionary<string, List<RuneLink>> outgoing,
-        IReadOnlyDictionary<string, List<RuneLink>> incoming) {
+        IReadOnlyDictionary<string, List<RuneLink>> incoming
+    ) {
         var sequence = new List<string>(glyphByPlacementId.Count);
         if (string.IsNullOrWhiteSpace(coreId) || !glyphByPlacementId.ContainsKey(coreId))
             return sequence;
@@ -600,5 +604,3 @@ public class RuneSpellCostResult {
     public List<string> placements = new List<string>();
     public List<RuneSpellCostLine> lines = new List<RuneSpellCostLine>();
 }
-
-

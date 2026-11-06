@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -14,10 +16,14 @@ public class RuneCraftUiController : MonoBehaviour {
     [SerializeField] private TMP_Text selectedText;
     [SerializeField] private TMP_Text costText;
     [SerializeField] private TMP_InputField spellNameInput;
+    [SerializeField] private TMP_InputField spellWordsInput;
     [SerializeField] private Button saveGlyph;
     [SerializeField] private Button craftSpell;
     [SerializeField] private Button saveSpell;
+    [SerializeField] private Button openListSaves;
+    [SerializeField] private Button closeListSaves;
     [SerializeField] private Button refreshSaves;
+    [SerializeField] private Button makeNewSave;
     [SerializeField] private RuneSpellSaveListView savesListView;
     [SerializeField] private SpellDefinition craftedSpell;
 
@@ -51,9 +57,21 @@ public class RuneCraftUiController : MonoBehaviour {
         paletteView.GlyphClicked += HandlePaletteGlyphClicked;
         saveGlyph.onClick.AddListener(SaveGlyphShape);
         saveSpell.onClick.AddListener(SaveCurrentSpellDraft);
+        makeNewSave.onClick.AddListener(MakeNewSave);
         refreshSaves.onClick.AddListener(RefreshSavedSpells);
+        openListSaves.onClick.AddListener(() => { savesListView.gameObject.SetActive(true); });
+        closeListSaves.onClick.AddListener(() => { savesListView.gameObject.SetActive(false); });
         if (spellNameInput != null)
             spellNameInput.onEndEdit.AddListener(HandleSpellNameEdited);
+        spellWordsInput.onEndEdit.AddListener(HandleSpellWordsEdited);
+
+        if (Ctx.Lobby.State == LobbyManager.PlayerState.InGame) {
+            craftSpell.gameObject.SetActive(true);
+            saveSpell.gameObject.SetActive(false);
+        } else {
+            craftSpell.gameObject.SetActive(false);
+            saveSpell.gameObject.SetActive(true);
+        }
 
         craftSpell.onClick.AddListener(() => {
             if (editor.TryBuildSpell(out var spell, out var error)) {
@@ -65,11 +83,7 @@ public class RuneCraftUiController : MonoBehaviour {
                     SetStatus("Crafted spell, save failed: " + saveError);
                 }
 
-                var casters = FindObjectsByType<SpellCasterPlayer>();
-                foreach (var caster in casters) {
-                    if (!caster.enabled) continue;
-                    caster.UpdateAvailableSpells(new List<SpellDefinition> { spell });
-                }
+                OnSpellCrafted(spell);
             } else {
                 SetStatus("Failed to craft spell: " + error);
             }
@@ -89,12 +103,31 @@ public class RuneCraftUiController : MonoBehaviour {
         SetStatus("Ready");
     }
 
+    private void OnSpellCrafted(SpellDefinition spell) {
+        var casters = FindObjectsByType<SpellCasterPlayer>();
+        foreach (var caster in casters) {
+            if (!caster.enabled) continue;
+            spell.name =
+                DefaultSpells.BuildRuntimeSpellName(Ctx.Players.Participants.First().SteamId, spell.spellName);
+            caster.spellR = spell;
+        }
+
+        var payload1 = new FixedString4096Bytes(string.Empty);
+        var payload2 = new FixedString4096Bytes(string.Empty);
+        var json = SpellJsonSerializer.ToJson(editor.Draft, false);
+        var payload = new FixedString4096Bytes(json);
+
+        Ctx.Players.RequestRuneSpellLoadoutServerRpc(payload, payload1, payload2, 1);
+    }
+
     private void OnDisable() {
         SaveGlyphShape();
     }
 
     private void Update() {
         if (paletteView.SearchFocused)
+            return;
+        if (spellNameInput.isFocused || spellWordsInput.isFocused)
             return;
 
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.C)) {
@@ -126,6 +159,18 @@ public class RuneCraftUiController : MonoBehaviour {
             RefreshBoard();
             SetStatus("Selected all");
         }
+    }
+
+    /**
+     * Return true if handled internally
+     */
+    public bool OnBackClicked() {
+        if (savesListView.gameObject.activeSelf) {
+            savesListView.gameObject.SetActive(false);
+            return true;
+        }
+
+        return false;
     }
 
     public void Undo() {
@@ -618,7 +663,16 @@ public class RuneCraftUiController : MonoBehaviour {
         _openedSaveFileName = fileName;
         SyncSpellNameInput();
         RefreshBoard();
+        savesListView.gameObject.SetActive(false);
         SetStatus("Opened: " + fileName);
+    }
+
+    public void MakeNewSave() {
+        editor.LoadDraft(null);
+        _openedSaveFileName = string.Empty;
+        SyncSpellNameInput();
+        RefreshBoard();
+        SetStatus("Opened: New save");
     }
 
     private bool SaveSpellToLocal(string desiredName, out string savedName, out string error) {
@@ -654,11 +708,18 @@ public class RuneCraftUiController : MonoBehaviour {
         editor.Draft.name = value.Trim();
     }
 
+    private void HandleSpellWordsEdited(string value) {
+        if (string.IsNullOrWhiteSpace(value))
+            return;
+        editor.Draft.words = value.Trim();
+    }
+
     private void SyncSpellNameInput() {
         var value = string.IsNullOrWhiteSpace(editor.Draft.name) ? "NewSpell" : editor.Draft.name;
         editor.Draft.name = value;
         if (spellNameInput != null)
             spellNameInput.text = value;
+        spellWordsInput.text = editor.Draft.words;
     }
 
     private void SetStatus(string text) {

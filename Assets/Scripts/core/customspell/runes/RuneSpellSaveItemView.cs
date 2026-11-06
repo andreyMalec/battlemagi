@@ -13,7 +13,7 @@ public class RuneSpellSaveItemView : MonoBehaviour {
     public void Bind(RuneSpellSaveInfo info, Action<string> onOpen, Action<string, bool> onLoadoutSelectChanged) {
         spellNameText.text = info.DisplayName;
         updatedAtText.text = string.IsNullOrWhiteSpace(info.UpdatedAtUtc)
-            ? info.LastWriteTimeUtc.ToLocalTime().ToString("g")
+            ? info.LastWriteTimeUtc.ToLocalTime().ToString("dd MMMM yy HH:mm")
             : info.UpdatedAtUtc;
         loadoutSelectedImage.SetActive(info.IsSelectedForLoadout);
 

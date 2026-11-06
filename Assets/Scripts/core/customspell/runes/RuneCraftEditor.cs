@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class RuneCraftEditor : MonoBehaviour {
@@ -237,7 +238,12 @@ public class RuneCraftEditor : MonoBehaviour {
 
     public bool TryBuildSpell(out SpellDefinition spell, out string error) {
         _boardService.RebuildAutoLinks(draft.board);
-        return _spellAssembler.TryAssemble(draft.board, baseSpellTemplate, out spell, out error);
+        if (_spellAssembler.TryAssemble(draft.board, baseSpellTemplate, out spell, out error)) {
+            spell.spellName = draft.name;
+            spell.words = draft.words.Split(",").Map(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)).ToArray();
+            return true;
+        }
+        return false;
     }
 
     public bool TryCalculateSpellCost(out RuneSpellCostResult cost, out string error) {
@@ -260,7 +266,7 @@ public class RuneCraftEditor : MonoBehaviour {
     }
 
     private void StampTime() {
-        draft.updatedAtUtc = DateTime.UtcNow.ToString("O");
+        draft.updatedAtUtc = DateTime.UtcNow.ToString("dd MMMM yy HH:mm");
     }
 }
 

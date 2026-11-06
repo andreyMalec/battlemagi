@@ -17,6 +17,7 @@ public class RuneSpellGridData {
 
 public class RuneSpellMetadata {
     public string name;
+    public string words;
     public string updatedAtUtc;
     public bool isSelectedForLoadout;
 }
@@ -63,8 +64,9 @@ public class RuneSpellLocalStorage {
             if (metadata == null)
                 metadata = new RuneSpellMetadata();
             metadata.name = spellName;
+            metadata.words = draft.words;
             metadata.updatedAtUtc = string.IsNullOrWhiteSpace(draft.updatedAtUtc)
-                ? DateTime.UtcNow.ToString("O")
+                ? DateTime.UtcNow.ToString("dd MMMM yy HH:mm")
                 : draft.updatedAtUtc;
 
             var grid = CreateGridData(draft.board);
@@ -172,7 +174,7 @@ public class RuneSpellLocalStorage {
 
             var metadata = ReadMetadata(folderPath) ?? new RuneSpellMetadata {
                 name = sanitized,
-                updatedAtUtc = DateTime.UtcNow.ToString("O"),
+                updatedAtUtc = DateTime.UtcNow.ToString("dd MMMM yy HH:mm"),
             };
             metadata.isSelectedForLoadout = isSelectedForLoadout;
 
@@ -207,9 +209,11 @@ public class RuneSpellLocalStorage {
             ? metadata.name
             : Path.GetFileName(folderPath);
         var updatedAtUtc = metadata != null ? metadata.updatedAtUtc ?? string.Empty : string.Empty;
+        var words = metadata != null ? metadata.words ?? string.Empty : string.Empty;
 
         draft = new RuneSpellDraft {
             name = name,
+            words = words,
             version = 1,
             updatedAtUtc = updatedAtUtc,
             board = new RuneBoardData {

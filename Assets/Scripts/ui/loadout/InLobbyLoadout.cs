@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Collections;
@@ -5,18 +6,19 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class InLobbyLoadout : MonoBehaviour {
-    
     [Header("State")]
     [SerializeField] private GameObject stateLoadout;
+
     [SerializeField] private RuneSpellSaveListView listView;
-    
+    [SerializeField] private Button buttonOpenLoadout;
+
     [SerializeField] private TMP_InputField searchInputField;
     [SerializeField] private Button buttonSubmitSpellLoadout;
     [SerializeField] private TMP_Text spellLoadoutStatus;
-    
+
     private readonly RuneSpellLocalStorage _localStorage = new RuneSpellLocalStorage();
     private const int MaxSelectedSavedSpells = 3;
-    
+
     private State _state;
 
     private enum State {
@@ -27,9 +29,10 @@ public class InLobbyLoadout : MonoBehaviour {
     private void Awake() {
         RefreshSavedSpells();
         buttonSubmitSpellLoadout.onClick.AddListener(SubmitSpellLoadout);
+        buttonOpenLoadout.onClick.AddListener(OpenLoadout);
         searchInputField.onValueChanged.AddListener(_ => RefreshSavedSpells());
     }
-    
+
     public void RefreshSavedSpells() {
         var saves = _localStorage.List();
         var search = searchInputField.text;
@@ -50,12 +53,10 @@ public class InLobbyLoadout : MonoBehaviour {
     private void OnEnable() {
         RefreshSavedSpells();
     }
-    
 
     private void OnBackClick() {
         ToggleMenu();
     }
-    
 
     private void ToggleMenu() {
         if (_state == State.Loadout) {
@@ -67,9 +68,20 @@ public class InLobbyLoadout : MonoBehaviour {
         stateLoadout.SetActive(active);
     }
 
+    private void Update() {
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            _state = State.Hidden;
+            stateLoadout.SetActive(false);
+        }
+    }
+
     private void FixedUpdate() {
-        
         UpdateSpellLoadoutStatus();
+    }
+
+    private void OpenLoadout() {
+        _state = State.Loadout;
+        stateLoadout.SetActive(true);
     }
 
     private void SubmitSpellLoadout() {
@@ -147,15 +159,14 @@ public class InLobbyLoadout : MonoBehaviour {
         spellLoadoutStatus.text = isSelectedForLoadout ? "Saved spell selected" : "Saved spell unselected";
         RefreshSavedSpells();
     }
-    
 
     private void UpdateSpellLoadoutStatus() {
-        if (!Ctx.TryGetParticipant(ParticipantId.Human(Ctx.LocalClientId), out var participant)) {
+        if (!Ctx.TryGetPlayerData(Ctx.LocalClientId, out var data)) {
             spellLoadoutStatus.text = "Loadout: no player";
             return;
         }
 
-        var state = (SpellLoadoutApprovalState)participant.SpellLoadoutState;
+        var state = (SpellLoadoutApprovalState)data.SpellLoadoutState;
         switch (state) {
             case SpellLoadoutApprovalState.Pending:
                 spellLoadoutStatus.text = "Loadout: pending";
@@ -171,5 +182,4 @@ public class InLobbyLoadout : MonoBehaviour {
                 break;
         }
     }
-
 }

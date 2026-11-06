@@ -25,7 +25,6 @@ public class RuneHexCellButton : MonoBehaviour, IPointerClickHandler, IPointerDo
     public HexCoord coord;
 
     private void Awake() {
-        _uiSprite = Resources.GetBuiltinResource<Sprite>("UI/Skin/UISprite.psd");
         _sqrt3_2 = Mathf.Sqrt(3f) / 2f;
         BuildVisualLayers();
     }

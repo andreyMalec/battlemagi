@@ -7,6 +7,7 @@ public class RuneGlyphPaletteButton : MonoBehaviour {
     [SerializeField] private Button button;
     [SerializeField] private Image background;
     [SerializeField] private TMP_Text title;
+    [SerializeField] private TMP_Text manaCost;
     [SerializeField] private FlexboxLayout tagsRoot;
     [SerializeField] private GameObject tagsItemPrefab;
 
@@ -17,6 +18,7 @@ public class RuneGlyphPaletteButton : MonoBehaviour {
         _glyph = glyph;
         _onClick = onClick;
         title.text = string.IsNullOrWhiteSpace(glyph.displayName) ? glyph.glyphId : glyph.displayName;
+        manaCost.text = $"+{glyph.baseCost}";
         button.onClick.RemoveAllListeners();
         button.onClick.AddListener(HandleClick);
         // var tags = tagsRoot.GetComponent<RectTransform>();

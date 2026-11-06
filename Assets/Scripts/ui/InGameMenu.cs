@@ -1,7 +1,5 @@
 using System.Collections;
-using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class InGameMenu : MonoBehaviour {
@@ -30,12 +28,23 @@ public class InGameMenu : MonoBehaviour {
     [SerializeField] private Button buttonSettingsGeneral;
     [SerializeField] private Button buttonSettingsGeneralBack;
 
+    [Header("RuneCraft")]
+    [SerializeField] private GameObject stateRuneCraft;
+
+    [SerializeField] private KeyCode openEditorKey = KeyCode.C;
+
+    private bool CanOpenEditor => Ctx.NetManager.IsHost && Ctx.NetManager.ConnectedClientsIds.Count == 1;
+
     private State _state;
+
+    private bool IsStateSettings => _state == State.SettingsSound || _state == State.SettingsGraphic ||
+                                    _state == State.SettingsGeneral;
 
     private bool _exiting = false;
 
     private enum State {
         Main,
+        RuneCraft,
         SettingsSound,
         SettingsGraphic,
         SettingsGeneral,
@@ -106,6 +115,19 @@ public class InGameMenu : MonoBehaviour {
             ToggleMenu();
         }
 
+        if (_state == State.Main && Input.GetKeyDown(openEditorKey) && CanOpenEditor) {
+            ToggleMenu();
+            _state = State.RuneCraft;
+            
+            var players = FindObjectsByType<Freeze>(FindObjectsInactive.Include);
+            foreach (var player in players) {
+                player.gameObject.SetActive(true);
+            }
+            
+        } else if (_state == State.RuneCraft && Input.GetKeyDown(openEditorKey) && CanOpenEditor) {
+            ToggleMenu();
+        }
+
         if (!container.gameObject.activeSelf) {
             if (Input.GetKeyDown(KeyCode.LeftAlt)) {
                 alt = !alt;
@@ -115,16 +137,26 @@ public class InGameMenu : MonoBehaviour {
         }
 
         stateMain.gameObject.SetActive(_state == State.Main);
-        stateSettings.gameObject.SetActive(_state != State.Main);
+        stateSettings.gameObject.SetActive(IsStateSettings);
         stateSettingsSound.gameObject.SetActive(_state == State.SettingsSound);
         stateSettingsGraphic.gameObject.SetActive(_state == State.SettingsGraphic);
         stateSettingsGeneral.gameObject.SetActive(_state == State.SettingsGeneral);
+        stateRuneCraft.gameObject.SetActive(_state == State.RuneCraft);
     }
 
     private void ToggleMenu() {
-        if (_state == State.SettingsSound || _state == State.SettingsGraphic || _state == State.SettingsGeneral) {
+        if (IsStateSettings) {
             _state = State.Main;
             return;
+        }
+
+        if (_state == State.RuneCraft) {
+            _state = State.Main;
+            
+            var players = FindObjectsByType<Freeze>();
+            foreach (var player in players) {
+                player.gameObject.SetActive(false);
+            }
         }
 
         var active = !container.gameObject.activeSelf;

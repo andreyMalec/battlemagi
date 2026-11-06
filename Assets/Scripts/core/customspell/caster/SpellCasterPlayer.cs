@@ -8,7 +8,7 @@ using UnityEngine;
 public class SpellCasterPlayer : SpellCaster {
     public Transform spawnPos;
 
-    [SerializeField] private SpellDefinition spellE;
+    [SerializeField] public SpellDefinition spellR;
     [SerializeField] public PlayerSpellInput input = new();
     [SerializeField] private ManaModule mana = new();
     [SerializeField] private MonoBehaviour bridge;
@@ -163,6 +163,10 @@ public class SpellCasterPlayer : SpellCaster {
 
         if (input.AlternativeSpawnPressedThisFrame() && isHuman) {
             alternativeSpawn = !alternativeSpawn;
+        }
+
+        if (Input.GetKeyDown(KeyCode.R) && isHuman) {
+            SelectSpell(spellR);
         }
 
         var index = input.GetSpellIndexPressedThisFrame();

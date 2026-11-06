@@ -775,14 +775,17 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
                 return false;
 
             boardService.RebuildAutoLinks(draft.board);
-            if (!assembler.TryAssemble(draft.board, runeBaseSpellTemplate, out var spell, out _))
+            if (!assembler.TryAssemble(draft.board, runeBaseSpellTemplate, out var spell, out var error)) {
+                Debug.Log($"Spell assembly failed for draft {i}: {error}");
                 return false;
+            }
 
             var displayName = string.IsNullOrWhiteSpace(draft.name)
                 ? (string.IsNullOrWhiteSpace(spell.spellName) ? $"RuneSpell{i + 1}" : spell.spellName)
                 : draft.name.Trim();
 
             spell.spellName = displayName;
+            spell.words = draft.words.Split(",").Map(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)).ToArray();
             approvedSpells.Add(spell);
 
             approvedDrafts.Add(draft);
@@ -896,6 +899,7 @@ public class PlayerManager : NetworkBehaviour, IParticipantRegistry {
             spell.spellName = string.IsNullOrWhiteSpace(draft.name)
                 ? (string.IsNullOrWhiteSpace(spell.spellName) ? $"RuneSpell{i + 1}" : spell.spellName)
                 : draft.name.Trim();
+            spell.words = draft.words.Split(",").Map(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)).ToArray();
             approvedSpells.Add(spell);
         }
 

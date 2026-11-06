@@ -8,8 +8,11 @@ public class DefaultSpells : MonoBehaviour {
     [SerializeField] private List<SpellDefinition> subSpells = new List<SpellDefinition>();
     public IReadOnlyList<DefaultSpell> list => items;
 
-    private static readonly Dictionary<string, SpellDefinition> RuntimeSpellsByName = new Dictionary<string, SpellDefinition>();
-    private static readonly Dictionary<ulong, List<string>> RuntimeSpellNamesBySteamId = new Dictionary<ulong, List<string>>();
+    private static readonly Dictionary<string, SpellDefinition> RuntimeSpellsByName =
+        new Dictionary<string, SpellDefinition>();
+
+    private static readonly Dictionary<ulong, List<string>> RuntimeSpellNamesBySteamId =
+        new Dictionary<ulong, List<string>>();
 
     public static DefaultSpells Instance { get; private set; }
 
@@ -28,9 +31,9 @@ public class DefaultSpells : MonoBehaviour {
         return steamId + "__" + trimmed;
     }
 
-    public static SpellDefinition RegisterRuntimeSpell(ulong steamId, string spellName, SpellDefinition spell) {
+    public static void RegisterRuntimeSpell(ulong steamId, string spellName, SpellDefinition spell) {
         if (spell == null)
-            return null;
+            return;
 
         var runtimeName = BuildRuntimeSpellName(steamId, spellName);
         spell.name = runtimeName;
@@ -47,7 +50,41 @@ public class DefaultSpells : MonoBehaviour {
         if (!names.Contains(runtimeName))
             names.Add(runtimeName);
 
-        return spell;
+        RegisterRuntimeSubSpell(steamId, spell?.projectile?.atMaxDistanceSpawn);
+        RegisterRuntimeSubSpell(steamId, spell?.projectile?.atStepDistanceSpawn);
+        RegisterRuntimeSubSpell(steamId, spell?.projectile?.onHitSpawn);
+        RegisterRuntimeSubSpell(steamId, spell?.projectile?.onHitSpawn2);
+        RegisterRuntimeSubSpell(steamId, spell?.projectile?.onLifetimeEndSpawn);
+        RegisterRuntimeSubSpell(steamId, spell?.projectile?.onLifetimeHalfSpawn);
+
+        RegisterRuntimeSubSpell(steamId, spell?.zone?.atMaxDistanceSpawn);
+        RegisterRuntimeSubSpell(steamId, spell?.zone?.atStepDistanceSpawn);
+        RegisterRuntimeSubSpell(steamId, spell?.zone?.onLifetimeEndSpawn);
+        RegisterRuntimeSubSpell(steamId, spell?.zone?.onLifetimeHalfSpawn);
+        RegisterRuntimeSubSpell(steamId, spell?.zone?.onEnemySpellDestroyedSpawn);
+
+        RegisterRuntimeSubSpell(steamId, spell?.beam?.atMaxDistanceSpawn);
+        RegisterRuntimeSubSpell(steamId, spell?.beam?.atStepDistanceSpawn);
+        RegisterRuntimeSubSpell(steamId, spell?.beam?.onLifetimeEndSpawn);
+        RegisterRuntimeSubSpell(steamId, spell?.beam?.onLifetimeHalfSpawn);
+        RegisterRuntimeSubSpell(steamId, spell?.beam?.onHitSpawnZone);
+    }
+
+    public static void RegisterRuntimeSubSpell(ulong steamId, SpellDefinition spell) {
+        if (spell == null)
+            return;
+
+        var runtimeName = BuildRuntimeSpellName(steamId, spell.spellName);
+        spell.name = runtimeName;
+
+        RuntimeSpellsByName[runtimeName] = spell;
+        if (!RuntimeSpellNamesBySteamId.TryGetValue(steamId, out var names)) {
+            names = new List<string>();
+            RuntimeSpellNamesBySteamId[steamId] = names;
+        }
+
+        if (!names.Contains(runtimeName))
+            names.Add(runtimeName);
     }
 
     public static void ClearRuntimeSpells(ulong steamId) {

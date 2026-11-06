@@ -127,6 +127,7 @@ public class RuneBoardData {
 [Serializable]
 public class RuneSpellDraft {
     public string name;
+    public string words;
     public int version = 1;
     public RuneBoardData board = new RuneBoardData();
     public string updatedAtUtc;

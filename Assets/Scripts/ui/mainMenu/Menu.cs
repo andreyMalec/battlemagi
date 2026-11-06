@@ -12,6 +12,7 @@ public class Menu : MonoBehaviour {
 
     [SerializeField] private GameObject lobbyState;
     [SerializeField] private GameObject findLobbyState;
+    [SerializeField] private GameObject runeCraftState;
     [SerializeField] private GameObject settingsState;
     [SerializeField] private GameObject creditsState;
 
@@ -19,6 +20,7 @@ public class Menu : MonoBehaviour {
     [SerializeField] private LobbyMembers lobbyMembers;
 
     [SerializeField] private Button buttonSettings;
+    [SerializeField] private Button buttonRuneCraft;
     [SerializeField] private Button buttonCredits;
 
     [Header("Character")]
@@ -30,6 +32,7 @@ public class Menu : MonoBehaviour {
         Main,
         Lobby,
         FindLobby,
+        RuneCraft,
         Settings,
         Credits
     }
@@ -45,12 +48,19 @@ public class Menu : MonoBehaviour {
     private void Awake() {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        buttonRuneCraft.onClick.AddListener(() => _state = State.RuneCraft);
         buttonSettings.onClick.AddListener(() => _state = State.Settings);
         buttonCredits.onClick.AddListener(() => _state = State.Credits);
     }
 
     private void Update() {
-        if (Input.GetKeyDown(KeyCode.Escape) && (_state == State.Settings || _state == State.Credits || _state == State.FindLobby)) {
+        if (Input.GetKeyDown(KeyCode.Escape) &&
+            (_state == State.Settings || _state == State.Credits || _state == State.FindLobby)) {
+            BackToMain();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape) && _state == State.RuneCraft &&
+            !runeCraftState.GetComponentInChildren<RuneCraftUiController>().OnBackClicked()) {
             BackToMain();
         }
     }
@@ -59,6 +69,7 @@ public class Menu : MonoBehaviour {
         mainState.SetActive(_state == State.Main);
         lobbyState.SetActive(_state == State.Lobby);
         findLobbyState.SetActive(_state == State.FindLobby);
+        runeCraftState.SetActive(_state == State.RuneCraft);
         settingsState.SetActive(_state == State.Settings);
         creditsState.SetActive(_state == State.Credits);
     }
