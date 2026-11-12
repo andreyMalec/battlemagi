@@ -10,7 +10,7 @@ public class GroundPointForwardSpawn : ISpellSpawn {
         var delay = context.spawn.multiInstanceDelay;
         var baseCtx = ApplyDirectionToTarget(context);
 
-        var ground = ISpellSpawn.GroundPos(baseCtx, baseCtx.forward, out var hit);
+        var ground = ISpellSpawn.GroundPos(baseCtx, baseCtx.forward, out var hit, layerMask: context.spawn.raycastMask);
         if (ground == null) yield break;
 
         if (context.spawn.useVectorStep) {
@@ -56,7 +56,7 @@ public class GroundPointForwardSpawn : ISpellSpawn {
         if (context.target == null)
             return context;
 
-        var targetPos = ISpellSpawn.GroundPos(context with { position = context.target.Position }, Vector3.down, out _);
+        var targetPos = ISpellSpawn.GroundPos(context with { position = context.target.Position }, Vector3.down, out _, layerMask: context.spawn.raycastMask);
         var dir = targetPos.position - context.position;
         if (dir.sqrMagnitude <= 0f)
             return context;
@@ -70,7 +70,7 @@ public class GroundPointForwardSpawn : ISpellSpawn {
 
     public IEnumerable<SpawnContext> ShapeCenter(SpawnContext context) {
         var baseCtx = context.target != null ? context with { position = context.target.Position } : context;
-        yield return ISpellSpawn.GroundPos(baseCtx, baseCtx.forward, out _);
+        yield return ISpellSpawn.GroundPos(baseCtx, baseCtx.forward, out _, layerMask: context.spawn.raycastMask);
     }
 
     private static Vector3 RotationFromNormal(Vector3 forwardHint, Vector3 normal) {

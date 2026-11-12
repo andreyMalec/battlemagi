@@ -3,6 +3,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "RainSpawn", menuName = "Glyphs/Spawn/RainSpawn")]
 public class GlyphRainSpawn : RuneGlyphDefinition {
     [Header("Properties")]
+    public LayerMask raycastMask;
+
     public float circleRadius = 2f;
     public float circleHeight = 2f;
 
@@ -11,6 +13,8 @@ public class GlyphRainSpawn : RuneGlyphDefinition {
         ctx.workingSpell.spawn.circleRadius = circleRadius;
         ctx.workingSpell.spawn.circleHeight = circleHeight;
         ctx.workingSpell.spawn.preview = Preview.Disk;
+        ctx.workingSpell.spawn.raycastMask = raycastMask;
+
         return true;
     }
 }

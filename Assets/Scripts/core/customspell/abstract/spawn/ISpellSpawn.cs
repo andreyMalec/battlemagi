@@ -49,7 +49,8 @@ public interface ISpellSpawn {
         SpawnContext context,
         Vector3 direction,
         out RaycastHit hitInfo,
-        Vector3 secondDirection = default
+        Vector3 secondDirection = default,
+        LayerMask layerMask = default
     ) {
         if (context.branch && context.spawn.spawnMode != SpawnMode.DirectDown) {
             hitInfo = new RaycastHit {
@@ -61,7 +62,7 @@ public interface ISpellSpawn {
 
         var maxDistance = context.spawn.raycastMaxDistance;
         var origin = context.position;
-        var mask = context.spell.defaultRaycast;
+        var mask = layerMask == default ? context.spell.defaultRaycast : layerMask;
 
         if (Physics.Raycast(origin - direction * 0.1f, direction, out var hit, maxDistance, mask)) {
             if (secondDirection != Vector3.zero) {

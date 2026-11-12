@@ -8,11 +8,10 @@ public class DefaultSpells : MonoBehaviour {
     [SerializeField] private List<SpellDefinition> subSpells = new List<SpellDefinition>();
     public IReadOnlyList<DefaultSpell> list => items;
 
-    private static readonly Dictionary<string, SpellDefinition> RuntimeSpellsByName =
-        new Dictionary<string, SpellDefinition>();
-
-    private static readonly Dictionary<ulong, List<string>> RuntimeSpellNamesBySteamId =
-        new Dictionary<ulong, List<string>>();
+    private static readonly Dictionary<string, SpellDefinition> RuntimeSpellsByName = new();
+    private static readonly Dictionary<ulong, List<string>> RuntimeSpellNamesBySteamId = new();
+    private static readonly Dictionary<string, SpellDefinition> RuntimeSubSpellsByName = new();
+    private static readonly Dictionary<ulong, List<string>> RuntimeSubSpellNamesBySteamId = new();
 
     public static DefaultSpells Instance { get; private set; }
 
@@ -28,7 +27,7 @@ public class DefaultSpells : MonoBehaviour {
 
     public static string BuildRuntimeSpellName(ulong steamId, string spellName) {
         var trimmed = string.IsNullOrWhiteSpace(spellName) ? "RuneSpell" : spellName.Trim();
-        return steamId + "__" + trimmed;
+        return steamId + "_" + trimmed;
     }
 
     public static void RegisterRuntimeSpell(ulong steamId, string spellName, SpellDefinition spell) {
@@ -77,10 +76,10 @@ public class DefaultSpells : MonoBehaviour {
         var runtimeName = BuildRuntimeSpellName(steamId, spell.spellName);
         spell.name = runtimeName;
 
-        RuntimeSpellsByName[runtimeName] = spell;
-        if (!RuntimeSpellNamesBySteamId.TryGetValue(steamId, out var names)) {
+        RuntimeSubSpellsByName[runtimeName] = spell;
+        if (!RuntimeSubSpellNamesBySteamId.TryGetValue(steamId, out var names)) {
             names = new List<string>();
-            RuntimeSpellNamesBySteamId[steamId] = names;
+            RuntimeSubSpellNamesBySteamId[steamId] = names;
         }
 
         if (!names.Contains(runtimeName))
@@ -88,6 +87,7 @@ public class DefaultSpells : MonoBehaviour {
     }
 
     public static void ClearRuntimeSpells(ulong steamId) {
+        ClearRuntimeSubSpells(steamId);
         if (!RuntimeSpellNamesBySteamId.TryGetValue(steamId, out var names))
             return;
 
@@ -96,6 +96,17 @@ public class DefaultSpells : MonoBehaviour {
         }
 
         RuntimeSpellNamesBySteamId.Remove(steamId);
+    }
+
+    public static void ClearRuntimeSubSpells(ulong steamId) {
+        if (!RuntimeSubSpellNamesBySteamId.TryGetValue(steamId, out var names))
+            return;
+
+        for (var i = 0; i < names.Count; i++) {
+            RuntimeSubSpellsByName.Remove(names[i]);
+        }
+
+        RuntimeSubSpellNamesBySteamId.Remove(steamId);
     }
 
     public static List<SpellDefinition> GetRuntimeSpells(ulong steamId) {
@@ -129,8 +140,15 @@ public class DefaultSpells : MonoBehaviour {
     }
 
     [CanBeNull]
+    public static SpellDefinition GetRuntimeSubSpell(string runtimeName) {
+        if (string.IsNullOrWhiteSpace(runtimeName))
+            return null;
+        return RuntimeSubSpellsByName.TryGetValue(runtimeName, out var spell) ? spell : null;
+    }
+
+    [CanBeNull]
     public static SpellDefinition Resolve(string name) {
-        var runtime = GetRuntime(name);
+        var runtime = GetRuntime(name) ?? GetRuntimeSubSpell(name);
         if (runtime != null)
             return runtime;
 

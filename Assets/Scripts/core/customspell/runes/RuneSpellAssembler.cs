@@ -14,7 +14,12 @@ public class RuneSpellAssembler {
         }
     }
 
-    public bool TryAssemble(RuneBoardData board, SpellDefinition baseTemplate, out SpellDefinition spell, out string error) {
+    public bool TryAssemble(
+        RuneBoardData board,
+        SpellDefinition baseTemplate, 
+        out SpellDefinition spell,
+        out string error
+    ) {
         spell = null;
         error = string.Empty;
 
@@ -49,7 +54,7 @@ public class RuneSpellAssembler {
         }
 
         var activeBranches = new HashSet<string>();
-        return TryAssembleBranch(
+        var assembled = TryAssembleBranch(
             coreId,
             triggerId,
             baseTemplate,
@@ -61,6 +66,14 @@ public class RuneSpellAssembler {
             out spell,
             out error
         );
+        if (assembled) {
+            if (TryCalculateMainChainCost(board, out var result, out _)) {
+                spell.manaCost = result.totalCost;
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public bool TryCalculateMainChainCost(RuneBoardData board, out RuneSpellCostResult result, out string error) {
@@ -92,9 +105,20 @@ public class RuneSpellAssembler {
             return false;
         }
 
-        var mainChain = BuildExecutionOrder(coreId, glyphByPlacementId, outgoing, incoming);
-        if (mainChain.Count == 0) {
-            error = "No glyph chain to calculate cost.";
+        var mainChain = new List<string>();
+        var addedPlacements = new HashSet<string>();
+        var activeBranches = new HashSet<string>();
+        if (!TryCollectCostPlacementsRecursive(
+                coreId,
+                triggerId,
+                glyphByPlacementId,
+                outgoing,
+                incoming,
+                activeBranches,
+                addedPlacements,
+                mainChain,
+                out error
+            )) {
             return false;
         }
 
@@ -151,7 +175,9 @@ public class RuneSpellAssembler {
         return map;
     }
 
-    private Dictionary<string, RuneGlyphDefinition> ResolveGlyphs(Dictionary<string, RunePlacedGlyph> placedById, out string error) {
+    private Dictionary<string, RuneGlyphDefinition> ResolveGlyphs(
+        Dictionary<string, RunePlacedGlyph> placedById, out string error
+    ) {
         error = string.Empty;
         var map = new Dictionary<string, RuneGlyphDefinition>(placedById.Count);
 
@@ -168,7 +194,9 @@ public class RuneSpellAssembler {
         return map;
     }
 
-    private static Dictionary<string, List<RuneLink>> BuildOutgoing(RuneBoardData board, Dictionary<string, RunePlacedGlyph> placedById) {
+    private static Dictionary<string, List<RuneLink>> BuildOutgoing(
+        RuneBoardData board, Dictionary<string, RunePlacedGlyph> placedById
+    ) {
         var map = new Dictionary<string, List<RuneLink>>(placedById.Count);
         foreach (var placementId in placedById.Keys) {
             map[placementId] = new List<RuneLink>();
@@ -187,7 +215,9 @@ public class RuneSpellAssembler {
         return map;
     }
 
-    private static Dictionary<string, List<RuneLink>> BuildIncoming(RuneBoardData board, Dictionary<string, RunePlacedGlyph> placedById) {
+    private static Dictionary<string, List<RuneLink>> BuildIncoming(
+        RuneBoardData board, Dictionary<string, RunePlacedGlyph> placedById
+    ) {
         var map = new Dictionary<string, List<RuneLink>>(placedById.Count);
         foreach (var placementId in placedById.Keys) {
             map[placementId] = new List<RuneLink>();
@@ -206,7 +236,10 @@ public class RuneSpellAssembler {
         return map;
     }
 
-    private static string SelectTrigger(IReadOnlyDictionary<string, RuneGlyphDefinition> glyphByPlacementId, IReadOnlyDictionary<string, List<RuneLink>> outgoing) {
+    private static string SelectTrigger(
+        IReadOnlyDictionary<string, RuneGlyphDefinition> glyphByPlacementId,
+        IReadOnlyDictionary<string, List<RuneLink>> outgoing
+    ) {
         var bestId = string.Empty;
         var bestScore = int.MinValue;
 
@@ -226,7 +259,10 @@ public class RuneSpellAssembler {
         return bestId;
     }
 
-    private static string SelectCore(IReadOnlyDictionary<string, RuneGlyphDefinition> glyphByPlacementId, string triggerId, IReadOnlyDictionary<string, List<RuneLink>> outgoing) {
+    private static string SelectCore(
+        IReadOnlyDictionary<string, RuneGlyphDefinition> glyphByPlacementId, string triggerId,
+        IReadOnlyDictionary<string, List<RuneLink>> outgoing
+    ) {
         if (!string.IsNullOrWhiteSpace(triggerId) && outgoing.TryGetValue(triggerId, out var triggerLinks)) {
             for (var i = 0; i < triggerLinks.Count; i++) {
                 var targetId = triggerLinks[i].toPlacementId;
@@ -248,7 +284,10 @@ public class RuneSpellAssembler {
         return bestId;
     }
 
-    private static string SelectCoreIncoming(IReadOnlyDictionary<string, RuneGlyphDefinition> glyphByPlacementId, string triggerId, IReadOnlyDictionary<string, List<RuneLink>> incoming) {
+    private static string SelectCoreIncoming(
+        IReadOnlyDictionary<string, RuneGlyphDefinition> glyphByPlacementId, string triggerId,
+        IReadOnlyDictionary<string, List<RuneLink>> incoming
+    ) {
         if (!string.IsNullOrWhiteSpace(triggerId) && incoming.TryGetValue(triggerId, out var triggerLinks)) {
             for (var i = 0; i < triggerLinks.Count; i++) {
                 var targetId = triggerLinks[i].fromPlacementId;
@@ -302,7 +341,7 @@ public class RuneSpellAssembler {
 
             spell = CloneSpell(baseTemplate);
             var coreGlyph = glyphByPlacementId[coreId];
-            spell.spellName  = $"Crafted_{coreGlyph.glyphId}_{coreId}";
+            spell.spellName = $"Crafted_{coreGlyph.glyphId}_{coreId}_{executionOrder.GetHashCode()}";
             var context = new RuneGlyphContext {
                 baseSpell = baseTemplate,
                 workingSpell = spell,
@@ -310,7 +349,8 @@ public class RuneSpellAssembler {
                 placedById = placedById,
                 outgoingLinks = outgoing,
                 incomingLinks = incoming,
-                triggerGlyph = !string.IsNullOrWhiteSpace(sourceTriggerId) && glyphByPlacementId.ContainsKey(sourceTriggerId)
+                triggerGlyph = !string.IsNullOrWhiteSpace(sourceTriggerId) &&
+                               glyphByPlacementId.ContainsKey(sourceTriggerId)
                     ? glyphByPlacementId[sourceTriggerId]
                     : null,
                 coreGlyph = coreGlyph,
@@ -405,13 +445,80 @@ public class RuneSpellAssembler {
             }
 
             return true;
-        }
-        finally {
+        } finally {
             activeBranches.Remove(branchKey);
         }
     }
 
-    private static List<string> BuildExecutionOrder(string coreId,
+    private static bool TryCollectCostPlacementsRecursive(
+        string coreId,
+        string sourceTriggerId,
+        IReadOnlyDictionary<string, RuneGlyphDefinition> glyphByPlacementId,
+        IReadOnlyDictionary<string, List<RuneLink>> outgoing,
+        IReadOnlyDictionary<string, List<RuneLink>> incoming,
+        HashSet<string> activeBranches,
+        HashSet<string> addedPlacements,
+        List<string> collectedPlacements,
+        out string error
+    ) {
+        error = string.Empty;
+
+        var branchKey = string.IsNullOrWhiteSpace(sourceTriggerId)
+            ? $"root:{coreId}"
+            : $"{sourceTriggerId}->{coreId}";
+        if (!activeBranches.Add(branchKey)) {
+            error = $"Recursive trigger loop detected at branch {branchKey}.";
+            return false;
+        }
+
+        try {
+            var executionOrder = BuildExecutionOrder(coreId, glyphByPlacementId, outgoing, incoming);
+            if (executionOrder.Count == 0) {
+                error = "No glyph chain to calculate cost.";
+                return false;
+            }
+
+            for (var i = 0; i < executionOrder.Count; i++) {
+                var placementId = executionOrder[i];
+                if (addedPlacements.Add(placementId))
+                    collectedPlacements.Add(placementId);
+            }
+
+            var childTriggers = CollectChildTriggers(executionOrder, glyphByPlacementId, incoming);
+            for (var i = 0; i < childTriggers.Count; i++) {
+                var childTriggerId = childTriggers[i];
+                if (addedPlacements.Add(childTriggerId))
+                    collectedPlacements.Add(childTriggerId);
+
+                var childCoreId = SelectCoreIncoming(glyphByPlacementId, childTriggerId, incoming);
+                if (string.IsNullOrWhiteSpace(childCoreId)) {
+                    error = $"Trigger has no core target: {childTriggerId}";
+                    return false;
+                }
+
+                if (!TryCollectCostPlacementsRecursive(
+                        childCoreId,
+                        childTriggerId,
+                        glyphByPlacementId,
+                        outgoing,
+                        incoming,
+                        activeBranches,
+                        addedPlacements,
+                        collectedPlacements,
+                        out error
+                    )) {
+                    return false;
+                }
+            }
+
+            return true;
+        } finally {
+            activeBranches.Remove(branchKey);
+        }
+    }
+
+    private static List<string> BuildExecutionOrder(
+        string coreId,
         IReadOnlyDictionary<string, RuneGlyphDefinition> glyphByPlacementId,
         IReadOnlyDictionary<string, List<RuneLink>> outgoing,
         IReadOnlyDictionary<string, List<RuneLink>> incoming

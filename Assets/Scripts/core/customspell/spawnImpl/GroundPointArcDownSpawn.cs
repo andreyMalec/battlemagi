@@ -17,7 +17,7 @@ public class GroundPointArcDownSpawn : ISpellSpawn {
             float angle = startAngle + angleStep * i;
 
             Quaternion rotation = baseCtx.rotation * Quaternion.Euler(0f, angle, 0f);
-            var ctx = ISpellSpawn.GroundPos(baseCtx, rotation * Vector3.forward, out _, Vector3.down);
+            var ctx = ISpellSpawn.GroundPos(baseCtx, rotation * Vector3.forward, out _, Vector3.down, layerMask: context.spawn.raycastMask);
             if (ctx == null) continue;
             spawn(ctx with {
                 index = i,
@@ -33,7 +33,7 @@ public class GroundPointArcDownSpawn : ISpellSpawn {
         if (context.target == null)
             return context;
 
-        var targetPos = ISpellSpawn.GroundPos(context with { position = context.target.Position }, Vector3.down, out _);
+        var targetPos = ISpellSpawn.GroundPos(context with { position = context.target.Position }, Vector3.down, out _, layerMask: context.spawn.raycastMask);
         var dir = targetPos.position - context.position;
         if (dir.sqrMagnitude <= 0f)
             return context;
@@ -47,6 +47,6 @@ public class GroundPointArcDownSpawn : ISpellSpawn {
 
     public IEnumerable<SpawnContext> ShapeCenter(SpawnContext context) {
         var baseCtx = context.target != null ? context with { position = context.target.Position } : context;
-        yield return ISpellSpawn.GroundPos(baseCtx, baseCtx.forward, out _, Vector3.down);
+        yield return ISpellSpawn.GroundPos(baseCtx, baseCtx.forward, out _, Vector3.down, layerMask: context.spawn.raycastMask);
     }
 }

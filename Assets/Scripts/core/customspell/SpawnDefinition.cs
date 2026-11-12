@@ -34,6 +34,7 @@ public class SpawnDefinition : ScriptableObject, IValidate {
     [ShowIf("_isCircleUp")] public float circleHeight = 2f;
 
     [ShowIf("_isRaycast")] public float raycastMaxDistance = 50f;
+    [ShowIf("_isRaycast")] public LayerMask raycastMask;
     [ShowIf("_isDirectDown")] public bool rotateForward;
     [ShowIf("_isDirectDown")] public bool allowAtMaxDistance;
 
@@ -86,7 +87,8 @@ public class SpawnDefinition : ScriptableObject, IValidate {
 
     private static bool IsRay(SpawnMode spawnMode) {
         return spawnMode is SpawnMode.GroundPoint or SpawnMode.GroundPointArc or SpawnMode.GroundPointArcDown
-            or SpawnMode.DirectDown or SpawnMode.DirectDownForward or SpawnMode.RayCast;
+            or SpawnMode.DirectDown or SpawnMode.DirectDownForward or SpawnMode.RayCast
+            or SpawnMode.GroundPointCircleUp or SpawnMode.GroundPointDiskUp;
     }
 
     private static bool IsForward(SpawnMode spawnMode) {

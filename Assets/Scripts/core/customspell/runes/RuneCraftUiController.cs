@@ -27,6 +27,8 @@ public class RuneCraftUiController : MonoBehaviour {
     [SerializeField] private RuneSpellSaveListView savesListView;
     [SerializeField] private SpellDefinition craftedSpell;
 
+    public bool InputFocused => paletteView.SearchFocused || spellNameInput.isFocused || spellWordsInput.isFocused;
+
     private readonly Dictionary<string, RuneGlyphDefinition> _glyphById = new Dictionary<string, RuneGlyphDefinition>();
     private readonly Dictionary<HexCoord, string> _occupiedCells = new Dictionary<HexCoord, string>();
     private readonly Dictionary<HexCoord, int> _outputByCell = new Dictionary<HexCoord, int>();
@@ -55,6 +57,7 @@ public class RuneCraftUiController : MonoBehaviour {
         BuildGlyphCache();
         paletteView.Bind(editor.GlyphCatalog);
         paletteView.GlyphClicked += HandlePaletteGlyphClicked;
+        saveGlyph.gameObject.SetActive(glyphShapeEditor.canEditShape);
         saveGlyph.onClick.AddListener(SaveGlyphShape);
         saveSpell.onClick.AddListener(SaveCurrentSpellDraft);
         makeNewSave.onClick.AddListener(MakeNewSave);
@@ -104,20 +107,16 @@ public class RuneCraftUiController : MonoBehaviour {
     }
 
     private void OnSpellCrafted(SpellDefinition spell) {
-        var casters = FindObjectsByType<SpellCasterPlayer>();
-        foreach (var caster in casters) {
-            if (!caster.enabled) continue;
-            spell.name =
-                DefaultSpells.BuildRuntimeSpellName(Ctx.Players.Participants.First().SteamId, spell.spellName);
-            caster.spellR = spell;
-        }
-
         var payload1 = new FixedString4096Bytes(string.Empty);
         var payload2 = new FixedString4096Bytes(string.Empty);
         var json = SpellJsonSerializer.ToJson(editor.Draft, false);
         var payload = new FixedString4096Bytes(json);
 
         Ctx.Players.RequestRuneSpellLoadoutServerRpc(payload, payload1, payload2, 1);
+        var casters = FindObjectsByType<LexiconOfPower>();
+        foreach (var caster in casters) {
+            caster.ReInitialize();
+        }
     }
 
     private void OnDisable() {
@@ -129,6 +128,14 @@ public class RuneCraftUiController : MonoBehaviour {
             return;
         if (spellNameInput.isFocused || spellWordsInput.isFocused)
             return;
+
+        if (Input.GetKeyDown(KeyCode.E)) {
+            RotateSelectionClockwise();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q)) {
+            RotateSelectionCounterClockwise();
+        }
 
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.C)) {
             CopySelection();
@@ -200,7 +207,7 @@ public class RuneCraftUiController : MonoBehaviour {
             return;
 
         var pivot = GetRotationPivot();
-        if (editor.TryRotateSelection(1, pivot)) {
+        if (editor.TryRotateSelection(-1, pivot)) {
             RefreshBoard();
             SetStatus("Rotated");
         }
@@ -211,7 +218,7 @@ public class RuneCraftUiController : MonoBehaviour {
             return;
 
         var pivot = GetRotationPivot();
-        if (editor.TryRotateSelection(-1, pivot)) {
+        if (editor.TryRotateSelection(1, pivot)) {
             RefreshBoard();
             SetStatus("Rotated");
         }
@@ -406,11 +413,11 @@ public class RuneCraftUiController : MonoBehaviour {
             return;
 
         if (editor.TryCalculateSpellCost(out var cost, out _)) {
-            costText.text = $"Cost: {cost.totalCost:0.##}";
+            costText.text = $"{cost.totalCost:0.##}";
             return;
         }
 
-        costText.text = "Cost: -";
+        costText.text = "-";
     }
 
     private void RebuildOccupiedLookup() {

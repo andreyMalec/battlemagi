@@ -10,7 +10,7 @@ public class StateController : NetworkBehaviour {
     [SerializeField] private MonoBehaviour movement;
     private PlayerPhysics _physics;
     private IceSlideMovementModule _iceSlide;
-    private Freeze _freeze;
+    private DisablePlayer _disablePlayer;
     private Root _root;
     private bool _forcedMovementActive;
     private Vector3 _forcedMovementTargetPoint;
@@ -24,7 +24,7 @@ public class StateController : NetworkBehaviour {
     private void Awake() {
         _physics = GetComponent<PlayerPhysics>();
         _iceSlide = GetComponent<IceSlideMovementModule>();
-        _freeze = GetComponentInChildren<Freeze>(true);
+        _disablePlayer = GetComponent<DisablePlayer>();
         _root = GetComponentInChildren<Root>(true);
     }
 
@@ -218,9 +218,9 @@ public class StateController : NetworkBehaviour {
             return;
         }
 
-        var frozen = _freeze != null && _freeze.gameObject.activeSelf;
+        var disabled = _disablePlayer != null && _disablePlayer.enabled;
         var rooted = _root != null && _root.gameObject.activeSelf;
-        movement.enabled = IsOwner && !_forcedMovementActive && !frozen && !rooted;
+        movement.enabled = IsOwner && !_forcedMovementActive && !disabled && !rooted;
     }
 
     private void ClearIceSliding() {

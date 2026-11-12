@@ -888,6 +888,7 @@ GameObject:
   - component: {fileID: 1197001777428341157}
   - component: {fileID: 4796387428326743296}
   - component: {fileID: 712184923982526481}
+  - component: {fileID: 6326455006811386547}
   m_Layer: 9
   m_Name: Player
   m_TagString: Untagged
@@ -1756,6 +1757,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3fd925e5ea54d1dbd4110f101ccf906, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ArchetypePassiveRuntime
+--- !u!114 &6326455006811386547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793509697026975924}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b5df661012540748455c42aa96f416b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DisablePlayer
 --- !u!1 &5894542900604772476
 GameObject:
   m_ObjectHideFlags: 0

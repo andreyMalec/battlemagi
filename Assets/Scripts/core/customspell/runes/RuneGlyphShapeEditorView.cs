@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class RuneGlyphShapeEditorView : MonoBehaviour {
+    [SerializeField] public bool canEditShape = true;
     [SerializeField] private RectTransform gridRoot;
     [SerializeField] private RuneHexCellButton cellPrefab;
     [SerializeField] private float cellSize = 22f;
@@ -109,6 +110,7 @@ public class RuneGlyphShapeEditorView : MonoBehaviour {
     }
 
     private void HandleCellPointerDown(RuneHexCellButton cell, PointerEventData eventData) {
+        if (!canEditShape) return;
         if (!_shape.Contains(cell.coord))
             return;
 
@@ -117,6 +119,7 @@ public class RuneGlyphShapeEditorView : MonoBehaviour {
     }
 
     private void HandleCellClick(RuneHexCellButton cell, PointerEventData eventData) {
+        if (!canEditShape) return;
         if (_suppressNextClick) {
             _suppressNextClick = false;
             return;
@@ -151,6 +154,7 @@ public class RuneGlyphShapeEditorView : MonoBehaviour {
     }
 
     private void HandleCellDragStart(RuneHexCellButton cell, PointerEventData eventData) {
+        if (!canEditShape) return;
         if (eventData.button != PointerEventData.InputButton.Left)
             return;
 

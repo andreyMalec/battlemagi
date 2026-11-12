@@ -14,12 +14,12 @@ public class GroundPointDiskUpSpawn : ISpellSpawn, IDelayOriginRespect {
         var height = context.spawn.circleHeight;
 
         var firstBase = BaseContext(context, origin, isFirst: true);
-        var onFirst = ISpellSpawn.GroundPos(firstBase, firstBase.forward, out _, Vector3.down);
+        var onFirst = ISpellSpawn.GroundPos(firstBase, firstBase.forward, out _, Vector3.down, layerMask: context.spawn.raycastMask);
 
         for (int i = 0; i < count; i++) {
             var baseCtx = origin == DelayOrigin.First
                 ? onFirst
-                : ISpellSpawn.GroundPos(BaseContext(context, origin, isFirst: false), context.forward, out _, Vector3.down);
+                : ISpellSpawn.GroundPos(BaseContext(context, origin, isFirst: false), context.forward, out _, Vector3.down, layerMask: context.spawn.raycastMask);
 
             var offset = RandomInsideCircle(radius);
             var localOffset = new Vector3(offset.x, height, offset.y);
@@ -72,7 +72,7 @@ public class GroundPointDiskUpSpawn : ISpellSpawn, IDelayOriginRespect {
         var baseCtx = context.target != null
             ? context with { position = context.target.Position }
             : context;
-        var ground = ISpellSpawn.GroundPos(baseCtx, baseCtx.forward, out _, Vector3.down);
+        var ground = ISpellSpawn.GroundPos(baseCtx, baseCtx.forward, out _, Vector3.down, layerMask: context.spawn.raycastMask);
         yield return ground;
 
         var height = context.spawn.circleHeight;

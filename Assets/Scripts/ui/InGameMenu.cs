@@ -118,13 +118,13 @@ public class InGameMenu : MonoBehaviour {
         if (_state == State.Main && Input.GetKeyDown(openEditorKey) && CanOpenEditor) {
             ToggleMenu();
             _state = State.RuneCraft;
-            
-            var players = FindObjectsByType<Freeze>(FindObjectsInactive.Include);
+
+            var players = FindObjectsByType<DisablePlayer>(FindObjectsInactive.Include);
             foreach (var player in players) {
-                player.gameObject.SetActive(true);
+                player.enabled = true;
             }
-            
-        } else if (_state == State.RuneCraft && Input.GetKeyDown(openEditorKey) && CanOpenEditor) {
+        } else if (_state == State.RuneCraft && Input.GetKeyDown(openEditorKey) && CanOpenEditor &&
+                   stateRuneCraft.GetComponentInChildren<RuneCraftUiController>().InputFocused == false) {
             ToggleMenu();
         }
 
@@ -152,10 +152,10 @@ public class InGameMenu : MonoBehaviour {
 
         if (_state == State.RuneCraft) {
             _state = State.Main;
-            
-            var players = FindObjectsByType<Freeze>();
+
+            var players = FindObjectsByType<DisablePlayer>();
             foreach (var player in players) {
-                player.gameObject.SetActive(false);
+                player.enabled = false;
             }
         }
 

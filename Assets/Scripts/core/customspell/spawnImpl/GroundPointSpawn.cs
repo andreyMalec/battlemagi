@@ -11,7 +11,7 @@ public class GroundPointSpawn : ISpellSpawn, IDelayOriginRespect {
         var origin = context.DelayOrigin;
 
         var firstBase = BaseContext(context, origin, isFirst: true);
-        var onFirst = ISpellSpawn.GroundPos(firstBase, firstBase.forward, out _);
+        var onFirst = ISpellSpawn.GroundPos(firstBase, firstBase.forward, out _, layerMask: context.spawn.raycastMask);
 
         for (int i = count - 1; i >= 0; i--) {
             switch (origin) {
@@ -24,7 +24,7 @@ public class GroundPointSpawn : ISpellSpawn, IDelayOriginRespect {
                     break;
                 case DelayOrigin.Continuous:
                     var currentBase = BaseContext(context, origin, isFirst: false);
-                    var ctx = ISpellSpawn.GroundPos(currentBase, currentBase.forward, out _);
+                    var ctx = ISpellSpawn.GroundPos(currentBase, currentBase.forward, out _, layerMask: context.spawn.raycastMask);
                     if (ctx != null)
                         spawn(ctx with {
                             index = i,
@@ -64,6 +64,6 @@ public class GroundPointSpawn : ISpellSpawn, IDelayOriginRespect {
         var baseCtx = context.target != null
             ? context with { position = context.target.Position }
             : context;
-        yield return ISpellSpawn.GroundPos(baseCtx, baseCtx.forward, out _);
+        yield return ISpellSpawn.GroundPos(baseCtx, baseCtx.forward, out _, layerMask: context.spawn.raycastMask);
     }
 }

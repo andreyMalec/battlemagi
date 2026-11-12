@@ -32,6 +32,16 @@ public class LexiconOfPower : NetworkBehaviour {
         }
     }
 
+    public void ReInitialize() {
+        var archetype = Ctx.GetArchetype(_player.ArchetypeId);
+        var spells = GameModeRules.FilterSpellsForMode(archetype.spells);
+        var runtimeSpells = Ctx.Players != null ? Ctx.Players.GetApprovedRuntimeSpellsForClient(Ctx.LocalClientId) : null;
+        if (runtimeSpells != null && runtimeSpells.Count > 0)
+            spells.AddRange(runtimeSpells);
+        _mouth.RestrictWords(_recognizer.SpellWords());
+        _caster.UpdateAvailableSpells(spells);
+    }
+
     private void Initialize(Language language) {
         var archetype = Ctx.GetArchetype(_player.ArchetypeId);
         var spells = GameModeRules.FilterSpellsForMode(archetype.spells);

@@ -333,6 +333,7 @@ GameObject:
   - component: {fileID: 5476031713649994788}
   - component: {fileID: 445873658711594162}
   - component: {fileID: 8885780101712779771}
+  - component: {fileID: 5527877910935535828}
   m_Layer: 0
   m_Name: Tester
   m_TagString: Untagged
@@ -487,7 +488,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellRunner
   spawnPos: {fileID: 5086674070281227999}
-  spellE: {fileID: 11400000, guid: 7659d312640413c4bbe8f8065b466a2c, type: 2}
+  spellR: {fileID: 0}
   input:
     castKey: 323
     cancelKey: 324
@@ -690,6 +691,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 233976980f7741f9ba4e68301fd7d0ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IceSlideMovementModule
+--- !u!114 &5527877910935535828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056318315711601611}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b5df661012540748455c42aa96f416b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DisablePlayer
 --- !u!1 &7750010650653659641
 GameObject:
   m_ObjectHideFlags: 0
