@@ -1,0 +1,231 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 631a098bad884078ab16a057a8b9e292, type: 3}
+  m_Name: SpellVisualList
+  m_EditorClassIdentifier: Assembly-CSharp::SpellVisualList
+  emptyPrefab: {fileID: 7354784787554302670, guid: a07ef5090aef313438f384942bd17114, type: 3}
+  items:
+  - name: Fire, Projectile
+    prefab: {fileID: 7354784787554302670, guid: 82debd6f29eee5c419e20ef7bb525246, type: 3}
+    inHand: {fileID: 7389778017922607859, guid: 0e4f22c5d00bab345b2aa2fdff79e2f9, type: 3}
+    tags:
+    - {fileID: 11400000, guid: ed4a30bed7ba94d499dd4e8476e48fd3, type: 2}
+    - {fileID: 11400000, guid: bb12eafc65c38d149942220079d07214, type: 2}
+  - name: Fire, Explosion
+    prefab: {fileID: 1742013225946848, guid: c3767681829557d4a81a655ae412bfe0, type: 3}
+    inHand: {fileID: 7389778017922607859, guid: 0e4f22c5d00bab345b2aa2fdff79e2f9, type: 3}
+    tags:
+    - {fileID: 11400000, guid: ed4a30bed7ba94d499dd4e8476e48fd3, type: 2}
+    - {fileID: 11400000, guid: b3cde20bbf6c928498ff46a81cf35043, type: 2}
+  - name: Fire, Cloud
+    prefab: {fileID: 1315042845377307778, guid: 14074448acf2f0b4a924cf3c70d05608, type: 3}
+    inHand: {fileID: 7389778017922607859, guid: 0e4f22c5d00bab345b2aa2fdff79e2f9, type: 3}
+    tags:
+    - {fileID: 11400000, guid: ed4a30bed7ba94d499dd4e8476e48fd3, type: 2}
+    - {fileID: 11400000, guid: 879f947274678cb4b8c58f892640e038, type: 2}
+  - name: Fire, Invisible
+    prefab: {fileID: 7354784787554302670, guid: 3bc52da95b7c7a746a030b6e78db76f3, type: 3}
+    inHand: {fileID: 7389778017922607859, guid: 02b2d951857367545bbd126afc820072, type: 3}
+    tags:
+    - {fileID: 11400000, guid: ed4a30bed7ba94d499dd4e8476e48fd3, type: 2}
+    - {fileID: 11400000, guid: 40e6c5562e9498b439792ace8dcb698e, type: 2}
+  - name: Fire, Beam
+    prefab: {fileID: 7354784787554302670, guid: 86e376344aff6cd478383812cb8cabc6, type: 3}
+    inHand: {fileID: 7389778017922607859, guid: 5082f6476191fa94d922488410f52c2b, type: 3}
+    tags:
+    - {fileID: 11400000, guid: ed4a30bed7ba94d499dd4e8476e48fd3, type: 2}
+    - {fileID: 11400000, guid: bc8f452cc03345c45a9f87d891755194, type: 2}
+  - name: Lightning, Projectile
+    prefab: {fileID: 4956434817817956126, guid: b91b87454f9fa8644b3672c8d1972789, type: 3}
+    inHand: {fileID: 7389778017922607859, guid: 545848dd87ec5564eab3bf3d457a10cd, type: 3}
+    tags:
+    - {fileID: 11400000, guid: 1209af9e97270bb4e83697b442ee363e, type: 2}
+    - {fileID: 11400000, guid: bb12eafc65c38d149942220079d07214, type: 2}
+  - name: Lightning, Cloud
+    prefab: {fileID: 4956434817817956126, guid: a6e8771fb517b794e8ca4b236f751c25, type: 3}
+    inHand: {fileID: 7389778017922607859, guid: 545848dd87ec5564eab3bf3d457a10cd, type: 3}
+    tags:
+    - {fileID: 11400000, guid: 1209af9e97270bb4e83697b442ee363e, type: 2}
+    - {fileID: 11400000, guid: 879f947274678cb4b8c58f892640e038, type: 2}
+  - name: Ice, Projectile
+    prefab: {fileID: 7354784787554302670, guid: 504655b34a831dd409dcb733e69ff5a8, type: 3}
+    inHand: {fileID: 7389778017922607859, guid: a94e7e48f9a8cdf41950d95fa8235bad, type: 3}
+    tags:
+    - {fileID: 11400000, guid: 78dc5b9fd45f92d40a07cd0c7f780041, type: 2}
+    - {fileID: 11400000, guid: bb12eafc65c38d149942220079d07214, type: 2}
+  - name: Ice, Spear
+    prefab: {fileID: 9143075904625096738, guid: 4dda8ea76ce09fd4b8e019a22d66a466, type: 3}
+    inHand: {fileID: 9143075904625096738, guid: d8eec10eb1d046f4f98a308658660f19, type: 3}
+    tags:
+    - {fileID: 11400000, guid: 78dc5b9fd45f92d40a07cd0c7f780041, type: 2}
+    - {fileID: 11400000, guid: 207abeb8f888f5243a66aa781af3d714, type: 2}
+  - name: Ice, Plate
+    prefab: {fileID: 1742013225946848, guid: d2cd8d503bf44cc4d9c1946a5e8b6d9f, type: 3}
+    inHand: {fileID: 0}
+    tags:
+    - {fileID: 11400000, guid: 78dc5b9fd45f92d40a07cd0c7f780041, type: 2}
+    - {fileID: 11400000, guid: b637b10c256e70046ba86273c9cdf41c, type: 2}
+  - name: Ice, Pulse
+    prefab: {fileID: 1742013225946848, guid: d0f9dcc5f72f5eb4f821233f604859af, type: 3}
+    inHand: {fileID: 7389778017922607859, guid: a94e7e48f9a8cdf41950d95fa8235bad, type: 3}
+    tags:
+    - {fileID: 11400000, guid: 78dc5b9fd45f92d40a07cd0c7f780041, type: 2}
+    - {fileID: 11400000, guid: d29b629ec7581d644908349a945dfe50, type: 2}
+  - name: Ice, Explosion
+    prefab: {fileID: 1742013225946848, guid: d0f9dcc5f72f5eb4f821233f604859af, type: 3}
+    inHand: {fileID: 7389778017922607859, guid: a94e7e48f9a8cdf41950d95fa8235bad, type: 3}
+    tags:
+    - {fileID: 11400000, guid: 78dc5b9fd45f92d40a07cd0c7f780041, type: 2}
+    - {fileID: 11400000, guid: b3cde20bbf6c928498ff46a81cf35043, type: 2}
+  - name: Toxic, Projectile
+    prefab: {fileID: 7354784787554302670, guid: 268956688d77990448344d0568c91ca4, type: 3}
+    inHand: {fileID: 7389778017922607859, guid: 4e2de2fd87ccba340b92d1374c1467ed, type: 3}
+    tags:
+    - {fileID: 11400000, guid: 38b004812865db74d93d2d7b652dcf35, type: 2}
+    - {fileID: 11400000, guid: bb12eafc65c38d149942220079d07214, type: 2}
+  - name: Toxic, Explosion
+    prefab: {fileID: 1315042845377307778, guid: e1a13f0e66740c644b1db8030b034015, type: 3}
+    inHand: {fileID: 7389778017922607859, guid: 4e2de2fd87ccba340b92d1374c1467ed, type: 3}
+    tags:
+    - {fileID: 11400000, guid: 38b004812865db74d93d2d7b652dcf35, type: 2}
+    - {fileID: 11400000, guid: b3cde20bbf6c928498ff46a81cf35043, type: 2}
+  - name: Toxic, Cloud
+    prefab: {fileID: 1315042845377307778, guid: 54f3000fb2bf25e4a9ba537767e02f68, type: 3}
+    inHand: {fileID: 7389778017922607859, guid: 4e2de2fd87ccba340b92d1374c1467ed, type: 3}
+    tags:
+    - {fileID: 11400000, guid: 38b004812865db74d93d2d7b652dcf35, type: 2}
+    - {fileID: 11400000, guid: 879f947274678cb4b8c58f892640e038, type: 2}
+  - name: Shadow, Cloud
+    prefab: {fileID: 1315042845377307778, guid: daf53c077b8c1c3469c06760cc174eb6, type: 3}
+    inHand: {fileID: 7389778017922607859, guid: fff2136e3c977424fbf102af602d3c31, type: 3}
+    tags:
+    - {fileID: 11400000, guid: 454c52ff1687e2d40af6aba1cec25b71, type: 2}
+    - {fileID: 11400000, guid: 879f947274678cb4b8c58f892640e038, type: 2}
+  - name: Force, Cloud
+    prefab: {fileID: 7354784787554302670, guid: 0ca678132f283524b9803a829618d8b7, type: 3}
+    inHand: {fileID: 7389778017922607859, guid: ccdb577e54b3c784cb31535c74a35b3a, type: 3}
+    tags:
+    - {fileID: 11400000, guid: 23e0919eefb2d4e4e854183adae14214, type: 2}
+    - {fileID: 11400000, guid: 879f947274678cb4b8c58f892640e038, type: 2}
+  - name: Force, Explosion
+    prefab: {fileID: 7354784787554302670, guid: 2ac35275a12cd164ebd31ebde5d7f050, type: 3}
+    inHand: {fileID: 7389778017922607859, guid: ccdb577e54b3c784cb31535c74a35b3a, type: 3}
+    tags:
+    - {fileID: 11400000, guid: 23e0919eefb2d4e4e854183adae14214, type: 2}
+    - {fileID: 11400000, guid: b3cde20bbf6c928498ff46a81cf35043, type: 2}
+  - name: Force, Projectile
+    prefab: {fileID: 7354784787554302670, guid: 72469d593c1d53f4b910a90dbee3095d, type: 3}
+    inHand: {fileID: 7389778017922607859, guid: 6faaf55211b70b34ca4afc945030ccea, type: 3}
+    tags:
+    - {fileID: 11400000, guid: 23e0919eefb2d4e4e854183adae14214, type: 2}
+    - {fileID: 11400000, guid: bb12eafc65c38d149942220079d07214, type: 2}
+  - name: Air, Projectile
+    prefab: {fileID: 7354784787554302670, guid: 37e95acabcc845944b284160d523c107, type: 3}
+    inHand: {fileID: 0}
+    tags:
+    - {fileID: 11400000, guid: 60007bb05203f0f45ab6074bfe48d9ab, type: 2}
+    - {fileID: 11400000, guid: bb12eafc65c38d149942220079d07214, type: 2}
+  - name: Air, Projectile, HitScan
+    prefab: {fileID: 7354784787554302670, guid: 30d6ecd93498dbe41906f9dbd3837923, type: 3}
+    inHand: {fileID: 0}
+    tags:
+    - {fileID: 11400000, guid: 60007bb05203f0f45ab6074bfe48d9ab, type: 2}
+    - {fileID: 11400000, guid: bb12eafc65c38d149942220079d07214, type: 2}
+    - {fileID: 11400000, guid: e9777d9a4192f1240b344ad201a01b45, type: 2}
+  - name: Air, Cloud
+    prefab: {fileID: 4956434817817956126, guid: f3c09348aca18ff42ba2553769ce745c, type: 3}
+    inHand: {fileID: 4956434817817956126, guid: 98231738d8e4d444193d02e42f4b5c26, type: 3}
+    tags:
+    - {fileID: 11400000, guid: 60007bb05203f0f45ab6074bfe48d9ab, type: 2}
+    - {fileID: 11400000, guid: 879f947274678cb4b8c58f892640e038, type: 2}
+  - name: Dirt, Wall
+    prefab: {fileID: 7354784787554302670, guid: af36097d6d2bfba45a9bee375ed9fc7b, type: 3}
+    inHand: {fileID: 0}
+    tags:
+    - {fileID: 11400000, guid: 327c5fca08c7508408eb92fbb4fd7ace, type: 2}
+    - {fileID: 11400000, guid: 54d6147831fd3c74bbc5b0974e9625c3, type: 2}
+  - name: Totem
+    prefab: {fileID: 7354784787554302670, guid: a29f7cd4cae0b3746859dacd564f65f9, type: 3}
+    inHand: {fileID: 0}
+    tags:
+    - {fileID: 11400000, guid: ead774602a5266949b10a7ccc924eed2, type: 2}
+  - name: Trap
+    prefab: {fileID: 7354784787554302670, guid: e2d4c1a3f233c4e4e9e0d354fe7f85a5, type: 3}
+    inHand: {fileID: 7389778017922607859, guid: 46071d204a38eed4f94e04a88ee5bb42, type: 3}
+    tags:
+    - {fileID: 11400000, guid: cdb8b7d5cddfbce4f94fff121f0bac83, type: 2}
+  - name: Self, Mirror
+    prefab: {fileID: 7354784787554302670, guid: c4b294498a0b00545b706f77d29e4dfa, type: 3}
+    inHand: {fileID: 7389778017922607859, guid: 621c70dec71366b40b2e74d67eaa4ff5, type: 3}
+    tags:
+    - {fileID: 11400000, guid: 0999b0d6f280b8647b50e30193efd7ad, type: 2}
+    - {fileID: 11400000, guid: ee22195a27a47ec41a3aaa3b15ba9359, type: 2}
+  - name: Frost, Pulse
+    prefab: {fileID: 1742013225946848, guid: f4fbfd8e40c8bf34384aaa7a54473efd, type: 3}
+    inHand: {fileID: 7389778017922607859, guid: 74b2f473a1b5c1f4ba91c1212f514038, type: 3}
+    tags:
+    - {fileID: 11400000, guid: 7e774265f92e6694e9f4cf091457cfcb, type: 2}
+    - {fileID: 11400000, guid: d29b629ec7581d644908349a945dfe50, type: 2}
+  - name: Charge, Projectile, Bow
+    prefab: {fileID: 7354784787554302670, guid: fb90e7ef3f63e7041bff8077297d43f1, type: 3}
+    inHand: {fileID: 7389778017922607859, guid: 63f48ba9f11fcd54f94aeaebdf407535, type: 3}
+    tags:
+    - {fileID: 11400000, guid: e804d9bf97362584cb5a3aece37f654c, type: 2}
+    - {fileID: 11400000, guid: bb12eafc65c38d149942220079d07214, type: 2}
+    - {fileID: 11400000, guid: 3239141e5501d8d459caeb9205f1a0b0, type: 2}
+  - name: EmberLash
+    prefab: {fileID: 7354784787554302670, guid: 41a2de7b79e193443a1deadbacf4e33b, type: 3}
+    inHand: {fileID: 7389778017922607859, guid: 1b8789d1cc394064882eac7971cbdcdb, type: 3}
+    tags:
+    - {fileID: 11400000, guid: 92ce8563b87b54f4e821a873015f6abd, type: 2}
+  - name: Sun, Cloud
+    prefab: {fileID: 5973715472418457005, guid: 274ed25d0acbceb4d9abd7d209a0fa24, type: 3}
+    inHand: {fileID: 5973715472418457005, guid: be565f0b3dda27542bbfe2b8eb885d51, type: 3}
+    tags:
+    - {fileID: 11400000, guid: 1e2e40f18453bbf45b6fad705925734c, type: 2}
+    - {fileID: 11400000, guid: 879f947274678cb4b8c58f892640e038, type: 2}
+  - name: Sun, Explosion
+    prefab: {fileID: 5973715472418457005, guid: dd71f6f7aadfc9344a0b102094368609, type: 3}
+    inHand: {fileID: 5973715472418457005, guid: be565f0b3dda27542bbfe2b8eb885d51, type: 3}
+    tags:
+    - {fileID: 11400000, guid: 1e2e40f18453bbf45b6fad705925734c, type: 2}
+    - {fileID: 11400000, guid: b3cde20bbf6c928498ff46a81cf35043, type: 2}
+  - name: Spark
+    prefab: {fileID: 7354784787554302670, guid: 3167ef5f1787bac44ba636b8c2f853a9, type: 3}
+    inHand: {fileID: 0}
+    tags:
+    - {fileID: 11400000, guid: d7ee7325606148f449d31aa1d7a403e1, type: 2}
+  - name: Hand, Projectile
+    prefab: {fileID: 930403990372397643, guid: 8f42d44e479851640b4d85ca5dc56d4f, type: 3}
+    inHand: {fileID: 930403990372397643, guid: ecfcb4b06b195ba4692b3030e6f6e910, type: 3}
+    tags:
+    - {fileID: 11400000, guid: 17de6fdae0805e5488e299352ffa30d6, type: 2}
+    - {fileID: 11400000, guid: bb12eafc65c38d149942220079d07214, type: 2}
+  - name: Dirt, Projectile
+    prefab: {fileID: 7354784787554302670, guid: 919f8cd54f6c86f459fefe33d232886d, type: 3}
+    inHand: {fileID: 0}
+    tags:
+    - {fileID: 11400000, guid: 327c5fca08c7508408eb92fbb4fd7ace, type: 2}
+    - {fileID: 11400000, guid: bb12eafc65c38d149942220079d07214, type: 2}
+  - name: Dirt, Explosion
+    prefab: {fileID: 1742013225946848, guid: 01f6114fe6deb1849b07f279c0d84f69, type: 3}
+    inHand: {fileID: 0}
+    tags:
+    - {fileID: 11400000, guid: 327c5fca08c7508408eb92fbb4fd7ace, type: 2}
+    - {fileID: 11400000, guid: b3cde20bbf6c928498ff46a81cf35043, type: 2}
+  - name: Arcane, Explosion
+    prefab: {fileID: 1742013225946848, guid: 241f614f4cc70b249858c1c459df9fcf, type: 3}
+    inHand: {fileID: 7389778017922607859, guid: 46071d204a38eed4f94e04a88ee5bb42, type: 3}
+    tags:
+    - {fileID: 11400000, guid: a110e1ed6e43bda40b608cb137d59df3, type: 2}
+    - {fileID: 11400000, guid: b3cde20bbf6c928498ff46a81cf35043, type: 2}
+  lastTagId: 46

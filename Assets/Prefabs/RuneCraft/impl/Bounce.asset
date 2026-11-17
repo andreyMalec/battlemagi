@@ -13,12 +13,16 @@ MonoBehaviour:
   m_Name: Bounce
   m_EditorClassIdentifier: Assembly-CSharp::GlyphBounce
   glyphId: Bounce
+  enabled: 1
   displayName: Bounce
   glyphType: 3
   outputSide: 0
-  glyphTags: 
-  requiredTags: 01000000
-  forbiddenTags: 
+  baseCost: 1
+  repeatCostPercent: 0
+  glyphTags: []
+  requiredTags:
+  - {fileID: 11400000, guid: bb12eafc65c38d149942220079d07214, type: 2}
+  forbiddenTags: []
   shape:
   - q: 0
     r: 0

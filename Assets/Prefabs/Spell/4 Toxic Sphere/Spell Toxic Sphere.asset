@@ -17,17 +17,22 @@ MonoBehaviour:
   - Toxic Sphere
   wordsRu:
   - "\u0422\u043E\u043A\u0441\u0438\u0447\u043D\u0430\u044F \u0421\u0444\u0435\u0440\u0430"
+  tags:
+  - {fileID: 11400000, guid: 38b004812865db74d93d2d7b652dcf35, type: 2}
+  - {fileID: 11400000, guid: bb12eafc65c38d149942220079d07214, type: 2}
   coreType: 0
   spawn: {fileID: 11400000, guid: 67e7b8d0b54a5f54bbea0ca5689508df, type: 2}
   damage: {fileID: 0}
   knockback: {fileID: 0}
   effects: []
   scale: 1
+  scaleWithCharge: 0
   lifetime: 5
   blinkAtLifetime: 0
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 577
+  dieWithCaster: 0
   castWaitingIndex: 0
   invocationIndex: 2
   manaCost: 50

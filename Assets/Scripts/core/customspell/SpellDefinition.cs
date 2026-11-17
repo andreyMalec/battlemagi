@@ -7,6 +7,7 @@ public class SpellDefinition : ScriptableObject, IValidate {
     public string spellName;
     public string[] words;
     public string[] wordsRu;
+    public SpellTag[] tags;
     public CoreType coreType;
     [Expandable] public SpawnDefinition spawn;
 
@@ -107,6 +108,10 @@ public class SpellDefinition : ScriptableObject, IValidate {
         if (beam != null && beam is IValidate bv) bv.Validate();
         if (summon != null && summon is IValidate sv) sv.Validate();
         if (self != null && self is IValidate se) se.Validate();
+    }
+
+    public SpellTagsArray TagsArray() {
+        return new SpellTagsArray(tags);
     }
 
 #if UNITY_EDITOR

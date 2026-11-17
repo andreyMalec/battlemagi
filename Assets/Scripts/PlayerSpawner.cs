@@ -138,7 +138,7 @@ public class PlayerSpawner : NetworkBehaviour {
             player.GetComponent<Player>().LocalBodyAvatar(true);
             player.GetComponentInChildren<MeshController>(true).SetRagdoll(true);
             player.GetComponentInChildren<MeshHands>()?.gameObject?.SetActive(false);
-            player.GetComponentInChildren<Freeze>(true).gameObject.SetActive(false);
+            player.GetComponentInChildren<Freeze>(true).SetFreeze(false);
             player.GetComponent<CharacterController>().enabled = false;
             player.GetComponent<SpellCasterPlayer>().enabled = false;
             player.GetComponent<FirstPersonMovement>().enabled = false;

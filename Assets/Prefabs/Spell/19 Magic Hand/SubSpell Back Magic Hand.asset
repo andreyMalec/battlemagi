@@ -15,6 +15,9 @@ MonoBehaviour:
   spellName: Magic Hand Back
   words: []
   wordsRu: []
+  tags:
+  - {fileID: 11400000, guid: 17de6fdae0805e5488e299352ffa30d6, type: 2}
+  - {fileID: 11400000, guid: bb12eafc65c38d149942220079d07214, type: 2}
   coreType: 0
   spawn: {fileID: 11400000, guid: d8b82e5a9cab8d74b88dd78cd4f8dbe1, type: 2}
   damage: {fileID: 0}
@@ -22,11 +25,13 @@ MonoBehaviour:
   effects:
   - {fileID: 11400000, guid: 87ba88549902d5c4f8b8bd8afc44c381, type: 2}
   scale: 1
+  scaleWithCharge: 0
   lifetime: 1
   blinkAtLifetime: 0
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 580
+  dieWithCaster: 0
   castWaitingIndex: 0
   invocationIndex: 0
   manaCost: 0

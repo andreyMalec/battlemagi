@@ -3,8 +3,6 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Beam Spell", menuName = "Spells/Beam Definition")]
 public class BeamDefinition : ScriptableObject, IValidate {
-    public SpellBeamPrefabId prefabId;
-
     public BeamShapeType shapeType;
 
     [ShowIf("_shapeStraight")] public float beamMaxLength = 15f;

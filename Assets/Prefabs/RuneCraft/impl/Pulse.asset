@@ -13,12 +13,17 @@ MonoBehaviour:
   m_Name: Pulse
   m_EditorClassIdentifier: Assembly-CSharp::GlyphPulse
   glyphId: Pulse
+  enabled: 1
   displayName: Pulse
   glyphType: 0
   outputSide: 0
-  glyphTags: 04000000
-  requiredTags: 
-  forbiddenTags: 
+  baseCost: 1
+  repeatCostPercent: 0
+  glyphTags:
+  - {fileID: 11400000, guid: 43a27819402a62b4ba80f8a7290785aa, type: 2}
+  - {fileID: 11400000, guid: d29b629ec7581d644908349a945dfe50, type: 2}
+  requiredTags: []
+  forbiddenTags: []
   shape:
   - q: 1
     r: 0

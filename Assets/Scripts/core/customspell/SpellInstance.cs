@@ -63,6 +63,7 @@ public class SpellInstance : MonoBehaviour, ITarget {
             if (!Mathf.Approximately(spellScale, 1f))
                 _view.Stats.AddModifier(StatType.Scale, spellScale);
         }
+
         _initialized = true;
         RegisterActive();
         RegisterAudio();
@@ -169,6 +170,10 @@ public class SpellInstance : MonoBehaviour, ITarget {
 
         foreach (var rz in GetComponentsInChildren<AudioReverbZone>(true)) {
             rz.minDistance *= k;
+        }
+
+        foreach (var d in GetComponentsInChildren<DecalSpawner>(true)) {
+            d.Activate(k);
         }
     }
 
@@ -425,16 +430,10 @@ public class SpellInstance : MonoBehaviour, ITarget {
     }
 
     private static int GetAudioGroupKey(SpellDefinition spell) {
-        var prefabId = spell.coreType switch {
-            CoreType.Projectile => (int)spell.projectile.prefabId,
-            CoreType.Zone => (int)spell.zone.prefabId,
-            CoreType.Beam => (int)spell.beam.prefabId,
-            CoreType.Self => (int)spell.self.prefabId,
-            CoreType.Summon => (int)spell.summon.prefabId,
-            _ => -1
-        };
+        var tagsHash = spell.tags != null ? spell.tags.GetHashCode() : 0;
+        var coreHash = spell.coreType.GetHashCode();
 
-        return ((int)spell.coreType << 16) ^ prefabId;
+        return (tagsHash * 397) ^ coreHash;
     }
 
     private static void RemoveAt(int index) {

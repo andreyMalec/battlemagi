@@ -13,14 +13,16 @@ MonoBehaviour:
   m_Name: Force
   m_EditorClassIdentifier: Assembly-CSharp::GlyphForce
   glyphId: Force
+  enabled: 1
   displayName: Force
   glyphType: 4
   outputSide: 0
   baseCost: 1
   repeatCostPercent: 0
-  glyphTags: 00000000
-  requiredTags: 
-  forbiddenTags: 
+  glyphTags:
+  - {fileID: 11400000, guid: 23e0919eefb2d4e4e854183adae14214, type: 2}
+  requiredTags: []
+  forbiddenTags: []
   shape:
   - q: 0
     r: 0

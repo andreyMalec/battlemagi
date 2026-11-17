@@ -13,12 +13,15 @@ MonoBehaviour:
   m_Name: Slow
   m_EditorClassIdentifier: Assembly-CSharp::GlyphSlow
   glyphId: Slow
+  enabled: 1
   displayName: Slow
   glyphType: 3
   outputSide: 0
-  glyphTags: 
-  requiredTags: 
-  forbiddenTags: 
+  baseCost: 1
+  repeatCostPercent: 0
+  glyphTags: []
+  requiredTags: []
+  forbiddenTags: []
   shape:
   - q: 0
     r: 0

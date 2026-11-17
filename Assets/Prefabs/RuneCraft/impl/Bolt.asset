@@ -13,14 +13,16 @@ MonoBehaviour:
   m_Name: Bolt
   m_EditorClassIdentifier: Assembly-CSharp::GlyphBolt
   glyphId: Bolt
+  enabled: 1
   displayName: Bolt
   glyphType: 0
   outputSide: 3
   baseCost: 1
   repeatCostPercent: 0
-  glyphTags: 01000000
-  requiredTags: 
-  forbiddenTags: 
+  glyphTags:
+  - {fileID: 11400000, guid: bb12eafc65c38d149942220079d07214, type: 2}
+  requiredTags: []
+  forbiddenTags: []
   shape:
   - q: -2
     r: 0

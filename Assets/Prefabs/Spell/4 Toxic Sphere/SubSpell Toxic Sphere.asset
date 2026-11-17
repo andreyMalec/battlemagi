@@ -15,6 +15,9 @@ MonoBehaviour:
   spellName: Toxic Sphere Zone
   words: []
   wordsRu: []
+  tags:
+  - {fileID: 11400000, guid: 38b004812865db74d93d2d7b652dcf35, type: 2}
+  - {fileID: 11400000, guid: 879f947274678cb4b8c58f892640e038, type: 2}
   coreType: 1
   spawn: {fileID: 11400000, guid: 97de1d8eb3b62b748a8f2d8d2787303a, type: 2}
   damage: {fileID: 11400000, guid: 71ee375cb562cd6459f1735dfc99dec3, type: 2}
@@ -22,6 +25,7 @@ MonoBehaviour:
   effects:
   - {fileID: 11400000, guid: 0b25735c137b9e84dbeb634097eb4607, type: 2}
   scale: 3
+  scaleWithCharge: 0
   lifetime: 20
   blinkAtLifetime: 0
   defaultRaycast:

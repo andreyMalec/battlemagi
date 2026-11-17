@@ -15,12 +15,14 @@ MonoBehaviour:
   prefabId: 3
   moveType: 6
   moveSpeed: 500
+  scaleSpeedWithCharge: 0
   moveAlongGround: 0
   groundOffset: 0.1
   enableMaxDistance: 0
   maxDistance: 20
   returnToCaster: 0
   enableGravity: 0
+  botAimToCenter: 0
   gravity: {x: 0, y: -9.81, z: 0}
   lookAtMaxDistance: 50
   lookAtRayMask:
@@ -49,6 +51,7 @@ MonoBehaviour:
   pierceTargetMode: 0
   enableFork: 0
   forkCount: 3
+  scaleForksWithCharge: 0
   forkSpreadAngle: 35
   echoOnHit: 1
   spawnInHit: 0

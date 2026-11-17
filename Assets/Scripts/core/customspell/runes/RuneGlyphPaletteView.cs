@@ -12,7 +12,7 @@ public class RuneGlyphPaletteView : MonoBehaviour {
 
     [Serializable]
     private class TagChipBinding {
-        public RuneGlyphTag tag;
+        public SpellTag tag;
         public Toggle toggle;
     }
 
@@ -27,7 +27,7 @@ public class RuneGlyphPaletteView : MonoBehaviour {
     private readonly List<RuneGlyphPaletteButton> _items = new List<RuneGlyphPaletteButton>();
     private readonly List<RuneGlyphDefinition> _allGlyphs = new List<RuneGlyphDefinition>();
     private readonly List<RuneGlyphDefinition> _visibleGlyphs = new List<RuneGlyphDefinition>();
-    private readonly HashSet<RuneGlyphTag> _activeTags = new HashSet<RuneGlyphTag>();
+    private readonly HashSet<SpellTag> _activeTags = new();
     private string _selectedGlyphId = string.Empty;
     private string _searchText = string.Empty;
     private PaletteSortMode _sortMode = PaletteSortMode.GlyphTypeGrouped;
@@ -79,7 +79,7 @@ public class RuneGlyphPaletteView : MonoBehaviour {
         RebuildVisibleItems();
     }
 
-    private void HandleTagChipChanged(RuneGlyphTag chipTag, bool isEnabled) {
+    private void HandleTagChipChanged(SpellTag chipTag, bool isEnabled) {
         if (isEnabled) {
             _activeTags.Add(chipTag);
         } else {

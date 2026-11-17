@@ -13,12 +13,15 @@ MonoBehaviour:
   m_Name: Damage Proj Ice Shards 1
   m_EditorClassIdentifier: Assembly-CSharp::DamageDefinition
   mode: 0
+  sound: 2
   canHitAllies: 1
   baseType: 0
   scaleWithRange: 0
   structureMultiplier: 1
+  fromBotMultiplier: 1
   amount: 30
   percentOf: 0
   percent: 0.1
   tickInterval: 0.8
   ignoreSoundCooldown: 0
+  resourceTarget: 0

@@ -65,7 +65,7 @@ public class StateController : NetworkBehaviour {
         if (!Ctx.TryGetSpawnedObject(targetNetObj, out var netObj)) return;
         Debug.Log($"FreezeClientRpc targetNetObj={netObj}, active={active}");
         var freeze = netObj.GetComponentInChildren<Freeze>(true);
-        if (freeze != null) freeze.gameObject.SetActive(active);
+        if (freeze != null) freeze.SetFreeze(active);
         if (netObj.TryGetComponent<StateController>(out var stateController))
             stateController.RefreshMovementState();
     }
@@ -218,7 +218,7 @@ public class StateController : NetworkBehaviour {
             return;
         }
 
-        var disabled = _disablePlayer != null && _disablePlayer.enabled;
+        var disabled = _disablePlayer != null && _disablePlayer.Disabled;
         var rooted = _root != null && _root.gameObject.activeSelf;
         movement.enabled = IsOwner && !_forcedMovementActive && !disabled && !rooted;
     }

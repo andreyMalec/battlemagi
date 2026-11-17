@@ -3,8 +3,6 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Projectile Spell", menuName = "Spells/Projectile Definition")]
 public class ProjectileDefinition : ScriptableObject, IValidate {
-    public SpellProjectilePrefabId prefabId;
-
     public SpellMovement moveType;
 
     [ShowIf("_canMove")] public float moveSpeed;

@@ -18,17 +18,22 @@ MonoBehaviour:
   wordsRu:
   - "\u0420\u0443\u043D\u043D\u0430\u044F \u041B\u043E\u0432\u0443\u0448\u043A\u0430"
   - "\u0420\u0443\u0447\u043D\u0430\u044F \u041B\u043E\u0432\u0443\u0448\u043A\u0430"
+  tags:
+  - {fileID: 11400000, guid: a110e1ed6e43bda40b608cb137d59df3, type: 2}
+  - {fileID: 11400000, guid: cdb8b7d5cddfbce4f94fff121f0bac83, type: 2}
   coreType: 4
   spawn: {fileID: 11400000, guid: 9407cbd1e2a49124bbf223fd6528eb8c, type: 2}
   damage: {fileID: 0}
   knockback: {fileID: 0}
   effects: []
   scale: 1
+  scaleWithCharge: 0
   lifetime: 60
   blinkAtLifetime: 0
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 64
+  dieWithCaster: 0
   castWaitingIndex: 0
   invocationIndex: 8
   manaCost: 50
@@ -38,6 +43,7 @@ MonoBehaviour:
   channelDuration: 0
   charging: 0
   chargeDuration: 0
+  manaPerSecond: 0
   projectile: {fileID: 0}
   zone: {fileID: 0}
   beam: {fileID: 0}

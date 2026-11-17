@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Damage Fireball
   m_EditorClassIdentifier: Assembly-CSharp::DamageDefinition
   mode: 0
+  sound: 1
   canHitAllies: 1
   baseType: 0
   scaleWithRange: 1
@@ -23,3 +24,4 @@ MonoBehaviour:
   percent: 0.1
   tickInterval: 1
   ignoreSoundCooldown: 0
+  resourceTarget: 0

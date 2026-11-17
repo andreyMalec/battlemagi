@@ -15,6 +15,9 @@ MonoBehaviour:
   spellName: Furious Sun Explosion
   words: []
   wordsRu: []
+  tags:
+  - {fileID: 11400000, guid: 1e2e40f18453bbf45b6fad705925734c, type: 2}
+  - {fileID: 11400000, guid: b3cde20bbf6c928498ff46a81cf35043, type: 2}
   coreType: 1
   spawn: {fileID: 11400000, guid: d74f17620dfa86e429c8eb992d6a45d0, type: 2}
   damage: {fileID: 0}
@@ -22,11 +25,13 @@ MonoBehaviour:
   effects:
   - {fileID: 11400000, guid: f0bb519d3d72c0548ad56788ac60edf0, type: 2}
   scale: 3
+  scaleWithCharge: 0
   lifetime: 5
   blinkAtLifetime: 0
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 4294967295
+  dieWithCaster: 0
   castWaitingIndex: 0
   invocationIndex: 0
   manaCost: 0

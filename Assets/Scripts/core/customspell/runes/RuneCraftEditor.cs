@@ -46,12 +46,13 @@ public class RuneCraftEditor : MonoBehaviour {
     }
 
     private float timer;
+
     private void FixedUpdate() {
         if (timer < 5f) {
             timer += Time.deltaTime;
             return;
         }
-        
+
         StampTime();
         PlayerPrefs.SetString("Draft", SaveDraftJson(false));
         timer = 0f;
@@ -77,7 +78,8 @@ public class RuneCraftEditor : MonoBehaviour {
         var placedIds = new List<string>(glyphsToPlace.Count);
         for (var i = 0; i < glyphsToPlace.Count; i++) {
             var input = glyphsToPlace[i];
-            if (!_boardService.TryPlaceGlyph(draft.board, input.GlyphId, input.Anchor, input.Rotation, out var placementId))
+            if (!_boardService.TryPlaceGlyph(draft.board, input.GlyphId, input.Anchor, input.Rotation,
+                    out var placementId))
                 return UndoInternal();
             placedIds.Add(placementId);
         }
@@ -87,6 +89,7 @@ public class RuneCraftEditor : MonoBehaviour {
         for (var i = 0; i < placedIds.Count; i++) {
             _selection.Add(placedIds[i]);
         }
+
         StampTime();
         return true;
     }
@@ -216,8 +219,19 @@ public class RuneCraftEditor : MonoBehaviour {
 
     public void LoadDraft(RuneSpellDraft loadedDraft) {
         draft = loadedDraft ?? new RuneSpellDraft();
-        if (draft.board == null)
+        if (draft.board == null) {
             draft.board = new RuneBoardData();
+        } else {
+            var knownGlyphs = new List<RunePlacedGlyph>();
+            foreach (var glyph in draft.board.glyphs) {
+                if (glyphCatalog.items.Find(g => g.enabled && g.glyphId == glyph.glyphId) != null) {
+                    knownGlyphs.Add(glyph);
+                }
+            }
+
+            draft.board.glyphs = knownGlyphs;
+        }
+
         draft.board.radius = glyphCatalog.boardRadius;
         _boardService.RebuildAutoLinks(draft.board);
         _undo.Clear();
@@ -240,9 +254,12 @@ public class RuneCraftEditor : MonoBehaviour {
         _boardService.RebuildAutoLinks(draft.board);
         if (_spellAssembler.TryAssemble(draft.board, baseSpellTemplate, out spell, out error)) {
             spell.spellName = draft.name;
-            spell.words = draft.words.Split(",").Map(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)).ToArray();
+            var spellWords = draft.words.Split(",").Map(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)).ToArray();
+            spell.words = spellWords;
+            spell.wordsRu = spellWords;
             return true;
         }
+
         return false;
     }
 
@@ -269,5 +286,3 @@ public class RuneCraftEditor : MonoBehaviour {
         draft.updatedAtUtc = DateTime.UtcNow.ToString("dd MMMM yy HH:mm");
     }
 }
-
-

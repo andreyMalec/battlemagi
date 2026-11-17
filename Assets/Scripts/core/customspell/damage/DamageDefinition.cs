@@ -21,6 +21,7 @@ public enum SpellDamagePercentStat {
 [CreateAssetMenu(fileName = "New Damage", menuName = "Spells/Damage Definition")]
 public class DamageDefinition : ScriptableObject, IValidate {
     public SpellDamageMode mode;
+    public DamageKind sound;
 
     public bool canHitAllies;
 
@@ -29,7 +30,7 @@ public class DamageDefinition : ScriptableObject, IValidate {
     public float structureMultiplier = 1f;
     public float fromBotMultiplier = 1f;
 
-    [ShowIf("_flat")] public float amount = 10f;
+    [ShowIf("_flat")] public float amount;
 
     [ShowIf("_percent")] public SpellDamagePercentStat percentOf;
     [ShowIf("_percent")] [Range(0f, 1f)] public float percent = 0.1f;

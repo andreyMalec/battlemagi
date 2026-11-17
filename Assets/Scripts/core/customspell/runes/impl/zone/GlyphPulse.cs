@@ -8,16 +8,19 @@ using UnityEngine;
 public class GlyphPulse : RuneGlyphDefinition {
     [Header("Properties")]
     public float lifetime = 5f;
-    
+
     public override bool Apply(RuneGlyphContext ctx) {
         ctx.workingSpell.coreType = CoreType.Zone;
+        ctx.workingSpell.lifetime = lifetime;
+
         var zone = CreateInstance<ZoneDefinition>();
         ctx.workingSpell.zone = zone;
+
         var dmg = CreateInstance<DamageDefinition>();
         dmg.canHitAllies = true;
         dmg.mode = SpellDamageMode.OncePerTarget;
         ctx.workingSpell.damage = dmg;
-        ctx.workingSpell.lifetime = lifetime;
+
         return true;
     }
 }

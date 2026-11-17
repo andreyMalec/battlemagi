@@ -15,6 +15,9 @@ MonoBehaviour:
   spellName: Ice Shards Zone
   words: []
   wordsRu: []
+  tags:
+  - {fileID: 11400000, guid: 78dc5b9fd45f92d40a07cd0c7f780041, type: 2}
+  - {fileID: 11400000, guid: d29b629ec7581d644908349a945dfe50, type: 2}
   coreType: 1
   spawn: {fileID: 11400000, guid: 8b298a1f11dfba348a84203543ea2242, type: 2}
   damage: {fileID: 0}
@@ -23,11 +26,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fd497f0c9f2f5fb4889c6179088691a7, type: 2}
   - {fileID: 11400000, guid: d1d4674d53689544bba148d77d66fca8, type: 2}
   scale: 1.5
+  scaleWithCharge: 0
   lifetime: 5
   blinkAtLifetime: 0
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 576
+  dieWithCaster: 0
   castWaitingIndex: 0
   invocationIndex: 0
   manaCost: 0
@@ -37,6 +42,7 @@ MonoBehaviour:
   channelDuration: 0
   charging: 0
   chargeDuration: 0
+  manaPerSecond: 0
   projectile: {fileID: 0}
   zone: {fileID: 11400000, guid: 694beceaa274cc5419c700be224b07c5, type: 2}
   beam: {fileID: 0}

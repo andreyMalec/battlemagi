@@ -1,6 +1,8 @@
 using UnityEngine;
 
 public class DisablePlayer : MonoBehaviour {
+    public bool Disabled { get; private set; }
+
     private StateController _stateController;
     private PlayerTester _tester;
     private SpellCasterPlayer _caster;
@@ -28,7 +30,16 @@ public class DisablePlayer : MonoBehaviour {
         _footControllerIK = footControllerIK;
     }
 
-    private void OnEnable() {
+    public void SetDisablePlayer(bool active) {
+        Disabled = active;
+        if (active) {
+            SetDisabled();
+        } else {
+            SetEnabled();
+        }
+    }
+
+    private void SetDisabled() {
         if (_stateController != null) _stateController.RefreshMovementState();
         if (_caster != null) _caster.enabled = false;
         if (_look != null) _look.enabled = false;
@@ -49,7 +60,7 @@ public class DisablePlayer : MonoBehaviour {
         if (_botMovementController != null) _botMovementController.enabled = false;
     }
 
-    private void OnDisable() {
+    private void SetEnabled() {
         if (_stateController != null) _stateController.RefreshMovementState();
         if (_caster != null) _caster.enabled = true;
         if (_look != null) _look.enabled = true;

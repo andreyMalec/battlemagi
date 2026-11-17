@@ -13,14 +13,16 @@ MonoBehaviour:
   m_Name: Area
   m_EditorClassIdentifier: Assembly-CSharp::GlyphArea
   glyphId: Area
+  enabled: 1
   displayName: Area
   glyphType: 3
   outputSide: 0
   baseCost: 1
   repeatCostPercent: 0
-  glyphTags: 
-  requiredTags: 
-  forbiddenTags: 
+  glyphTags:
+  - {fileID: 11400000, guid: 43a27819402a62b4ba80f8a7290785aa, type: 2}
+  requiredTags: []
+  forbiddenTags: []
   shape:
   - q: 0
     r: 0

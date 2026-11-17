@@ -13,14 +13,17 @@ MonoBehaviour:
   m_Name: Speed
   m_EditorClassIdentifier: Assembly-CSharp::GlyphSpeed
   glyphId: Speed
+  enabled: 1
   displayName: Speed
   glyphType: 3
   outputSide: 0
-  glyphTags: 
-  requiredTags: 
-  forbiddenTags: 
+  baseCost: 1
+  repeatCostPercent: 0
+  glyphTags: []
+  requiredTags: []
+  forbiddenTags: []
   shape:
   - q: 0
     r: 0
   projSpeed: 30
-  zoneSpeed: 10
+  zoneSpeed: 5

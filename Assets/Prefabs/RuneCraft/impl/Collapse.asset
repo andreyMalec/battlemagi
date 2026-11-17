@@ -13,9 +13,12 @@ MonoBehaviour:
   m_Name: Collapse
   m_EditorClassIdentifier: Assembly-CSharp::GlyphCollapse
   glyphId: Collapse
+  enabled: 0
   displayName: Collapse
   glyphType: 3
   outputSide: 0
+  baseCost: 1
+  repeatCostPercent: 0
   glyphTags: 
   requiredTags: 
   forbiddenTags: 

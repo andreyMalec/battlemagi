@@ -13,12 +13,15 @@ MonoBehaviour:
   m_Name: Damage Ball Lightning
   m_EditorClassIdentifier: Assembly-CSharp::DamageDefinition
   mode: 0
+  sound: 3
   canHitAllies: 0
   baseType: 0
   scaleWithRange: 0
   structureMultiplier: 1.5
+  fromBotMultiplier: 1
   amount: 55
   percentOf: 0
   percent: 0.1
   tickInterval: 0.03
   ignoreSoundCooldown: 0
+  resourceTarget: 0

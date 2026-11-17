@@ -13,6 +13,7 @@ public class DefaultSpells : MonoBehaviour {
     private static readonly Dictionary<string, SpellDefinition> RuntimeSubSpellsByName = new();
     private static readonly Dictionary<ulong, List<string>> RuntimeSubSpellNamesBySteamId = new();
 
+    public SpellVisualList spellVisuals;
     public static DefaultSpells Instance { get; private set; }
 
     private void Awake() {
@@ -175,6 +176,5 @@ public class DefaultSpells : MonoBehaviour {
 public class DefaultSpell {
     public string name;
     public Texture2D bookImage;
-    public GameObject inHandPrefab;
     public SpellDefinition spell;
 }

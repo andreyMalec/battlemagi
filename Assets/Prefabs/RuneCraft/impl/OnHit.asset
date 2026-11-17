@@ -13,14 +13,17 @@ MonoBehaviour:
   m_Name: OnHit
   m_EditorClassIdentifier: Assembly-CSharp::GlyphOnHit
   glyphId: OnHit
+  enabled: 1
   displayName: OnHit
   glyphType: 10
   outputSide: 3
   baseCost: 1
   repeatCostPercent: 0
-  glyphTags: 03000000
-  requiredTags: 01000000
-  forbiddenTags: 
+  glyphTags:
+  - {fileID: 11400000, guid: 1dadf7eef08e9ff489e7b022b9dda472, type: 2}
+  requiredTags:
+  - {fileID: 11400000, guid: bb12eafc65c38d149942220079d07214, type: 2}
+  forbiddenTags: []
   shape:
   - q: 1
     r: 0

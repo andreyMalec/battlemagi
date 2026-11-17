@@ -146,7 +146,7 @@ public class Player : NetworkBehaviour {
         passiveRuntime.Configure(archetype.passive);
         var fpss = GetComponentInChildren<FirstPersonSounds>();
         fpss.BindAvatar(animator);
-        var freeze = GetComponentInChildren<DisablePlayer>(true);
+        var freeze = GetComponent<DisablePlayer>();
         var footIK = bodyAvatar.GetComponent<FootControllerIK>();
         freeze.BindAvatar(footIK);
     }

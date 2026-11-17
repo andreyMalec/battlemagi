@@ -6,7 +6,7 @@ public class GlyphFork : RuneGlyphDefinition {
     public float forkSpreadAngle = 35f;
 
     public override bool Apply(RuneGlyphContext ctx) {
-        if (ctx.HasTag(RuneGlyphTag.Projectile)) {
+        if (ctx.IsProjectile()) {
             ctx.workingSpell.projectile.enableFork = true;
             ctx.workingSpell.projectile.forkCount += 1;
             ctx.workingSpell.projectile.forkSpreadAngle = forkSpreadAngle;

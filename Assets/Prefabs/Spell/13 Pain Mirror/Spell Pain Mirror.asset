@@ -17,6 +17,9 @@ MonoBehaviour:
   - Pain Mirror
   wordsRu:
   - "\u0417\u0435\u0440\u043A\u0430\u043B\u043E \u0411\u043E\u043B\u0438"
+  tags:
+  - {fileID: 11400000, guid: 0999b0d6f280b8647b50e30193efd7ad, type: 2}
+  - {fileID: 11400000, guid: ee22195a27a47ec41a3aaa3b15ba9359, type: 2}
   coreType: 3
   spawn: {fileID: 11400000, guid: 67f86027e60c34f4abcecef01fe8e2e4, type: 2}
   damage: {fileID: 0}
@@ -24,11 +27,13 @@ MonoBehaviour:
   effects:
   - {fileID: 11400000, guid: b701d0abfa843fe4fa6091587d3c8173, type: 2}
   scale: 1
+  scaleWithCharge: 0
   lifetime: 2
   blinkAtLifetime: 0
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 0
+  dieWithCaster: 0
   castWaitingIndex: 0
   invocationIndex: 9
   manaCost: 25
@@ -38,6 +43,7 @@ MonoBehaviour:
   channelDuration: 0
   charging: 0
   chargeDuration: 0
+  manaPerSecond: 0
   projectile: {fileID: 0}
   zone: {fileID: 0}
   beam: {fileID: 0}

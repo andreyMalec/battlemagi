@@ -1,26 +1,21 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Dirt", menuName = "Glyphs/Element/Dirt")]
-public class GlyphDirt : RuneGlyphDefinition {
-    public override bool Apply(RuneGlyphContext ctx) {
-        if (ctx.HasTag(RuneGlyphTag.Projectile)) {
-            ctx.workingSpell.projectile.prefabId = SpellProjectilePrefabId.ProjectileDirt;
-            return true;
-        }
+public class GlyphDirt : ElementGlyphBase {
+    [Header("Properties")]
+    public float rootDuration = 3f;
 
-        if (ctx.HasTag(RuneGlyphTag.Area)) {
-            if (ctx.coreGlyph is GlyphExplosion) {
-                ctx.workingSpell.zone.prefabId = SpellZonePrefabId.ZoneExplosionDirt;
-            } else if (ctx.coreGlyph is GlyphCloud) {
-                ctx.workingSpell.zone.prefabId = SpellZonePrefabId.ZoneDirt;
-            } else if (ctx.coreGlyph is GlyphPulse) {
-                ctx.workingSpell.zone.prefabId = SpellZonePrefabId.ZoneExplosionDirt;
-            } else {
-                ctx.workingSpell.zone.prefabId = SpellZonePrefabId.ZoneExplosionDirt;
-            }
-            return true;
-        }
-
-        return false;
+    protected override void ApplyBase(RuneGlyphContext ctx) {
+        var effect = CreateInstance<EffectDefinition>();
+        var bulletSlow = CreateInstance<RootEffect>();
+        bulletSlow.effectName = "GlyphDirt Root";
+        bulletSlow.canSelfRoot = false;
+        bulletSlow.duration = rootDuration;
+        effect.effect = bulletSlow;
+        effect.oneShot = true;
+        effect.target = EffectTarget.Enemies;
+        effect.type = StatusEffectType.Rooted;
+        ctx.workingSpell.effects = new List<EffectDefinition> { effect };
     }
 }

@@ -15,6 +15,9 @@ MonoBehaviour:
   spellName: Flame Dash Zone
   words: []
   wordsRu: []
+  tags:
+  - {fileID: 11400000, guid: ed4a30bed7ba94d499dd4e8476e48fd3, type: 2}
+  - {fileID: 11400000, guid: 879f947274678cb4b8c58f892640e038, type: 2}
   coreType: 1
   spawn: {fileID: 11400000, guid: 3c07ac60d21b47847af528bd24d40c60, type: 2}
   damage: {fileID: 11400000, guid: 569794a7e991cde448626a64057f675c, type: 2}
@@ -22,11 +25,13 @@ MonoBehaviour:
   effects:
   - {fileID: 11400000, guid: c5342e7972d9cbc47a118c43915e9379, type: 2}
   scale: 1.5
+  scaleWithCharge: 0
   lifetime: 10
   blinkAtLifetime: 0
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 65
+  dieWithCaster: 0
   castWaitingIndex: 0
   invocationIndex: 0
   manaCost: 0

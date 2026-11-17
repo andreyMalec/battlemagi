@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 public class RuneGlyphContext {
     public SpellDefinition baseSpell;
@@ -12,9 +13,10 @@ public class RuneGlyphContext {
     public IReadOnlyDictionary<string, RunePlacedGlyph> placedById;
     public IReadOnlyDictionary<string, List<RuneLink>> outgoingLinks;
     public IReadOnlyDictionary<string, List<RuneLink>> incomingLinks;
-    public readonly HashSet<RuneGlyphTag> activeTags = new HashSet<RuneGlyphTag>();
-    public readonly List<string> appliedPlacements = new List<string>();
-    public readonly List<string> errors = new List<string>();
+    public readonly HashSet<SpellTag> activeTags = new();
+    public readonly List<string> appliedPlacements = new();
+    public readonly List<string> errors = new();
+    public readonly List<float> damageMultipliers = new();
 
     public void AddError(string error) {
         if (string.IsNullOrWhiteSpace(error))
@@ -22,11 +24,23 @@ public class RuneGlyphContext {
         errors.Add(error);
     }
 
-    public bool HasTag(RuneGlyphTag tag) {
+    public bool HasTag(SpellTag tag) {
         return activeTags.Contains(tag);
     }
 
-    public void AddTag(RuneGlyphTag tag) {
+    public bool IsProjectile() {
+        return activeTags.Any(tag => tag.name.ToLower().Equals("projectile"));
+    }
+
+    public bool IsArea() {
+        return activeTags.Any(tag => tag.name.ToLower().Equals("area"));
+    }
+
+    public void AddTag(SpellTag tag) {
         activeTags.Add(tag);
+    }
+
+    public void AddDamageMultiplier(float multiplier) {
+        damageMultipliers.Add(multiplier);
     }
 }

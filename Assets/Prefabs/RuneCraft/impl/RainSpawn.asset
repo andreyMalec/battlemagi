@@ -13,14 +13,16 @@ MonoBehaviour:
   m_Name: RainSpawn
   m_EditorClassIdentifier: Assembly-CSharp::GlyphRainSpawn
   glyphId: RainSpawn
+  enabled: 1
   displayName: Rain
   glyphType: 3
   outputSide: 0
   baseCost: 1
   repeatCostPercent: 0
-  glyphTags: 04000000
-  requiredTags: 
-  forbiddenTags: 
+  glyphTags:
+  - {fileID: 11400000, guid: 43a27819402a62b4ba80f8a7290785aa, type: 2}
+  requiredTags: []
+  forbiddenTags: []
   shape:
   - q: 0
     r: 0

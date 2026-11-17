@@ -121,7 +121,7 @@ public class InGameMenu : MonoBehaviour {
 
             var players = FindObjectsByType<DisablePlayer>(FindObjectsInactive.Include);
             foreach (var player in players) {
-                player.enabled = true;
+                player.SetDisablePlayer(true);
             }
         } else if (_state == State.RuneCraft && Input.GetKeyDown(openEditorKey) && CanOpenEditor &&
                    stateRuneCraft.GetComponentInChildren<RuneCraftUiController>().InputFocused == false) {
@@ -155,7 +155,7 @@ public class InGameMenu : MonoBehaviour {
 
             var players = FindObjectsByType<DisablePlayer>();
             foreach (var player in players) {
-                player.enabled = false;
+                player.SetDisablePlayer(false);
             }
         }
 

@@ -13,14 +13,16 @@ MonoBehaviour:
   m_Name: Ball
   m_EditorClassIdentifier: Assembly-CSharp::GlyphBall
   glyphId: Ball
+  enabled: 1
   displayName: Ball
   glyphType: 0
   outputSide: 2
   baseCost: 1
   repeatCostPercent: 0
-  glyphTags: 0100000002000000
-  requiredTags: 
-  forbiddenTags: 
+  glyphTags:
+  - {fileID: 11400000, guid: bb12eafc65c38d149942220079d07214, type: 2}
+  requiredTags: []
+  forbiddenTags: []
   shape:
   - q: 1
     r: -1

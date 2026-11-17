@@ -17,12 +17,16 @@ MonoBehaviour:
   - Flame Dash
   wordsRu:
   - "\u041E\u0433\u043D\u0435\u043D\u043D\u044B\u0439 \u0420\u044B\u0432\u043E\u043A"
+  tags:
+  - {fileID: 11400000, guid: ed4a30bed7ba94d499dd4e8476e48fd3, type: 2}
+  - {fileID: 11400000, guid: 40e6c5562e9498b439792ace8dcb698e, type: 2}
   coreType: 1
   spawn: {fileID: 11400000, guid: 5e740957e67570f4b872205040b3fa27, type: 2}
   damage: {fileID: 0}
   knockback: {fileID: 0}
   effects: []
   scale: 1
+  scaleWithCharge: 0
   lifetime: 7
   blinkAtLifetime: 0
   defaultRaycast:

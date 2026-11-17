@@ -13,14 +13,20 @@ MonoBehaviour:
   m_Name: Dirt
   m_EditorClassIdentifier: Assembly-CSharp::GlyphDirt
   glyphId: Dirt
+  enabled: 1
   displayName: Dirt
   glyphType: 4
   outputSide: 0
   baseCost: 1
   repeatCostPercent: 0
-  glyphTags: 00000000
-  requiredTags: 
-  forbiddenTags: 
+  glyphTags:
+  - {fileID: 11400000, guid: 327c5fca08c7508408eb92fbb4fd7ace, type: 2}
+  requiredTags: []
+  forbiddenTags: []
   shape:
   - q: 0
     r: 0
+  projectileDamage: 45
+  areaDamage: 35
+  areaDamageTickInterval: 1
+  rootDuration: 3

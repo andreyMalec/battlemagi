@@ -15,6 +15,9 @@ MonoBehaviour:
   spellName: Zone Ice Spear
   words: []
   wordsRu: []
+  tags:
+  - {fileID: 11400000, guid: 78dc5b9fd45f92d40a07cd0c7f780041, type: 2}
+  - {fileID: 11400000, guid: b637b10c256e70046ba86273c9cdf41c, type: 2}
   coreType: 1
   spawn: {fileID: 11400000, guid: 48fad9b7555e7754eb79787fb90b6124, type: 2}
   damage: {fileID: 0}
@@ -22,6 +25,7 @@ MonoBehaviour:
   effects:
   - {fileID: 11400000, guid: 37743bd96434179418556ae7dddbbdaa, type: 2}
   scale: 1
+  scaleWithCharge: 0
   lifetime: 15
   blinkAtLifetime: 0
   defaultRaycast:

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Damage Air Bullet
   m_EditorClassIdentifier: Assembly-CSharp::DamageDefinition
   mode: 2
+  sound: 6
   canHitAllies: 0
   baseType: 0
   scaleWithRange: 0
@@ -23,3 +24,4 @@ MonoBehaviour:
   percent: 0.1
   tickInterval: 1
   ignoreSoundCooldown: 0
+  resourceTarget: 0

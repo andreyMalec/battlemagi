@@ -13,14 +13,16 @@ MonoBehaviour:
   m_Name: Ice
   m_EditorClassIdentifier: Assembly-CSharp::GlyphIce
   glyphId: Ice
+  enabled: 1
   displayName: Ice
   glyphType: 4
   outputSide: 0
   baseCost: 1
   repeatCostPercent: 0
-  glyphTags: 00000000
-  requiredTags: 
-  forbiddenTags: 
+  glyphTags:
+  - {fileID: 11400000, guid: 78dc5b9fd45f92d40a07cd0c7f780041, type: 2}
+  requiredTags: []
+  forbiddenTags: []
   shape:
   - q: 0
     r: 0

@@ -32,7 +32,6 @@ public static class Ctx {
     public static PlayerSpawner PlayerSpawner => PlayerSpawner.instance;
     public static SpeechToTextHolder SpeechToText => SpeechToTextHolder.Instance;
     public static SpellPrefab SpellPrefab => SpellPrefab.Instance;
-    public static SpellPrefabDatabase SpellPrefabs => SpellPrefabDatabase.Instance;
     public static StatusEffectDatabase StatusEffects => StatusEffectDatabase.Instance;
     public static TeamManager Teams => TeamManager.Instance;
 
@@ -173,7 +172,7 @@ public static class Ctx {
 
     public static int ArchetypeCount => Archetypes.archetypes.Count;
 
-    public static UnityEngine.GameObject GetSpellPrefab(bool useNetwork) {
+    public static UnityEngine.GameObject GetMainSpellPrefab(bool useNetwork) {
         return SpellPrefab.GetPrefab(useNetwork);
     }
 
@@ -182,39 +181,19 @@ public static class Ctx {
     }
 
     public static UnityEngine.GameObject GetSpellPrefab(SpellDefinition def) {
-        return SpellPrefabs.Get(def);
+        return DefaultSpells.spellVisuals.Prefab(def.tags);
     }
 
-    public static UnityEngine.GameObject GetSpellPrefab(SpellProjectilePrefabId id) {
-        return SpellPrefabs.Get(id);
+    public static UnityEngine.GameObject GetSpellPrefab(ushort[] tags) {
+        return DefaultSpells.spellVisuals.Prefab(tags);
     }
 
-    public static UnityEngine.GameObject GetSpellPrefab(SpellZonePrefabId id) {
-        return SpellPrefabs.Get(id);
+    public static UnityEngine.GameObject GetSpellInHandPrefab(SpellDefinition def) {
+        return DefaultSpells.spellVisuals.Get(def.tags)?.inHand;
     }
 
-    public static UnityEngine.GameObject GetSpellPrefab(SpellBeamPrefabId id) {
-        return SpellPrefabs.Get(id);
-    }
-
-    public static UnityEngine.GameObject GetSpellPrefab(SpellSummonPrefabId id) {
-        return SpellPrefabs.Get(id);
-    }
-
-    public static UnityEngine.GameObject GetSpellPrefab(SpellSelfPrefabId id) {
-        return SpellPrefabs.Get(id);
-    }
-
-    public static DamageKind GetSpellSound(SpellDefinition def) {
-        return SpellPrefabs.Sound(def);
-    }
-
-    public static UnityEngine.GameObject GetSpellHandPrefab(SpellDefinition def) {
-        return SpellPrefabs.Hand(def);
-    }
-
-    public static UnityEngine.GameObject GetSpellHandPrefab(int core, int prefab) {
-        return SpellPrefabs.Hand(core, prefab);
+    public static UnityEngine.GameObject GetSpellInHandPrefab(ushort[] tags) {
+        return DefaultSpells.spellVisuals.Get(tags)?.inHand;
     }
 
     public static List<DefaultSpell> GetAllDefaultSpells() {
@@ -234,5 +213,3 @@ public static class Ctx {
         return false;
     }
 }
-
-

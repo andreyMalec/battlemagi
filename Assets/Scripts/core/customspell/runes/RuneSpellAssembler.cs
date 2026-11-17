@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class RuneSpellAssembler {
@@ -443,6 +444,7 @@ public class RuneSpellAssembler {
                 error = "Compiled spell has invalid core payload.";
                 return false;
             }
+            spell.tags = context.activeTags.ToArray();
 
             return true;
         } finally {

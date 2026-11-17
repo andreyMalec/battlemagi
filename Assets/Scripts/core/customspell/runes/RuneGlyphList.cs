@@ -17,8 +17,12 @@ public class RuneGlyphList : ScriptableObject {
             .Where(item => item != null)
             .ToList()
             .ForEach(item => {
-                if (!items.Contains(item)) {
-                    items.Add(item);
+                if (item.enabled) {
+                    if (!items.Contains(item)) {
+                        items.Add(item);
+                    }
+                } else {
+                    items.Remove(item);
                 }
             });
     }

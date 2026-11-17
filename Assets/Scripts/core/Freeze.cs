@@ -1,20 +1,16 @@
 using UnityEngine;
 
 public class Freeze : MonoBehaviour {
-    private DisablePlayer _disablePlayer;
+    public void SetFreeze(bool active) {
+        var disablePlayer = GetComponentInParent<DisablePlayer>();
+        if (active) {
+            Debug.Log($"Игрок {disablePlayer.gameObject.name} замерз");
+            disablePlayer.SetDisablePlayer(true);
+        } else {
+            Debug.Log($"Игрок {disablePlayer.gameObject.name} оттаял");
+            disablePlayer.SetDisablePlayer(false);
+        }
 
-    private void Awake() {
-        var parent = transform.parent.gameObject;
-        _disablePlayer = parent.GetComponent<DisablePlayer>();
-    }
-
-    private void OnEnable() {
-        Debug.Log($"Игрок {_disablePlayer.gameObject.name} замерз");
-        if (_disablePlayer != null) _disablePlayer.enabled = false;
-    }
-
-    private void OnDisable() {
-        Debug.Log($"Игрок {_disablePlayer.gameObject.name} оттаял");
-        if (_disablePlayer != null) _disablePlayer.enabled = true;
+        gameObject.SetActive(active);
     }
 }

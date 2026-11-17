@@ -8,7 +8,7 @@ public class GlyphSpiral : RuneGlyphDefinition {
     public float spiralRadius = 0.5f;
 
     public override bool Apply(RuneGlyphContext ctx) {
-        if (ctx.HasTag(RuneGlyphTag.Projectile)) {
+        if (ctx.IsProjectile()) {
             var proj = ctx.workingSpell.projectile;
             proj.moveType = SpellMovement.Spiral;
             proj.angularSpeed = proj.moveSpeed * Mathf.PI  * 2 / angularSpeed;
@@ -16,7 +16,7 @@ public class GlyphSpiral : RuneGlyphDefinition {
             return true;
         }
 
-        if (ctx.HasTag(RuneGlyphTag.Area)) {
+        if (ctx.IsArea()) {
             var zone = ctx.workingSpell.zone;
             zone.moveType = SpellMovement.Spiral;
             zone.angularSpeed = zone.moveSpeed * Mathf.PI  * 2 / angularSpeed;

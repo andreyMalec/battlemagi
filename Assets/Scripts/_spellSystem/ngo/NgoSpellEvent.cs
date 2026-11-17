@@ -98,7 +98,7 @@ public class NgoSpellSystemEvent : NetworkBehaviour, SpellSystemEvent {
         SpellLog.Log($"[NetworkSpellSystemEvent] OnLifetimePercentClientRpc: {netObjectId} percent: {percent}");
 
         var lifetime = obj.GetComponentInChildren<SpellLifetime>();
-        lifetime.OnLifetimePercent(percent);
+        lifetime?.OnLifetimePercent(percent);
     }
 
     public void OnReturnToCaster(ISpellContext context) {

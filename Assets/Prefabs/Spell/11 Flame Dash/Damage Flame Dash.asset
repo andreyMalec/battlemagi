@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Damage Flame Dash
   m_EditorClassIdentifier: Assembly-CSharp::DamageDefinition
   mode: 1
+  sound: 1
   canHitAllies: 0
   baseType: 0
   scaleWithRange: 0
@@ -23,3 +24,4 @@ MonoBehaviour:
   percent: 0.1
   tickInterval: 0.1
   ignoreSoundCooldown: 0
+  resourceTarget: 0

@@ -4,15 +4,16 @@ using UnityEngine;
 
 public abstract class RuneGlyphDefinition : ScriptableObject {
     public string glyphId;
+    public bool enabled = true;
     public string displayName;
     public RuneGlyphType glyphType;
     [Range(0, 5)] public int outputSide;
     [Min(0f)] public float baseCost = 1f;
     [Min(0f)] public float repeatCostPercent = 0f;
-    public List<RuneGlyphTag> glyphTags = new List<RuneGlyphTag>();
-    public List<RuneGlyphTag> requiredTags = new List<RuneGlyphTag>();
-    public List<RuneGlyphTag> forbiddenTags = new List<RuneGlyphTag>();
-    public List<RuneShapeCell> shape = new List<RuneShapeCell> { new RuneShapeCell(0, 0) };
+    public List<SpellTag> glyphTags = new();
+    public List<SpellTag> requiredTags = new();
+    public List<SpellTag> forbiddenTags = new();
+    public List<RuneShapeCell> shape = new() { new RuneShapeCell(0, 0) };
 
     public IReadOnlyList<HexCoord> GetLocalShape() {
         var cells = new List<HexCoord>(shape.Count);

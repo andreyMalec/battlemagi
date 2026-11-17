@@ -13,12 +13,17 @@ MonoBehaviour:
   m_Name: Explosion
   m_EditorClassIdentifier: Assembly-CSharp::GlyphExplosion
   glyphId: Explosion
+  enabled: 1
   displayName: Explosion
   glyphType: 0
   outputSide: 0
-  glyphTags: 0500000004000000
-  requiredTags: 
-  forbiddenTags: 
+  baseCost: 1
+  repeatCostPercent: 0
+  glyphTags:
+  - {fileID: 11400000, guid: 43a27819402a62b4ba80f8a7290785aa, type: 2}
+  - {fileID: 11400000, guid: b3cde20bbf6c928498ff46a81cf35043, type: 2}
+  requiredTags: []
+  forbiddenTags: []
   shape:
   - q: 1
     r: 0

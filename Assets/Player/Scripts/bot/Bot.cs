@@ -106,7 +106,7 @@ public class Bot : NetworkBehaviour {
         passiveRuntime.Configure(archetype.passive);
         var fpss = GetComponentInChildren<FirstPersonSounds>();
         fpss.BindAvatar(animator);
-        var freeze = GetComponentInChildren<DisablePlayer>(true);
+        var freeze = GetComponent<DisablePlayer>();
         var footIK = currentAvatar.GetComponent<FootControllerIK>();
         freeze.BindAvatar(footIK);
     }

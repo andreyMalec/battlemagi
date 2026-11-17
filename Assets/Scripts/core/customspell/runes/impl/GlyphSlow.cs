@@ -8,13 +8,13 @@ public class GlyphSlow : RuneGlyphDefinition {
     
     
     public override bool Apply(RuneGlyphContext ctx) {
-        if (ctx.HasTag(RuneGlyphTag.Projectile)) {
+        if (ctx.IsProjectile()) {
             var proj = ctx.workingSpell.projectile;
             proj.moveSpeed *= projMulti;
             return true;
         }
 
-        if (ctx.HasTag(RuneGlyphTag.Area)) {
+        if (ctx.IsArea()) {
             var zone = ctx.workingSpell.zone;
             zone.moveSpeed *= zoneMulti;
             return true;

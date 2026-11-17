@@ -12,7 +12,7 @@ public class SpellPreviewNetworkBridge : NetworkBehaviour, ISpellPreviewBridge {
 
     public void Show(SpellDefinition spell) {
         Hide();
-        ShowServerRpc(spell.name, NetworkObjectId);
+        ShowServerRpc(spell.TagsArray(), NetworkObjectId);
     }
 
     public void Hide() {
@@ -43,17 +43,14 @@ public class SpellPreviewNetworkBridge : NetworkBehaviour, ISpellPreviewBridge {
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    private void ShowServerRpc(string spellName, ulong previewObjectId) {
-        ShowInHandClientRpc(spellName, previewObjectId);
+    private void ShowServerRpc(SpellTagsArray spellTags, ulong previewObjectId) {
+        ShowInHandClientRpc(spellTags, previewObjectId);
     }
 
     [ClientRpc]
-    private void ShowInHandClientRpc(string spellName, ulong previewObjectId) {
+    private void ShowInHandClientRpc(SpellTagsArray spellTags, ulong previewObjectId) {
         if (!TryResolveBridge(previewObjectId, out var bridge)) return;
-        var spell = DefaultSpells.Resolve(spellName);
-        var prefab = DefaultSpells.Get(spellName)?.inHandPrefab;
-        if (prefab == null && spell != null)
-            prefab = SpellPrefabDatabase.Instance.Hand(spell);//TODO custom spell
+        var prefab = Ctx.GetSpellInHandPrefab(spellTags.Tags);
         if (prefab == null) return;
         GameObject obj = Instantiate(prefab, bridge._hand);
         obj.transform.localPosition = Vector3.zero;

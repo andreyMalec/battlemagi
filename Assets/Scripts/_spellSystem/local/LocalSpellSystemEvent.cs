@@ -31,7 +31,7 @@ public class LocalSpellSystemEvent : MonoBehaviour, SpellSystemEvent {
 
     public void OnLifetimePercent(SpellView view, float percent) {
         var lifetime = view.GetComponent<SpellLifetime>();
-        lifetime.OnLifetimePercent(percent);
+        lifetime?.OnLifetimePercent(percent);
     }
 
     public void OnReturnToCaster(ISpellContext context) {

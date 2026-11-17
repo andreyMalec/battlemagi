@@ -17,17 +17,22 @@ MonoBehaviour:
   - Magic Hand
   wordsRu:
   - "\u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0430\u044F \u0420\u0443\u043A\u0430"
+  tags:
+  - {fileID: 11400000, guid: 17de6fdae0805e5488e299352ffa30d6, type: 2}
+  - {fileID: 11400000, guid: bb12eafc65c38d149942220079d07214, type: 2}
   coreType: 0
   spawn: {fileID: 11400000, guid: d8b82e5a9cab8d74b88dd78cd4f8dbe1, type: 2}
   damage: {fileID: 11400000, guid: 526bc9c398a699d428085ad4c060bf60, type: 2}
   knockback: {fileID: 0}
   effects: []
   scale: 1
+  scaleWithCharge: 0
   lifetime: 1.5
   blinkAtLifetime: 0
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 581
+  dieWithCaster: 0
   castWaitingIndex: 0
   invocationIndex: 0
   manaCost: 25

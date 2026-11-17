@@ -18,17 +18,22 @@ MonoBehaviour:
   wordsRu:
   - "\u0421\u0438\u043B\u043E\u0432\u043E\u0435 \u041F\u043E\u043B\u0435"
   - "\u041F\u043E\u043B\u0435 \u0421\u0438\u043B\u044B"
+  tags:
+  - {fileID: 11400000, guid: 23e0919eefb2d4e4e854183adae14214, type: 2}
+  - {fileID: 11400000, guid: 879f947274678cb4b8c58f892640e038, type: 2}
   coreType: 1
   spawn: {fileID: 11400000, guid: f02f305b9d673a24a93dbc87bce056f5, type: 2}
   damage: {fileID: 0}
   knockback: {fileID: 0}
   effects: []
   scale: 5
+  scaleWithCharge: 0
   lifetime: 10
   blinkAtLifetime: 1
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 64
+  dieWithCaster: 0
   castWaitingIndex: 0
   invocationIndex: 7
   manaCost: 75

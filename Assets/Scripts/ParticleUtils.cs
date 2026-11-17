@@ -125,7 +125,13 @@ public static class ParticleUtils {
 
     public static void Scale(ParticleSystem ps, float k, bool scaleShape = false) {
         var main = ps.main;
-        main.startSizeMultiplier *= k;
+        if (main.startSize3D) {
+            main.startSizeXMultiplier *= k;
+            main.startSizeYMultiplier *= k;
+            main.startSizeZMultiplier *= k;
+        } else
+            main.startSizeMultiplier *= k;
+
         main.startSpeedMultiplier *= k;
         main.gravityModifierMultiplier *= k;
 

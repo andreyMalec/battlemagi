@@ -13,9 +13,12 @@ MonoBehaviour:
   m_Name: GravitationCollapse
   m_EditorClassIdentifier: Assembly-CSharp::GlyphGravitationCollapse
   glyphId: GravitationCollapse
+  enabled: 0
   displayName: Gravitation Collapse
   glyphType: 3
   outputSide: 0
+  baseCost: 1
+  repeatCostPercent: 0
   glyphTags: 
   requiredTags: 
   forbiddenTags: 

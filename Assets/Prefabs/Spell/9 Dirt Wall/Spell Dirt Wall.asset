@@ -21,17 +21,22 @@ MonoBehaviour:
   - "\u0421\u0442\u0435\u043D\u0430 \u0417\u0435\u043C\u043B\u044F\u043D\u0430\u044F"
   - "\u0421\u0442\u0435\u043D\u0430 \u0413\u0440\u044F\u0437\u0435\u0432\u0430\u044F"
   - "\u0413\u0440\u044F\u0437\u0435\u0432\u0430\u044F \u0421\u0442\u0435\u043D\u0430"
+  tags:
+  - {fileID: 11400000, guid: 327c5fca08c7508408eb92fbb4fd7ace, type: 2}
+  - {fileID: 11400000, guid: 54d6147831fd3c74bbc5b0974e9625c3, type: 2}
   coreType: 4
   spawn: {fileID: 11400000, guid: ef5f327501527c9468ac94df50e522a6, type: 2}
   damage: {fileID: 0}
   knockback: {fileID: 0}
   effects: []
   scale: 1
+  scaleWithCharge: 0
   lifetime: 30
   blinkAtLifetime: 0
   defaultRaycast:
     serializedVersion: 2
     m_Bits: 64
+  dieWithCaster: 0
   castWaitingIndex: 0
   invocationIndex: 8
   manaCost: 25

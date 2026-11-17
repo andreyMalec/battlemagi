@@ -3,8 +3,6 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Summon Spell", menuName = "Spells/Summon Definition")]
 public class SummonDefinition : ScriptableObject, IValidate {
-    public SpellSummonPrefabId prefabId;
-
     public SpellDefinition mainSpell;
 
     public SummonBrain brain;

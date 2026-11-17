@@ -129,7 +129,7 @@ public class OLD_SpellCasterNet : NetworkBehaviour {
     private void ServerSpawnMain(SpawnContext context) {
         var casterNetObj = context.caster.GetComponentInParent<NetworkObject>();
         if (!casterNetObj.IsSpawned) return;
-        var prefab = Ctx.GetSpellPrefab(true);
+        var prefab = Ctx.GetMainSpellPrefab(true);
         var main = Instantiate(prefab, context.position, context.rotation);
         var networkObject = main.GetComponent<NetworkObject>();
         var ownerId = context.caster.OwnerId;
@@ -137,13 +137,6 @@ public class OLD_SpellCasterNet : NetworkBehaviour {
         networkObject.SpawnWithOwnership(ownerClientId);
         var id = networkObject.NetworkObjectId;
 
-        var prefabId = context.spell.coreType switch {
-            CoreType.Projectile => (int)context.spell.projectile.prefabId,
-            CoreType.Zone => (int)context.spell.zone.prefabId,
-            CoreType.Beam => (int)context.spell.beam.prefabId,
-            CoreType.Summon => (int)context.spell.summon.prefabId,
-            _ => -1
-        };
         var impassableForEnemies = context.spell.coreType is CoreType.Zone && context.spell.zone.impassableForEnemies;
         context.main = main;
         context.caster.SpellSystem.CastSpell(context);
@@ -151,8 +144,7 @@ public class OLD_SpellCasterNet : NetworkBehaviour {
             Send = new ClientRpcSendParams
                 { TargetClientIds = NetworkManager.ConnectedClients.Keys.Filter(it => it > 0).ToArray() }
         };
-        if (prefabId > -1)
-            OnCastClientRpc(id, casterNetObj.NetworkObjectId, (int)context.spell.coreType, prefabId,
+            OnCastClientRpc(id, casterNetObj.NetworkObjectId, 0, 0,
                 context.spell.scale, context.spell.lifetime, impassableForEnemies, excludeHost);
     }
 
@@ -175,7 +167,7 @@ public class OLD_SpellCasterNet : NetworkBehaviour {
             $"[NetworkSpellSystemEvent] OnCastClientRpc: netObjectId={spellNetObjectId}, caster={casterNetObj.gameObject.name}");
         var caster = casterNetObj.GetComponentInChildren<SpellCaster>();
 
-        caster.SpellSystem.ShowSpell(main.gameObject, (CoreType)coreType, prefabId);
+        // caster.SpellSystem.ShowSpell(main.gameObject, new []{"da"});
         var instance = main.GetComponentInChildren<SpellInstance>();
         instance.Scale(scale, lifetime);
         if (impassableForEnemies)

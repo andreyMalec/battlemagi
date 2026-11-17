@@ -13,12 +13,23 @@ MonoBehaviour:
   m_Name: Air
   m_EditorClassIdentifier: Assembly-CSharp::GlyphAir
   glyphId: Air
+  enabled: 1
   displayName: Air
   glyphType: 4
   outputSide: 0
-  glyphTags: 00000000
-  requiredTags: 
-  forbiddenTags: 
+  baseCost: 1
+  repeatCostPercent: 0
+  glyphTags:
+  - {fileID: 11400000, guid: 60007bb05203f0f45ab6074bfe48d9ab, type: 2}
+  requiredTags: []
+  forbiddenTags: []
   shape:
   - q: 0
     r: 0
+  projectileDamage: 45
+  areaDamage: 35
+  areaDamageTickInterval: 1
+  projectileImpulse: 12
+  areaImpulse: 10
+  areaForce: 100
+  bulletSlowMultiplier: 0.25
